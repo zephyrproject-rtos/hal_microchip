@@ -431,6 +431,7 @@ typedef enum IRQn {
 /** @} *//* End of group Device_Peripheral_peripheralAddr */
 
 #include "component/acpi_ec.h"
+#include "component/adc.h"
 #include "component/dma.h"
 #include "component/ecia.h"
 #include "component/ecs.h"
@@ -440,16 +441,24 @@ typedef enum IRQn {
 #include "component/espi_mem.h"
 #include "component/espi_vw.h"
 #include "component/global_cfg.h"
+#include "component/hdmi_cec.h"
 #include "component/i2c.h"
 #include "component/kbc.h"
 #include "component/keyscan.h"
 #include "component/led.h"
 #include "component/mailbox.h"
 #include "component/pcr.h"
+#include "component/peci.h"
 #include "component/port80cap.h"
 #include "component/port92.h"
+#include "component/prochot.h"
 #include "component/ps2_ctrl.h"
+#include "component/pwm.h"
+#include "component/qmspi.h"
+#include "component/rtc.h"
 #include "component/smb.h"
+#include "component/spi_slave.h"
+#include "component/tach.h"
 #include "component/tfdp.h"
 #include "component/timer.h"
 #include "component/uart.h"
@@ -486,13 +495,38 @@ typedef enum IRQn {
 #define DMA10_REGS      ((DMA_CHAN_Type *)(DMA_CHAN_BASE(10)))
 #define DMA11_REGS      ((DMA_CHAN_Type *)(DMA_CHAN_BASE(11)))
 
+#define PROCHOT_REGS	((PROCHOT_Type *) PROCHOT_BASE)
+
 #define SMB0_REGS       ((I2C_SMB_Type *) SMB0_BASE)
 #define SMB1_REGS       ((I2C_SMB_Type *) SMB1_BASE)
 #define SMB2_REGS       ((I2C_SMB_Type *) SMB2_BASE)
 #define SMB3_REGS       ((I2C_SMB_Type *) SMB3_BASE)
 #define SMB4_REGS       ((I2C_SMB_Type *) SMB4_BASE)
 
+#define PWM0_REGS	((PWM_Type *) PWM0_BASE)
+#define PWM1_REGS	((PWM_Type *) PWM1_BASE)
+#define PWM2_REGS	((PWM_Type *) PWM2_BASE)
+#define PWM3_REGS	((PWM_Type *) PWM3_BASE)
+#define PWM4_REGS	((PWM_Type *) PWM4_BASE)
+#define PWM5_REGS	((PWM_Type *) PWM5_BASE)
+#define PWM6_REGS	((PWM_Type *) PWM6_BASE)
+#define PWM7_REGS	((PWM_Type *) PWM7_BASE)
+#define PWM8_REGS	((PWM_Type *) PWM8_BASE)
+
+#define TACH0_REGS	((TACH_Type *) TACH0_BASE)
+#define TACH1_REGS	((TACH_Type *) TACH1_BASE)
+#define TACH2_REGS	((TACH_Type *) TACH2_BASE)
+#define TACH3_REGS	((TACH_Type *) TACH3_BASE)
+
+#define PECI_REGS	((PECI_Type *) PECI_BASE)
+
+#define HDMI_CEC_REGS	((HDMI_CEC_Type *) HDMI_CEC_BASE)
+
+#define SPISLV_REGS	((SPISLV_Type *) SPISLV_BASE)
+
 #define RTMR_REGS       ((RTMR_Type *) RTMR_BASE)
+
+#define ADC_REGS	((ADC_Type *) ADC_BASE)
 
 #define TFDP_REGS	((TFDP_Type *) TFDP_BASE)
 
@@ -507,6 +541,8 @@ typedef enum IRQn {
 #define VBATR_REGS      ((VBATR_Type *) VBATR_BASE)
 #define VBATM_REGS      ((VBATM_Type *) VBATM_BASE)
 #define WKTMR_REGS      ((WKTMR_Type *) WKTMR_BASE)
+
+#define VCI_REGS	((VCI_Type *) VCI_BASE)
 
 #define LED0_REGS       ((LED_Type *) LED0_BASE)
 #define LED1_REGS       ((LED_Type *) LED1_BASE)
@@ -554,6 +590,8 @@ typedef enum IRQn {
 #define ACPI_EC_2_REGS  ((ACPI_EC_Type *)(ACPI_EC_2_BASE))
 #define ACPI_EC_3_REGS  ((ACPI_EC_Type *)(ACPI_EC_3_BASE))
 
+#define ACPI_PM1_REGS	((ACPI_PM1_Type *) ACPI_PM1_BASE)
+
 #define PORT92_REGS     ((PORT92_Type *)(PORT92_BASE))
 
 #define UART0_REGS      ((UART_Type *) UART0_BASE)
@@ -585,6 +623,8 @@ typedef enum IRQn {
 
 #define EMI0_REGS       ((EMI_Type *)(EMI0_BASE))
 #define EMI1_REGS       ((EMI_Type *)(EMI0_BASE))
+
+#define RTC_REGS	((RTC_Type *) RTC_BASE)
 
 #define PORT80_CAP0_REGS	((PORT80_CAP_Type *)(P80CAP0_BASE))
 #define PORT80_CAP1_REGS	((PORT80_CAP_Type *)(P80CAP1_BASE))

@@ -146,6 +146,157 @@ typedef struct vbatm_regs
 	} MEM;
 } VBATM_Type;
 
+/* =========================================================================*/
+/* ================		 VCI 			=================== */
+/* =========================================================================*/
+
+#define MCHP_VCI_BASE_ADDR	0x4000AE00ul
+
+/*
+ * VCI interrupts
+ */
+#define MCHP_VCI_OVRD_GIRQ	21u
+#define MCHP_VCI_IN0_GIRQ	21u
+#define MCHP_VCI_IN1_GIRQ	21u
+#define MCHP_VCI_IN2_GIRQ	21u
+#define MCHP_VCI_IN3_GIRQ	21u
+
+/* Bit position in GIRQ Source, Enable-Set/Clr, and Result registers */
+#define MCHP_VCI_OVRD_GIRQ_POS	10u
+#define MCHP_VCI_IN0_GIRQ_POS	11u
+#define MCHP_VCI_IN1_GIRQ_POS	12u
+#define MCHP_VCI_IN2_GIRQ_POS	13u
+#define MCHP_VCI_IN3_GIRQ_POS	14u
+
+#define MCHP_VCI_OVRD_GIRQ_VAL	(1ul << MCHP_VCI_OVRD_GIRQ_POS)
+#define MCHP_VCI_IN0_GIRQ_VAL	(1ul << MCHP_VCI_IN0_GIRQ_POS)
+#define MCHP_VCI_IN1_GIRQ_VAL	(1ul << MCHP_VCI_IN1_GIRQ_POS)
+#define MCHP_VCI_IN2_GIRQ_VAL	(1ul << MCHP_VCI_IN2_GIRQ_POS)
+#define MCHP_VCI_IN3_GIRQ_VAL	(1ul << MCHP_VCI_IN3_GIRQ_POS)
+
+/* VCI GIRQ aggregated NVIC input */
+#define MCHP_VCI_OVRD_NVIC_AGGR	13u
+#define MCHP_VCI_IN0_NVIC_AGGR	13u
+#define MCHP_VCI_IN1_NVIC_AGGR	13u
+#define MCHP_VCI_IN2_NVIC_AGGR	13u
+#define MCHP_VCI_IN3_NVIC_AGGR	13u
+
+/* VCI direct NVIC inputs */
+#define MCHP_VCI_OVRD_NVIC_DIRECT	121u
+#define MCHP_VCI_IN0_NVIC_DIRECT	122u
+#define MCHP_VCI_IN1_NVIC_DIRECT	123u
+#define MCHP_VCI_IN2_NVIC_DIRECT	124u
+#define MCHP_VCI_IN3_NVIC_DIRECT	125u
+
+/* VCI Config register */
+#define MCHP_VCI_CFG_REG_OFS		0
+#define MCHP_VCI_CFG_REG_MASK		0x00071F8Ful
+#define MCHP_VCI_CFG_IN03_MASK		0x0Fu
+#define MCHP_VCI_CFG_IN0_HI		0x01u
+#define MCHP_VCI_CFG_IN1_HI		0x02u
+#define MCHP_VCI_CFG_IN2_HI		0x04u
+#define MCHP_VCI_CFG_IN3_HI		0x08u
+#define MCHP_VCI_CFG_VPWR_POS		7
+#define MCHP_VCI_CFG_VPWR_VTR		(0ul << 7)
+#define MCHP_VCI_CFG_VPWR_VBAT		(1ul << 7)
+#define MCHP_VCI_VCI_OVRD_IN_PIN	(1ul << 8)
+#define MCHP_VCI_VCI_OUT_PIN		(1ul << 9)
+#define MCHP_VCI_FW_CTRL_EN		(1ul << 10)
+#define MCHP_VCI_FW_EXT_SEL		(1ul << 11)
+#define MCHP_VCI_FILTER_BYPASS		(1ul << 12)
+#define MCHP_VCI_WEEK_ALARM		(1ul << 16)
+#define MCHP_VCI_RTC_ALARM		(1ul << 17)
+#define MCHP_VCI_SYS_PWR_PRES		(1ul << 18)
+
+/* VCI Latch Enable register */
+#define MCHP_VCI_LE_REG_OFS		4
+#define MCHP_VCI_LE_REG_MASK		0x0003000Ful
+#define MCHP_VCI_LE_IN03_MASK		0x0Fu
+#define MCHP_VCI_LE_IN0			0x01u
+#define MCHP_VCI_LE_IN1			0x02u
+#define MCHP_VCI_LE_IN2			0x04u
+#define MCHP_VCI_LE_IN3			0x08u
+#define MCHP_VCI_LE_WEEK_ALARM		(1ul << 16)
+#define MCHP_VCI_LE_RTC_ALARM		(1ul << 17)
+
+/* VCI Latch Resets register */
+#define MCHP_VCI_LR_REG_OFS		8
+#define MCHP_VCI_LR_REG_MASK		0x0003000Ful
+#define MCHP_VCI_LR_IN03_MASK		0x0Fu
+#define MCHP_VCI_LR_IN0			0x01u
+#define MCHP_VCI_LR_IN1			0x02u
+#define MCHP_VCI_LR_IN2			0x04u
+#define MCHP_VCI_LR_IN3			0x08u
+#define MCHP_VCI_LR_WEEK_ALARM		(1ul << 16)
+#define MCHP_VCI_LR_RTC_ALARM		(1ul << 17)
+
+/* VCI Input Enable register */
+#define MCHP_VCI_INPUT_EN_REG_OFS	0x0C
+#define MCHP_VCI_INPUT_EN_REG_MASK	0x0Ful
+#define MCHP_VCI_INPUT_EN_IE30_MASK	0x0Fu
+#define MCHP_VCI_INPUT_EN_IN0		0x01u
+#define MCHP_VCI_INPUT_EN_IN1		0x02u
+#define MCHP_VCI_INPUT_EN_IN2		0x04u
+#define MCHP_VCI_INPUT_EN_IN3		0x08u
+
+/* VCI Hold Off Count register */
+#define MCHP_VCI_HDO_REG_OFS		0x10
+#define MCHP_VCI_HDO_REG_MASK		0xFFul
+
+/* VCI Polarity register */
+#define MCHP_VCI_POL_REG_OFS		0x14
+#define MCHP_VCI_POL_REG_MASK		0x0Ful
+#define MCHP_VCI_POL_IE30_MASK		0x0Fu
+#define MCHP_VCI_POL_ACT_HI_IN0		0x01u
+#define MCHP_VCI_POL_ACT_HI_IN1		0x02u
+#define MCHP_VCI_POL_ACT_HI_IN2		0x04u
+#define MCHP_VCI_POL_ACT_HI_IN3		0x08u
+
+/* VCI Positive Edge Detect register */
+#define MCHP_VCI_PDET_REG_OFS		0x18
+#define MCHP_VCI_PDET_REG_MASK		0x0Ful
+#define MCHP_VCI_PDET_IE30_MASK		0x0Fu
+#define MCHP_VCI_PDET_IN0		0x01u
+#define MCHP_VCI_PDET_IN1		0x02u
+#define MCHP_VCI_PDET_IN2		0x04u
+#define MCHP_VCI_PDET_IN3		0x08u
+
+/* VCI Positive Edge Detect register */
+#define MCHP_VCI_NDET_REG_OFS		0x1C
+#define MCHP_VCI_NDET_REG_MASK		0x0Ful
+#define MCHP_VCI_NDET_IE30_MASK		0x0Fu
+#define MCHP_VCI_NDET_IN0		0x01u
+#define MCHP_VCI_NDET_IN1		0x02u
+#define MCHP_VCI_NDET_IN2		0x04u
+#define MCHP_VCI_NDET_IN3		0x08u
+
+/* VCI Buffer Enable register */
+#define MCHP_VCI_BEN_REG_OFS		0x20
+#define MCHP_VCI_BEN_REG_MASK		0x0Ful
+#define MCHP_VCI_BEN_IE30_MASK		0x0Fu
+#define MCHP_VCI_BEN_IN0		0x01u
+#define MCHP_VCI_BEN_IN1		0x02u
+#define MCHP_VCI_BEN_IN2		0x04u
+#define MCHP_VCI_BEN_IN3		0x08u
+
+/**
+  * @brief VBAT powered control interface (VCI)
+  */
+
+typedef struct vci_regs
+{
+	__IOM uint32_t CONFIG; /*! (@ 0x0000) VCI Config register */
+	__IOM uint32_t LATCH_EN; /*! (@ 0x0004) VCI Latch enable register */
+	__IOM uint32_t LATCH_RST; /*! (@ 0x0008) VCI Latch resets register */
+	__IOM uint32_t INPUT_EN; /*! (@ 0x000C) VCI Input enable register */
+	__IOM uint32_t HOLD_OFF; /*! (@ 0x0010) VCI Hold off count register */
+	__IOM uint32_t POLARITY; /*! (@ 0x0014) VCI Polarity register */
+	__IOM uint32_t PEDGE_DET; /*! (@ 0x0018) VCI Positive edge detect register */
+	__IOM uint32_t NEDGE_DET; /*! (@ 0x001C) VCI Negative edge detect register */
+	__IOM uint32_t BUFFER_EN; /*! (@ 0x0020) VCI Buffer enable register */
+} VCI_Type;
+
+
 #endif	/* #ifndef _VBAT_H */
 /* end vbat.h */
 /**   @}

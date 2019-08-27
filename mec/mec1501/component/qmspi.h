@@ -111,7 +111,7 @@
 #define MCHP_QMSPI_RXB_ADDR		(MCHP_QMSPI_BASE_ADDR + 0x24)
 #define MCHP_QMSPI_CSTM_ADDR		(MCHP_QMSPI_BASE_ADDR + 0x28)
 #define MCHP_QMSPI_DESCR_ADDR(n) \
-	(MCHP_QMSPI_BASE_ADDR + (0x30 + ((uint32_t)(n) << 2)))
+	(MCHP_QMSPI_BASE_ADDR + (0x30 + (((uint32_t)(n) & 0x0Ful) << 2)))
 
 /* Mode Register */
 #define MCHP_QMSPI_M_SRST		0x02ul
@@ -333,11 +333,6 @@
  * 0 <= id < MCHP_QMSPI_MAX_DESCR
  */
 #define MCHP_QMSPI_DESCR(id)	REG32(MCHP_QMSPI_DESCR_ADDR(id))
-#define MCHP_QMSPI_DESCR0()	REG32(MCHP_QMSPI_DESCR_ADDR(0))
-#define MCHP_QMSPI_DESCR1()	REG32(MCHP_QMSPI_DESCR_ADDR(1))
-#define MCHP_QMSPI_DESCR2()	REG32(MCHP_QMSPI_DESCR_ADDR(2))
-#define MCHP_QMSPI_DESCR3()	REG32(MCHP_QMSPI_DESCR_ADDR(3))
-#define MCHP_QMSPI_DESCR4()	REG32(MCHP_QMSPI_DESCR_ADDR(4))
 
 #define MCHP_QMSPI_DESCR_NUNITS(id, nu) MCHP_QMSPI_DESCR(id) = \
 	((MCHP_QMSPI_DESCR(id) & ~(MCHP_QMSPI_C_XFR_NUNITS_MASK)) +\
@@ -348,27 +343,39 @@
 /* ================	       QMSPI			   ================ */
 /* =========================================================================*/
 
-typedef struct {
-	__IOM uint32_t u32;
-} QMSPI_DESCR_Type;
-
 /**
   * @brief Quad Master SPI (QMSPI)
   */
 typedef struct qmspi_regs
 {
-	__IOM uint32_t MODE;	/*!< (@ 0x00000000) QMSPI Mode */
-	__IOM uint32_t CTRL;	/*!< (@ 0x00000004) QMSPI Control */
-	__IOM uint32_t EXE;	/*!< (@ 0x00000008) QMSPI Execute */
-	__IOM uint32_t IFCTRL;	/*!< (@ 0x0000000C) QMSPI Interface control */
-	__IOM uint32_t STS;	/*!< (@ 0x00000010) QMSPI Status */
-	__IOM uint32_t BCNT_STS;	/*!< (@ 0x00000014) QMSPI Buffer Count Status (RO) */
-	__IOM uint32_t IEN;	/*!< (@ 0x00000018) QMSPI Interrupt Enable */
-	__IOM uint32_t BCNT_TRIG;	/*!< (@ 0x0000001C) QMSPI Buffer Count Trigger */
-	__IOM uint32_t TX_FIFO;	/*!< (@ 0x00000020) QMSPI TX FIFO */
-	__IOM uint32_t RX_FIFO;	/*!< (@ 0x00000024) QMSPI RX FIFO */
-	uint8_t RSVD1[8];
-	QMSPI_DESCR_Type DESCR[QMSPI_MAX_DESCR];	/*!< (@ 0x00000030) QMSPI Descriptors 0-4 */
+	__IOM uint32_t MODE; /*!< (@ 0x0000) QMSPI Mode */
+	__IOM uint32_t CTRL; /*!< (@ 0x0004) QMSPI Control */
+	__IOM uint32_t EXE; /*!< (@ 0x0008) QMSPI Execute */
+	__IOM uint32_t IFCTRL; /*!< (@ 0x000C) QMSPI Interface control */
+	__IOM uint32_t STS; /*!< (@ 0x0010) QMSPI Status */
+	__IOM uint32_t BCNT_STS; /*!< (@ 0x0014) QMSPI Buffer Count Status (RO) */
+	__IOM uint32_t IEN; /*!< (@ 0x0018) QMSPI Interrupt Enable */
+	__IOM uint32_t BCNT_TRIG; /*!< (@ 0x001C) QMSPI Buffer Count Trigger */
+	__IOM uint32_t TX_FIFO; /*!< (@ 0x0020) QMSPI TX FIFO */
+	__IOM uint32_t RX_FIFO; /*!< (@ 0x0024) QMSPI RX FIFO */
+	__IOM uint32_t CSTM; /*!< (@ 0x0028) QMSPI Chip select timing */
+	uint8_t RSVD1[4];
+	__IOM uint32_t DESCR0; /*!< (@ 0x0030) QMSPI Descriptor 0 */
+	__IOM uint32_t DESCR1; /*!< (@ 0x0034) QMSPI Descriptor 1 */
+	__IOM uint32_t DESCR2; /*!< (@ 0x0038) QMSPI Descriptor 2 */
+	__IOM uint32_t DESCR3; /*!< (@ 0x003C) QMSPI Descriptor 3 */
+	__IOM uint32_t DESCR4; /*!< (@ 0x0040) QMSPI Descriptor 4 */
+	__IOM uint32_t DESCR5; /*!< (@ 0x0044) QMSPI Descriptor 5 */
+	__IOM uint32_t DESCR6; /*!< (@ 0x0048) QMSPI Descriptor 6 */
+	__IOM uint32_t DESCR7; /*!< (@ 0x004C) QMSPI Descriptor 7 */
+	__IOM uint32_t DESCR8; /*!< (@ 0x0050) QMSPI Descriptor 8 */
+	__IOM uint32_t DESCR9; /*!< (@ 0x0054) QMSPI Descriptor 9 */
+	__IOM uint32_t DESCR10; /*!< (@ 0x0058) QMSPI Descriptor 10 */
+	__IOM uint32_t DESCR11; /*!< (@ 0x005C) QMSPI Descriptor 11 */
+	__IOM uint32_t DESCR12; /*!< (@ 0x0060) QMSPI Descriptor 12 */
+	__IOM uint32_t DESCR13; /*!< (@ 0x0064) QMSPI Descriptor 13 */
+	__IOM uint32_t DESCR14; /*!< (@ 0x0068) QMSPI Descriptor 14 */
+	__IOM uint32_t DESCR15; /*!< (@ 0x006C) QMSPI Descriptor 15 */
 } QMSPI_Type;
 
 #endif				/* #ifndef _QMSPI_H */
