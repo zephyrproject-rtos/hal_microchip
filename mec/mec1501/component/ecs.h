@@ -176,18 +176,18 @@ typedef struct ecs_regs
 	__IOM uint32_t JTAG_MTMS;	/*!< (@ 0x0080) ECS JTAG Master TMS */
 	__IOM uint32_t JTAG_MCMD;	/*!< (@ 0x0084) ECS JTAG Master Command */
 	uint8_t RSVD3[8];
-	__IOM uint32_t VW_FW_OVR;	/*!< (@ 0x0090) ECS VWire FW Override */
+	__IOM uint32_t VW_FW_OVR;	/*!< (@ 0x0090) ECS VWire Source Config */
 	__IOM uint32_t CMP_CTRL;	/*!< (@ 0x0094) ECS Analog Comparator Control */
 	__IOM uint32_t CMP_SLP_CTRL;	/*!< (@ 0x0098) ECS Analog Comparator Sleep Control */
 	uint8_t RSVD4[(0xF0 - 0x9C)];
 	__IOM uint32_t IP_TRIM;	/*!< (@ 0x00F0) ECS IP Trim */
-	uint8_t RSVD5[12];
-	__IOM uint32_t TEST100;
-	uint8_t RSVD6[(0x180 - 0x94)];
-	__IOM uint32_t FW_SCR0;	/*!< (@ 0x0180) ECS FW Scratch 0 */
-	__IOM uint32_t FW_SCR1;	/*!< (@ 0x0180) ECS FW Scratch 1 */
-	__IOM uint32_t FW_SCR2;	/*!< (@ 0x0180) ECS FW Scratch 2 */
-	__IOM uint32_t FW_SCR3;	/*!< (@ 0x0180) ECS FW Scratch 3 */
+	uint8_t RSVD5[(0x144 - 0xF4)];
+	__IOM uint32_t SLP_STS_MIRROR; /*!< (@ 0x0144) ECS Sleep Status Mirror (RO) */
+	uint8_t RSVD6[(0x180 - 0x148)];
+	__IOM uint32_t BROM_SCR0;	/*!< (@ 0x0180) ECS Boot-ROM Scratch 0 */
+	__IOM uint32_t BROM_SCR1;	/*!< (@ 0x0180) ECS Boot-ROM Scratch 1 */
+	__IOM uint32_t BROM_SCR2;	/*!< (@ 0x0180) ECS Boot-ROM Scratch 2 */
+	__IOM uint32_t BROM_SCR3;	/*!< (@ 0x0180) ECS Boot-ROM Scratch 3 */
 } ECS_Type;
 
 #endif				// #ifndef _ECS_H

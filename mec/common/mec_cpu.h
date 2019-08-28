@@ -283,6 +283,10 @@ static __always_inline void write_read_back32(volatile uint32_t* addr, uint32_t 
 
 #endif
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* #ifndef _CPU_H */
 /**   @}
  */
