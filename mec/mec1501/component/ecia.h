@@ -145,6 +145,9 @@
 	(MCHP_ECIA_ADDR + MCHP_ECIA_BLK_ACTIVE_OFS)
 
 /* 8 <= n <= 26 */
+#define MCHP_GIRQ_TO_AGGR_NVIC(n) (((n) < 23) ? ((n)-8) : ((n)-9))
+
+/* 8 <= n <= 26 */
 #define MCHP_GIRQ_SRC_ADDR(n) \
 	((MCHP_ECIA_ADDR + 0x00ul) + (((uint32_t)(n) - 8ul) * 0x14ul))
 
