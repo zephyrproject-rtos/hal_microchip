@@ -38,6 +38,8 @@
 
 #define NUM_MCHP_GPIO_PORTS	6u
 #define MAX_NUM_MCHP_GPIO	(NUM_MCHP_GPIO_PORTS * 32u)
+#define MCHP_LAST_GPIO		0255u
+#define MCHP_MAX_GPIO		(MCHP_LAST_GPIO + 1u)
 
 #define MCHP_GPIO_CTRL_BASE	0x40081000ul
 #define MCHP_GPIO_PARIN_OFS	0x0300ul
@@ -865,8 +867,21 @@ typedef struct gpio_lock_regs {
 	__IOM uint32_t LOCK0;	/*!< (@ 0x0014) GPIO Lock 0 */
 } GPIO_LOCK_Type;
 
+typedef struct gpio_regs {
+	__IOM uint32_t CTRL[MCHP_MAX_GPIO]; /*!< (@ 0x0000) GPIO Control */
+	uint32_t RSVD1[(0x0300ul/4) - MCHP_MAX_GPIO];
+	__IOM uint32_t PARIN[NUM_MCHP_GPIO_PORTS]; /*!< (@ 0x0300) GPIO parallel input */
+	uint32_t RSVD2[((0x0380ul-0x300ul)/4) - NUM_MCHP_GPIO_PORTS];
+	__IOM uint32_t PAROUT[NUM_MCHP_GPIO_PORTS]; /*!< (@ 0x0380) GPIO parallel output */
+	uint32_t RSVD3[((0x03E8ul-0x0380ul)/4) - NUM_MCHP_GPIO_PORTS];
+	__IOM uint32_t LOCK[NUM_MCHP_GPIO_PORTS]; /*!< (@ 0x03E8) GPIO lock */
+	uint32_t RSVD4[((0x0500ul-0x03E8ul)/4) - NUM_MCHP_GPIO_PORTS];
+	__IOM uint32_t CTRL2[MAX_NUM_MCHP_GPIO]; /*!< (@ 0x0500) GPIO Control 2 */
+} GPIO_Type;
+
 /*
- * Helper functions
+ * GPIO control field values.
+ * Value must be shifted to the proper control register position.
  */
 enum mchp_gpio_pud {
 	MCHP_GPIO_NO_PUD = 0ul,
@@ -939,102 +954,6 @@ enum mchp_gpio_drv_str {
 	MCHP_GPIO_DRV_STR_8MA = 2ul,
 	MCHP_GPIO_DRV_STR_12MA = 3ul,
 };
-
-static __attribute__ ((always_inline)) inline void
-mchp_gpio_pud_set(uintptr_t gp_ctrl_addr, enum mchp_gpio_pud pud)
-{
-	REG32(gp_ctrl_addr) =
-		(REG32(gp_ctrl_addr) & ~(MCHP_GPIO_CTRL_PUD_MASK))
-		| (((uint32_t) pud << MCHP_GPIO_CTRL_PUD_POS)
-		& MCHP_GPIO_CTRL_PUD_MASK);
-}
-
-static __attribute__ ((always_inline)) inline void
-mchp_gpio_pwrgt_set(uintptr_t gp_ctrl_addr, enum mchp_gpio_pwrgate pwrgt)
-{
-	REG32(gp_ctrl_addr) =
-		(REG32(gp_ctrl_addr) & ~(MCHP_GPIO_CTRL_PWRG_MASK))
-		| (((uint32_t) pwrgt << MCHP_GPIO_CTRL_PWRG_POS)
-		& MCHP_GPIO_CTRL_PWRG_MASK);
-}
-
-static __attribute__ ((always_inline)) inline void
-mchp_gpio_idet_set(uintptr_t gp_ctrl_addr, enum mchp_gpio_idet idet)
-{
-	REG32(gp_ctrl_addr) =
-		(REG32(gp_ctrl_addr) & ~(MCHP_GPIO_CTRL_IDET_MASK))
-		| (((uint32_t) idet << MCHP_GPIO_CTRL_IDET_POS)
-		& MCHP_GPIO_CTRL_IDET_MASK);
-}
-
-static __attribute__ ((always_inline)) inline void
-mchp_gpio_outbuf_set(uintptr_t gp_ctrl_addr, enum mchp_gpio_outbuf outbuf)
-{
-	REG32(gp_ctrl_addr) =
-		(REG32(gp_ctrl_addr) & ~(MCHP_GPIO_CTRL_BUFT_MASK))
-		| (((uint32_t) outbuf << MCHP_GPIO_CTRL_BUFT_POS)
-		& MCHP_GPIO_CTRL_BUFT_MASK);
-}
-
-static __attribute__ ((always_inline)) inline void
-mchp_gpio_dir_set(uintptr_t gp_ctrl_addr, enum mchp_gpio_dir dir)
-{
-	REG32(gp_ctrl_addr) =
-		(REG32(gp_ctrl_addr) & ~(MCHP_GPIO_CTRL_DIR_MASK))
-		| (((uint32_t) dir << MCHP_GPIO_CTRL_DIR_POS)
-		& MCHP_GPIO_CTRL_DIR_MASK);
-}
-
-static __attribute__ ((always_inline)) inline void
-mchp_gpio_parout_en_set(uintptr_t gp_ctrl_addr,
-			enum mchp_gpio_parout_en parout_en)
-{
-	REG32(gp_ctrl_addr) =
-		(REG32(gp_ctrl_addr) & ~(MCHP_GPIO_CTRL_AOD_MASK))
-		| (((uint32_t) parout_en << MCHP_GPIO_CTRL_AOD_POS)
-		& MCHP_GPIO_CTRL_AOD_MASK);
-}
-
-static __attribute__ ((always_inline)) inline void
-mchp_gpio_pol_set(uintptr_t gp_ctrl_addr, enum mchp_gpio_pol pol)
-{
-	REG32(gp_ctrl_addr) =
-		(REG32(gp_ctrl_addr) & ~(MCHP_GPIO_CTRL_POL_MASK))
-		| (((uint32_t) pol << MCHP_GPIO_CTRL_POL_POS)
-		& MCHP_GPIO_CTRL_POL_MASK);
-}
-
-static __attribute__ ((always_inline)) inline void
-mchp_gpio_mux_set(uintptr_t gp_ctrl_addr, enum mchp_gpio_mux mux)
-{
-	REG32(gp_ctrl_addr) =
-		(REG32(gp_ctrl_addr) & ~(MCHP_GPIO_CTRL_MUX_MASK))
-		| (((uint32_t) mux << MCHP_GPIO_CTRL_MUX_POS)
-		& MCHP_GPIO_CTRL_MUX_MASK);
-}
-
-static __attribute__ ((always_inline)) inline void
-mchp_gpio_inpad_ctrl_set(uintptr_t gp_ctrl_addr,
-			enum mchp_gpio_inpad_ctrl inpad_ctrl)
-{
-	REG32(gp_ctrl_addr) =
-		(REG32(gp_ctrl_addr) & ~(MCHP_GPIO_CTRL_INPAD_DIS_MASK))
-		| (((uint32_t) inpad_ctrl << MCHP_GPIO_CTRL_INPAD_DIS_POS)
-		& MCHP_GPIO_CTRL_INPAD_DIS_MASK);
-}
-
-static __attribute__ ((always_inline)) inline void
-mchp_gpio_alt_out_set(uintptr_t gp_ctrl_addr, enum mchp_gpio_alt_out aout_state)
-{
-	REG8(gp_ctrl_addr + 2ul) =
-		(uint8_t) aout_state & MCHP_GPIO_CTRL_OUTVAL_MASK0;
-}
-
-static __attribute__ ((always_inline)) inline uint8_t
-mchp_gpio_inpad_val_get(uintptr_t gp_ctrl_addr, enum mchp_gpio_alt_out aout_state)
-{
-	return REG8(gp_ctrl_addr + 3ul) & MCHP_GPIO_CTRL_INPAD_VAL_MASK0;
-}
 
 #endif				/* #ifndef _GPIO_H */
 /* end gpio.h */

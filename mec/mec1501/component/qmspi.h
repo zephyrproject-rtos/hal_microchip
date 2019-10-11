@@ -38,35 +38,37 @@
 
 #include "regaccess.h"
 
-#define QMPSPI_HW_VER		3u
+#define QMPSPI_0_HW_VER		3u
 
-#define MCHP_QMSPI_BASE_ADDR		0x40070000ul
+#define MCHP_QMSPI_0_BASE_ADDR		0x40070000ul
 
 #define MCHP_QMSPI_MAX_DESCR		16ul
 
 #define MCHP_QMSPI_INPUT_CLOCK_FREQ_HZ	48000000ul
-#define MCHP_QMSPI_MAX_FREQ_KHZ	((MCHP_QMSPI_INPUT_CLOCK_FREQ_HZ) / 1000ul)
-#define MCHP_QMSPI_MIN_FREQ_KHZ	(MCHP_QMSPI_MAX_FREQ_KHZ / 256ul)
+#define MCHP_QMSPI_MAX_FREQ_KHZ \
+		((MCHP_QMSPI_INPUT_CLOCK_FREQ_HZ) / 1000ul)
+#define MCHP_QMSPI_MIN_FREQ_KHZ \
+		(MCHP_QMSPI_MAX_FREQ_KHZ / 256ul)
 
-#define MCHP_QMSPI_GIRQ_NUM		18u
-#define MCHP_QMSPI_GIRQ_POS		1u
-#define MCHP_QMSPI_GIRQ_OFS		(((MCHP_QMSPI0_GIRQ_NUM) - 8) * 20u)
+#define MCHP_QMSPI_0_GIRQ_NUM		18u
+#define MCHP_QMSPI_0_GIRQ_POS		1u
+#define MCHP_QMSPI_0_GIRQ_OFS		(((MCHP_QMSPI_0_GIRQ_NUM) - 8) * 20u)
 
-#define MCHP_QMSPI_GIRQ_NVIC_AGGR	10u
-#define MCHP_QMSPI_GIRQ_NVIC_DIRECT	91u
+#define MCHP_QMSPI_0_GIRQ_NVIC_AGGR	10u
+#define MCHP_QMSPI_0_GIRQ_NVIC_DIRECT	91u
 
-#define MCHP_QMSPI_GIRQ_BASE_ADDR	0x4000E0C8ul
-#define MCHP_QMSPI_GIRQ_SRC_ADDR	(MCHP_QMSPI_GIRQ_BASE_ADDR)
-#define MCHP_QMSPI_GIRQ_ENSET_ADDR	(MCHP_QMSPI_GIRQ_BASE_ADDR + 0x04ul)
-#define MCHP_QMSPI_GIRQ_RESULT_ADDR	(MCHP_QMSPI_GIRQ_BASE_ADDR + 0x08ul)
-#define MCHP_QMSPI_GIRQ_ENCLR_ADDR	(MCHP_QMSPI_GIRQ_BASE_ADDR + 0x0Cul)
+#define MCHP_QMSPI_0_GIRQ_BASE_ADDR	0x4000E0C8ul
+#define MCHP_QMSPI_0_GIRQ_SRC_ADDR	(MCHP_QMSPI_0_GIRQ_BASE_ADDR)
+#define MCHP_QMSPI_0_GIRQ_ENSET_ADDR	(MCHP_QMSPI_0_GIRQ_BASE_ADDR + 0x04ul)
+#define MCHP_QMSPI_0_GIRQ_RESULT_ADDR	(MCHP_QMSPI_0_GIRQ_BASE_ADDR + 0x08ul)
+#define MCHP_QMSPI_0_GIRQ_ENCLR_ADDR	(MCHP_QMSPI_0_GIRQ_BASE_ADDR + 0x0Cul)
 
 /* Sleep Enable 4 bit 8 */
-#define MCHP_QMSPI_PCR_SLP_EN_ADDR	0x40080140ul
-#define MCHP_QMSPI_PCR_SLP_EN_POS	8u
+#define MCHP_QMSPI_0_PCR_SLP_EN_ADDR	0x40080140ul
+#define MCHP_QMSPI_0_PCR_SLP_EN_POS	8u
 
-#define MCHP_QMSPI_GIRQ_EN		(1ul << (MCHP_QMSPI_GIRQ_POS))
-#define MCHP_QMSPI_GIRQ_STS		(1ul << (MCHP_QMSPI_GIRQ_POS))
+#define MCHP_QMSPI_0_GIRQ_EN		(1ul << (MCHP_QMSPI_0_GIRQ_POS))
+#define MCHP_QMSPI_0_GIRQ_STS		(1ul << (MCHP_QMSPI_0_GIRQ_POS))
 
 /* Mode 0: Clock idle = Low. Data changes on falling edge, sample on rising edge */
 #define MCHP_QMSPI_SPI_MODE0		0ul
@@ -248,6 +250,9 @@
 #define MCHP_QMSPI_STS_CD_POS		24u
 #define MCHP_QMSPI_STS_CD_MASK0		0x0Ful
 #define MCHP_QMSPI_STS_CD_MASK		(0x0Ful << 24)
+#define MCHP_QMSPI_STS_ALL_ERR		(MCHP_QMSPI_STS_TXB_ERR | \
+					 MCHP_QMSPI_STS_RXB_ERR | \
+					 MCHP_QMSPI_STS_PROG_ERR)
 
 /* Buffer Count Status (RO) */
 #define MCHP_QMSPI_TX_BUF_CNT_STS_POS	0u
@@ -287,7 +292,8 @@
 #define MCHP_QMSPI_PORT_MAX_IO_PINS	4u
 #define MCHP_QMSPI_PORT_MAX_CS		2u
 
-/* Full duplex and Dual I/O:
+/*
+ * Full duplex and Dual I/O:
  * CS#, CLK, IO0(MOSI), IO1(MISO)
  * do not connect IO2(WP#) or IO3(HOLD#) to MCHP_QMSPI.
  */
@@ -311,55 +317,53 @@
 #define MCHP_QMSPI_PIN_CS1	(1ul << MCHP_QMSPI_PIN_CS1_POS)
 
 /*
- * Register Access
+ * Register access given base address of QMSPI register block.
  */
-#define MCHP_QMSPI_MODE()		REG32(MCHP_QMSPI_MODE_ADDR)
-#define MCHP_QMSPI_MODE_ACTRST()	REG8(MCHP_QMSPI_MODE_ADDR)
-#define MCHP_QMSPI_MODE_SIG()		REG8(MCHP_QMSPI_MODE_ADDR + 1ul)
-#define MCHP_QMSPI_MODE_FDIV()		REG16(MCHP_QMSPI_MODE_ADDR + 2ul)
+#define MCHP_QMSPI_MODE(ba)		REG32((ba))
+#define MCHP_QMSPI_MODE_ACTRST(ba)	REG8((ba))
+#define MCHP_QMSPI_MODE_SIG(ba)		REG8((uintptr_t)(ba) + 1u)
+#define MCHP_QMSPI_MODE_FDIV(ba)	REG16((uintptr_t)(ba)+ 2u)
 
 /* Control register */
-#define MCHP_QMSPI_CTRL()	REG32(MCHP_QMSPI_CTRL_ADDR)
+#define MCHP_QMSPI_CTRL(ba)	REG32((uintptr_t)(ba) + 0x04u)
 
 /* Execute register */
-#define MCHP_QMSPI_EXE()	REG8(MCHP_QMSPI_EXE_ADDR)
+#define MCHP_QMSPI_EXE(ba)	REG8((uintptr_t)(ba) + 0x08u)
 
 /* Interface Control register */
-#define MCHP_QMSPI_IFC()	REG8(MCHP_QMSPI_IFC_ADDR)
+#define MCHP_QMSPI_IFC(ba)	REG8((uintptr_t)(ba) + 0x0Cu)
 
 /* Status register */
-#define MCHP_QMSPI_STS()	REG32(MCHP_QMSPI_STS_ADDR)
+#define MCHP_QMSPI_STS(ba)	REG32((uintptr_t)(ba) + 0x10u)
 
 /* Buffer Count Status register (read-only) */
-#define MCHP_QMSPI_BCNT_STS()		REG32(MCHP_QMSPI_BUFCNT_STS_ADDR)
+#define MCHP_QMSPI_BCNT_STS(ba)		REG32((uintptr_t)(ba) + 0x14u)
 /* b[15:0] = TX buffer count */
-#define MCHP_QMSPI_BCNT_TX_STS()	REG16(MCHP_QMSPI_BUFCNT_STS_ADDR)
+#define MCHP_QMSPI_BCNT_TX_STS(ba)	REG16((uintptr_t)(ba) + 0x14u)
 /* b[31:15] = RX buffer count */
-#define MCHP_QMSPI_BCNT_RX_STS()	REG16(MCHP_QMSPI_BUFCNT_STS_ADDR + 2ul)
+#define MCHP_QMSPI_BCNT_RX_STS(ba)	REG16((uintptr_t)(ba) + 0x16u)
 
 /* Interrupt Enable register */
-#define MCHP_QMSPI_IEN()	REG32(MCHP_QMSPI_IEN_ADDR)
+#define MCHP_QMSPI_IEN(ba)	REG32((uintptr_t)(ba) + 0x18u)
 
 /* TX FIFO write-only */
-#define MCHP_QMSPI_TXB_32()	REG32(MCHP_QMSPI_TXB_ADDR)
-#define MCHP_QMSPI_TXB_16()	REG16(MCHP_QMSPI_TXB_ADDR)
-#define MCHP_QMSPI_TXB_8()	REG8(MCHP_QMSPI_TXB_ADDR)
+#define MCHP_QMSPI_TXB_32(ba)	REG32((uintptr_t)(ba) + 0x20u)
+#define MCHP_QMSPI_TXB_16(ba)	REG16((uintptr_t)(ba) + 0x20u)
+#define MCHP_QMSPI_TXB_8(ba)	REG8((uintptr_t)(ba) + 0x20u)
 
 /* RX FIFO read-only */
-#define MCHP_QMSPI_RXB_32()	REG32(MCHP_QMSPI_RXB_ADDR)
-#define MCHP_QMSPI_RXB_16()	REG16(MCHP_QMSPI_RXB_ADDR)
-#define MCHP_QMSPI_RXB_8()	REG8(MCHP_QMSPI_RXB_ADDR)
+#define MCHP_QMSPI_RXB_32(ba)	REG32((uintptr_t)(ba) + 0x24u)
+#define MCHP_QMSPI_RXB_16(ba)	REG16((uintptr_t)(ba) + 0x24u)
+#define MCHP_QMSPI_RXB_8(ba)	REG8((uintptr_t)(ba) + 0x24u)
 
 /*
  * Descriptor registers
+ * ba = base address of QMSPI register block
  * 0 <= id < MCHP_QMSPI_MAX_DESCR
  */
-#define MCHP_QMSPI_DESCR(id)	REG32(MCHP_QMSPI_DESCR_ADDR(id))
+#define MCHP_QMSPI_DESCR(ba, id)	REG32((uintptr_t)(ba) + \
+					      0x30u + ((id) * 4))
 
-#define MCHP_QMSPI_DESCR_NUNITS(id, nu) MCHP_QMSPI_DESCR(id) = \
-	((MCHP_QMSPI_DESCR(id) & ~(MCHP_QMSPI_C_XFR_NUNITS_MASK)) +\
-	(((uint32_t)nu & MCHP_QMSPI_C_XFR_NUNITS_MASK0) \
-		<< MCHP_QMSPI_C_XFR_NUNITS_POS))
 
 /* =========================================================================*/
 /* ================	       QMSPI			   ================ */
@@ -381,25 +385,10 @@ typedef struct qmspi_regs {
 	__IOM uint32_t RX_FIFO; /*!< (@ 0x0024) QMSPI RX FIFO */
 	__IOM uint32_t CSTM; /*!< (@ 0x0028) QMSPI Chip select timing */
 	uint8_t RSVD1[4];
-	__IOM uint32_t DESCR0; /*!< (@ 0x0030) QMSPI Descriptor 0 */
-	__IOM uint32_t DESCR1; /*!< (@ 0x0034) QMSPI Descriptor 1 */
-	__IOM uint32_t DESCR2; /*!< (@ 0x0038) QMSPI Descriptor 2 */
-	__IOM uint32_t DESCR3; /*!< (@ 0x003C) QMSPI Descriptor 3 */
-	__IOM uint32_t DESCR4; /*!< (@ 0x0040) QMSPI Descriptor 4 */
-	__IOM uint32_t DESCR5; /*!< (@ 0x0044) QMSPI Descriptor 5 */
-	__IOM uint32_t DESCR6; /*!< (@ 0x0048) QMSPI Descriptor 6 */
-	__IOM uint32_t DESCR7; /*!< (@ 0x004C) QMSPI Descriptor 7 */
-	__IOM uint32_t DESCR8; /*!< (@ 0x0050) QMSPI Descriptor 8 */
-	__IOM uint32_t DESCR9; /*!< (@ 0x0054) QMSPI Descriptor 9 */
-	__IOM uint32_t DESCR10; /*!< (@ 0x0058) QMSPI Descriptor 10 */
-	__IOM uint32_t DESCR11; /*!< (@ 0x005C) QMSPI Descriptor 11 */
-	__IOM uint32_t DESCR12; /*!< (@ 0x0060) QMSPI Descriptor 12 */
-	__IOM uint32_t DESCR13; /*!< (@ 0x0064) QMSPI Descriptor 13 */
-	__IOM uint32_t DESCR14; /*!< (@ 0x0068) QMSPI Descriptor 14 */
-	__IOM uint32_t DESCR15; /*!< (@ 0x006C) QMSPI Descriptor 15 */
+	__IOM uint32_t DESCR[MCHP_QMSPI_MAX_DESCR]; /*!< (@ 0x0030-0x006F) QMSPI Descriptors 0-15 */
 } QMSPI_Type;
 
-#endif				/* #ifndef _QMSPI_H */
+#endif	/* #ifndef _QMSPI_H */
 /* end qmspi.h */
 /**   @}
  */

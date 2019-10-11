@@ -40,6 +40,7 @@
 #include "regaccess.h"
 
 #define MCHP_NUM_DMA_CHANNELS	12ul
+#define MCHP_DMA_CHAN_BITMAP	0xffful
 
 #define MCHP_DMA_BLOCK_BASE_ADDR	0x40002400ul
 #define MCHP_DMA_CHAN_OFFSET		0x40ul
@@ -48,7 +49,10 @@
 	((MCHP_DMA_BLOCK_BASE_ADDR) + (MCHP_DMA_CHAN_OFFSET))
 
 #define MCHP_DMA_CHAN_ADDR(n) ((uintptr_t)(MCHP_DMA_CHAN0_ADDR) +\
-	((uintptr_t)(n) << MCHP_DMA_OFFSET_POF2))
+			       ((uintptr_t)(n) << MCHP_DMA_OFFSET_POF2))
+
+#define MCHP_DMA_CH_ADDR(ba, n) ((uintptr_t)(ba) +\
+				 ((uintptr_t)(n) << MCHP_DMA_OFFSET_POF2))
 
 /*
  * DMA block PCR register and bit
@@ -158,7 +162,7 @@
 #define MCHP_DMA_DEVNUM_SMB4_RX		9ul
 #define MCHP_DMA_DEVNUM_QMSPI_TX	10ul
 #define MCHP_DMA_DEVNUM_QMSPI_RX	11ul
-#define MCHP_DMA_DEVNUM_MAX		 12ul
+#define MCHP_DMA_DEVNUM_MAX		12ul
 
 #define MCHP_DMA_CHAN_REG_BLEN		0x40ul
 
@@ -187,14 +191,9 @@
 /*
  * DMA Main Register Access
  */
-#define MCHP_DMAM_CTRL() \
-	REG8_OFS(MCHP_DMA_BLOCK_BASE_ADDR, MCHP_DMAM_CTRL_OFS)
-
-#define MCHP_DMAM_PKT_RO() \
-	REG32_OFS(MCHP_DMA_BLOCK_BASE_ADDR, MCHP_DMAM_PKT_RO_OFS)
-
-#define MCHP_DMAM_FSM_RO() \
-	REG32_OFS(MCHP_DMA_BLOCK_BASE_ADDR, MCHP_DMAM_FSM_RO_OFS)
+#define MCHP_DMAM_CTRL(ba) REG8_OFS(ba, MCHP_DMAM_CTRL_OFS)
+#define MCHP_DMAM_PKT_RO(ba) REG32_OFS(ba, MCHP_DMAM_PKT_RO_OFS)
+#define MCHP_DMAM_FSM_RO(ba) REG32_OFS(ba, MCHP_DMAM_FSM_RO_OFS)
 
 /*
  * DMA channel register offsets
@@ -323,6 +322,22 @@
 #define MCHP_DMA_ALU_STS_RO_BA(chba) \
 	REG8_OFS(chba, MCHP_DMA_ALU_STS_RO_OFS)
 
+
+/*
+ * Register access given base address of DMA block and channel number
+ */
+#define MCHP_DMA_CH_ACT(ba, n) REG8_OFS(MCHP_DMA_CH_ADDR(ba, n), 0)
+#define MCHP_DMA_CH_MSTART(ba, n) REG32_OFS(MCHP_DMA_CH_ADDR(ba, n), 4)
+#define MCHP_DMA_CH_MEND(ba, n) REG32_OFS(MCHP_DMA_CH_ADDR(ba, n), 8)
+#define MCHP_DMA_CH_DSTART(ba, n) REG32_OFS(MCHP_DMA_CH_ADDR(ba, n), 0x0c)
+#define MCHP_DMA_CH_CTRL(ba, n) REG32_OFS(MCHP_DMA_CH_ADDR(ba, n), 0x10)
+#define MCHP_DMA_CH_ISTS(ba, n) REG8_OFS(MCHP_DMA_CH_ADDR(ba, n), 0x14)
+#define MCHP_DMA_CH_IEN(ba, n) REG8_OFS(MCHP_DMA_CH_ADDR(ba, n), 0x18)
+#define MCHP_DMA_CH_FSM_RO(ba, n) REG32_OFS(MCHP_DMA_CH_ADDR(ba, n), 0x1c)
+#define MCHP_DMA_CH_ALU_EN(ba, n) REG8_OFS(MCHP_DMA_CH_ADDR(ba, n), 0x20)
+#define MCHP_DMA_CH_ALU_DATA(ba, n) REG32_OFS(MCHP_DMA_CH_ADDR(ba, n), 0x24)
+#define MCHP_DMA_CH_ALU_STS_RO(ba, n) REG8_OFS(MCHP_DMA_CH_ADDR(ba, n), 0x28)
+
 /*
  * Channel Activate, Offset 0x00, R/W
  */
@@ -355,6 +370,7 @@
 #define MCHP_DMA_C_BUSY_STS_POS		5u
 #define MCHP_DMA_C_BUSY_STS		(1UL << 5)
 #define MCHP_DMA_C_DIR_POS		8u
+#define MCHP_DMA_C_DIR_MASK		(1ul << 8)
 #define MCHP_DMA_C_DEV2MEM		(0UL << 8)
 #define MCHP_DMA_C_MEM2DEV		(1UL << 8)
 #define MCHP_DMA_C_DEV_NUM_POS		9u
@@ -366,6 +382,8 @@
 #define MCHP_DMA_C_INCR_DEV		(1UL << 17)
 #define MCHP_DMA_C_LOCK_CHAN		(1UL << 18)
 #define MCHP_DMA_C_DIS_HWFLC		(1UL << 19)
+#define MCHP_DMA_C_XFR_FLAGS_MASK0	0x0Ful
+#define MCHP_DMA_C_XFR_FLAGS_MASK	(0x0Ful << 16)
 #define MCHP_DMA_C_XFRU_POS		20u
 #define MCHP_DMA_C_XFRU_MASK0		0x07ul
 #define MCHP_DMA_C_XFRU_MASK		(0x07ul << 20)
@@ -386,7 +404,8 @@
 #define MCHP_DMA_STS_BUS_ERR		(1UL << 0)
 #define MCHP_DMA_STS_FLOW_CTRL_ERR	(1UL << 1)
 #define MCHP_DMA_STS_DONE		(1UL << 2)
-#define MCHP_DMA_STS_ALL		0x07ul
+#define MCHP_DMA_STS_DEV_TERM		(1UL << 3)
+#define MCHP_DMA_STS_ALL		0x0Ful
 
 /*
  * Channel Interrupt Enable, Offset 0x18
@@ -457,16 +476,6 @@
 #define MCHP_MAX_DMA_CHAN		12u
 #define MCHP_NUM_DMA_CHAN_NO_ALU	((MCHP_MAX_DMA_CHAN) - 2)
 
-/**
-  * @brief DMA Main (DMAM)
-  */
-typedef struct dma_main_regs
-{		/*!< (@ 0x40002400) DMA Structure */
-	__IOM uint8_t ACTRST;	/*!< (@ 0x00000000) DMA block activate/reset */
-	uint8_t RSVDA[3];
-	__IM uint32_t DATA_PKT;	/*!< (@ 0x00000004) DMA data packet (RO) */
-	__IM uint32_t ARB_FSM;	/*!< (@ 0x00000008) DMA Arbiter FSM (RO) */
-} DMAM_Type;
 
 /*
  * NOTE: structure size is 0x40 (64) bytes as each channel
@@ -477,6 +486,16 @@ typedef struct dma_main_regs
  * Channel 0 ALU is specialized for CRC-32 calculations.
  * Channel 1 ALU is specialized for memory fill.
  */
+/**
+  * @brief DMA Main (DMAM)
+  */
+typedef struct dma_main_regs
+{
+	__IOM uint8_t ACTRST;	/*!< (@ 0x0000) DMA block activate/reset */
+	uint8_t RSVDA[3];
+	__IM uint32_t DATA_PKT;	/*!< (@ 0x0004) DMA data packet (RO) */
+	__IM uint32_t ARB_FSM;	/*!< (@ 0x0008) DMA Arbiter FSM (RO) */
+} DMAM_Type;
 
 /**
   * @brief DMA Channels 0 and 1 with ALU
@@ -521,6 +540,20 @@ typedef struct dma_chan_regs
 	__IM uint32_t FSM;	/*!< (@ 0x0000001C) DMA channel FSM (RO)  */
 	uint8_t RSVD4[0x20];	/* pad to 0x40(64) byte size */
 } DMA_CHAN_Type;
+
+/**
+  * @brief DMA (DMA) contains DMA Main and channels
+  */
+typedef struct dma_regs
+{
+	__IOM uint8_t ACTRST;	/*!< (@ 0x0000) DMA block activate/reset */
+	uint32_t RSVDA[1];
+	__IM uint32_t DATA_PKT;	/*!< (@ 0x0004) DMA data packet (RO) */
+	__IM uint32_t ARB_FSM;	/*!< (@ 0x0008) DMA Arbiter FSM (RO) */
+	uint32_t RSVDB[12];
+	DMA_CHAN_ALU_Type CHAN[MCHP_NUM_DMA_CHANNELS]; /*!< (@0x0040 - 0x033F) channels */
+} DMA_Type;
+
 
 #endif				// #ifndef _DMA_H
 /* end dma.h */

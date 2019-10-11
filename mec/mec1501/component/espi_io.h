@@ -188,16 +188,16 @@
 	((0x01u) << (MCHP_ESPI_FC_CAP_MAX_RD_SZ_POS))
 
 /* PC Ready */
-#define MCHP_ESPI_PC_READY_MASK		0x01u;
-#define MCHP_ESPI_PC_READY		0x01u;
+#define MCHP_ESPI_PC_READY_MASK		0x01u
+#define MCHP_ESPI_PC_READY		0x01u
 
 /* OOB Ready */
-#define MCHP_ESPI_OOB_READY_MASK	0x01u;
-#define MCHP_ESPI_OOB_READY		0x01u;
+#define MCHP_ESPI_OOB_READY_MASK	0x01u
+#define MCHP_ESPI_OOB_READY		0x01u
 
 /* FC Ready */
-#define MCHP_ESPI_FC_READY_MASK		0x01u;
-#define MCHP_ESPI_FC_READY		0x01u;
+#define MCHP_ESPI_FC_READY_MASK		0x01u
+#define MCHP_ESPI_FC_READY		0x01u
 
 /* ESPI_RESET# Interrupt Status */
 #define MCHP_ESPI_RST_ISTS_MASK		0x03u;

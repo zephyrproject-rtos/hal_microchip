@@ -157,12 +157,22 @@
 #define MCHP_ADC_SAR_CTRL_WUP_DLY_MASK	(0x3fful << 7)
 #define MCHP_ADC_SAR_CTRL_WUP_DLY_DFLT	(0x202ul << 7)
 
-/* Register interface */
-#define MCHP_ADC_CH_NUM(n) ((n) & MCHP_ADC_MAX_CHAN_MASK)
-#define MCHP_ADC_CH_OFS(n) (MCHP_ADC_CH_NUM(n) << 2)
-#define MCHP_ADC_CH_ADDR(n) (MCHP_ADC_BASE_ADDR + MCHP_ADC_CH_OFS(n))
-
-#define MCHP_ADC_RD_CHAN(n) REG32(MCHP_ADC_CH_ADDR(n))
+/*
+ * Register interface
+ * ba is base address of ADC register block.
+ */
+#define MCHP_ADC_CTRL(ba)		REG32((ba))
+#define MCHP_ADC_DELAY32(ba)		REG32((ba) + 4u)
+#define MCHP_ADC_START_DELAY(ba)	REG16((ba) + 4u)
+#define MCHP_ADC_REPEAT_DELAY(ba)	REG16((ba) + 6u)
+#define MCHP_ADC_STATUS(ba)		REG32((ba) + 8u)
+#define MCHP_ADC_SINGLE_EN(ba)		REG32((ba) + 0x0Cu)
+#define MCHP_ADC_REPEAT_EN(ba)		REG32((ba) + 0x10u)
+#define MCHP_ADC_RD_CHAN(ba, ch)	REG16((ba) + 0x14u + ((ch) * 4))
+#define MCHP_ADC_CONFIG(ba)		REG32((ba) + 0x7Cu)
+#define MCHP_ADC_VREF_CHAN(ba)		REG32((ba) + 0x80u)
+#define MCHP_ADC_VREF_CTRL(ba)		REG32((ba) + 0x84u)
+#define MCHP_ADC_SARADC_CTRL(ba)	REG32((ba) + 0x88u)
 
 /**
   * @brief Analog to Digital Converter Registers (ADC)
@@ -173,14 +183,7 @@ typedef struct adc_regs {
 	__IOM uint32_t STATUS; /*!< (@ 0x0008) ADC Status */
 	__IOM uint32_t SINGLE; /*!< (@ 0x000C) ADC Single */
 	__IOM uint32_t REPEAT; /*!< (@ 0x0010) ADC Repeat */
-	__IOM uint32_t RDCH0; /*!< (@ 0x0014) ADC Chan0 Reading */
-	__IOM uint32_t RDCH1; /*!< (@ 0x0018) ADC Chan1 Reading */
-	__IOM uint32_t RDCH2; /*!< (@ 0x001C) ADC Chan2 Reading */
-	__IOM uint32_t RDCH3; /*!< (@ 0x0020) ADC Chan3 Reading */
-	__IOM uint32_t RDCH4; /*!< (@ 0x0024) ADC Chan4 Reading */
-	__IOM uint32_t RDCH5; /*!< (@ 0x0028) ADC Chan5 Reading */
-	__IOM uint32_t RDCH6; /*!< (@ 0x002C) ADC Chan6 Reading */
-	__IOM uint32_t RDCH7; /*!< (@ 0x0030) ADC Chan7 Reading */
+	__IOM uint32_t RDCH[MCHP_ADC_MAX_CHAN]; /*!< (@ 0x0014 - 0x0030) ADC Chan 0-7 reading value */
 	uint8_t RSVD1[0x7C - 0x34];
 	__IOM uint32_t CONFIG; /*!< (@ 0x007C) ADC Configuration */
 	__IOM uint32_t VREF_CHAN_SEL; /*!< (@ 0x0080) ADC Vref Channel Sel. */
