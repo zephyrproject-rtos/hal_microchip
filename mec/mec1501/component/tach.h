@@ -100,9 +100,9 @@
 /* Select read mode. Latch data on rising edge of selected trigger */
 #define MCHP_TACH_CTRL_READ_MODE_SEL_POS	10
 #define MCHP_TACH_CTRL_READ_MODE_INPUT	\
-		(0ul << MCHP_TACH_READ_MODE_SEL_POS)
+		(0ul << MCHP_TACH_CTRL_READ_MODE_SEL_POS)
 #define MCHP_TACH_CTRL_READ_MODE_100K_CLOCK	\
-		(1ul << MCHP_TACH_READ_MODE_SEL_POS)
+		(1ul << MCHP_TACH_CTRL_READ_MODE_SEL_POS)
 /* Select TACH edges for counter increment */
 #define MCHP_TACH_CTRL_NUM_EDGES_POS	11
 #define MCHP_TACH_CTRL_NUM_EDGES_MASK0	0x03U
