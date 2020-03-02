@@ -145,7 +145,7 @@
 #define MCHP_ADC_SAR_CTRL_RES_POS	1
 #define MCHP_ADC_SAR_CTRL_RES_MASK0	0x03u
 #define MCHP_ADC_SAR_CTRL_RES_MASK	(0x03ul << 1)
-#define MCHP_ADC_SAR_CTRL_RES_10_BITS	(0x01ul << 1)
+#define MCHP_ADC_SAR_CTRL_RES_10_BITS	(0x02ul << 1)
 #define MCHP_ADC_SAR_CTRL_RES_12_BITS	(0x03ul << 1)
 /* Shift data in reading register */
 #define MCHP_ADC_SAR_CTRL_SHIFTD_POS	3
