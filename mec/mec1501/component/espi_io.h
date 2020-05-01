@@ -382,15 +382,15 @@ typedef struct espi_io_ltr_regs
 /* RX_LEN register */
 /* Number of bytes received (RO) */
 #define MCHP_ESPI_OOB_RX_LEN_POS	0u
-#define MCHP_ESPI_OOB_RX_LEN_MASK	0x3FFFul
+#define MCHP_ESPI_OOB_RX_LEN_MASK	0x1FFFul
 /* Recieve buffer length field (RW) */
 #define MCHP_ESPI_OOB_RX_BUF_LEN_POS	16u
-#define MCHP_ESPI_OOB_RX_BUF_LEN_MASK0	0x3FFFul
-#define MCHP_ESPI_OOB_RX_BUF_LEN_MASK	(0x3FFFul << 16)
+#define MCHP_ESPI_OOB_RX_BUF_LEN_MASK0	0x1FFFul
+#define MCHP_ESPI_OOB_RX_BUF_LEN_MASK	(0x1FFFul << 16)
 
 /* TX_LEN register */
 #define MCHP_ESPI_OOB_TX_MSG_LEN_POS	0u
-#define MCHP_ESPI_OOB_TX_MSG_LEN_MASK	0x3FFFul
+#define MCHP_ESPI_OOB_TX_MSG_LEN_MASK	0x1FFFul
 
 /* RX_CTRL */
 /* Set AVAIL bit to indicate SRAM Buffer and size has been configured */
@@ -420,7 +420,8 @@ typedef struct espi_io_ltr_regs
 #define MCHP_ESPI_OOB_RX_STS_TAG_MASK0	0x0Ful
 #define MCHP_ESPI_OOB_RX_STS_TAG_MASK	(0x0Ful << 8)	/* RO */
 
-#define MCHP_ESPI_OOB_RX_STS_ALL_RW1C	0x0Ful
+#define MCHP_ESPI_OOB_RX_STS_ALL_RW1C	0x07ul
+#define MCHP_ESPI_OOB_RX_STS_ALL	0x0Ful
 
 /* TX_CTRL */
 #define MCHP_ESPI_OOB_TX_CTRL_START_POS	0u
