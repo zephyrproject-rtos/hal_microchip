@@ -149,7 +149,7 @@ typedef enum IRQn {
 	PHOT_IRQn = 87,	/* GIRQ17 b[17] */
 	/* reserved gap 88-89 */
 	SPISLV_IRQn = 90,	/* GIRQ18 b[0] */
-	QMSPI_IRQn = 91,	/* GIRQ18 b[1] */
+	QMSPI0_IRQn = 91,	/* GIRQ18 b[1] */
 	/* reserved gap 92-99 */
 	PS2_0_ACT_IRQn = 100,	/* GIRQ18 b[10] */
 	PS2_1_ACT_IRQn = 101,	/* GIRQ18 b[11] */
@@ -480,6 +480,10 @@ typedef enum IRQn {
 #define B32TMR1_REGS	((BTMR_Type *) B32TMR1_BASE)
 #define CCT_REGS	((CCT_Type *) (CCT_BASE))
 
+#define DMA_MAX_CHAN	12u
+/* Complete DMA block */
+#define DMA_REGS 	((DMA_Type *) DMA_BASE)
+/* DMA Main only */
 #define DMAM_REGS       ((DMAM_Type *) DMA_BASE)
 /* Individual DMA channels */
 #define DMA0_REGS       ((DMA_CHAN_ALU_Type *)(DMA_CHAN_BASE(0)))
@@ -526,6 +530,7 @@ typedef enum IRQn {
 
 #define RTMR_REGS       ((RTMR_Type *) RTMR_BASE)
 
+#define ADC_MAX_CHAN	8u
 #define ADC_REGS	((ADC_Type *) ADC_BASE)
 
 #define TFDP_REGS	((TFDP_Type *) TFDP_BASE)
@@ -548,6 +553,7 @@ typedef enum IRQn {
 #define LED1_REGS       ((LED_Type *) LED1_BASE)
 #define LED2_REGS       ((LED_Type *) LED2_BASE)
 
+#define ECIA_NUM_GIRQS	(26u-8u+1)
 #define ECIA_REGS       ((ECIA_Type *) ECIA_BASE)
 #define GIRQ08_REGS     ((GIRQ_Type *) ECIA_BASE)
 #define GIRQ09_REGS     ((GIRQ_Type *) ((ECIA_BASE) + 0x14))
@@ -571,15 +577,17 @@ typedef enum IRQn {
 
 #define ECS_REGS        ((ECS_Type *) ECS_BASE)
 
-#define QMSPI_REGS      ((QMSPI_Type *) QMSPI_BASE)
+#define QMSPI_0_MAX_DESCR	16u
+#define QMSPI_0_REGS		((QMSPI_Type *) QMSPI_BASE)
 
 #define PCR_REGS        ((PCR_Type *) PCR_BASE)
 
-#define GPIO_CTRL_REGS      ((GPIO_CTRL_Type *)(GPIO_CTRL_BASE))
-#define GPIO_CTRL2_REGS     ((GPIO_CTRL2_Type *)(GPIO_CTRL2_BASE))
-#define GPIO_PARIN_REGS     ((GPIO_PARIN_Type *)(GPIO_PARIN_BASE))
-#define GPIO_PAROUT_REGS    ((GPIO_PAROUT_Type *)(GPIO_PAROUT_BASE))
-#define GPIO_LOCK_REGS      ((GPIO_LOCK_Type *)(GPIO_LOCK_BASE))
+#define GPIO_REGS		((GPIO_Type *)(GPIO_BASE))
+#define GPIO_CTRL_REGS		((GPIO_CTRL_Type *)(GPIO_CTRL_BASE))
+#define GPIO_CTRL2_REGS		((GPIO_CTRL2_Type *)(GPIO_CTRL2_BASE))
+#define GPIO_PARIN_REGS		((GPIO_PARIN_Type *)(GPIO_PARIN_BASE))
+#define GPIO_PAROUT_REGS	((GPIO_PAROUT_Type *)(GPIO_PAROUT_BASE))
+#define GPIO_LOCK_REGS		((GPIO_LOCK_Type *)(GPIO_LOCK_BASE))
 
 #define MBOX_REGS       ((MBOX_Type *)(MBOX_BASE))
 

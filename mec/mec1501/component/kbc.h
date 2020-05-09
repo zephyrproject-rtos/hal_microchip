@@ -126,7 +126,7 @@ typedef struct kbc_regs
 	uint32_t RSVD2[1];
 	__IOM uint32_t PCOBF;	/*!< (@ 0x0114) PCOBF register */
 	uint8_t RSVD3[0x0330ul - 0x0118ul];
-	__IOM uint32_t KBC_PORT92_EN;	/*!< (@ 0x0330) Port92h enable */
+	__IOM uint32_t ACTV;	/*!< (@ 0x0330) Activate */
 } KBC_Type;
 
 #endif	/* #ifndef _KBC_H */

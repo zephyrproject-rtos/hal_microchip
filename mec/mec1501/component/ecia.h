@@ -41,6 +41,7 @@
 #define MCHP_ECIA_ADDR	0x4000E000ul
 #define MCHP_FIRST_GIRQ	8u
 #define MCHP_LAST_GIRQ	26u
+#define MCHP_NUM_GIRQS (MCHP_LAST_GIRQ - MCHP_FIRST_GIRQ + 1)
 
 #define MCHP_ECIA_GIRQ_NO_NVIC	 22u
 
@@ -53,6 +54,12 @@
 	(1ul << 17) + (1ul << 18) +\
 	(1ul << 19) + (1ul << 20) +\
 	(1ul << 21) + (1ul << 23))
+
+/*
+ * All external NVIC connections equal to or above this value are
+ * direct peripheral interrupts.
+ */
+#define MCHP_ECIA_FIRST_DIRECT_NVIC	20u
 
 /*
  * ARM Cortex-M4 NVIC registers
@@ -382,6 +389,18 @@ typedef struct ecia_regs
 	__IOM uint32_t BLK_EN_CLR;	/*! (@ 0x00000204) Aggregated GIRQ output Enable Clear */
 	__IM uint32_t BLK_ACTIVE;	/*! (@ 0x00000204) GIRQ Active bitmap (RO) */
 } ECIA_Type;
+
+/*
+ * ECIA registers with GIRQ accessible as an array
+ */
+typedef struct ecia_gar_regs
+{
+	GIRQ_Type GIRQ[MCHP_NUM_GIRQS]; /*!< (@ 0x0000-0x17B) GIRQ08-GIRQ26 */
+	uint8_t RSVD1[(0x0200ul - 0x017Cul)];	/* offsets 0x017C - 0x1FF */
+	__IOM uint32_t BLK_EN_SET;	/*! (@ 0x00000200) Aggregated GIRQ output Enable Set */
+	__IOM uint32_t BLK_EN_CLR;	/*! (@ 0x00000204) Aggregated GIRQ output Enable Clear */
+	__IM uint32_t BLK_ACTIVE;	/*! (@ 0x00000204) GIRQ Active bitmap (RO) */
+} ECIA_GAR_Type;
 
 #endif				// #ifndef _ECIA_H
 /* end ecia.h */
