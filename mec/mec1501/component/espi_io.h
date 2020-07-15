@@ -42,6 +42,15 @@
 
 #define MCHP_ESPI_IO_BASE_ADDR	0x400F3400ul
 
+/* Offsets from base for various register groups */
+#define MCHP_ESPI_IO_PC_OFS 0x0100ul
+#define MCHP_ESPI_IO_HOST_BAR_OFS 0x0120ul
+#define MCHP_ESPI_IO_LTR_OFS 0x0220ul
+#define MCHP_ESPI_IO_OOB_OFS 0x0240ul
+#define MCHP_ESPI_IO_FC_OFS 0x0280ul
+#define MCHP_ESPI_IO_CAP_OFS 0x02b0ul
+#define MCHP_ESPI_IO_SIRQ_OFS 0x03a0ul
+
 /*
  * ESPI IO Component interrupts
  */
@@ -76,27 +85,27 @@
  * GIRQ19 cannot be configured for direct mode unless
  * SAF interrupt are not used.
  */
-#define MCHP_ESPI_SAF_DONE_GIRQ_POS	9u	/* No direct NVIC connection */
-#define MCHP_ESPI_SAF_ERR_GIRQ_POS	10u	/* No direct NVIC connection */
+#define MCHP_ESPI_SAF_DONE_GIRQ_POS	9u
+#define MCHP_ESPI_SAF_ERR_GIRQ_POS	10u
 
-#define MCHP_ESPI_PC_GIRQ_VAL		(1ul << 0)
-#define MCHP_ESPI_BM1_GIRQ_VAL		(1ul << 1)
-#define MCHP_ESPI_BM2_GIRQ_VAL		(1ul << 2)
-#define MCHP_ESPI_LTR_GIRQ_VAL		(1ul << 3)
-#define MCHP_ESPI_OOB_UP_GIRQ_VAL	(1ul << 4)
-#define MCHP_ESPI_OOB_DN_GIRQ_VAL	(1ul << 5)
-#define MCHP_ESPI_FC_GIRQ_VAL		(1ul << 6)
-#define MCHP_ESPI_ESPI_RST_GIRQ_VAL	(1ul << 7)
-#define MCHP_ESPI_VW_EN_GIRQ_VAL	(1ul << 8)
-#define MCHP_ESPI_SAF_DONE_GIRQ_VAL	(1ul << 9)
-#define MCHP_ESPI_SAF_ERR_GIRQ_VAL	(1ul << 10)
+#define MCHP_ESPI_PC_GIRQ_VAL		BIT(0)
+#define MCHP_ESPI_BM1_GIRQ_VAL		BIT(1)
+#define MCHP_ESPI_BM2_GIRQ_VAL		BIT(2)
+#define MCHP_ESPI_LTR_GIRQ_VAL		BIT(3)
+#define MCHP_ESPI_OOB_UP_GIRQ_VAL	BIT(4)
+#define MCHP_ESPI_OOB_DN_GIRQ_VAL	BIT(5)
+#define MCHP_ESPI_FC_GIRQ_VAL		BIT(6)
+#define MCHP_ESPI_ESPI_RST_GIRQ_VAL	BIT(7)
+#define MCHP_ESPI_VW_EN_GIRQ_VAL	BIT(8)
+#define MCHP_ESPI_SAF_DONE_GIRQ_VAL	BIT(9)
+#define MCHP_ESPI_SAF_ERR_GIRQ_VAL	BIT(10)
 
 /* eSPI Global Capabilities 0 */
 #define MCHP_ESPI_GBL_CAP0_MASK		0x0Fu
-#define MCHP_ESPI_GBL_CAP0_PC_SUPP	(1u << 0)
-#define MCHP_ESPI_GBL_CAP0_VW_SUPP	(1u << 1)
-#define MCHP_ESPI_GBL_CAP0_OOB_SUPP	(1u << 2)
-#define MCHP_ESPI_GBL_CAP0_FC_SUPP	(1u << 3)
+#define MCHP_ESPI_GBL_CAP0_PC_SUPP	BIT(0)
+#define MCHP_ESPI_GBL_CAP0_VW_SUPP	BIT(1)
+#define MCHP_ESPI_GBL_CAP0_OOB_SUPP	BIT(2)
+#define MCHP_ESPI_GBL_CAP0_FC_SUPP	BIT(3)
 
 /* eSPI Global Capabilities 1 */
 #define MCHP_ESPI_GBL_CAP1_MASK			0xFFu
@@ -114,20 +123,20 @@
 	(0u << (MCHP_ESPI_GBL_CAP1_ALERT_POS))
 #define MCHP_ESPI_GBL_CAP1_IO_MODE_POS		4u
 #define MCHP_ESPI_GBL_CAP1_IO_MODE_MASK0	0x03u
-#define MCHP_ESPI_GBL_CAP1_IO_MODE_MASK \
-	((MCHP_ESPI_GBL_CAP1_IO_MODE_MASK0) << (MCHP_ESPI_GBL_CAP1_IO_MODE_POS))
+#define MCHP_ESPI_GBL_CAP1_IO_MODE_MASK ((MCHP_ESPI_GBL_CAP1_IO_MODE_MASK0) \
+					 << (MCHP_ESPI_GBL_CAP1_IO_MODE_POS))
 #define MCHP_ESPI_GBL_CAP1_IO_MODE0_1		0u
 #define MCHP_ESPI_GBL_CAP1_IO_MODE0_12		1u
 #define MCHP_ESPI_GBL_CAP1_IO_MODE0_14		2u
 #define MCHP_ESPI_GBL_CAP1_IO_MODE0_124		3u
-#define MCHP_ESPI_GBL_CAP1_IO_MODE_1 \
-	((MCHP_ESPI_GBL_CAP1_IO_MODE0_1) << (MCHP_ESPI_GBL_CAP1_IO_MODE_POS))
-#define MCHP_ESPI_GBL_CAP1_IO_MODE_12 \
-	((MCHP_ESPI_GBL_CAP1_IO_MODE0_12) << (MCHP_ESPI_GBL_CAP1_IO_MODE_POS))
-#define MCHP_ESPI_GBL_CAP1_IO_MODE_14 \
-	((MCHP_ESPI_GBL_CAP1_IO_MODE0_14) << (MCHP_ESPI_GBL_CAP1_IO_MODE_POS))
-#define MCHP_ESPI_GBL_CAP1_IO_MODE_124 \
-	((MCHP_ESPI_GBL_CAP1_IO_MODE0_124) << (MCHP_ESPI_GBL_CAP1_IO_MODE_POS))
+#define MCHP_ESPI_GBL_CAP1_IO_MODE_1 ((MCHP_ESPI_GBL_CAP1_IO_MODE0_1) \
+				      << (MCHP_ESPI_GBL_CAP1_IO_MODE_POS))
+#define MCHP_ESPI_GBL_CAP1_IO_MODE_12 ((MCHP_ESPI_GBL_CAP1_IO_MODE0_12) \
+				       << (MCHP_ESPI_GBL_CAP1_IO_MODE_POS))
+#define MCHP_ESPI_GBL_CAP1_IO_MODE_14 ((MCHP_ESPI_GBL_CAP1_IO_MODE0_14) \
+				       << (MCHP_ESPI_GBL_CAP1_IO_MODE_POS))
+#define MCHP_ESPI_GBL_CAP1_IO_MODE_124 ((MCHP_ESPI_GBL_CAP1_IO_MODE0_124) \
+					<< (MCHP_ESPI_GBL_CAP1_IO_MODE_POS))
 /*
  * Support Open Drain ALERT pin configuration
  * EC sets this bit if it can support open-drain ESPI_ALERT#
@@ -170,8 +179,8 @@
 #define MCHP_ESPI_FC_CAP_MAX_PLD_SZ_64		0x01u
 #define MCHP_ESPI_FC_CAP_SHARE_POS		3u
 #define MCHP_ESPI_FC_CAP_SHARE_MASK0		0x03u
-#define MCHP_ESPI_FC_CAP_SHARE_MASK \
-	((MCHP_ESPI_FC_CAP_SHARE_MASK0) << (MCHP_ESPI_FC_CAP_SHARE_POS))
+#define MCHP_ESPI_FC_CAP_SHARE_MASK ((MCHP_ESPI_FC_CAP_SHARE_MASK0) \
+				     << (MCHP_ESPI_FC_CAP_SHARE_POS))
 #define MCHP_ESPI_FC_CAP_SHARE_MAF_ONLY \
 	(0u << (MCHP_ESPI_FC_CAP_SHARE_POS))
 #define MCHP_ESPI_FC_CAP_SHARE_MAF2_ONLY \
@@ -182,8 +191,8 @@
 	(3u << (MCHP_ESPI_FC_CAP_SHARE_POS))
 #define MCHP_ESPI_FC_CAP_MAX_RD_SZ_POS		5u
 #define MCHP_ESPI_FC_CAP_MAX_RD_SZ_MASK0	0x07u
-#define MCHP_ESPI_FC_CAP_MAX_RD_SZ_MASK \
-	((MCHP_ESPI_FC_CAP_MAX_RD_SZ_MASK0) << (MCHP_ESPI_FC_CAP_MAX_RD_SZ_POS))
+#define MCHP_ESPI_FC_CAP_MAX_RD_SZ_MASK ((MCHP_ESPI_FC_CAP_MAX_RD_SZ_MASK0) \
+					 << (MCHP_ESPI_FC_CAP_MAX_RD_SZ_POS))
 #define MCHP_ESPI_FC_CAP_MAX_RD_SZ_64 \
 	((0x01u) << (MCHP_ESPI_FC_CAP_MAX_RD_SZ_POS))
 
@@ -204,7 +213,8 @@
 #define MCHP_ESPI_RST_ISTS_POS		0u
 #define MCHP_ESPI_RST_ISTS		(1u << (MCHP_ESPI_RST_ISTS_POS))
 #define MCHP_ESPI_RST_ISTS_PIN_RO_POS	1ul
-#define MCHP_ESPI_RST_ISTS_PIN_RO_HI	(1u << (MCHP_ESPI_RST_ISTS_PIN_RO_POS))
+#define MCHP_ESPI_RST_ISTS_PIN_RO_HI \
+	(1u << (MCHP_ESPI_RST_ISTS_PIN_RO_POS))
 
 /* ESPI_RESET# Interrupt Enable */
 #define MCHP_ESPI_RST_IEN_MASK		0x01ul
@@ -219,6 +229,25 @@
 /* VW Ready */
 #define MCHP_ESPI_VW_READY_MASK		0x01ul
 #define MCHP_ESPI_VW_READY		0x01ul
+
+/* SAF Erase Block size */
+#define MCHP_ESPI_SERASE_SZ_1K_BITPOS	0
+#define MCHP_ESPI_SERASE_SZ_2K_BITPOS	1
+#define MCHP_ESPI_SERASE_SZ_4K_BITPOS	2
+#define MCHP_ESPI_SERASE_SZ_8K_BITPOS	3
+#define MCHP_ESPI_SERASE_SZ_16K_BITPOS	4
+#define MCHP_ESPI_SERASE_SZ_32K_BITPOS	5
+#define MCHP_ESPI_SERASE_SZ_64K_BITPOS	6
+#define MCHP_ESPI_SERASE_SZ_128K_BITPOS	7
+#define MCHP_ESPI_SERASE_SZ_1K		BIT(0)
+#define MCHP_ESPI_SERASE_SZ_2K		BIT(1)
+#define MCHP_ESPI_SERASE_SZ_4K		BIT(2)
+#define MCHP_ESPI_SERASE_SZ_8K		BIT(3)
+#define MCHP_ESPI_SERASE_SZ_16K		BIT(4)
+#define MCHP_ESPI_SERASE_SZ_32K		BIT(5)
+#define MCHP_ESPI_SERASE_SZ_64K		BIT(6)
+#define MCHP_ESPI_SERASE_SZ_128K	BIT(7)
+#define MCHP_ESPI_SERASE_SZ(bitpos) (1ul << ((bitpos)+10))
 
 /* VW Error Status */
 #define MCHP_ESPI_VW_ERR_STS_MASK		0x33ul
@@ -239,38 +268,51 @@
 #define MCHP_ESPI_VW_EN_STS_MASK	0x01ul
 #define MCHP_ESPI_VW_EN_STS_RO		0x01ul
 
-/* =========================================================================*/
-/* ================	      eSPI IO Component		   ================ */
-/* =========================================================================*/
-
 /**
   * @brief ESPI Host interface IO Component (MCHP_ESPI_IO)
   */
 
 /*
  * ESPI_IO_CAP - eSPI IO capabilities, channel ready, activate,
- * EC
  * registers @ 0x400F36B0
+ * VW_EN_STS (@ 0x36B0) Virtual Wire Enable Status
+ * CAP_ID (@ 0x36E0) Capabilities ID
+ * GLB_CAP0 (@ 0x36E1) Global Capabilities 0
+ * GLB_CAP1 (@ 0x36E2) Global Capabilities 1
+ * PC_CAP (@ 0x36E3) Periph Chan Capabilities
+ * VW_CAP (@ 0x36E4) Virtual Wire Chan Capabilities
+ * OOB_CAP (@ 0x36E5) OOB Chan Capabilities
+ * FC_CAP (@ 0x36E6) Flash Chan Capabilities
+ * PC_RDY (@ 0x36E7) PC ready
+ * OOB_RDY (@ 0x36E8) OOB ready
+ * FC_RDY (@ 0x36E9) OOB ready
+ * ERST_STS (@ 0x36EA) eSPI Reset interrupt status
+ * ERST_IEN (@ 0x36EB) eSPI Reset interrupt enable
+ * PLTRST_SRC (@ 0x36EC) Platform Reset Source
+ * VW_RDY (@ 0x36ED) VW ready
+ * FC_SERBZ (@ 0x36EE) S-Erase Block Size
+ * VW_ERR_STS (@ 0x37F0) IO Virtual Wire Error
  */
 typedef struct espi_io_cap_regs {
-	__IOM uint32_t VW_EN_STS;	/*! (@ 0x36B0) Virtual Wire Enable Status */
+	__IOM uint32_t VW_EN_STS;
 	uint8_t RSVD1[0x36E0 - 0x36B4];
-	__IOM uint8_t CAP_ID;	/*! (@ 0x36E0) Capabilities ID */
-	__IOM uint8_t GLB_CAP0;	/*! (@ 0x36E1) Global Capabilities 0 */
-	__IOM uint8_t GLB_CAP1;	/*! (@ 0x36E2) Global Capabilities 1 */
-	__IOM uint8_t PC_CAP;	/*! (@ 0x3633) Periph Chan Capabilities */
-	__IOM uint8_t VW_CAP;	/*! (@ 0x3634) Virtual Wire Chan Capabilities */
-	__IOM uint8_t OOB_CAP;	/*! (@ 0x3635) OOB Chan Capabilities */
-	__IOM uint8_t FC_CAP;	/*! (@ 0x3636) Flash Chan Capabilities */
-	__IOM uint8_t PC_RDY;	/*! (@ 0x3637) PC ready */
-	__IOM uint8_t OOB_RDY;	/*! (@ 0x3638) OOB ready */
-	__IOM uint8_t FC_RDY;	/*! (@ 0x3639) OOB ready */
-	__IOM uint8_t ERST_STS;	/*! (@ 0x363A) eSPI Reset interrupt status */
-	__IOM uint8_t ERST_IEN;	/*! (@ 0x363B) eSPI Reset interrupt enable */
-	__IOM uint8_t PLTRST_SRC;	/*! (@ 0x363C) Platform Reset Source */
-	__IOM uint8_t VW_RDY;	/*! (@ 0x363D) VW ready */
+	__IOM uint8_t CAP_ID;
+	__IOM uint8_t GLB_CAP0;
+	__IOM uint8_t GLB_CAP1;
+	__IOM uint8_t PC_CAP;
+	__IOM uint8_t VW_CAP;
+	__IOM uint8_t OOB_CAP;
+	__IOM uint8_t FC_CAP;
+	__IOM uint8_t PC_RDY;
+	__IOM uint8_t OOB_RDY;
+	__IOM uint8_t FC_RDY;
+	__IOM uint8_t ERST_STS;
+	__IOM uint8_t ERST_IEN;
+	__IOM uint8_t PLTRST_SRC;
+	__IOM uint8_t VW_RDY;
+	__IOM uint8_t FC_SERBZ;
 	uint8_t RSVD2[0x37F0u - 0x36EE];
-	__IOM uint32_t VW_ERR_STS;	/*! (@ 0x37F0) IO Virtual Wire Error */
+	__IOM uint32_t VW_ERR_STS;
 } ESPI_IO_CAP_Type;
 
 /*
@@ -308,6 +350,13 @@ typedef struct espi_io_cap_regs {
 /*
  * Peripheral Channel Interrupt Enables for
  * Bus error, Channel enable change, and Bus master enable change.
+ * PC_LC_ADDR_LSW (@ 0x0000) Periph Chan Last Cycle address LSW
+ * PC_LC_ADDR_MSW (@ 0x0004) Periph Chan Last Cycle address MSW
+ * PC_LC_LEN_TYPE_TAG (@ 0x0008) Periph Chan Last Cycle length/type/tag
+ * PC_ERR_ADDR_LSW (@ 0x000C) Periph Chan Error Address LSW
+ * PC_ERR_ADDR_MSW (@ 0x0010) Periph Chan Error Address MSW
+ * PC_STATUS (@ 0x0014) Periph Chan Status
+ * PC_IEN (@ 0x0018) Periph Chan IEN
  */
 #define MCHP_ESPI_PC_IEN_BUS_ERR_POS	16u
 #define MCHP_ESPI_PC_IEN_BUS_ERR	(1ul << 16)
@@ -318,18 +367,16 @@ typedef struct espi_io_cap_regs {
 
 typedef struct espi_io_pc_regs
 {
-	__IOM uint32_t PC_LC_ADDR_LSW;	/*! (@ 0x0000) Periph Chan Last Cycle address LSW */
-	__IOM uint32_t PC_LC_ADDR_MSW;	/*! (@ 0x0004) Periph Chan Last Cycle address MSW */
-	__IOM uint32_t PC_LC_LEN_TYPE_TAG;	/*! (@ 0x0008) Periph Chan Last Cycle length/type/tag */
-	__IOM uint32_t PC_ERR_ADDR_LSW;	/*! (@ 0x000C) Periph Chan Error Address LSW */
-	__IOM uint32_t PC_ERR_ADDR_MSW;	/*! (@ 0x0010) Periph Chan Error Address MSW */
-	__IOM uint32_t PC_STATUS;	/*! (@ 0x0014) Periph Chan Status */
-	__IOM uint32_t PC_IEN;	/*! (@ 0x0018) Periph Chan IEN */
+	__IOM uint32_t PC_LC_ADDR_LSW;
+	__IOM uint32_t PC_LC_ADDR_MSW;
+	__IOM uint32_t PC_LC_LEN_TYPE_TAG;
+	__IOM uint32_t PC_ERR_ADDR_LSW;
+	__IOM uint32_t PC_ERR_ADDR_MSW;
+	__IOM uint32_t PC_STATUS;
+	__IOM uint32_t PC_IEN;
 } ESPI_IO_PC_Type;
 
-/*
- * ESPI_IO_LTR - eSPI IO LTR registers @ 0x400F3620
- */
+/* ESPI_IO_LTR - eSPI IO LTR registers  */
 #define MCHP_ESPI_LTR_STS_TX_DONE_POS	0u
 #define MCHP_ESPI_LTR_STS_TX_DONE	(1ul << 0)	/* RW1C */
 #define MCHP_ESPI_LTR_STS_OVRUN_POS	3u
@@ -365,17 +412,22 @@ typedef struct espi_io_pc_regs
 /* latency computed from VAL and SC(scale) fields */
 #define MCHP_ESPI_LTR_MSG_REQ_VAL	 (1ul << 15)
 
+/*
+ * eSPI IO Component LTR registers @ 0x400F3620
+ * LTR_STS (@ 0x0000) LTR peripheral ptatus
+ * LTR_IEN (@ 0x0004) LTR peripheral interrupt enable
+ * LTR_CTRL (@ 0x0008) LTR peripheral control
+ * LTR_MSG (@ 0x000C) LTR peripheral message
+ */
 typedef struct espi_io_ltr_regs
 {
-	__IOM uint32_t LTR_STS;	/*! (@ 0x0000) LTR Periph Status */
-	__IOM uint32_t LTR_IEN;	/*! (@ 0x0004) LTR Periph Interrupt Enable */
-	__IOM uint32_t LTR_CTRL;	/*! (@ 0x0008) LTR Periph Control */
-	__IOM uint32_t LTR_MSG;	/*! (@ 0x000C) LTR Periph Message */
+	__IOM uint32_t LTR_STS;
+	__IOM uint32_t LTR_IEN;
+	__IOM uint32_t LTR_CTRL;
+	__IOM uint32_t LTR_MSG;
 } ESPI_IO_LTR_Type;
 
-/*
- * ESPI_IO_OOB - eSPI IO OOB registers @ 0x400F3640
- */
+/* ESPI_IO_OOB - eSPI IO OOB registers  */
 #define MCHP_ESPI_OOB_RX_ADDR_LSW_MASK	0xFFFFFFFCul
 #define MCHP_ESPI_OOB_TX_ADDR_LSW_MASK	0xFFFFFFFCul
 
@@ -456,25 +508,38 @@ typedef struct espi_io_ltr_regs
 
 #define MCHP_ESPI_OOB_TX_STS_ALL_RW1C	0x2Ful
 
+/*
+ * eSPI IO Component OOB registers @ 0x400F3640
+ * RX_ADDR_LSW (@ 0x0000) OOB Receive Address bits[31:0]
+ * RX_ADDR_MSW (@ 0x0004) OOB Receive Address bits[63:32]
+ * TX_ADDR_LSW (@ 0x0008) OOB Transmit Address bits[31:0]
+ * TX_ADDR_MSW (@ 0x000C) OOB Transmit Address bits[63:32]
+ * RX_LEN (@ 0x0010) OOB Receive length
+ * TX_LEN (@ 0x0014) OOB Transmit length
+ * RX_CTRL (@ 0x0018) OOB Receive control
+ * RX_IEN (@ 0x001C) OOB Receive interrupt enable
+ * RX_STS (@ 0x0020) OOB Receive interrupt status
+ * TX_CTRL (@ 0x0024) OOB Transmit control
+ * TX_IEN (@ 0x0028) OOB Transmit interrupt enable
+ * TX_STS (@ 0x002C) OOB Transmit interrupt status
+ */
 typedef struct espi_io_oob_regs
 {
-	__IOM uint32_t RX_ADDR_LSW;	/*! (@ 0x0000) OOB Receive Address bits[31:0] */
-	__IOM uint32_t RX_ADDR_MSW;	/*! (@ 0x0004) OOB Receive Address bits[63:32] */
-	__IOM uint32_t TX_ADDR_LSW;	/*! (@ 0x0008) OOB Transmit Address bits[31:0] */
-	__IOM uint32_t TX_ADDR_MSW;	/*! (@ 0x000C) OOB Transmit Address bits[63:32] */
-	__IOM uint32_t RX_LEN;	/*! (@ 0x0010) OOB Receive length */
-	__IOM uint32_t TX_LEN;	/*! (@ 0x0014) OOB Transmit length */
-	__IOM uint32_t RX_CTRL;	/*! (@ 0x0018) OOB Receive control */
-	__IOM uint32_t RX_IEN;	/*! (@ 0x001C) OOB Receive interrupt enable */
-	__IOM uint32_t RX_STS;	/*! (@ 0x0020) OOB Receive interrupt status */
-	__IOM uint32_t TX_CTRL;	/*! (@ 0x0024) OOB Transmit control */
-	__IOM uint32_t TX_IEN;	/*! (@ 0x0028) OOB Transmit interrupt enable */
-	__IOM uint32_t TX_STS;	/*! (@ 0x002C) OOB Transmit interrupt status */
+	__IOM uint32_t RX_ADDR_LSW;
+	__IOM uint32_t RX_ADDR_MSW;
+	__IOM uint32_t TX_ADDR_LSW;
+	__IOM uint32_t TX_ADDR_MSW;
+	__IOM uint32_t RX_LEN;
+	__IOM uint32_t TX_LEN;
+	__IOM uint32_t RX_CTRL;
+	__IOM uint32_t RX_IEN;
+	__IOM uint32_t RX_STS;
+	__IOM uint32_t TX_CTRL;
+	__IOM uint32_t TX_IEN;
+	__IOM uint32_t TX_STS;
 } ESPI_IO_OOB_Type;
 
-/*
- * MCHP_ESPI_IO_FC - eSPI IO Flash channel registers @ 0x40003680
- */
+/* MCHP_ESPI_IO_FC - eSPI IO Flash channel registers  */
 /* MEM_ADDR_LSW */
 #define MCHP_ESPI_FC_MEM_ADDR_LSW_MASK	0xFFFFFFFCul
 
@@ -488,13 +553,15 @@ typedef struct espi_io_oob_regs
 #define MCHP_ESPI_FC_CTRL_WR0		0x01ul
 #define MCHP_ESPI_FC_CTRL_ERS0		0x02ul
 #define MCHP_ESPI_FC_CTRL_ERL0		0x03ul
-#define MCHP_ESPI_FC_CTRL_FUNC(f) \
-	(((uint32_t)(f) & MCHP_ESPI_FC_CTRL_FUNC_MASK0) << MCHP_ESPI_FC_CTRL_FUNC_POS)
+#define MCHP_ESPI_FC_CTRL_FUNC(f) (((uint32_t)(f) & \
+				    MCHP_ESPI_FC_CTRL_FUNC_MASK0) \
+				    << MCHP_ESPI_FC_CTRL_FUNC_POS)
 #define MCHP_ESPI_FC_CTRL_TAG_POS	4u
 #define MCHP_ESPI_FC_CTRL_TAG_MASK0	0x0Ful
 #define MCHP_ESPI_FC_CTRL_TAG_MASK	(0x0Ful << 4)
-#define MCHP_ESPI_FC_CTRL_TAG(t) \
-	(((uint32_t)(t) & MCHP_ESPI_FC_CTRL_TAG_MASK0) << MCHP_ESPI_FC_CTRL_TAG_POS)
+#define MCHP_ESPI_FC_CTRL_TAG(t) (((uint32_t)(t) & \
+				   MCHP_ESPI_FC_CTRL_TAG_MASK0) \
+				   << MCHP_ESPI_FC_CTRL_TAG_POS)
 #define MCHP_ESPI_FC_CTRL_ABORT_POS	16u
 #define MCHP_ESPI_FC_CTRL_ABORT		(1ul << 16)	/* WO */
 
@@ -569,21 +636,31 @@ typedef struct espi_io_oob_regs
 
 #define MCHP_ESPI_FC_STS_ALL_RW1C	0x0BFEul
 
+/*
+ * eSPI IO Flash Channel registers @ 0x40003680
+ * FL_ADDR_LSW	(@ 0x0000) FC flash address bits[31:0]
+ * FL_ADDR_MSW (@ 0x0004) FC flash address bits[63:32]
+ * MEM_ADDR_LSW (@ 0x0008) FC EC Memory address bits[31:0]
+ * MEM_ADDR_MSW (@ 0x000C) FC EC Memory address bits[63:32]
+ * XFR_LEN (@ 0x0010) FC transfer length
+ * CTRL (@ 0x0014) FC Control
+ * IEN (@ 0x0018) FC interrupt enable
+ * CFG (@ 0x001C) FC configuration
+ * STS (@ 0x0020) FC status
+ */
 typedef struct espi_io_fc_regs {
-	__IOM uint32_t FL_ADDR_LSW;	/*! (@ 0x0000) FC flash address bits[31:0] */
-	__IOM uint32_t FL_ADDR_MSW;	/*! (@ 0x0004) FC flash address bits[63:32] */
-	__IOM uint32_t MEM_ADDR_LSW;	/*! (@ 0x0008) FC EC Memory address bits[31:0] */
-	__IOM uint32_t MEM_ADDR_MSW;	/*! (@ 0x000C) FC EC Memory address bits[63:32] */
-	__IOM uint32_t XFR_LEN;	/*! (@ 0x0010) FC transfer length */
-	__IOM uint32_t CTRL;	/*! (@ 0x0014) FC Control */
-	__IOM uint32_t IEN;	/*! (@ 0x0018) FC interrupt enable */
-	__IOM uint32_t CFG;	/*! (@ 0x001C) FC configuration */
-	__IOM uint32_t STS;	/*! (@ 0x0020) FC status */
+	__IOM uint32_t FL_ADDR_LSW;
+	__IOM uint32_t FL_ADDR_MSW;
+	__IOM uint32_t MEM_ADDR_LSW;
+	__IOM uint32_t MEM_ADDR_MSW;
+	__IOM uint32_t XFR_LEN;
+	__IOM uint32_t CTRL;
+	__IOM uint32_t IEN;
+	__IOM uint32_t CFG;
+	__IOM uint32_t STS;
 } ESPI_IO_FC_Type;
 
-/*
- * MCHP_ESPI_IO_BAR_HOST - eSPI IO Host visible BAR registers @ 0x400F3520
- */
+/* MCHP_ESPI_IO_BAR_HOST - eSPI IO Host visible BAR registers */
 
 /*
  * IOBAR_INH_LSW/MSW 64-bit register: each bit = 1 inhibits an I/O BAR
@@ -632,36 +709,64 @@ typedef struct espi_io_fc_regs {
 #define MCHP_ESPI_IO_BAR_HOST_ADDR_MASK0	0xFFFFul
 #define MCHP_ESPI_IO_BAR_HOST_ADDR_MASK		(0xFFFFul << 16)
 
+/*
+ * eSPI IO BAR Host registers.
+ * These registers contain the Host side IO address for each peripheral.
+ * IOBAR_INH_LSW (@ 0x0000) BAR Inhibit LSW
+ * IOBAR_INH_MSW (@ 0x0004) BAR Inhibit MSW
+ * IOBAR_INIT (@ 0x0008) BAR Init
+ * EC_IRQ (@ 0x000C) EC IRQ
+ * HOST_BAR_IOC (@ 0x0014) Host IO Component BAR
+ * HOST_BAR_MEM (@ 0x0018) Host IO Compoent Mem BAR
+ * HOST_BAR_MBOX (@ 0x001C) Host IO Mailbox BAR
+ * HOST_BAR_KBC (@ 0x0020) Host IO KBC BAR
+ * HOST_BAR_ACPI_EC_0 (@ 0x0024) Host IO ACPI_EC 0 BAR
+ * HOST_BAR_ACPI_EC_1 (@ 0x0028) Host IO ACPI_EC 1 BAR
+ * HOST_BAR_ACPI_EC_2 (@ 0x002C) Host IO ACPI_EC 2 BAR
+ * HOST_BAR_ACPI_EC_3 (@ 0x0030) Host IO ACPI_EC 3 BAR
+ * HOST_BAR_ACPI_PM1 (@ 0x0038) Host IO ACPI_PM1 BAR
+ * HOST_BAR_PORT92 (@ 0x003C) Host IO PORT92 BAR
+ * HOST_BAR_UART_0 (@ 0x0040) Host IO UART 0 BAR
+ * HOST_BAR_UART_1 (@ 0x0044) Host IO UART 1 BAR
+ * HOST_BAR_EMI_0 (@ 0x0048) Host IO EMI 0 BAR
+ * HOST_BAR_EMI_1 (@ 0x004C) Host IO EMI 1 BAR
+ * HOST_BAR_P80CAP_0 (@ 0x0054) Host IO Port80 Capture 0 BAR
+ * HOST_BAR_P80CAP_1 (@ 0x0058) Host IO Port80 Capture 1 BAR
+ * HOST_BAR_RTC (@ 0x005C) Host IO RTC BAR
+ * HOST_BAR_T32B (@ 0x0064) Host IO Test 32 byte BAR
+ * HOST_BAR_UART_2 (@ 0x0068) Host IO UART 2 BAR
+ * HOST_BAR_GLUE_LOG (@ 0x006C) Host IO Glue Logic BAR
+ */
 typedef struct espi_io_bar_host_regs
 {
-	__IOM uint32_t IOBAR_INH_LSW;	/*! (@ 0x0000) BAR Inhibit LSW */
-	__IOM uint32_t IOBAR_INH_MSW;	/*! (@ 0x0004) BAR Inhibit MSW */
-	__IOM uint32_t IOBAR_INIT;	/*! (@ 0x0008) BAR Init */
-	__IOM uint32_t EC_IRQ;	/*! (@ 0x000C) EC IRQ */
+	__IOM uint32_t IOBAR_INH_LSW;
+	__IOM uint32_t IOBAR_INH_MSW;
+	__IOM uint32_t IOBAR_INIT;
+	__IOM uint32_t EC_IRQ;
 	uint8_t RSVD1[4];
-	__IOM uint32_t HOST_BAR_IOC;	/*! (@ 0x0014) Host IO Component BAR */
-	__IOM uint32_t HOST_BAR_MEM;	/*! (@ 0x0018) Host IO Compoent Mem BAR */
-	__IOM uint32_t HOST_BAR_MBOX;	/*! (@ 0x001C) Host IO Mailbox BAR */
-	__IOM uint32_t HOST_BAR_KBC;	/*! (@ 0x0020) Host IO KBC BAR */
-	__IOM uint32_t HOST_BAR_ACPI_EC_0;	/*! (@ 0x0024) Host IO ACPI_EC 0 BAR */
-	__IOM uint32_t HOST_BAR_ACPI_EC_1;	/*! (@ 0x0028) Host IO ACPI_EC 1 BAR */
-	__IOM uint32_t HOST_BAR_ACPI_EC_2;	/*! (@ 0x002C) Host IO ACPI_EC 2 BAR */
-	__IOM uint32_t HOST_BAR_ACPI_EC_3;	/*! (@ 0x0030) Host IO ACPI_EC 3 BAR */
+	__IOM uint32_t HOST_BAR_IOC;
+	__IOM uint32_t HOST_BAR_MEM;
+	__IOM uint32_t HOST_BAR_MBOX;
+	__IOM uint32_t HOST_BAR_KBC;
+	__IOM uint32_t HOST_BAR_ACPI_EC_0;
+	__IOM uint32_t HOST_BAR_ACPI_EC_1;
+	__IOM uint32_t HOST_BAR_ACPI_EC_2;
+	__IOM uint32_t HOST_BAR_ACPI_EC_3;
 	uint8_t RSVD2[4];
-	__IOM uint32_t HOST_BAR_ACPI_PM1;	/*! (@ 0x0038) Host IO ACPI_PM1 BAR */
-	__IOM uint32_t HOST_BAR_PORT92;	/*! (@ 0x003C) Host IO PORT92 BAR */
-	__IOM uint32_t HOST_BAR_UART_0;	/*! (@ 0x0040) Host IO UART 0 BAR */
-	__IOM uint32_t HOST_BAR_UART_1;	/*! (@ 0x0044) Host IO UART 1 BAR */
-	__IOM uint32_t HOST_BAR_EMI_0;	/*! (@ 0x0048) Host IO EMI 0 BAR */
-	__IOM uint32_t HOST_BAR_EMI_1;	/*! (@ 0x004C) Host IO EMI 1 BAR */
+	__IOM uint32_t HOST_BAR_ACPI_PM1;
+	__IOM uint32_t HOST_BAR_PORT92;
+	__IOM uint32_t HOST_BAR_UART_0;
+	__IOM uint32_t HOST_BAR_UART_1;
+	__IOM uint32_t HOST_BAR_EMI_0;
+	__IOM uint32_t HOST_BAR_EMI_1;
 	uint8_t RSVD3[4];
-	__IOM uint32_t HOST_BAR_P80CAP_0;	/*! (@ 0x0054) Host IO Port80 Capture 0 BAR */
-	__IOM uint32_t HOST_BAR_P80CAP_1;	/*! (@ 0x0058) Host IO Port80 Capture 1 BAR */
-	__IOM uint32_t HOST_BAR_RTC;	/*! (@ 0x005C) Host IO RTC BAR */
+	__IOM uint32_t HOST_BAR_P80CAP_0;
+	__IOM uint32_t HOST_BAR_P80CAP_1;
+	__IOM uint32_t HOST_BAR_RTC;
 	uint8_t RSVD4[4];
-	__IOM uint32_t HOST_BAR_T32B;	/*! (@ 0x0064) Host IO Test 32 byte BAR */
-	__IOM uint32_t HOST_BAR_UART_2;	/*! (@ 0x0068) Host IO UART 2 BAR */
-	__IOM uint32_t HOST_BAR_GLUE_LOG;	/*! (@ 0x006C) Host IO Glue Logic BAR */
+	__IOM uint32_t HOST_BAR_T32B;
+	__IOM uint32_t HOST_BAR_UART_2;
+	__IOM uint32_t HOST_BAR_GLUE_LOG;
 } ESPI_IO_BAR_HOST_Type;
 
 /*
@@ -669,34 +774,54 @@ typedef struct espi_io_bar_host_regs
  * All fields are Read-Only
  * Address mask in bits[7:0]
  * Logical device number in bits[13:8]
+ * IO_ACTV (@ 0x0000) ESPI IO Component Activate
+ * EC_BAR_IOC (@ 0x0004) Host IO Component BAR
+ * EC_BAR_MEM (@ 0x0008) Host IO Compoent Mem BAR
+ * EC_BAR_MBOX (@ 0x000C) Host IO Mailbox BAR
+ * EC_BAR_KBC (@ 0x0010) Host IO KBC BAR
+ * EC_BAR_ACPI_EC_0 (@ 0x0014) Host IO ACPI_EC 0 BAR
+ * EC_BAR_ACPI_EC_1 (@ 0x0018) Host IO ACPI_EC 1 BAR
+ * EC_BAR_ACPI_EC_2 (@ 0x001C) Host IO ACPI_EC 2 BAR
+ * EC_BAR_ACPI_EC_3 (@ 0x0020) Host IO ACPI_EC 3 BAR
+ * EC_BAR_ACPI_PM1 (@ 0x0028) Host IO ACPI_PM1 BAR
+ * EC_BAR_PORT92 (@ 0x002C) Host IO PORT92 BAR
+ * EC_BAR_UART_0 (@ 0x0030) Host IO UART 0 BAR
+ * EC_BAR_UART_1 (@ 0x0034) Host IO UART 1 BAR
+ * EC_BAR_EMI_0 (@ 0x0038) Host IO EMI 0 BAR
+ * EC_BAR_EMI_1 (@ 0x003C) Host IO EMI 1 BAR
+ * EC_BAR_P80CAP_0 (@ 0x0044) Host IO Port80 Capture 0 BAR
+ * EC_BAR_P80CAP_1 (@ 0x0048) Host IO Port80 Capture 1 BAR
+ * EC_BAR_RTC (@ 0x004C) Host IO RTC BAR
+ * EC_BAR_T32B (@ 0x0054) Host IO Test 32 byte BAR
+ * EC_BAR_UART_2 (@ 0x0058) Host IO UART 2 BAR
+ * EC_BAR_GLUE_LOG (@ 0x005C) Host IO Glue Logic BAR
  */
-
 typedef struct espi_io_bar_ec_regs
 {
-	__IOM uint32_t IO_ACTV;	/*! (@ 0x0000) ESPI IO Component Activate */
-	__IOM uint32_t EC_BAR_IOC;	/*! (@ 0x0004) Host IO Component BAR */
-	__IOM uint32_t EC_BAR_MEM;	/*! (@ 0x0008) Host IO Compoent Mem BAR */
-	__IOM uint32_t EC_BAR_MBOX;	/*! (@ 0x000C) Host IO Mailbox BAR */
-	__IOM uint32_t EC_BAR_KBC;	/*! (@ 0x0010) Host IO KBC BAR */
-	__IOM uint32_t EC_BAR_ACPI_EC_0;	/*! (@ 0x0014) Host IO ACPI_EC 0 BAR */
-	__IOM uint32_t EC_BAR_ACPI_EC_1;	/*! (@ 0x0018) Host IO ACPI_EC 1 BAR */
-	__IOM uint32_t EC_BAR_ACPI_EC_2;	/*! (@ 0x001C) Host IO ACPI_EC 2 BAR */
-	__IOM uint32_t EC_BAR_ACPI_EC_3;	/*! (@ 0x0020) Host IO ACPI_EC 3 BAR */
+	__IOM uint32_t IO_ACTV;
+	__IOM uint32_t EC_BAR_IOC;
+	__IOM uint32_t EC_BAR_MEM;
+	__IOM uint32_t EC_BAR_MBOX;
+	__IOM uint32_t EC_BAR_KBC;
+	__IOM uint32_t EC_BAR_ACPI_EC_0;
+	__IOM uint32_t EC_BAR_ACPI_EC_1;
+	__IOM uint32_t EC_BAR_ACPI_EC_2;
+	__IOM uint32_t EC_BAR_ACPI_EC_3;
 	uint8_t RSVD2[4];
-	__IOM uint32_t EC_BAR_ACPI_PM1;	/*! (@ 0x0028) Host IO ACPI_PM1 BAR */
-	__IOM uint32_t EC_BAR_PORT92;	/*! (@ 0x002C) Host IO PORT92 BAR */
-	__IOM uint32_t EC_BAR_UART_0;	/*! (@ 0x0030) Host IO UART 0 BAR */
-	__IOM uint32_t EC_BAR_UART_1;	/*! (@ 0x0034) Host IO UART 1 BAR */
-	__IOM uint32_t EC_BAR_EMI_0;	/*! (@ 0x0038) Host IO EMI 0 BAR */
-	__IOM uint32_t EC_BAR_EMI_1;	/*! (@ 0x003C) Host IO EMI 1 BAR */
+	__IOM uint32_t EC_BAR_ACPI_PM1;
+	__IOM uint32_t EC_BAR_PORT92;
+	__IOM uint32_t EC_BAR_UART_0;
+	__IOM uint32_t EC_BAR_UART_1;
+	__IOM uint32_t EC_BAR_EMI_0;
+	__IOM uint32_t EC_BAR_EMI_1;
 	uint8_t RSVD3[4];
-	__IOM uint32_t EC_BAR_P80CAP_0;	/*! (@ 0x0044) Host IO Port80 Capture 0 BAR */
-	__IOM uint32_t EC_BAR_P80CAP_1;	/*! (@ 0x0048) Host IO Port80 Capture 1 BAR */
-	__IOM uint32_t EC_BAR_RTC;	/*! (@ 0x004C) Host IO RTC BAR */
+	__IOM uint32_t EC_BAR_P80CAP_0;
+	__IOM uint32_t EC_BAR_P80CAP_1;
+	__IOM uint32_t EC_BAR_RTC;
 	uint8_t RSVD4[4];
-	__IOM uint32_t EC_BAR_T32B;	/*! (@ 0x0054) Host IO Test 32 byte BAR */
-	__IOM uint32_t EC_BAR_UART_2;	/*! (@ 0x0058) Host IO UART 2 BAR */
-	__IOM uint32_t EC_BAR_GLUE_LOG;	/*! (@ 0x005C) Host IO Glue Logic BAR */
+	__IOM uint32_t EC_BAR_T32B;
+	__IOM uint32_t EC_BAR_UART_2;
+	__IOM uint32_t EC_BAR_GLUE_LOG;
 } ESPI_IO_BAR_EC_Type;
 
 /* Offsets from first SIRQ */
@@ -723,8 +848,24 @@ typedef struct espi_io_bar_ec_regs
 #define MCHP_ESPI_SIRQ_MAX		20ul
 
 /*
- * MCHP_ESPI_IO_SIRQ - eSPI IO Component Logical Device Serial IRQ configuration
- * @ 0x400F37A0
+ * eSPI IO Component Logical Device Serial IRQ configuration @ 0x400F37A0
+ * MBOX_SIRQ_0 (@ 0x000C) Mailbox SIRQ 0 config
+ * MBOX_SIRQ_1 (@ 0x000D) Mailbox SIRQ 1 config
+ * KBC_SIRQ_0 (@ 0x000E) KBC SIRQ 0 config
+ * KBC_SIRQ_1 (@ 0x000F) KBC SIRQ 1 config
+ * ACPI_EC_0_SIRQ (@ 0x0010) ACPI EC 0 SIRQ config
+ * ACPI_EC_1_SIRQ (@ 0x0011) ACPI EC 1 SIRQ config
+ * ACPI_EC_2_SIRQ (@ 0x0012) ACPI EC 2 SIRQ config
+ * ACPI_EC_3_SIRQ (@ 0x0013) ACPI EC 3 SIRQ config
+ * UART_0_SIRQ (@ 0x0015) UART 0 SIRQ config
+ * UART_1_SIRQ (@ 0x0016) UART 1 SIRQ config
+ * EMI_0_SIRQ_0 (@ 0x0017) EMI 0 SIRQ 0 config
+ * EMI_0_SIRQ_1 (@ 0x0018) EMI 0 SIRQ 1 config
+ * EMI_1_SIRQ_0 (@ 0x0019) EMI 1 SIRQ 0 config
+ * EMI_1_SIRQ_1 (@ 0x001A) EMI 1 SIRQ 1 config
+ * RTC_SIRQ (@ 0x001D) RTC SIRQ config
+ * EC_SIRQ (@ 0x001E) EC SIRQ config
+ * UART_2_SIRQ (@ 0x001F) UART 2 SIRQ config
  */
 /*
  * Values for Logical Device SIRQ registers.
@@ -739,25 +880,25 @@ typedef struct espi_io_bar_ec_regs
 typedef struct espi_io_sirq_regs
 {
 	uint8_t RSVD1[12];
-	__IOM uint8_t MBOX_SIRQ_0;	/*! (@ 0x000C) Mailbox SIRQ 0 config */
-	__IOM uint8_t MBOX_SIRQ_1;	/*! (@ 0x000D) Mailbox SIRQ 1 config */
-	__IOM uint8_t KBC_SIRQ_0;	/*! (@ 0x000E) KBC SIRQ 0 config */
-	__IOM uint8_t KBC_SIRQ_1;	/*! (@ 0x000F) KBC SIRQ 1 config */
-	__IOM uint8_t ACPI_EC_0_SIRQ;	/*! (@ 0x0010) ACPI EC 0 SIRQ config */
-	__IOM uint8_t ACPI_EC_1_SIRQ;	/*! (@ 0x0011) ACPI EC 1 SIRQ config */
-	__IOM uint8_t ACPI_EC_2_SIRQ;	/*! (@ 0x0012) ACPI EC 2 SIRQ config */
-	__IOM uint8_t ACPI_EC_3_SIRQ;	/*! (@ 0x0013) ACPI EC 3 SIRQ config */
+	__IOM uint8_t MBOX_SIRQ_0;
+	__IOM uint8_t MBOX_SIRQ_1;
+	__IOM uint8_t KBC_SIRQ_0;
+	__IOM uint8_t KBC_SIRQ_1;
+	__IOM uint8_t ACPI_EC_0_SIRQ;
+	__IOM uint8_t ACPI_EC_1_SIRQ;
+	__IOM uint8_t ACPI_EC_2_SIRQ;
+	__IOM uint8_t ACPI_EC_3_SIRQ;
 	uint8_t RSVD2[1];
-	__IOM uint8_t UART_0_SIRQ;	/*! (@ 0x0015) UART 0 SIRQ config */
-	__IOM uint8_t UART_1_SIRQ;	/*! (@ 0x0016) UART 1 SIRQ config */
-	__IOM uint8_t EMI_0_SIRQ_0;	/*! (@ 0x0017) EMI 0 SIRQ 0 config */
-	__IOM uint8_t EMI_0_SIRQ_1;	/*! (@ 0x0018) EMI 0 SIRQ 1 config */
-	__IOM uint8_t EMI_1_SIRQ_0;	/*! (@ 0x0019) EMI 1 SIRQ 0 config */
-	__IOM uint8_t EMI_1_SIRQ_1;	/*! (@ 0x001A) EMI 1 SIRQ 1 config */
+	__IOM uint8_t UART_0_SIRQ;
+	__IOM uint8_t UART_1_SIRQ;
+	__IOM uint8_t EMI_0_SIRQ_0;
+	__IOM uint8_t EMI_0_SIRQ_1;
+	__IOM uint8_t EMI_1_SIRQ_0;
+	__IOM uint8_t EMI_1_SIRQ_1;
 	uint8_t RSVD3[2];
-	__IOM uint8_t RTC_SIRQ;	/*! (@ 0x001D) RTC SIRQ config */
-	__IOM uint8_t EC_SIRQ;	/*! (@ 0x001E) EC SIRQ config */
-	__IOM uint8_t UART_2_SIRQ;	/*! (@ 0x001F) UART 2 SIRQ config */
+	__IOM uint8_t RTC_SIRQ;
+	__IOM uint8_t EC_SIRQ;
+	__IOM uint8_t UART_2_SIRQ;
 } ESPI_IO_SIRQ_Type;
 
 #endif				/* #ifndef _ESPI_IO_H */
