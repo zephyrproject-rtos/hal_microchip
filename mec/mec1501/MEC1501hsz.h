@@ -439,6 +439,7 @@ typedef enum IRQn {
 #include "component/emi.h"
 #include "component/espi_io.h"
 #include "component/espi_mem.h"
+#include "component/espi_saf.h"
 #include "component/espi_vw.h"
 #include "component/global_cfg.h"
 #include "component/hdmi_cec.h"
@@ -610,8 +611,10 @@ typedef enum IRQn {
 #define ESPI_MEM_EBAR_REGS  ((ESPI_MEM_BAR_EC_Type *)(ESPI_MEM_EC_BAR_BASE))
 #define ESPI_MEM_HBAR_REGS  ((ESPI_MEM_BAR_HOST_Type *)(ESPI_MEM_HOST_BAR_BASE))
 
-#define ESPI_MEM_SRAM_EBAR_REGS   ((ESPI_MEM_SRAM_BAR_EC_Type *)(ESPI_MEM_SRAM_EC_BAR_BASE))
-#define ESPI_MEM_SRAM_HBAR_REGS   ((ESPI_MEM_SRAM_BAR_HOST_Type *)(ESPI_MEM_SRAM_HOST_BAR_BASE))
+#define ESPI_MEM_SRAM_EBAR_REGS \
+	((ESPI_MEM_SRAM_BAR_EC_Type *)(ESPI_MEM_SRAM_EC_BAR_BASE))
+#define ESPI_MEM_SRAM_HBAR_REGS \
+	((ESPI_MEM_SRAM_BAR_HOST_Type *)(ESPI_MEM_SRAM_HOST_BAR_BASE))
 
 #define ESPI_MEM_BM_REGS  ((ESPI_MEM_BM_Type *)(ESPI_MEM_BM_BASE))
 
