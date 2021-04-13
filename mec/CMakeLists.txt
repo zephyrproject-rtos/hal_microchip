@@ -8,3 +8,6 @@ zephyr_include_directories_ifdef(CONFIG_SOC_SERIES_MEC1701X .)
 
 zephyr_include_directories_ifdef(CONFIG_SOC_SERIES_MEC1501X common)
 zephyr_include_directories_ifdef(CONFIG_SOC_SERIES_MEC1501X mec1501)
+
+zephyr_include_directories_ifdef(CONFIG_SOC_SERIES_MEC172X common)
+zephyr_include_directories_ifdef(CONFIG_SOC_SERIES_MEC172X mec172x)
