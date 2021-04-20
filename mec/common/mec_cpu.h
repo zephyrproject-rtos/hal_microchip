@@ -79,31 +79,6 @@ extern "C" {
 
 #define CPU_CLZ(x) __clz(x)
 
-/*
- * The microsecond delay register is implemented in a Normal Data Memory
- * Region. Normal regions have relaxed data ordering semantics. This can
- * cause issues because writes to this register can complete before a
- * previous write to Device or Strongly ordered memory. Please use the
- * inline code after this definition. It uses the Data Synchronization
- * Barrier instruction to insure all outstanding writes complete before
- * the instruction after DSB is executed.
- * #define MEC2016_DELAY_REG   *((volatile uint8_t*) MEC2016_DELAY_REG_BASE)
- */
-
-static inline void MICROSEC_DELAY(unsigned char n)
-{
-	volatile unsigned long *pdly_reg;
-
-	pdly_reg = (volatile unsigned long *)0x10000000ul;
-
-	__asm volatile (
-		"\tstrb  n, [pdly_reg]\n"
-		"\tldrb  n, [pdly_reg]\n"
-		"\tadd   n, #0\n"
-		"\tdmb\n"
-	);
-}
-
 #elif defined(__XC32_PART_SUPPORT_VERSION) /* Microchip XC32 compiler customized GCC */
 
 #error "!!! FORCED BUILD ERROR: compiler.h XC32 support has not been implemented !!!"
@@ -212,33 +187,6 @@ static inline __attribute__((always_inline, noreturn)) void CPU_JMP(uint32_t add
 		:"r"(addr)
 		:);
 	while(1);
-}
-
-
-/*
- * The microsecond delay register is implemented in a Normal Data Memory
- * Region. Normal regions have relaxed data ordering semantics. This can
- * cause issues because writes to this register can complete before a
- * previous write to Device or Strongly ordered memory. Please use the
- * inline code after this definition. It uses the Data Synchronization
- * Barrier instruction to insure all outstanding writes complete before
- * the instruction after DSB is executed.
- * #define MEC2016_DELAY_REG   *((volatile uint8_t*) MEC2016_DELAY_REG_BASE)
- */
-
-static __always_inline void MICROSEC_DELAY(uint8_t n)
-{
-	uint32_t dly_reg_addr = 0x10000000ul;
-
-	__asm volatile (
-		"\tstrb  %0, [%1]\n"
-		"\tldrb  %0, [%1]\n"
-		"\tadd  %0, #0\n"
-		"\tdmb\n"
-		:
-		: "r" (n), "r" (dly_reg_addr)
-		: "memory"
-	);
 }
 
 static __always_inline void write_read_back8(volatile uint8_t* addr, uint8_t val)

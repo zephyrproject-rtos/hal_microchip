@@ -57,5 +57,13 @@
 #define REG16_OFS(a, ofs)   *(volatile uint16_t *)((uintptr_t)(a) + (uintptr_t)(ofs))
 #define REG8_OFS(a, ofs)    *(volatile uint8_t *)((uintptr_t)(a) + (uintptr_t)(ofs))
 
+#define REG32_BIT_SET(a, b) *(volatile uint32_t *)(a) |= (1ul << (b))
+#define REG32_BIT_CLR(a, b) *(volatile uint32_t *)(a) &= ~(1ul << (b))
+
+#define REG16_BIT_SET(a, b) *(volatile uint16_t *)(a) |= (1ul << (b))
+#define REG16_BIT_CLR(a, b) *(volatile uint16_t *)(a) &= ~(1ul << (b))
+
+#define REG8_BIT_SET(a, b) *(volatile uint8_t *)(a) |= (1ul << (b))
+#define REG8_BIT_CLR(a, b) *(volatile uint8_t *)(a) &= ~(1ul << (b))
 
 #endif // #ifndef _REGACCESS_H
