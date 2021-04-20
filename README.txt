@@ -13,4 +13,4 @@ MEC1501 component style is located at:
 
 https://github.com/MicrochipTech/hal_microchip
 
-Version: 1.1.0
+Version: 1.2.0
