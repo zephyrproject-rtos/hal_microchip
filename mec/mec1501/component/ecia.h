@@ -750,9 +750,6 @@ enum MCHP_GIRQ_IDS {
 /* Masks for blocks with multiple instances or sources */
 #define MCHP_GPIO_0240_0276_GIRQ_MASK	0x397Fu
 
-/**
-  * @brief EC Interrupt Aggregator (ECIA)
-  */
 #define MCHP_GIRQ_START_NUM	8u
 #define MCHP_GIRQ_LAST_NUM	26u
 #define MCHP_GIRQ_IDX(girq)	((uint32_t)(girq) - 8ul)
@@ -760,67 +757,40 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_GIRQ_IDX_MAX	19u
 #define MCHP_MAX_NVIC_IDX	6u
 
-/* size = 0x14(20) bytes */
+/** @brief ECIA GIRQn register block. Size = 0x14(20) bytes */
 typedef struct girq_regs
 {
-	__IOM uint32_t SRC;
-	__IOM uint32_t EN_SET;
-	__IOM uint32_t RESULT;
-	__IOM uint32_t EN_CLR;
+	__IOM uint32_t SRC;	/* R/W1C source status bits */
+	__IOM uint32_t EN_SET;	/* R/W1S Write 1 to set enable(s) */
+	__IOM uint32_t RESULT;	/* R/O equals SRC AND EN_SET */
+	__IOM uint32_t EN_CLR;	/* R/W1S Write 1 to clear enable(s) */
 	uint8_t RSVD1[4];
 } GIRQ_Type;
 
-#if 0
-typedef struct ecia_regs
-{		/*!< (@ 0x4000E000) ECIA Structure   */
-	GIRQ_Type GIRQ08;	/*!< (@ 0x0000) GIRQ08 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ09;	/*!< (@ 0x0014) GIRQ09 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ10;	/*!< (@ 0x0028) GIRQ10 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ11;	/*!< (@ 0x003C) GIRQ11 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ12;	/*!< (@ 0x0050) GIRQ12 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ13;	/*!< (@ 0x0064) GIRQ13 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ14;	/*!< (@ 0x0078) GIRQ14 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ15;	/*!< (@ 0x008C) GIRQ15 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ16;	/*!< (@ 0x00A0) GIRQ16 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ17;	/*!< (@ 0x00B4) GIRQ17 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ18;	/*!< (@ 0x00C8) GIRQ18 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ19;	/*!< (@ 0x00DC) GIRQ19 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ20;	/*!< (@ 0x00F0) GIRQ20 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ21;	/*!< (@ 0x0104) GIRQ21 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ22;	/*!< (@ 0x0118) GIRQ22 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ23;	/*!< (@ 0x012C) GIRQ23 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ24;	/*!< (@ 0x0140) GIRQ24 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ25;	/*!< (@ 0x0154) GIRQ25 Source, Enable Set, Result, Enable Clear, Reserved */
-	GIRQ_Type GIRQ26;	/*!< (@ 0x0168) GIRQ26 Source, Enable Set, Result, Enable Clear, Reserved */
-	uint8_t RSVD2[(0x0200ul - 0x017Cul)];	/* offsets 0x017C - 0x1FF */
-	__IOM uint32_t BLK_EN_SET;	/*! (@ 0x00000200) Aggregated GIRQ output Enable Set */
-	__IOM uint32_t BLK_EN_CLR;	/*! (@ 0x00000204) Aggregated GIRQ output Enable Clear */
-	__IM uint32_t BLK_ACTIVE;	/*! (@ 0x00000204) GIRQ Active bitmap (RO) */
-} ECIA_Type;
-#else
+/** @brief EC Interrupt Aggregator (ECIA) */
 typedef struct ecia_regs
 {		/*!< (@ 0x4000E000) ECIA Structure   */
 	union {
 		struct {
-			GIRQ_Type GIRQ08;	/*!< (@ 0x0000) GIRQ08 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ09;	/*!< (@ 0x0014) GIRQ09 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ10;	/*!< (@ 0x0028) GIRQ10 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ11;	/*!< (@ 0x003C) GIRQ11 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ12;	/*!< (@ 0x0050) GIRQ12 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ13;	/*!< (@ 0x0064) GIRQ13 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ14;	/*!< (@ 0x0078) GIRQ14 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ15;	/*!< (@ 0x008C) GIRQ15 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ16;	/*!< (@ 0x00A0) GIRQ16 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ17;	/*!< (@ 0x00B4) GIRQ17 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ18;	/*!< (@ 0x00C8) GIRQ18 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ19;	/*!< (@ 0x00DC) GIRQ19 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ20;	/*!< (@ 0x00F0) GIRQ20 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ21;	/*!< (@ 0x0104) GIRQ21 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ22;	/*!< (@ 0x0118) GIRQ22 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ23;	/*!< (@ 0x012C) GIRQ23 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ24;	/*!< (@ 0x0140) GIRQ24 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ25;	/*!< (@ 0x0154) GIRQ25 Source, Enable Set, Result, Enable Clear, Reserved */
-			GIRQ_Type GIRQ26;	/*!< (@ 0x0168) GIRQ26 Source, Enable Set, Result, Enable Clear, Reserved */
+			GIRQ_Type GIRQ08;	/*!< (@ 0x0000) GIRQ08 registers */
+			GIRQ_Type GIRQ09;	/*!< (@ 0x0014) GIRQ09 registers */
+			GIRQ_Type GIRQ10;	/*!< (@ 0x0028) GIRQ10 registers */
+			GIRQ_Type GIRQ11;	/*!< (@ 0x003C) GIRQ11 registers */
+			GIRQ_Type GIRQ12;	/*!< (@ 0x0050) GIRQ12 registers */
+			GIRQ_Type GIRQ13;	/*!< (@ 0x0064) GIRQ13 registers */
+			GIRQ_Type GIRQ14;	/*!< (@ 0x0078) GIRQ14 registers */
+			GIRQ_Type GIRQ15;	/*!< (@ 0x008C) GIRQ15 registers */
+			GIRQ_Type GIRQ16;	/*!< (@ 0x00A0) GIRQ16 registers */
+			GIRQ_Type GIRQ17;	/*!< (@ 0x00B4) GIRQ17 registers */
+			GIRQ_Type GIRQ18;	/*!< (@ 0x00C8) GIRQ18 registers */
+			GIRQ_Type GIRQ19;	/*!< (@ 0x00DC) GIRQ19 registers */
+			GIRQ_Type GIRQ20;	/*!< (@ 0x00F0) GIRQ20 registers */
+			GIRQ_Type GIRQ21;	/*!< (@ 0x0104) GIRQ21 registers */
+			GIRQ_Type GIRQ22;	/*!< (@ 0x0118) GIRQ22 registers */
+			GIRQ_Type GIRQ23;	/*!< (@ 0x012C) GIRQ23 registers */
+			GIRQ_Type GIRQ24;	/*!< (@ 0x0140) GIRQ24 registers */
+			GIRQ_Type GIRQ25;	/*!< (@ 0x0154) GIRQ25 registers */
+			GIRQ_Type GIRQ26;	/*!< (@ 0x0168) GIRQ26 registers */
 		};
 		GIRQ_Type GIRQ[19];
 	};
@@ -829,9 +799,8 @@ typedef struct ecia_regs
 	__IOM uint32_t BLK_EN_CLR;	/*! (@ 0x00000204) Aggregated GIRQ output Enable Clear */
 	__IM uint32_t BLK_ACTIVE;	/*! (@ 0x00000204) GIRQ Active bitmap (RO) */
 } ECIA_Type;
-#endif
 
-#endif				// #ifndef _ECIA_H
+#endif	/* #ifndef _ECIA_H */
 /* end ecia.h */
 /**   @}
  */
