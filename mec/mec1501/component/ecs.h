@@ -49,24 +49,24 @@
 
 /* AHB Error Control */
 #define MCHP_ECS_AHB_ERR_CTRL_OFS	0x14ul
-#define MCHP_ECS_AHB_ERR_CTRL_DIS_POS	(1ul << 0)
-#define MCHP_ECS_AHB_ERR_CTRL_DIS	(1ul << (MCHP_ECS_AHB_ERR_CTRL_DIS_POS))
+#define MCHP_ECS_AHB_ERR_CTRL_DIS_POS	0u
+#define MCHP_ECS_AHB_ERR_CTRL_DIS	BIT(MCHP_ECS_AHB_ERR_CTRL_DIS_POS)
 
 /* Interrupt Control */
 #define MCHP_ECS_ICTRL_OFS		0x18ul
 #define MCHP_ECS_ICTRL_DIRECT_POS	0
-#define MCHP_ECS_ICTRL_DIRECT_EN	(1ul << (MCHP_ECS_ICTRL_DIRECT_POS))
+#define MCHP_ECS_ICTRL_DIRECT_EN	BIT(MCHP_ECS_ICTRL_DIRECT_POS)
 
 /* ETM Control Register */
 #define MCHP_ECS_ETM_CTRL_OFS		0x1Cul
 #define MCHP_ECS_ETM_CTRL_EN_POS	0
-#define MCHP_ECS_ETM_CTRL_EN		(1ul << (MCHP_ECS_ETM_CTRL_EN_POS))
+#define MCHP_ECS_ETM_CTRL_EN		BIT(MCHP_ECS_ETM_CTRL_EN_POS)
 
 /* Debug Control Register */
 #define MCHP_ECS_DCTRL_OFS		0x20ul
 #define MCHP_ECS_DCTRL_MASK		0x1Ful
 #define MCHP_ECS_DCTRL_DBG_EN_POS	0u
-#define MCHP_ECS_DCTRL_DBG_EN		(1ul << (MCHP_ECS_DCTRL_DBG_EN_POS))
+#define MCHP_ECS_DCTRL_DBG_EN		BIT(MCHP_ECS_DCTRL_DBG_EN_POS)
 #define MCHP_ECS_DCTRL_MODE_POS		1u
 #define MCHP_ECS_DCTRL_MODE_MASK0	0x03ul
 #define MCHP_ECS_DCTRL_MODE_MASK \
@@ -77,17 +77,17 @@
 #define MCHP_ECS_DCTRL_MODE_SWD		(0x02 << (MCHP_ECS_DCTRL_DBG_MODE_POS))
 #define MCHP_ECS_DCTRL_MODE_SWD_SWV	(0x01 << (MCHP_ECS_DCTRL_DBG_MODE_POS))
 #define MCHP_ECS_DCTRL_PUEN_POS		3u
-#define MCHP_ECS_DCTRL_PUEN		(1ul << (MCHP_ECS_DCTRL_PUEN_POS))
+#define MCHP_ECS_DCTRL_PUEN		BIT(MCHP_ECS_DCTRL_PUEN_POS)
 #define MCHP_ECS_DCTRL_BSCAN_POS	4u
-#define MCHP_ECS_DCTRL_BSCAN_EN		(1ul << (MCHP_ECS_DCTRL_BSCAN_POS))
+#define MCHP_ECS_DCTRL_BSCAN_EN		BIT(MCHP_ECS_DCTRL_BSCAN_POS)
 
 /* AES Hash Byte Swap Control Register */
 #define MCHP_ECS_AHSW_OFS		0x2Cul
 #define MCHP_ECS_AHSW_MASK		0xFFul
 #define MCHP_ECS_DW_SWAP_IN_POS		0u
-#define MCHP_ECS_DW_SWAP_IN_EN		(1ul << (MCHP_ECS_DW_SWAP_IN_POS))
+#define MCHP_ECS_DW_SWAP_IN_EN		BIT(MCHP_ECS_DW_SWAP_IN_POS)
 #define MCHP_ECS_DW_SWAP_OUT_POS	1u
-#define MCHP_ECS_DW_SWAP_OUT_EN		(1ul << (MCHP_ECS_DW_SWAP_OUT_POS))
+#define MCHP_ECS_DW_SWAP_OUT_EN		BIT(MCHP_ECS_DW_SWAP_OUT_POS)
 #define MCHP_ECS_BLK_SWAP_IN_POS	2u
 #define MCHP_ECS_BLK_SWAP_IN_MASK	(0x07ul << (MCHP_ECS_BLK_SWAP_IN_POS))
 #define MCHP_ECS_BLK_SWAP_IN_DIS	(0x00ul << (MCHP_ECS_BLK_SWAP_IN_POS))
@@ -103,18 +103,46 @@
 #define MCHP_ECS_BLK_SWAP_OUT_64B	(0x03ul << (MCHP_ECS_BLK_SWAP_OUT_POS))
 #define MCHP_ECS_BLK_SWAP_OUT_128B	(0x04ul << (MCHP_ECS_BLK_SWAP_OUT_POS))
 
+/* ECS PECI disable register */
+#define MCHP_ECS_PECI_DIS_REG_OFS	0x40u
+#define MCHP_ECS_PECI_DIS_POS		0u
+#define MCHP_ECS_PECI_DISABLE		BIT(MCHP_ECS_PECI_DIS_POS)
+
+/* ECS VCI FW Override */
+#define MCHP_ECS_VCI_FWO_OFS		0x50u
+#define MCHP_ECS_VCI_FWO_SYS_SHDN_POS	0u
+#define MCHP_ECS_VCI_FWO_SYS_SHDN	BIT(MCHP_ECS_VCI_FWO_SYS_SHDN_POS)
+
 /* EC Subystem GPIO Bank Power */
 #define MCHP_ECS_GBPWR_OFS		0x64ul
 #define MCHP_ECS_GBPWR_LOCK_POS		7u
-#define MCHP_ECS_GBPWR_LOCK		(1ul << (MCHP_ECS_GBPWR_LOCK_POS))
+#define MCHP_ECS_GBPWR_LOCK		BIT(MCHP_ECS_GBPWR_LOCK_POS)
 #define MCHP_ECS_VTR3_LVL_POS		2u
-#define MCHP_ECS_VTR3_LVL_18		(1ul << (MCHP_ECS_VTR3_LVL_POS))
+#define MCHP_ECS_VTR3_LVL_18		BIT(MCHP_ECS_VTR3_LVL_POS)
 #define MCHP_ECS_VTR2_LVL_POS		1u
-#define MCHP_ECS_VTR2_LVL_18		(1ul << (MCHP_ECS_VTR2_LVL_POS))
+#define MCHP_ECS_VTR2_LVL_18		BIT(MCHP_ECS_VTR2_LVL_POS)
 
-/*
- * Register Access
- */
+/* ECS Virtual Wire Source Configuration */
+#define MCHP_ECS_VWSC_OFS		0x90U
+#define MCHP_ECS_VWSC_MASK		0x07U
+#define MCHP_ECS_VWSC_DFLT		0x07U
+#define MCHP_ECS_VWSC_EC_SCI_DIS	BIT(0)
+#define MCHP_ECS_VWSC_MBH_SMI_DIS	BIT(1)
+
+/* ECS Analog Comparator Control register */
+#define MCHP_ECS_ACC_OFS		0x94U
+#define MCHP_ECS_ACC_MASK		0x15U
+#define MCHP_ECS_ACC_EN0		BIT(0)
+#define MCHP_ECS_ACC_CFG_LOCK0		BIT(2)
+#define MCHP_ECS_ACC_EN1		BIT(4)
+
+/* ECS Analog Comparator Sleep Control register */
+#define MCHP_ECS_ACSC_OFS		0x98U
+#define MCHP_ECS_ACSC_MASK		0x03U
+#define MCHP_ECS_ACSC_DSLP_EN0		BIT(0)
+#define MCHP_ECS_ACSC_DSLP_EN1		BIT(1)
+
+/* Register Access */
 #define MCHP_ECS_AHB_ERR() \
 	REG32(MCHP_ECS_BASE_ADDR + MCHP_ECS_AHB_ERR_ADDR_OFS)
 
@@ -155,12 +183,12 @@ typedef struct ecs_regs
 	__IOM uint32_t AESH_BSWAP_CTRL;	/*!< (@ 0x002C) ECS AES-Hash Byte Swap Control */
 	__IOM uint32_t TEST30;
 	__IOM uint32_t TEST34;
-	__IOM uint32_t ADC_VREF_PWRDN;	/*!< (@ 0x0038) ECS ADC Vref Power Down */
+	__IOM uint32_t RSVD38;
 	__IOM uint32_t TEST3C;
 	__IOM uint32_t PECI_DIS;	/*!< (@ 0x0040) ECS PECI Disable */
-	__IOM uint32_t GPIO_PAD_TST;	/*!< (@ 0x0044) ECS GPIO Pad Test */
-	__IOM uint32_t SMBUS_SW_EN0;	/*!< (@ 0x0048) ECS SMBus SW Enable 0 */
-	__IOM uint32_t STAP_TMIR;	/*!< (@ 0x004C) ECS STAP Test Mirror */
+	__IOM uint32_t RSVD44;
+	__IOM uint32_t RSVD48;
+	__IOM uint32_t RSVD4C;
 	__IOM uint32_t VCI_FW_OVR;	/*!< (@ 0x0050) ECS VCI FW Override */
 	__IOM uint32_t BROM_STS;	/*!< (@ 0x0054) ECS Boot-ROM Status */
 	uint8_t RSVD2[4];
@@ -179,18 +207,16 @@ typedef struct ecs_regs
 	__IOM uint32_t VW_FW_OVR;	/*!< (@ 0x0090) ECS VWire Source Config */
 	__IOM uint32_t CMP_CTRL;	/*!< (@ 0x0094) ECS Analog Comparator Control */
 	__IOM uint32_t CMP_SLP_CTRL;	/*!< (@ 0x0098) ECS Analog Comparator Sleep Control */
-	uint8_t RSVD4[(0xF0 - 0x9C)];
-	__IOM uint32_t IP_TRIM;	/*!< (@ 0x00F0) ECS IP Trim */
-	uint8_t RSVD5[(0x144 - 0xF4)];
+	uint8_t RSVD4[(0x144 - 0x9C)];
 	__IOM uint32_t SLP_STS_MIRROR; /*!< (@ 0x0144) ECS Sleep Status Mirror (RO) */
-	uint8_t RSVD6[(0x180 - 0x148)];
+	uint8_t RSVD5[(0x180 - 0x148)];
 	__IOM uint32_t BROM_SCR0;	/*!< (@ 0x0180) ECS Boot-ROM Scratch 0 */
-	__IOM uint32_t BROM_SCR1;	/*!< (@ 0x0180) ECS Boot-ROM Scratch 1 */
-	__IOM uint32_t BROM_SCR2;	/*!< (@ 0x0180) ECS Boot-ROM Scratch 2 */
-	__IOM uint32_t BROM_SCR3;	/*!< (@ 0x0180) ECS Boot-ROM Scratch 3 */
+	__IOM uint32_t BROM_SCR1;	/*!< (@ 0x0184) ECS Boot-ROM Scratch 1 */
+	__IOM uint32_t BROM_SCR2;	/*!< (@ 0x0188) ECS Boot-ROM Scratch 2 */
+	__IOM uint32_t BROM_SCR3;	/*!< (@ 0x018C) ECS Boot-ROM Scratch 3 */
 } ECS_Type;
 
-#endif				// #ifndef _ECS_H
+#endif	/* #ifndef _ECS_H */
 /* end ecs.h */
 /**   @}
  */
