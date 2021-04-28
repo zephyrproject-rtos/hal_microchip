@@ -46,6 +46,8 @@
 #define MCHP_KSCAN_GIRQ_NVIC	13u
 /* Direct mode connection to NVIC */
 #define MCHP_KSCAN_NVIC		135u
+/* backwards compatibility misspelling */
+#define MCHP_KSAN_NVIC		(MCHP_KSCAN_NVIC)
 
 #define MCHP_KSCAN_GIRQ_POS	25u
 #define MCHP_KSCAN_GIRQ_VAL	BIT(25)
