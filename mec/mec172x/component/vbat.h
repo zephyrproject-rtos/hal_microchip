@@ -80,8 +80,11 @@
 #define MCHP_VBATR_CS_XTAL_SE		BIT(9)
 /* disable XTAL high startup current */
 #define MCHP_VBATR_CS_XTAL_DHC		BIT(10)
-/* crystal edge counter */
+/* crystal amplifier gain control */
 #define MCHP_VBATR_CS_XTAL_CNTR_MSK	0x1800u
+#define MCHP_VBATR_CS_XTAL_CNTR_DG	0x0800u
+#define MCHP_VBATR_CS_XTAL_CNTR_RG	0x1000u
+#define MCHP_VBATR_CS_XTAL_CNTR_MG	0x1800u
 /* Select source of peripheral 32KHz clock */
 #define MCHP_VBATR_CS_PCS_MSK		0x30000u
 /* 32K silicon OSC when chip powered by VBAT or VTR */

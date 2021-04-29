@@ -348,15 +348,62 @@
 #define MCHP_PCR_RSTEN_LOCK	0xA6382D4Dul
 
 /* VBAT Soft Reset (Offset +88h) */
-#define MCHP_PCR_VBSR_MASK BIT(0)
-#define MCHP_PCR_VBSR_EN BIT(0) /* self clearing */
+#define MCHP_PCR_VBSR_MASK	BIT(0)
+#define MCHP_PCR_VBSR_EN	BIT(0) /* self clearing */
 
 /* VTR Source 32 KHz Clock (Offset +8Ch) */
-#define MCHP_PCR_VTR_32K_SRC_MASK 0x03U
-#define MCHP_PCR_VTR_32K_SRC_SILOSC 0x00U
-#define MCHP_PCR_VTR_32K_SRC_XTAL 0x01U
-#define MCHP_PCR_VTR_32K_SRC_PIN 0x02U
-#define MCHP_PCR_VTR_32K_SRC_NONE 0x03U
+#define MCHP_PCR_VTR_32K_SRC_MASK	0x03U
+#define MCHP_PCR_VTR_32K_SRC_SILOSC	0x00U
+#define MCHP_PCR_VTR_32K_SRC_XTAL	0x01U
+#define MCHP_PCR_VTR_32K_SRC_PIN	0x02U
+#define MCHP_PCR_VTR_32K_SRC_NONE	0x03U
+
+/*
+ * Clock monitor 32KHz period counter (Offset +C0h, RO)
+ * Clock monitor 32KHz high counter (Offset +C4h, RO)
+ * Clock monitor 32KHz period counter minimum (Offset +C8h, RW)
+ * Clock monitor 32KHz period counter maximum (Offset +CCh, RW)
+ * Clock monitor 32KHz Duty Cycle variation counter (Offset +D0h, RO)
+ * Clock monitor 32KHz Duty Cycle variation counter maximum (Offset +D4h, RW)
+ */
+#define MCHP_PCR_CLK32M_CNT_MASK	0xFFFFU
+
+/*
+ * Clock monitor 32KHz Valid Count (Offset +0xD8, RO)
+ * Clock monitor 32KHz Valid Count minimum (Offset +0xDC, RW)
+ */
+#define MCHP_PCR_CLK32M_VALID_CNT_MASK	0xFFU
+
+/* Clock monitor control register (Offset +0xE0, RW) */
+#define MCHP_PCR_CLK32M_CTRL_MASK	0x01000017U
+#define MCHP_PCR_CLK32M_CTRL_PER_EN	BIT(0)
+#define MCHP_PCR_CLK32M_CTRL_DC_EN	BIT(1)
+#define MCHP_PCR_CLK32M_CTRL_VAL_EN	BIT(2)
+#define MCHP_PCR_CLK32M_CTRL_SRC_SO	BIT(4)
+#define MCHP_PCR_CLK32M_CTRL_CLR_CNT	BIT(24)
+
+/* Clock monitor interrupt status (Offset +0xE4, R/W1C) */
+#define MCHP_PCR_CLK32M_ISTS_MASK	0x7FU
+#define MCHP_PCR_CLK32M_ISTS_PULSE_RDY	BIT(0)
+#define MCHP_PCR_CLK32M_ISTS_PASS_PER	BIT(1)
+#define MCHP_PCR_CLK32M_ISTS_PASS_DC	BIT(2)
+#define MCHP_PCR_CLK32M_ISTS_FAIL	BIT(3)
+#define MCHP_PCR_CLK32M_ISTS_STALL	BIT(4)
+#define MCHP_PCR_CLK32M_ISTS_VALID	BIT(5)
+#define MCHP_PCR_CLK32M_ISTS_UNWELL	BIT(6)
+
+/* Clock monitor interrupt enable (Offset +0xE8, RW) */
+#define MCHP_PCR_CLK32M_IEN_MASK	0x7FU
+#define MCHP_PCR_CLK32M_IEN_PULSE_RDY	BIT(0)
+#define MCHP_PCR_CLK32M_IEN_PASS_PER	BIT(1)
+#define MCHP_PCR_CLK32M_IEN_PASS_DC	BIT(2)
+#define MCHP_PCR_CLK32M_IEN_FAIL	BIT(3)
+#define MCHP_PCR_CLK32M_IEN_STALL	BIT(4)
+#define MCHP_PCR_CLK32M_IEN_VALID	BIT(5)
+#define MCHP_PCR_CLK32M_IEN_UNWELL	BIT(6)
+
+/* PCR 32KHz clock monitor uses 48 MHz for all counters */
+#define MCHP_PCR_CLK32M_CLOCK		48000000U
 
 /* PCR register access */
 #define MCHP_PCR_SLP_CTRL()		REG32(MCHP_PCR_SYS_SLP_CTRL_ADDR)
