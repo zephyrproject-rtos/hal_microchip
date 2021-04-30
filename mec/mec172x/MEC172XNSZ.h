@@ -2224,6 +2224,9 @@ typedef struct mchp_espi_saf {
 
 /** @} */ /* End of group MEC172x_Peripheral_peripheralAddr */
 
+/* ARM Cortex-M4 input clock from PLL */
+#define MCHP_EC_CLOCK_INPUT_HZ 96000000U
+
 #define MCHP_ACMP_INSTANCES 1
 #define MCHP_ACPI_EC_INSTANCES 5
 #define MCHP_ACPI_PM1_INSTANCES 1
@@ -2325,17 +2328,19 @@ typedef struct mchp_espi_saf {
 
 #define WDT_REGS ((WDT_Type *)WDT_BASE)
 
-#define B16TMR_0_REGS ((BTMR16_Type *)BTMR16_BASE(0))
-#define B16TMR_1_REGS ((BTMR16_Type *)BTMR16_BASE(1))
-#define B16TMR_2_REGS ((BTMR16_Type *)BTMR16_BASE(2))
-#define B16TMR_3_REGS ((BTMR16_Type *)BTMR16_BASE(3))
-#define B32TMR_0_REGS ((BTMR32_Type *)BTMR32_BASE(0))
-#define B32TMR_1_REGS ((BTMR32_Type *)BTMR32_BASE(1))
+#define BTMR16_0_REGS ((BTMR16_Type *)BTMR16_BASE(0))
+#define BTMR16_1_REGS ((BTMR16_Type *)BTMR16_BASE(1))
+#define BTMR16_2_REGS ((BTMR16_Type *)BTMR16_BASE(2))
+#define BTMR16_3_REGS ((BTMR16_Type *)BTMR16_BASE(3))
+#define BTMR32_0_REGS ((BTMR32_Type *)BTMR32_BASE(0))
+#define BTMR32_1_REGS ((BTMR32_Type *)BTMR32_BASE(1))
 /* backwards compatible aliases */
-#define B16TMR0_REGS B16TMR_0_REGS
-#define B16TMR1_REGS B16TMR_1_REGS
-#define B32TMR0_REGS B32TMR_0_REGS
-#define B32TMR1_REGS B32TMR_1_REGS
+#define B16TMR0_REGS BTMR16_0_REGS
+#define B16TMR1_REGS BTMR16_1_REGS
+#define B16TMR2_REGS BTMR16_2_REGS
+#define B16TMR3_REGS BTMR16_3_REGS
+#define B32TMR0_REGS BTMR32_0_REGS
+#define B32TMR1_REGS BTMR32_1_REGS
 
 #define CTMR_0_REGS ((CTMR_Type *)CTMR_BASE(0))
 #define CTMR_1_REGS ((CTMR_Type *)CTMR_BASE(1))
@@ -2343,6 +2348,8 @@ typedef struct mchp_espi_saf {
 #define CTMR_3_REGS ((CTMR_Type *)CTMR_BASE(3))
 
 #define CCT_0_REGS ((CCT_Type *)(CCT_0_BASE))
+/* backwards compatible alias */
+#define CCT_REGS CCT_0_REGS
 
 #define RCID_0_REGS ((RCID_Type *)RCID_BASE(0))
 #define RCID_1_REGS ((RCID_Type *)RCID_BASE(1))
@@ -2399,6 +2406,8 @@ typedef struct mchp_espi_saf {
 #define SPIP_0_REGS ((SPIP_Type *)SPIP_0_BASE)
 
 #define RTMR_0_REGS ((RTMR_Type *)RTMR_0_BASE)
+/* backwards compatible alias */
+#define RTMR_REGS RTMR_0_REGS
 
 #define ADC_0_REGS ((ADC_Type *)ADC_0_BASE)
 
