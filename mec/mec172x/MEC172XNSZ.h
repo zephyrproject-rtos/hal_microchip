@@ -881,6 +881,7 @@ typedef struct vbatr_regs {
 	uint32_t RSVD2[5];
 	__IOM uint32_t MCNT_LO;         /*! (@ 0x0020) VBATR monotonic count lo */
 	__IOM uint32_t MCNT_HI;         /*! (@ 0x0024) VBATR monotonic count hi */
+	uint32_t RSVD3[3];
 	__IOM uint32_t EMBRD_EN;        /*! (@ 0x0034) VBATR Embedded Reset
 	                                       De-bounce Enable */
 } VBATR_Type;
