@@ -13,4 +13,5 @@ MEC1501 component style is located at:
 
 https://github.com/MicrochipTech/hal_microchip
 
-Version: 1.2.0
+Version: 1.2.1
+Add missing eSPI Virtual Wires groups 8 - 10 GIRQ definitions.
