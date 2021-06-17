@@ -42,18 +42,18 @@
 /* ================		PORT80 Capture			===========*/
 /* ========================================================================*/
 
-#define MCHP_PORT80_CAP_0_BASE_ADDR		0x400F8000ul
-#define MCHP_PORT80_CAP_1_BASE_ADDR		0x400F8000ul
+#define MCHP_PORT80_CAP_0_BASE_ADDR		0x400f8000u
+#define MCHP_PORT80_CAP_1_BASE_ADDR		0x400f8000u
 
 #define MCHP_PORT80_CAP_0_GIRQ			15u
 #define MCHP_PORT80_CAP_0_GIRQ_POS		22u
-#define MCHP_PORT80_CAP_0_GIRQ_VAL		(1ul << 22)
+#define MCHP_PORT80_CAP_0_GIRQ_VAL		(1u << 22)
 #define MCHP_PORT80_CAP_0_NVIC_AGGR		7u
 #define MCHP_PORT80_CAP_0_NVIC_DIRECT		62u
 
 #define MCHP_PORT80_CAP_1_GIRQ			15u
 #define MCHP_PORT80_CAP_1_GIRQ_POS		23u
-#define MCHP_PORT80_CAP_1_GIRQ_VAL		(1ul << 23)
+#define MCHP_PORT80_CAP_1_GIRQ_VAL		(1u << 23)
 #define MCHP_PORT80_CAP_1_NVIC_AGGR		7u
 #define MCHP_PORT80_CAP_1_NVIC_DIRECT		63u
 
@@ -63,58 +63,58 @@
 /*
  * HOST_DATA - Write-Only
  */
-#define MCHP_PORT80_CAP_HOST_DATA_REG_MASK	0xFFul
+#define MCHP_PORT80_CAP_HOST_DATA_REG_MASK	0xffu
 
 /*
  * EC_DATA - Read-Only. Read as 32-bit.
  * b[7:0]  = Read captured data byte from FIFO
  * b[31:8] = Timestamp if enabled.
  */
-#define MCHP_PORT80_CAP_EC_DATA_REG_MASK	0xFFFFFFFFul
+#define MCHP_PORT80_CAP_EC_DATA_REG_MASK	0xffffffffu
 #define MCHP_PORT80_CAP_EC_DATA_POS		0u
-#define MCHP_PORT80_CAP_EC_DATA_MASK		0xFFul
+#define MCHP_PORT80_CAP_EC_DATA_MASK		0xffu
 #define MCHP_PORT80_CAP_EC_DATA_TIMESTAMP_POS	8u
-#define MCHP_PORT80_CAP_EC_DATA_TIMESTAMP_MASK0	0x00FFFFFFul
-#define MCHP_PORT80_CAP_EC_DATA_TIMESTAMP_MASK	0xFFFFFF00ul
+#define MCHP_PORT80_CAP_EC_DATA_TIMESTAMP_MASK0	0x00ffffffu
+#define MCHP_PORT80_CAP_EC_DATA_TIMESTAMP_MASK	0xffffff00u
 
 /*
  * Configuration
  */
-#define MCHP_PORT80_CAP_CFG_REG_MASK		0xFFul
+#define MCHP_PORT80_CAP_CFG_REG_MASK		0xffu
 /* Flush FIFO (Write-Only) */
 #define MCHP_PORT80_CAP_CFG_FLUSH_POS		1u
-#define MCHP_PORT80_CAP_CFG_FLUSH		(1ul << 1)
+#define MCHP_PORT80_CAP_CFG_FLUSH		(1u << 1)
 /* Reset Timestamp (Write-Only) */
 #define MCHP_PORT80_CAP_CFG_TSRST_POS		2u
-#define MCHP_PORT80_CAP_CFG_TSRST		(1ul << 2u)
+#define MCHP_PORT80_CAP_CFG_TSRST		(1u << 2u)
 /* Timestamp clock divider */
 #define MCHP_PORT80_CAP_CFG_TSDIV_POS		3u
-#define MCHP_PORT80_CAP_CFG_TSDIV_MASK0		0x03ul
-#define MCHP_PORT80_CAP_CFG_TSDIV_MASK		(0x03ul << 3)
-#define MCHP_PORT80_CAP_CFG_TSDIV_6MHZ		(0x00ul << 3)
-#define MCHP_PORT80_CAP_CFG_TSDIV_3MHZ		(0x01ul << 3)
-#define MCHP_PORT80_CAP_CFG_TSDIV_1P5MHZ	(0x02ul << 3)
-#define MCHP_PORT80_CAP_CFG_TSDIV_750KHZ	(0x03ul << 3)
+#define MCHP_PORT80_CAP_CFG_TSDIV_MASK0		0x03u
+#define MCHP_PORT80_CAP_CFG_TSDIV_MASK		(0x03u << 3)
+#define MCHP_PORT80_CAP_CFG_TSDIV_6MHZ		(0x00u << 3)
+#define MCHP_PORT80_CAP_CFG_TSDIV_3MHZ		(0x01u << 3)
+#define MCHP_PORT80_CAP_CFG_TSDIV_1P5MHZ	(0x02u << 3)
+#define MCHP_PORT80_CAP_CFG_TSDIV_750KHZ	(0x03u << 3)
 /* Timestamp Enable */
 #define MCHP_PORT80_CAP_CFG_TSEN_POS		5u
-#define MCHP_PORT80_CAP_CFG_TSEN_MASK		(1ul << 5)
-#define MCHP_PORT80_CAP_CFG_TSEN_ENABLE		(1ul << 5)
+#define MCHP_PORT80_CAP_CFG_TSEN_MASK		(1u << 5)
+#define MCHP_PORT80_CAP_CFG_TSEN_ENABLE		(1u << 5)
 /* FIFO threshold */
 #define MCHP_PORT80_CAP_CFG_FIFO_THR_POS	6u
-#define MCHP_PORT80_CAP_CFG_FIFO_THR_MASK0	0x03ul
-#define MCHP_PORT80_CAP_CFG_FIFO_THR_MASK	(0x03ul << 6)
-#define MCHP_PORT80_CAP_CFG_FIFO_THR_1		(0x00ul << 6)
-#define MCHP_PORT80_CAP_CFG_FIFO_THR_4		(0x01ul << 6)
-#define MCHP_PORT80_CAP_CFG_FIFO_THR_8		(0x02ul << 6)
-#define MCHP_PORT80_CAP_CFG_FIFO_THR_14		(0x03ul << 6)
+#define MCHP_PORT80_CAP_CFG_FIFO_THR_MASK0	0x03u
+#define MCHP_PORT80_CAP_CFG_FIFO_THR_MASK	(0x03u << 6)
+#define MCHP_PORT80_CAP_CFG_FIFO_THR_1		(0x00u << 6)
+#define MCHP_PORT80_CAP_CFG_FIFO_THR_4		(0x01u << 6)
+#define MCHP_PORT80_CAP_CFG_FIFO_THR_8		(0x02u << 6)
+#define MCHP_PORT80_CAP_CFG_FIFO_THR_14		(0x03u << 6)
 
 /*
  * Status - Read-only does not clear status on read.
  */
-#define MCHP_PORT80_CAP_STS_REG_MASK		0x03ul;
+#define MCHP_PORT80_CAP_STS_REG_MASK		0x03u;
 /* Bit[0] FIFO not empty. Cleared by FW reading all content from FIFO */
 #define MCHP_PORT80_CAP_STS_NOT_EMPTY_POS	0u
-#define MCHP_PORT80_CAP_STS_NOT_EMPTY		(1ul << 0)
+#define MCHP_PORT80_CAP_STS_NOT_EMPTY		(1u << 0)
 /* Bit[1] Overrun. Host wrote data when FIFO is full */
 #define MCHP_PORT80_CAP_STS_OVERRUN_POS		1u
 #define MCHP_PORT80_CAP_STS_OVERRUN		(1u << 1)
@@ -122,14 +122,14 @@
 /*
  * Count - R/W access to Port 80 counter
  */
-#define MCHP_PORT80_CAP_CNT_REG_MASK		0xFFFFFF00ul
+#define MCHP_PORT80_CAP_CNT_REG_MASK		0xffffff00u
 #define MCHP_PORT80_CAP_CNT_POS			8u
 
 /*
  * Port80 Capture Logical Device Activate register
  */
-#define MCHP_PORT80_CAP_ACTV_MASK		0x01ul
-#define MCHP_PORT80_CAP_ACTV_ENABLE		0x01ul
+#define MCHP_PORT80_CAP_ACTV_MASK		0x01u
+#define MCHP_PORT80_CAP_ACTV_ENABLE		0x01u
 
 /**
   * @brief Fast Port80 Capture Registers (PORT80_CAP_Type)
@@ -141,8 +141,8 @@ typedef struct port80cap_regs
 	__IM  uint32_t EC_DATA;		/*!< (@ 0x0100) EC Data. Read-only. */
 	__IOM uint32_t CONFIG;		/*!< (@ 0x0104) Configuration Mix of R/W and WO */
 	__IOM uint32_t STATUS;		/*!< (@ 0x0108) Status. Read-only */
-	__IOM uint32_t COUNT;		/*!< (@ 0x010C) Counter. R/W */
-	uint8_t RSVD3[0x0330ul - 0x0110ul];
+	__IOM uint32_t COUNT;		/*!< (@ 0x010c) Counter. R/W */
+	uint8_t RSVD3[0x0330u - 0x0110u];
 	__IOM uint32_t ACTV;		/*!< (@ 0x0330) Logical device Activate */
 } PORT80_CAP_Type;
 

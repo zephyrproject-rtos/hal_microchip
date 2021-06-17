@@ -303,132 +303,132 @@ typedef enum IRQn {
   */
 
 /* Peripheral and SRAM base address */
-#define CODE_SRAM_BASE          0x000E0000UL	/*!< (CODE SRAM ) Base Address */
-#define DATA_SRAM_BASE          0x00118000UL	/*!< (DATA SRAM ) Base Address */
-#define PERIPH_BASE             0x40000000UL	/*!< (Peripheral) Base Address */
+#define CODE_SRAM_BASE          0x000e0000u	/*!< (CODE SRAM ) Base Address */
+#define DATA_SRAM_BASE          0x00118000u	/*!< (DATA SRAM ) Base Address */
+#define PERIPH_BASE             0x40000000u	/*!< (Peripheral) Base Address */
 
 /* Peripheral memory map */
-#define WDT_BASE            (PERIPH_BASE + 0x0400ul)	/*!< (WDT0   )  Base Address */
-#define B16TMR0_BASE        (PERIPH_BASE + 0x0C00ul)	/*!< (B16TMR0 ) Base Address */
-#define B16TMR1_BASE        (PERIPH_BASE + 0x0C20ul)	/*!< (B16TMR1 ) Base Address */
-#define B32TMR0_BASE        (PERIPH_BASE + 0x0C80ul)	/*!< (B32TMR0 ) Base Address */
-#define B32TMR1_BASE        (PERIPH_BASE + 0x0CA0ul)	/*!< (B32TMR1 ) Base Address */
-#define CCT_BASE            (PERIPH_BASE + 0x1000ul)	/*!< (CCT0 ) Base Address */
-#define DMA_BASE            (PERIPH_BASE + 0x2400ul)	/*!< (DMA ) Base Address */
+#define WDT_BASE            (PERIPH_BASE + 0x0400u)	/*!< (WDT0   )  Base Address */
+#define B16TMR0_BASE        (PERIPH_BASE + 0x0c00u)	/*!< (B16TMR0 ) Base Address */
+#define B16TMR1_BASE        (PERIPH_BASE + 0x0c20u)	/*!< (B16TMR1 ) Base Address */
+#define B32TMR0_BASE        (PERIPH_BASE + 0x0c80u)	/*!< (B32TMR0 ) Base Address */
+#define B32TMR1_BASE        (PERIPH_BASE + 0x0ca0u)	/*!< (B32TMR1 ) Base Address */
+#define CCT_BASE            (PERIPH_BASE + 0x1000u)	/*!< (CCT0 ) Base Address */
+#define DMA_BASE            (PERIPH_BASE + 0x2400u)	/*!< (DMA ) Base Address */
 #define DMA_CHAN_BASE(n)    (DMA_BASE + (((n)+1)<<6))
-#define DMA_CH0_BASE        (DMA_BASE + 0x0040ul)	/*!< (DMA Chan 00 ) Base Address */
-#define DMA_CH1_BASE        (DMA_BASE + 0x0080ul)	/*!< (DMA Chan 01 ) Base Address */
-#define DMA_CH2_BASE        (DMA_BASE + 0x00C0ul)	/*!< (DMA Chan 02 ) Base Address */
-#define DMA_CH3_BASE        (DMA_BASE + 0x0100ul)	/*!< (DMA Chan 03 ) Base Address */
-#define DMA_CH4_BASE        (DMA_BASE + 0x0140ul)	/*!< (DMA Chan 04 ) Base Address */
-#define DMA_CH5_BASE        (DMA_BASE + 0x0180ul)	/*!< (DMA Chan 05 ) Base Address */
-#define DMA_CH6_BASE        (DMA_BASE + 0x01C0ul)	/*!< (DMA Chan 06 ) Base Address */
-#define DMA_CH7_BASE        (DMA_BASE + 0x0200ul)	/*!< (DMA Chan 07 ) Base Address */
-#define DMA_CH8_BASE        (DMA_BASE + 0x0240ul)	/*!< (DMA Chan 08 ) Base Address */
-#define DMA_CH9_BASE        (DMA_BASE + 0x0280ul)	/*!< (DMA Chan 09 ) Base Address */
-#define DMA_CH10_BASE       (DMA_BASE + 0x02C0ul)	/*!< (DMA Chan 10 ) Base Address */
-#define DMA_CH11_BASE       (DMA_BASE + 0x0300ul)	/*!< (DMA Chan 11 ) Base Address */
-#define EEPROM_CTRL_BASE    (PERIPH_BASE + 0x2C00ul)	/*!< (EEPROM_CTRL ) Base Address */
-#define PROCHOT_BASE        (PERIPH_BASE + 0x3400ul)	/*!< (PROCHOT ) Base Address */
-#define SMB_BASE(n)         (PERIPH_BASE + 0x4000ul + ((n)<<10))
-#define SMB0_BASE           (PERIPH_BASE + 0x4000ul)	/*!< (SMB0 ) Base Address */
-#define SMB1_BASE           (PERIPH_BASE + 0x4400ul)	/*!< (SMB1 ) Base Address */
-#define SMB2_BASE           (PERIPH_BASE + 0x4800ul)	/*!< (SMB2 ) Base Address */
-#define SMB3_BASE           (PERIPH_BASE + 0x4C00ul)	/*!< (SMB3 ) Base Address */
-#define SMB4_BASE           (PERIPH_BASE + 0x5000ul)	/*!< (SMB4 ) Base Address */
-#define I2C_BASE(n)         (PERIPH_BASE + 0x5100ul + ((n)<<8))
-#define I2C0_BASE           (PERIPH_BASE + 0x5100ul)	/*!< (I2C0 ) Base Address */
-#define I2C1_BASE           (PERIPH_BASE + 0x5200ul)	/*!< (I2C1 ) Base Address */
-#define I2C2_BASE           (PERIPH_BASE + 0x5300ul)	/*!< (I2C2 ) Base Address */
-#define PWM_BASE(n)         (PERIPH_BASE + 0x5800ul + ((n)<<4))
-#define PWM0_BASE           (PERIPH_BASE + 0x5800ul)	/*!< (PWM0 ) Base Address */
-#define PWM1_BASE           (PERIPH_BASE + 0x5810ul)	/*!< (PWM1 ) Base Address */
-#define PWM2_BASE           (PERIPH_BASE + 0x5820ul)	/*!< (PWM2 ) Base Address */
-#define PWM3_BASE           (PERIPH_BASE + 0x5830ul)	/*!< (PWM3 ) Base Address */
-#define PWM4_BASE           (PERIPH_BASE + 0x5840ul)	/*!< (PWM4 ) Base Address */
-#define PWM5_BASE           (PERIPH_BASE + 0x5850ul)	/*!< (PWM5 ) Base Address */
-#define PWM6_BASE           (PERIPH_BASE + 0x5860ul)	/*!< (PWM6 ) Base Address */
-#define PWM7_BASE           (PERIPH_BASE + 0x5870ul)	/*!< (PWM7 ) Base Address */
-#define PWM8_BASE           (PERIPH_BASE + 0x5880ul)	/*!< (PWM8 ) Base Address */
-#define TACH_BASE(n)        (PERIPH_BASE + 0x6000ul + ((n)<<4))
-#define TACH0_BASE          (PERIPH_BASE + 0x6000ul)	/*!< (TACH0 ) Base Address */
-#define TACH1_BASE          (PERIPH_BASE + 0x6010ul)	/*!< (TACH1 ) Base Address */
-#define TACH2_BASE          (PERIPH_BASE + 0x6020ul)	/*!< (TACH2 ) Base Address */
-#define TACH3_BASE          (PERIPH_BASE + 0x6030ul)	/*!< (TACH3 ) Base Address */
-#define PECI_BASE           (PERIPH_BASE + 0x6400ul)	/*!< (PECI ) Base Address */
-#define HDMI_CEC_BASE       (PERIPH_BASE + 0x6800ul)	/*!< (HDMI_CEC ) Base Address */
-#define SPISLV_BASE         (PERIPH_BASE + 0x7000ul)	/*!< (SPISLV ) Base Address */
-#define RTMR_BASE           (PERIPH_BASE + 0x7400ul)	/*!< (RTMR ) Base Address */
-#define ADC_BASE            (PERIPH_BASE + 0x7C00ul)	/*!< (ADC ) Base Address */
-#define TFDP_BASE           (PERIPH_BASE + 0x8C00ul)	/*!< (TFDP ) Base Address */
-#define PS2_0_BASE          (PERIPH_BASE + 0x9000ul)	/*!< (PS2 0 ) Base Address */
-#define PS2_1_BASE          (PERIPH_BASE + 0x9040ul)	/*!< (PS2 1 ) Base Address */
-#define HTMR0_BASE          (PERIPH_BASE + 0x9800ul)	/*!< (HTMR0 ) Base Address */
-#define HTMR1_BASE          (PERIPH_BASE + 0x9820ul)	/*!< (HTMR1 ) Base Address */
-#define KEYSCAN_BASE        (PERIPH_BASE + 0x9C00ul)	/*!< (KEYSCAN ) Base Address */
-#define VBATR_BASE          (PERIPH_BASE + 0xA400ul)	/*!< (VBATR ) Base Address */
-#define VBATM_BASE          (PERIPH_BASE + 0xA800ul)	/*!< (VBATM ) Base Address */
-#define WKTMR_BASE          (PERIPH_BASE + 0xAC80ul)	/*!< (WKTMR ) Base Address */
-#define VCI_BASE            (PERIPH_BASE + 0xAE00ul)	/*!< (VCI ) Base Address */
-#define LED0_BASE           (PERIPH_BASE + 0xB800ul)	/*!< (BBLED0 ) Base Address */
-#define LED1_BASE           (PERIPH_BASE + 0xB900ul)	/*!< (BBLED1 ) Base Address */
-#define LED2_BASE           (PERIPH_BASE + 0xBA00ul)	/*!< (BBLED2 ) Base Address */
-#define ECIA_BASE           (PERIPH_BASE + 0xE000ul)	/*!< (ECIA ) Base Address */
-#define ECS_BASE            (PERIPH_BASE + 0xFC00ul)	/*!< (ECS ) Base Address */
-#define QMSPI_BASE          (PERIPH_BASE + 0x70000ul)	/*!< (QMSPI0 ) Base Address */
-#define PCR_BASE            (PERIPH_BASE + 0x80100ul)	/*!< (PCR ) Base Address */
-#define GPIO_BASE           (PERIPH_BASE + 0x81000ul)	/*!< (GPIO ) Base Address */
+#define DMA_CH0_BASE        (DMA_BASE + 0x0040u)	/*!< (DMA Chan 00 ) Base Address */
+#define DMA_CH1_BASE        (DMA_BASE + 0x0080u)	/*!< (DMA Chan 01 ) Base Address */
+#define DMA_CH2_BASE        (DMA_BASE + 0x00c0u)	/*!< (DMA Chan 02 ) Base Address */
+#define DMA_CH3_BASE        (DMA_BASE + 0x0100u)	/*!< (DMA Chan 03 ) Base Address */
+#define DMA_CH4_BASE        (DMA_BASE + 0x0140u)	/*!< (DMA Chan 04 ) Base Address */
+#define DMA_CH5_BASE        (DMA_BASE + 0x0180u)	/*!< (DMA Chan 05 ) Base Address */
+#define DMA_CH6_BASE        (DMA_BASE + 0x01c0u)	/*!< (DMA Chan 06 ) Base Address */
+#define DMA_CH7_BASE        (DMA_BASE + 0x0200u)	/*!< (DMA Chan 07 ) Base Address */
+#define DMA_CH8_BASE        (DMA_BASE + 0x0240u)	/*!< (DMA Chan 08 ) Base Address */
+#define DMA_CH9_BASE        (DMA_BASE + 0x0280u)	/*!< (DMA Chan 09 ) Base Address */
+#define DMA_CH10_BASE       (DMA_BASE + 0x02c0u)	/*!< (DMA Chan 10 ) Base Address */
+#define DMA_CH11_BASE       (DMA_BASE + 0x0300u)	/*!< (DMA Chan 11 ) Base Address */
+#define EEPROM_CTRL_BASE    (PERIPH_BASE + 0x2c00u)	/*!< (EEPROM_CTRL ) Base Address */
+#define PROCHOT_BASE        (PERIPH_BASE + 0x3400u)	/*!< (PROCHOT ) Base Address */
+#define SMB_BASE(n)         (PERIPH_BASE + 0x4000u + ((n)<<10))
+#define SMB0_BASE           (PERIPH_BASE + 0x4000u)	/*!< (SMB0 ) Base Address */
+#define SMB1_BASE           (PERIPH_BASE + 0x4400u)	/*!< (SMB1 ) Base Address */
+#define SMB2_BASE           (PERIPH_BASE + 0x4800u)	/*!< (SMB2 ) Base Address */
+#define SMB3_BASE           (PERIPH_BASE + 0x4c00u)	/*!< (SMB3 ) Base Address */
+#define SMB4_BASE           (PERIPH_BASE + 0x5000u)	/*!< (SMB4 ) Base Address */
+#define I2C_BASE(n)         (PERIPH_BASE + 0x5100u + ((n)<<8))
+#define I2C0_BASE           (PERIPH_BASE + 0x5100u)	/*!< (I2C0 ) Base Address */
+#define I2C1_BASE           (PERIPH_BASE + 0x5200u)	/*!< (I2C1 ) Base Address */
+#define I2C2_BASE           (PERIPH_BASE + 0x5300u)	/*!< (I2C2 ) Base Address */
+#define PWM_BASE(n)         (PERIPH_BASE + 0x5800u + ((n)<<4))
+#define PWM0_BASE           (PERIPH_BASE + 0x5800u)	/*!< (PWM0 ) Base Address */
+#define PWM1_BASE           (PERIPH_BASE + 0x5810u)	/*!< (PWM1 ) Base Address */
+#define PWM2_BASE           (PERIPH_BASE + 0x5820u)	/*!< (PWM2 ) Base Address */
+#define PWM3_BASE           (PERIPH_BASE + 0x5830u)	/*!< (PWM3 ) Base Address */
+#define PWM4_BASE           (PERIPH_BASE + 0x5840u)	/*!< (PWM4 ) Base Address */
+#define PWM5_BASE           (PERIPH_BASE + 0x5850u)	/*!< (PWM5 ) Base Address */
+#define PWM6_BASE           (PERIPH_BASE + 0x5860u)	/*!< (PWM6 ) Base Address */
+#define PWM7_BASE           (PERIPH_BASE + 0x5870u)	/*!< (PWM7 ) Base Address */
+#define PWM8_BASE           (PERIPH_BASE + 0x5880u)	/*!< (PWM8 ) Base Address */
+#define TACH_BASE(n)        (PERIPH_BASE + 0x6000u + ((n)<<4))
+#define TACH0_BASE          (PERIPH_BASE + 0x6000u)	/*!< (TACH0 ) Base Address */
+#define TACH1_BASE          (PERIPH_BASE + 0x6010u)	/*!< (TACH1 ) Base Address */
+#define TACH2_BASE          (PERIPH_BASE + 0x6020u)	/*!< (TACH2 ) Base Address */
+#define TACH3_BASE          (PERIPH_BASE + 0x6030u)	/*!< (TACH3 ) Base Address */
+#define PECI_BASE           (PERIPH_BASE + 0x6400u)	/*!< (PECI ) Base Address */
+#define HDMI_CEC_BASE       (PERIPH_BASE + 0x6800u)	/*!< (HDMI_CEC ) Base Address */
+#define SPIP_BASE           (PERIPH_BASE + 0x7000u)	/*!< (SPIP ) Base Address */
+#define RTMR_BASE           (PERIPH_BASE + 0x7400u)	/*!< (RTMR ) Base Address */
+#define ADC_BASE            (PERIPH_BASE + 0x7c00u)	/*!< (ADC ) Base Address */
+#define TFDP_BASE           (PERIPH_BASE + 0x8c00u)	/*!< (TFDP ) Base Address */
+#define PS2_0_BASE          (PERIPH_BASE + 0x9000u)	/*!< (PS2 0 ) Base Address */
+#define PS2_1_BASE          (PERIPH_BASE + 0x9040u)	/*!< (PS2 1 ) Base Address */
+#define HTMR0_BASE          (PERIPH_BASE + 0x9800u)	/*!< (HTMR0 ) Base Address */
+#define HTMR1_BASE          (PERIPH_BASE + 0x9820u)	/*!< (HTMR1 ) Base Address */
+#define KEYSCAN_BASE        (PERIPH_BASE + 0x9c00u)	/*!< (KEYSCAN ) Base Address */
+#define VBATR_BASE          (PERIPH_BASE + 0xa400u)	/*!< (VBATR ) Base Address */
+#define VBATM_BASE          (PERIPH_BASE + 0xa800u)	/*!< (VBATM ) Base Address */
+#define WKTMR_BASE          (PERIPH_BASE + 0xac80u)	/*!< (WKTMR ) Base Address */
+#define VCI_BASE            (PERIPH_BASE + 0xae00u)	/*!< (VCI ) Base Address */
+#define LED0_BASE           (PERIPH_BASE + 0xb800u)	/*!< (BBLED0 ) Base Address */
+#define LED1_BASE           (PERIPH_BASE + 0xb900u)	/*!< (BBLED1 ) Base Address */
+#define LED2_BASE           (PERIPH_BASE + 0xba00u)	/*!< (BBLED2 ) Base Address */
+#define ECIA_BASE           (PERIPH_BASE + 0xe000u)	/*!< (ECIA ) Base Address */
+#define ECS_BASE            (PERIPH_BASE + 0xfc00u)	/*!< (ECS ) Base Address */
+#define QMSPI_BASE          (PERIPH_BASE + 0x70000u)	/*!< (QMSPI0 ) Base Address */
+#define PCR_BASE            (PERIPH_BASE + 0x80100u)	/*!< (PCR ) Base Address */
+#define GPIO_BASE           (PERIPH_BASE + 0x81000u)	/*!< (GPIO ) Base Address */
 #define GPIO_CTRL_BASE      (GPIO_BASE)	/*!< (GPIO ) Control Base Address */
-#define GPIO_PARIN_BASE     (GPIO_BASE + 0x0300ul)	/*!< (GPIO Parallel I/O) Base Address */
-#define GPIO_PAROUT_BASE    (GPIO_BASE + 0x0380ul)	/*!< (GPIO Parallel I/O) Base Address */
-#define GPIO_LOCK_BASE      (GPIO_BASE + 0x03E8ul)	/*!< (GPIO Lock) Base Address */
-#define GPIO_CTRL2_BASE     (GPIO_BASE + 0x0500ul)	/*!< (GPIO ) Control2 Base Address */
-#define OTP_BASE            (PERIPH_BASE + 0x82000ul)	/*!< (OTP ) Base Address */
-#define MBOX_BASE           (PERIPH_BASE + 0xF0000ul)	/*!< (MBOX ) Base Address */
-#define KBC_BASE            (PERIPH_BASE + 0xF0400ul)	/*!< (KBC ) Base Address */
-#define ACPI_EC_BASE(n)     (PERIPH_BASE + 0xF0800ul + ((n)<<10))
-#define ACPI_EC_0_BASE      (PERIPH_BASE + 0xF0800ul)	/*!< (ACPI EC0 ) Base Address */
-#define ACPI_EC_1_BASE      (PERIPH_BASE + 0xF0C00ul)	/*!< (ACPI EC1 ) Base Address */
-#define ACPI_EC_2_BASE      (PERIPH_BASE + 0xF1000ul)	/*!< (ACPI EC2 ) Base Address */
-#define ACPI_EC_3_BASE      (PERIPH_BASE + 0xF1400ul)	/*!< (ACPI EC3 ) Base Address */
-#define ACPI_PM1_BASE       (PERIPH_BASE + 0xF1C00ul)	/*!< (ACPI PM1 ) Base Address */
-#define PORT92_BASE         (PERIPH_BASE + 0xF2000ul)	/*!< (PORT92 ) Base Address */
-#define UART_BASE(n)        (PERIPH_BASE + 0xF2400ul + ((n)<<10))
-#define UART0_BASE          (PERIPH_BASE + 0xF2400ul)	/*!< (UART0 ) Base Address */
-#define UART1_BASE          (PERIPH_BASE + 0xF2800ul)	/*!< (UART1 ) Base Address */
-#define UART2_BASE          (PERIPH_BASE + 0xF2C00ul)	/*!< (UART2 ) Base Address */
-#define ESPI_IO_BASE        (PERIPH_BASE + 0xF3400ul)	/*!< (ESPI IO Component) Base Address */
-#define ESPI_IO_PC_BASE     ((ESPI_IO_BASE) + 0x100ul)	/*!< (ESPI IO Peripheral Channel) Base Address */
-#define ESPI_IO_HOST_BAR_BASE ((ESPI_IO_BASE) + 0x120ul)	/*!< (ESPI IO Host IO BAR) Base Address */
-#define ESPI_IO_LTR_BASE    ((ESPI_IO_BASE) + 0x220ul)	/*!< (ESPI IO LTR) Base Address */
-#define ESPI_IO_OOB_BASE    ((ESPI_IO_BASE) + 0x240ul)	/*!< (ESPI IO Out-of-Band Channel) Base Address */
-#define ESPI_IO_FC_BASE     ((ESPI_IO_BASE) + 0x280ul)	/*!< (ESPI IO Flash Channel) Base Address */
-#define ESPI_IO_CAP_BASE    ((ESPI_IO_BASE) + 0x2B0ul)	/*!< (ESPI IO Capabilities) Base Address */
-#define ESPI_IO_EC_BAR_BASE ((ESPI_IO_BASE) + 0x330ul)	/*!< (ESPI IO EC IO BAR) Base Address */
-#define ESPI_IO_VW_BASE     ((ESPI_IO_BASE) + 0x2B0ul)	/*!< (ESPI IO EC IO VW registers) Base Address */
-#define ESPI_IO_SIRQ_BASE   ((ESPI_IO_BASE) + 0x3A0ul)	/*!< (ESPI IO Seril IRQ registers) Base Address */
+#define GPIO_PARIN_BASE     (GPIO_BASE + 0x0300u)	/*!< (GPIO Parallel I/O) Base Address */
+#define GPIO_PAROUT_BASE    (GPIO_BASE + 0x0380u)	/*!< (GPIO Parallel I/O) Base Address */
+#define GPIO_LOCK_BASE      (GPIO_BASE + 0x03e8u)	/*!< (GPIO Lock) Base Address */
+#define GPIO_CTRL2_BASE     (GPIO_BASE + 0x0500u)	/*!< (GPIO ) Control2 Base Address */
+#define OTP_BASE            (PERIPH_BASE + 0x82000u)	/*!< (OTP ) Base Address */
+#define MBOX_BASE           (PERIPH_BASE + 0xf0000u)	/*!< (MBOX ) Base Address */
+#define KBC_BASE            (PERIPH_BASE + 0xf0400u)	/*!< (KBC ) Base Address */
+#define ACPI_EC_BASE(n)     (PERIPH_BASE + 0xf0800u + ((n)<<10))
+#define ACPI_EC_0_BASE      (PERIPH_BASE + 0xf0800u)	/*!< (ACPI EC0 ) Base Address */
+#define ACPI_EC_1_BASE      (PERIPH_BASE + 0xf0c00u)	/*!< (ACPI EC1 ) Base Address */
+#define ACPI_EC_2_BASE      (PERIPH_BASE + 0xf1000u)	/*!< (ACPI EC2 ) Base Address */
+#define ACPI_EC_3_BASE      (PERIPH_BASE + 0xf1400u)	/*!< (ACPI EC3 ) Base Address */
+#define ACPI_PM1_BASE       (PERIPH_BASE + 0xf1c00u)	/*!< (ACPI PM1 ) Base Address */
+#define PORT92_BASE         (PERIPH_BASE + 0xf2000u)	/*!< (PORT92 ) Base Address */
+#define UART_BASE(n)        (PERIPH_BASE + 0xf2400u + ((n)<<10))
+#define UART0_BASE          (PERIPH_BASE + 0xf2400u)	/*!< (UART0 ) Base Address */
+#define UART1_BASE          (PERIPH_BASE + 0xf2800u)	/*!< (UART1 ) Base Address */
+#define UART2_BASE          (PERIPH_BASE + 0xf2c00u)	/*!< (UART2 ) Base Address */
+#define ESPI_IO_BASE        (PERIPH_BASE + 0xf3400u)	/*!< (ESPI IO Component) Base Address */
+#define ESPI_IO_PC_BASE     ((ESPI_IO_BASE) + 0x100u)	/*!< (ESPI IO Peripheral Channel) Base Address */
+#define ESPI_IO_HOST_BAR_BASE ((ESPI_IO_BASE) + 0x120u)	/*!< (ESPI IO Host IO BAR) Base Address */
+#define ESPI_IO_LTR_BASE    ((ESPI_IO_BASE) + 0x220u)	/*!< (ESPI IO LTR) Base Address */
+#define ESPI_IO_OOB_BASE    ((ESPI_IO_BASE) + 0x240u)	/*!< (ESPI IO Out-of-Band Channel) Base Address */
+#define ESPI_IO_FC_BASE     ((ESPI_IO_BASE) + 0x280u)	/*!< (ESPI IO Flash Channel) Base Address */
+#define ESPI_IO_CAP_BASE    ((ESPI_IO_BASE) + 0x2b0u)	/*!< (ESPI IO Capabilities) Base Address */
+#define ESPI_IO_EC_BAR_BASE ((ESPI_IO_BASE) + 0x330u)	/*!< (ESPI IO EC IO BAR) Base Address */
+#define ESPI_IO_VW_BASE     ((ESPI_IO_BASE) + 0x2b0u)	/*!< (ESPI IO EC IO VW registers) Base Address */
+#define ESPI_IO_SIRQ_BASE   ((ESPI_IO_BASE) + 0x3a0u)	/*!< (ESPI IO Seril IRQ registers) Base Address */
 
-#define ESPI_MEM_BASE       (PERIPH_BASE + 0xF3800ul)	/*!< (ESPI Memory Component) Base Address */
-#define ESPI_MEM_EC_BAR_BASE ((ESPI_MEM_BASE) + 0x0130ul)	/*!< (ESPI Logical Device Memory BAR EC */
-#define ESPI_MEM_HOST_BAR_BASE ((ESPI_MEM_BASE) + 0x0330ul)	/*!< (ESPI Logical Device Memory BAR Host */
-#define ESPI_MEM_SRAM_EC_BAR_BASE ((ESPI_MEM_BASE) + 0x01A0ul)	/*!< (ESPI Memory SRAM BAR EC */
-#define ESPI_MEM_SRAM_HOST_BAR_BASE ((ESPI_MEM_BASE) + 0x03A0ul)	/*!< (ESPI Memory SRAM BAR Host */
-#define ESPI_MEM_BM_BASE    ((ESPI_MEM_BASE) + 0x0200ul)	/*!< (ESPI Memory Component Bus Master) Base Address */
+#define ESPI_MEM_BASE       (PERIPH_BASE + 0xf3800u)	/*!< (ESPI Memory Component) Base Address */
+#define ESPI_MEM_EC_BAR_BASE ((ESPI_MEM_BASE) + 0x0130u)	/*!< (ESPI Logical Device Memory BAR EC */
+#define ESPI_MEM_HOST_BAR_BASE ((ESPI_MEM_BASE) + 0x0330u)	/*!< (ESPI Logical Device Memory BAR Host */
+#define ESPI_MEM_SRAM_EC_BAR_BASE ((ESPI_MEM_BASE) + 0x01a0u)	/*!< (ESPI Memory SRAM BAR EC */
+#define ESPI_MEM_SRAM_HOST_BAR_BASE ((ESPI_MEM_BASE) + 0x03a0u)	/*!< (ESPI Memory SRAM BAR Host */
+#define ESPI_MEM_BM_BASE    ((ESPI_MEM_BASE) + 0x0200u)	/*!< (ESPI Memory Component Bus Master) Base Address */
 
-#define EMI0_BASE           (PERIPH_BASE + 0xF4000ul)	/*!< (EMI0 ) Base Address */
-#define EMI1_BASE           (PERIPH_BASE + 0xF4400ul)	/*!< (EMI1 ) Base Address */
+#define EMI0_BASE           (PERIPH_BASE + 0xf4000u)	/*!< (EMI0 ) Base Address */
+#define EMI1_BASE           (PERIPH_BASE + 0xf4400u)	/*!< (EMI1 ) Base Address */
 
-#define RTC_BASE            (PERIPH_BASE + 0xF5000ul)	/*!< (RTC ) Base Address */
+#define RTC_BASE            (PERIPH_BASE + 0xf5000u)	/*!< (RTC ) Base Address */
 
-#define P80CAP0_BASE        (PERIPH_BASE + 0xF8000ul)	/*!< (P80CAP0 ) Base Address */
-#define P80CAP1_BASE        (PERIPH_BASE + 0xF8400ul)	/*!< (P80CAP1 ) Base Address */
+#define P80CAP0_BASE        (PERIPH_BASE + 0xf8000u)	/*!< (P80CAP0 ) Base Address */
+#define P80CAP1_BASE        (PERIPH_BASE + 0xf8400u)	/*!< (P80CAP1 ) Base Address */
 
-#define ESPI_VW_BASE        (PERIPH_BASE + 0xF9C00ul)	/*!< (ESPI VW Component) Base Address */
-#define ESPI_SMVW_BASE      (ESPI_VW_BASE + 0x200ul)	/*!< (ESPI VW Component Slave-to-Master) Base Address */
+#define ESPI_VW_BASE        (PERIPH_BASE + 0xf9c00u)	/*!< (ESPI VW Component) Base Address */
+#define ESPI_SMVW_BASE      (ESPI_VW_BASE + 0x200u)	/*!< (ESPI VW Component Slave-to-Master) Base Address */
 
-#define GCFG_BASE           (PERIPH_BASE + 0xFFF00ul)	/*!< (GCFG ) Base Address */
+#define GCFG_BASE           (PERIPH_BASE + 0xfff00u)	/*!< (GCFG ) Base Address */
 
-#define DELAY_US_BASE (0x10000000ul) /*!< (1 us Delay register) Base Address */
+#define DELAY_US_BASE (0x10000000u) /*!< (1 us Delay register) Base Address */
 
 /** @} *//* End of group Device_Peripheral_peripheralAddr */
 
@@ -460,7 +460,7 @@ typedef enum IRQn {
 #define MCHP_RPMFAN_INSTANCES 0
 #define MCHP_RTC_INSTANCES 1
 #define MCHP_RTMR_INSTANCES 1
-#define MCHP_SPIEP_INSTANCES 1
+#define MCHP_SPIP_INSTANCES 1
 #define MCHP_TACH_INSTANCES 4
 #define MCHP_TFDP_INSTANCES 1
 #define MCHP_UART_INSTANCES 3
@@ -476,7 +476,7 @@ typedef enum IRQn {
 #define MCHP_GPIO_PORTS 6
 #define MCHP_GPTP_PORTS 3
 #define MCHP_I2C_SMB_PORTS 15
-#define MCHP_I2C_PORTMAP 0xFFFFul;
+#define MCHP_I2C_PORTMAP 0xffffu;
 #define MCHP_QMSPI_PORTS 3
 #define MCHP_PS2_PORTS 2
 #define MCHP_VCI_IN_PINS 4
@@ -511,7 +511,7 @@ typedef enum IRQn {
 #include "component/qmspi.h"
 #include "component/rtc.h"
 #include "component/smb.h"
-#include "component/spi_slave.h"
+#include "component/spi_periph.h"
 #include "component/tach.h"
 #include "component/tfdp.h"
 #include "component/timer.h"
@@ -576,7 +576,7 @@ typedef enum IRQn {
 
 #define HDMI_CEC_REGS	((HDMI_CEC_Type *) HDMI_CEC_BASE)
 
-#define SPISLV_REGS	((SPISLV_Type *) SPISLV_BASE)
+#define SPIP_REGS	((SPIP_Type *) SPIP_BASE)
 
 #define RTMR_REGS       ((RTMR_Type *) RTMR_BASE)
 

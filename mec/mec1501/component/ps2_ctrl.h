@@ -43,11 +43,11 @@
 /* ===================================================================*/
 
 #define MCHP_PS2_MAX_INSTANCES	2u
-#define MCHP_PS2_SPACING	0x40ul
+#define MCHP_PS2_SPACING	0x40u
 #define MCHP_PS2_SPACING_PWROF2	6u
 
-#define MCHP_PS2_0_BASE_ADDR	0x40009000ul
-#define MCHP_PS2_1_BASE_ADDR	0x40009040ul
+#define MCHP_PS2_0_BASE_ADDR	0x40009000u
+#define MCHP_PS2_1_BASE_ADDR	0x40009040u
 
 /*
  * PS2 interrupts
@@ -62,20 +62,20 @@
 #define MCHP_PS2_0_GIRQ_POS	10u
 #define MCHP_PS2_1_GIRQ_POS	11u
 
-#define MCHP_PS2_0_GIRQ_VAL	(1ul << 10)
-#define MCHP_PS2_1_GIRQ_VAL	(1ul << 11)
+#define MCHP_PS2_0_GIRQ_VAL	(1u << 10)
+#define MCHP_PS2_1_GIRQ_VAL	(1u << 11)
 
 /*
  * PS2 TRX Buffer register
  * Writes -> Transmit buffer
  * Read <- Receive buffer
  */
-#define MCHP_PS2_TRX_BUFF_REG_MASK	0xFFUL
+#define MCHP_PS2_TRX_BUFF_REG_MASK	0xffu
 
 /*
  * PS2 Control register
  */
-#define MCHP_PS2_CTRL_REG_MASK		0x3FUL
+#define MCHP_PS2_CTRL_REG_MASK		0x3fu
 
 /* Select Transmit or Receive */
 #define MCHP_PS2_CTRL_TR_POS		0
@@ -88,7 +88,7 @@
 
 /* Protocol parity selection */
 #define MCHP_PS2_CTRL_PAR_POS		2
-#define MCHP_PS2_CTRL_PAR_MASK0		0x03U
+#define MCHP_PS2_CTRL_PAR_MASK0		0x03u
 #define MCHP_PS2_CTRL_PAR_MASK		((MCHP_PS2_CTRL_PAR_MASK0) \
 						<< (MCHP_PS2_CTRL_PAR_POS))
 #define MCHP_PS2_CTRL_PAR_ODD		(0U << (MCHP_PS2_CTRL_PAR_POS))
@@ -98,7 +98,7 @@
 
 /* Protocol stop bit selection */
 #define MCHP_PS2_CTRL_STOP_POS		4
-#define MCHP_PS2_CTRL_STOP_MASK0	0x03U
+#define MCHP_PS2_CTRL_STOP_MASK0	0x03u
 #define MCHP_PS2_CTRL_STOP_MASK		((MCHP_PS2_CTRL_STOP_MASK0) \
 						<< (MCHP_PS2_CTRL_STOP_POS))
 #define MCHP_PS2_CTRL_STOP_ACT_HI	(0U << (MCHP_PS2_CTRL_STOP_POS))
@@ -109,9 +109,9 @@
 /*
  * PS2 Status register
  */
-#define MCHP_PS2_STATUS_REG_MASK	0xFFUL
-#define MCHP_PS2_STATUS_RW1C_MASK	0xAEUL
-#define MCHP_PS2_STATUS_RO_MASK		0x51UL
+#define MCHP_PS2_STATUS_REG_MASK	0xffu
+#define MCHP_PS2_STATUS_RW1C_MASK	0xaeu
+#define MCHP_PS2_STATUS_RO_MASK		0x51u
 /* RX Data Ready(Read-Only) */
 #define MCHP_PS2_STATUS_RXD_RDY_POS	0
 #define MCHP_PS2_STATUS_RXD_RDY		(1U << (MCHP_PS2_STATUS_RXD_RDY_POS))

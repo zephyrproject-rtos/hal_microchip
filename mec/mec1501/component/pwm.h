@@ -42,10 +42,10 @@
 /* ================		 PWM 				=========== */
 /* =========================================================================*/
 
-#define MCHP_PWM_BASE_ADDR		0x40005800ul
+#define MCHP_PWM_BASE_ADDR		0x40005800u
 
 #define MCHP_PWM_MAX_INSTANCES		9u
-#define MCHP_PWM_INST_SPACING		0x10ul
+#define MCHP_PWM_INST_SPACING		0x10u
 #define MCHP_PWM_INST_SPACING_P2	4u
 
 #define MCHP_PWM_ADDR(n)	(MCHP_PWM_BASE_ADDR + \
@@ -59,19 +59,19 @@
  * PWM Count On register
  */
 #define MCHP_PWM_COUNT_ON_REG_OFS	0U
-#define MCHP_PWM_COUNT_ON_MASK		0xffffU
+#define MCHP_PWM_COUNT_ON_MASK		0xffffu
 
 /*
  * PWM Count Off register
  */
 #define MCHP_PWM_COUNT_OFF_REG_OFS	4U
-#define MCHP_PWM_COUNT_OFF_MASK		0xffffU
+#define MCHP_PWM_COUNT_OFF_MASK		0xffffu
 
 /*
  * PWM Configuration Register
  */
 #define MCHP_PWM_CONFIG_REG_OFS		8U
-#define MCHP_PWM_CONFIG_MASK		0x7FU
+#define MCHP_PWM_CONFIG_MASK		0x7fu
 /*
  * Enable and start PWM. Clearing this bit resets internal counters.
  * COUNT_ON and COUNT_OFF registers are not affected by enable bit.
@@ -96,9 +96,9 @@
  * Clock divider value = pre-divider + 1
  */
 #define MCHP_PWM_CFG_CLK_PRE_DIV_POS	3
-#define MCHP_PWM_CFG_CLK_PRE_DIV_MASK0	0x0FU
+#define MCHP_PWM_CFG_CLK_PRE_DIV_MASK0	0x0fu
 #define MCHP_PWM_CFG_CLK_PRE_DIV_MASK	\
-		(0x0FU << MCHP_PWM_CFG_CLK_PRE_DIV_POS)
+		(0x0fu << MCHP_PWM_CFG_CLK_PRE_DIV_POS)
 #define MCHP_PWM_CFG_CLK_PRE_DIV(n)	( \
 		((n) & MCHP_PWM_CFG_CLK_PRE_DIV_MASK0) \
 		 << MCHP_PWM_CFG_CLK_PRE_DIV_POS )

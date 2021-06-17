@@ -42,7 +42,7 @@
 /* ================		 PECI 				=========== */
 /* =========================================================================*/
 
-#define MCHP_PECI_BASE_ADDR	0x40006400ul
+#define MCHP_PECI_BASE_ADDR	0x40006400u
 
 /*
  * PECI interrupts.
@@ -52,7 +52,7 @@
 /* Bit position in GIRQ Source, Enable-Set/Clr, and Result registers */
 #define MCHP_PECI_GIRQ_POS	0
 
-#define MCHP_PECI_GIRQ_VAL	(1ul << MCHP_PECI_GIRQ_POS)
+#define MCHP_PECI_GIRQ_VAL	(1u << MCHP_PECI_GIRQ_POS)
 
 /* PECI GIRQ aggregated NVIC input */
 #define MCHP_PECI_NVIC_AGGR	9u
@@ -64,19 +64,19 @@
  * Write Data register
  */
 #define MCHP_PECI_WR_DATA_REG_OFS	0U
-#define MCHP_PECI_WR_DATA_MASK		0xffU
+#define MCHP_PECI_WR_DATA_MASK		0xffu
 
 /*
  * Read Data register
  */
 #define MCHP_PECI_RD_DATA_REG_OFS	4U
-#define MCHP_PECI_RD_DATA_MASK		0xffU
+#define MCHP_PECI_RD_DATA_MASK		0xffu
 
 /*
  * Control register
  */
 #define MCHP_PECI_CTRL_REG_OFS		8U
-#define MCHP_PECI_CTRL_MASK		0xE9U
+#define MCHP_PECI_CTRL_MASK		0xe9u
 #define MCHP_PECI_CTRL_PD_POS		0
 #define MCHP_PECI_CTRL_PD		(1u << MCHP_PECI_CTRL_PD_POS)
 #define MCHP_PECI_CTRL_RST_POS		3
@@ -91,8 +91,8 @@
 /*
  * Status 1 register. RW1C and read-only bits.
  */
-#define MCHP_PECI_STS1_REG_OFS		0x0Cu
-#define MCHP_PECI_STS1_MASK		0xBFu
+#define MCHP_PECI_STS1_REG_OFS		0x0cu
+#define MCHP_PECI_STS1_MASK		0xbfu
 #define MCHP_PECI_STS1_BOF_POS		0
 #define MCHP_PECI_STS1_BOF		(1u << MCHP_PECI_STS1_BOF_POS)
 #define MCHP_PECI_STS1_EOF_POS		1
@@ -115,7 +115,7 @@
  * Status 2 register. Read-only bits.
  */
 #define MCHP_PECI_STS2_REG_OFS		0x10u
-#define MCHP_PECI_STS2_MASK		0x8Fu
+#define MCHP_PECI_STS2_MASK		0x8fu
 #define MCHP_PECI_STS2_WFF_POS		0
 #define MCHP_PECI_STS2_WFF		(1u << MCHP_PECI_STS2_WFF_POS)
 #define MCHP_PECI_STS2_WFE_POS		1
@@ -131,7 +131,7 @@
  * Error register. R/W1C bits.
  */
 #define MCHP_PECI_ERR_REG_OFS		0x14u
-#define MCHP_PECI_ERR_MASK		0xF3u
+#define MCHP_PECI_ERR_MASK		0xf3u
 #define MCHP_PECI_ERR_FERR_POS		0
 #define MCHP_PECI_ERR_FERR		(1u << MCHP_PECI_ERR_FERR_POS)
 #define MCHP_PECI_ERR_BERR_POS		1
@@ -164,7 +164,7 @@
 /*
  * Interrupt Enable 2 register.
  */
-#define MCHP_PECI_IEN2_REG_OFS		0x1Cu
+#define MCHP_PECI_IEN2_REG_OFS		0x1cu
 #define MCHP_PECI_IEN2_MASK		0x06u
 #define MCHP_PECI_IEN2_ENWFE_POS	1
 #define MCHP_PECI_IEN2_ENWFE		(1u << MCHP_PECI_IEN2_ENWFE_POS)
@@ -175,13 +175,13 @@
  * Optimal Bit Time LSB register.
  */
 #define MCHP_PECI_OPT_BT_LSB_REG_OFS	0x20u
-#define MCHP_PECI_OPT_BT_LSB_MASK	0xFFu
+#define MCHP_PECI_OPT_BT_LSB_MASK	0xffu
 
 /*
  * Optimal Bit Time MSB register.
  */
 #define MCHP_PECI_OPT_BT_MSB_REG_OFS	0x24u
-#define MCHP_PECI_OPT_BT_MSB_MASK	0xFFu
+#define MCHP_PECI_OPT_BT_MSB_MASK	0xffu
 
 
 /**
@@ -194,7 +194,7 @@ typedef struct peci_regs {
 	uint8_t RSVD2[3];
 	__IOM uint8_t  CONTROL;	/*!< (@ 0x0008) PECI Control */
 	uint8_t RSVD3[3];
-	__IOM uint8_t  STATUS1;	/*!< (@ 0x000C) PECI Status 1 */
+	__IOM uint8_t  STATUS1;	/*!< (@ 0x000c) PECI Status 1 */
 	uint8_t RSVD4[3];
 	__IOM uint8_t  STATUS2;	/*!< (@ 0x0010) PECI Status 2 */
 	uint8_t RSVD5[3];
@@ -202,12 +202,12 @@ typedef struct peci_regs {
 	uint8_t RSVD6[3];
 	__IOM uint8_t  INT_EN1;	/*!< (@ 0x0018) PECI Interrupt Enable 1 */
 	uint8_t RSVD7[3];
-	__IOM uint8_t  INT_EN2;	/*!< (@ 0x001C) PECI Interrupt Enable 2 */
+	__IOM uint8_t  INT_EN2;	/*!< (@ 0x001c) PECI Interrupt Enable 2 */
 	uint8_t RSVD8[3];
 	__IOM uint8_t  OPT_BIT_TIME_LSB; /*!< (@ 0x0020) PECI Optimal Bit Time LSB */
 	uint8_t RSVD9[3];
 	__IOM uint8_t  OPT_BIT_TIME_MSB; /*!< (@ 0x0024) PECI Optimal Bit Time MSB */
-	uint8_t RSVD10[87]; /* 0x25 - 0x7C */
+	uint8_t RSVD10[87]; /* 0x25 - 0x7c */
 } PECI_Type;
 
 #endif	/* #ifndef _PECI_H */

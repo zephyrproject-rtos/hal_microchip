@@ -29,7 +29,7 @@
  * OPA: read status1, resume, suspend, write enable
  * OPB: erase 4KB, erase 32KB, erase 64KB, page program
  * OPC: Fast Read Quad or Dual, N/A, continuous mode byte, read status 2
- * OP_DESCR: contains QMSPI descriptor indices for various opcode fields.
+ * OP_DESCR: contains QMSPI descriptor indices for various opcode fields.
  */
 struct mchp_espi_saf_op {
 	volatile uint32_t OPA;
@@ -204,7 +204,7 @@ typedef struct mchp_espi_saf MCHP_SAF_HW_REGS;
 
 /* SAF eSPI Monitor Status register */
 #define MCHP_SAF_ESPI_MON_STATUS_OFS	0x3c
-#define MCHP_SAF_ESPI_MON_STATUS_MASK	0x1F
+#define MCHP_SAF_ESPI_MON_STATUS_MASK	0x1f
 #define MCHP_SAF_ESPI_MON_STS_TMOUT	BIT(0)
 #define MCHP_SAF_ESPI_MON_STS_OOR	BIT(1)
 #define MCHP_SAF_ESPI_MON_STS_AV	BIT(2)
@@ -213,7 +213,7 @@ typedef struct mchp_espi_saf MCHP_SAF_HW_REGS;
 
 /* SAF eSPI Monitor Interrupt Enable register */
 #define MCHP_SAF_ESPI_MON_INTEN_OFS	0x40
-#define MCHP_SAF_ESPI_MON_INTEN_MASK	0x1F
+#define MCHP_SAF_ESPI_MON_INTEN_MASK	0x1f
 #define MCHP_SAF_ESPI_MON_INTEN_TMOUT	BIT(0)
 #define MCHP_SAF_ESPI_MON_INTEN_OOR	BIT(1)
 #define MCHP_SAF_ESPI_MON_INTEN_AV	BIT(2)
@@ -524,7 +524,7 @@ typedef struct mchp_espi_saf MCHP_SAF_HW_REGS;
 /* Allow pre-fetch from flash devices */
 #define MCHP_SAF_COMM_MODE_PF_EN	BIT(0)
 
-/* SAF TAG numbers[0:0xF] */
+/* SAF TAG numbers[0:0xf] */
 #define MCHP_SAF_TAG_M0T0	0
 #define MCHP_SAF_TAG_M0T1	1
 #define MCHP_SAF_TAG_M1T0	2

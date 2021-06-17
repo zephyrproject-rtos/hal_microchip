@@ -38,64 +38,64 @@
 #ifndef _PCR_H
 #define _PCR_H
 
-#define MCHP_PCR_BASE_ADDR	0x40080100ul
+#define MCHP_PCR_BASE_ADDR	0x40080100u
 
-#define MCHP_PCR_SYS_SLP_CTRL_OFS	0x00ul
-#define MCHP_PCR_SYS_CLK_CTRL_OFS	0x04ul
-#define MCHP_PCR_SLOW_CLK_CTRL_OFS	0x08ul
-#define MCHP_PCR_OSC_ID_OFS		0x0Cul
-#define MCHP_PCR_PRS_OFS		0x10ul
-#define MCHP_PCR_PR_CTRL_OFS		0x14ul
-#define MCHP_PCR_SYS_RESET_OFS		0x18ul
-#define MCHP_PCR_PKE_CLK_CTRL_OFS	0x1Cul
-#define MCHP_PCR_SLP_EN0_OFS		0x30ul
-#define MCHP_PCR_SLP_EN1_OFS		0x34ul
-#define MCHP_PCR_SLP_EN2_OFS		0x38ul
-#define MCHP_PCR_SLP_EN3_OFS		0x3Cul
-#define MCHP_PCR_SLP_EN4_OFS		0x40ul
-#define MCHP_PCR_CLK_REQ0_OFS		0x50ul
-#define MCHP_PCR_CLK_REQ1_OFS		0x54ul
-#define MCHP_PCR_CLK_REQ2_OFS		0x58ul
-#define MCHP_PCR_CLK_REQ3_OFS		0x5Cul
-#define MCHP_PCR_CLK_REQ4_OFS		0x60ul
-#define MCHP_PCR_PERIPH_RST0_OFS	0x70ul
-#define MCHP_PCR_PERIPH_RST1_OFS	0x74ul
-#define MCHP_PCR_PERIPH_RST2_OFS	0x78ul
-#define MCHP_PCR_PERIPH_RST3_OFS	0x7Cul
-#define MCHP_PCR_PERIPH_RST4_OFS	0x80ul
-#define MCHP_PCR_PERIPH_RST_LCK_OFS	0x84ul
+#define MCHP_PCR_SYS_SLP_CTRL_OFS	0x00u
+#define MCHP_PCR_SYS_CLK_CTRL_OFS	0x04u
+#define MCHP_PCR_SLOW_CLK_CTRL_OFS	0x08u
+#define MCHP_PCR_OSC_ID_OFS		0x0cu
+#define MCHP_PCR_PRS_OFS		0x10u
+#define MCHP_PCR_PR_CTRL_OFS		0x14u
+#define MCHP_PCR_SYS_RESET_OFS		0x18u
+#define MCHP_PCR_PKE_CLK_CTRL_OFS	0x1cu
+#define MCHP_PCR_SLP_EN0_OFS		0x30u
+#define MCHP_PCR_SLP_EN1_OFS		0x34u
+#define MCHP_PCR_SLP_EN2_OFS		0x38u
+#define MCHP_PCR_SLP_EN3_OFS		0x3cu
+#define MCHP_PCR_SLP_EN4_OFS		0x40u
+#define MCHP_PCR_CLK_REQ0_OFS		0x50u
+#define MCHP_PCR_CLK_REQ1_OFS		0x54u
+#define MCHP_PCR_CLK_REQ2_OFS		0x58u
+#define MCHP_PCR_CLK_REQ3_OFS		0x5cu
+#define MCHP_PCR_CLK_REQ4_OFS		0x60u
+#define MCHP_PCR_PERIPH_RST0_OFS	0x70u
+#define MCHP_PCR_PERIPH_RST1_OFS	0x74u
+#define MCHP_PCR_PERIPH_RST2_OFS	0x78u
+#define MCHP_PCR_PERIPH_RST3_OFS	0x7cu
+#define MCHP_PCR_PERIPH_RST4_OFS	0x80u
+#define MCHP_PCR_PERIPH_RST_LCK_OFS	0x84u
 
 #define MCHP_PCR_SYS_SLP_CTRL_ADDR	(MCHP_PCR_BASE_ADDR)
-#define MCHP_PCR_SYS_CLK_CTRL_ADDR	(MCHP_PCR_BASE_ADDR + 0x04ul)
-#define MCHP_PCR_SLOW_CLK_CTRL_ADDR	(MCHP_PCR_BASE_ADDR + 0x08ul)
-#define MCHP_PCR_OSC_ID_ADDR		(MCHP_PCR_BASE_ADDR + 0x0Cul)
-#define MCHP_PCR_PRS_ADDR		(MCHP_PCR_BASE_ADDR + 0x10ul)
-#define MCHP_PCR_PR_CTRL_ADDR		(MCHP_PCR_BASE_ADDR + 0x14ul)
-#define MCHP_PCR_SYS_RESET_ADDR		(MCHP_PCR_BASE_ADDR + 0x18ul)
-#define MCHP_PCR_PKE_CLK_CTRL_ADDR	(MCHP_PCR_BASE_ADDR + 0x1Cul)
-#define MCHP_PCR_SLP_EN0_ADDR		(MCHP_PCR_BASE_ADDR + 0x30ul)
-#define MCHP_PCR_SLP_EN1_ADDR		(MCHP_PCR_BASE_ADDR + 0x34ul)
-#define MCHP_PCR_SLP_EN2_ADDR		(MCHP_PCR_BASE_ADDR + 0x38ul)
-#define MCHP_PCR_SLP_EN3_ADDR		(MCHP_PCR_BASE_ADDR + 0x3Cul)
-#define MCHP_PCR_SLP_EN4_ADDR		(MCHP_PCR_BASE_ADDR + 0x40ul)
-#define MCHP_PCR_CLK_REQ0_ADDR		(MCHP_PCR_BASE_ADDR + 0x50ul)
-#define MCHP_PCR_CLK_REQ1_ADDR		(MCHP_PCR_BASE_ADDR + 0x54ul)
-#define MCHP_PCR_CLK_REQ2_ADDR		(MCHP_PCR_BASE_ADDR + 0x58ul)
-#define MCHP_PCR_CLK_REQ3_ADDR		(MCHP_PCR_BASE_ADDR + 0x5Cul)
-#define MCHP_PCR_CLK_REQ4_ADDR		(MCHP_PCR_BASE_ADDR + 0x60ul)
-#define MCHP_PCR_PERIPH_RST0_ADDR	(MCHP_PCR_BASE_ADDR + 0x70ul)
-#define MCHP_PCR_PERIPH_RST1_ADDR	(MCHP_PCR_BASE_ADDR + 0x74ul)
-#define MCHP_PCR_PERIPH_RST2_ADDR	(MCHP_PCR_BASE_ADDR + 0x78ul)
-#define MCHP_PCR_PERIPH_RST3_ADDR	(MCHP_PCR_BASE_ADDR + 0x7Cul)
-#define MCHP_PCR_PERIPH_RST4_ADDR	(MCHP_PCR_BASE_ADDR + 0x80ul)
-#define MCHP_PCR_PERIPH_RESET_LOCK_ADDR (MCHP_PCR_BASE_ADDR + 0x84ul)
+#define MCHP_PCR_SYS_CLK_CTRL_ADDR	(MCHP_PCR_BASE_ADDR + 0x04u)
+#define MCHP_PCR_SLOW_CLK_CTRL_ADDR	(MCHP_PCR_BASE_ADDR + 0x08u)
+#define MCHP_PCR_OSC_ID_ADDR		(MCHP_PCR_BASE_ADDR + 0x0cu)
+#define MCHP_PCR_PRS_ADDR		(MCHP_PCR_BASE_ADDR + 0x10u)
+#define MCHP_PCR_PR_CTRL_ADDR		(MCHP_PCR_BASE_ADDR + 0x14u)
+#define MCHP_PCR_SYS_RESET_ADDR		(MCHP_PCR_BASE_ADDR + 0x18u)
+#define MCHP_PCR_PKE_CLK_CTRL_ADDR	(MCHP_PCR_BASE_ADDR + 0x1cu)
+#define MCHP_PCR_SLP_EN0_ADDR		(MCHP_PCR_BASE_ADDR + 0x30u)
+#define MCHP_PCR_SLP_EN1_ADDR		(MCHP_PCR_BASE_ADDR + 0x34u)
+#define MCHP_PCR_SLP_EN2_ADDR		(MCHP_PCR_BASE_ADDR + 0x38u)
+#define MCHP_PCR_SLP_EN3_ADDR		(MCHP_PCR_BASE_ADDR + 0x3cu)
+#define MCHP_PCR_SLP_EN4_ADDR		(MCHP_PCR_BASE_ADDR + 0x40u)
+#define MCHP_PCR_CLK_REQ0_ADDR		(MCHP_PCR_BASE_ADDR + 0x50u)
+#define MCHP_PCR_CLK_REQ1_ADDR		(MCHP_PCR_BASE_ADDR + 0x54u)
+#define MCHP_PCR_CLK_REQ2_ADDR		(MCHP_PCR_BASE_ADDR + 0x58u)
+#define MCHP_PCR_CLK_REQ3_ADDR		(MCHP_PCR_BASE_ADDR + 0x5cu)
+#define MCHP_PCR_CLK_REQ4_ADDR		(MCHP_PCR_BASE_ADDR + 0x60u)
+#define MCHP_PCR_PERIPH_RST0_ADDR	(MCHP_PCR_BASE_ADDR + 0x70u)
+#define MCHP_PCR_PERIPH_RST1_ADDR	(MCHP_PCR_BASE_ADDR + 0x74u)
+#define MCHP_PCR_PERIPH_RST2_ADDR	(MCHP_PCR_BASE_ADDR + 0x78u)
+#define MCHP_PCR_PERIPH_RST3_ADDR	(MCHP_PCR_BASE_ADDR + 0x7cu)
+#define MCHP_PCR_PERIPH_RST4_ADDR	(MCHP_PCR_BASE_ADDR + 0x80u)
+#define MCHP_PCR_PERIPH_RESET_LOCK_ADDR (MCHP_PCR_BASE_ADDR + 0x84u)
 
 #define MCHP_PCR_SLP_EN_ADDR(n) \
-	(MCHP_PCR_BASE_ADDR + 0x30ul + ((uint32_t)(n) << 2))
+	(MCHP_PCR_BASE_ADDR + 0x30u + ((uint32_t)(n) << 2))
 #define MCHP_PCR_CLK_REQ_ADDR(n) \
-	(MCHP_PCR_BASE_ADDR + 0x50ul + ((uint32_t)(n) << 2))
+	(MCHP_PCR_BASE_ADDR + 0x50u + ((uint32_t)(n) << 2))
 #define MCHP_PCR_PERIPH_RESET_ADDR(n) \
-	(MCHP_PCR_BASE_ADDR + 0x70ul + ((uint32_t)(n) << 2))
+	(MCHP_PCR_BASE_ADDR + 0x70u + ((uint32_t)(n) << 2))
 
 #define MCHP_PCR_SLEEP_EN	(1u)
 #define MCHP_PCR_SLEEP_DIS	(0u)
@@ -130,22 +130,22 @@
  * Write lock code to PCR Peripheral Reset Lock.
  * Restore interrupts.
  */
-#define MCHP_MAX_PCR_SCR_REGS	5ul
+#define MCHP_MAX_PCR_SCR_REGS	5u
 
 /*
  * VTR Powered PCR registers
  */
 
-#define MCHP_PCR_SLP(bitpos)	(1ul << (bitpos))
+#define MCHP_PCR_SLP(bitpos)	(1u << (bitpos))
 
 /*
  * PCR System Sleep Control
  */
 
-#define MCHP_PCR_SYS_SLP_CTRL_MASK		0x0109ul
-#define MCHP_PCR_SYS_SLP_CTRL_SLP_LIGHT		(0ul << 0)
-#define MCHP_PCR_SYS_SLP_CTRL_SLP_HEAVY		(1ul << 0)
-#define MCHP_PCR_SYS_SLP_CTRL_SLP_ALL		(1ul << 3)
+#define MCHP_PCR_SYS_SLP_CTRL_MASK		0x0109u
+#define MCHP_PCR_SYS_SLP_CTRL_SLP_LIGHT		(0u << 0)
+#define MCHP_PCR_SYS_SLP_CTRL_SLP_HEAVY		(1u << 0)
+#define MCHP_PCR_SYS_SLP_CTRL_SLP_ALL		(1u << 3)
 /*
  * bit[8] can be used to prevent entry to heavy sleep unless the
  * PLL is locked.
@@ -153,69 +153,69 @@
  * sleep if and only if PLL is locked.
  * bit[8]==1 system will allow entry to heavy sleep before PLL is locked.
  */
-#define MCHP_PCR_SYS_SLP_CTRL_SLP_PLL_LOCK		(0ul << 8)
-#define MCHP_PCR_SYS_SLP_CTRL_ALLOW_SLP_NO_PLL_LOCK	(1ul << 8)
+#define MCHP_PCR_SYS_SLP_CTRL_SLP_PLL_LOCK		(0u << 8)
+#define MCHP_PCR_SYS_SLP_CTRL_ALLOW_SLP_NO_PLL_LOCK	(1u << 8)
 
-#define MCHP_PCR_SYS_SLP_LIGHT	0x08ul
-#define MCHP_PCR_SYS_SLP_HEAVY	0x09ul
+#define MCHP_PCR_SYS_SLP_LIGHT	0x08u
+#define MCHP_PCR_SYS_SLP_HEAVY	0x09u
 
 /*
  * PCR Process Clock Control
  * Divides 48MHz clock to ARM Cortex-M4 core including
  * SysTick and NVIC.
  */
-#define MCHP_PCR_PROC_CLK_CTRL_MASK	0xFFul
-#define MCHP_PCR_PROC_CLK_CTRL_48MHZ	0x01ul
-#define MCHP_PCR_PROC_CLK_CTRL_16MHZ	0x03ul
-#define MCHP_PCR_PROC_CLK_CTRL_12MHZ	0x04ul
-#define MCHP_PCR_PROC_CLK_CTRL_4MHZ	0x10ul
-#define MCHP_PCR_PROC_CLK_CTRL_1MHZ	0x30ul
+#define MCHP_PCR_PROC_CLK_CTRL_MASK	0xffu
+#define MCHP_PCR_PROC_CLK_CTRL_48MHZ	0x01u
+#define MCHP_PCR_PROC_CLK_CTRL_16MHZ	0x03u
+#define MCHP_PCR_PROC_CLK_CTRL_12MHZ	0x04u
+#define MCHP_PCR_PROC_CLK_CTRL_4MHZ	0x10u
+#define MCHP_PCR_PROC_CLK_CTRL_1MHZ	0x30u
 
 /*
  * PCR Slow Clock Control
  * Clock divicder for 100KHz clock domain
  */
-#define MCHP_PCR_SLOW_CLK_CTRL_MASK	0x3FFul
-#define MCHP_PCR_SLOW_CLK_CTRL_100KHZ	0x1E0ul
+#define MCHP_PCR_SLOW_CLK_CTRL_MASK	0x3ffu
+#define MCHP_PCR_SLOW_CLK_CTRL_100KHZ	0x1e0u
 
 /*
  * PCR Oscillator ID register (Read-Only)
  */
-#define MCHP_PCR_OSC_ID_MASK		0x1FFul
-#define MCHP_PCR_OSC_ID_PLL_LOCK	(1ul << 8)
+#define MCHP_PCR_OSC_ID_MASK		0x1ffu
+#define MCHP_PCR_OSC_ID_PLL_LOCK	(1u << 8)
 
 /*
  * PCR Power Reset Status Register
  */
-#define MCHP_PCR_PRS_MASK			0xCECul
-#define MCHP_PCR_PRS_VCC_PWRGD_STATE_RO		(1ul << 2)
-#define MCHP_PCR_PRS_HOST_RESET_STATE_RO	(1ul << 3)
-#define MCHP_PCR_PRS_VBAT_RST_RWC		(1ul << 5)
-#define MCHP_PCR_PRS_VTR_RST_RWC		(1ul << 6)
-#define MCHP_PCR_PRS_JTAG_RST_RWC		(1ul << 7)
-#define MCHP_PCR_PRS_32K_ACTIVE_RO		(1ul << 10)
-#define MCHP_PCR_PRS_LPC_ESPI_CLK_ACTIVE_RO	(1ul << 11)
+#define MCHP_PCR_PRS_MASK			0xcecu
+#define MCHP_PCR_PRS_VCC_PWRGD_STATE_RO		(1u << 2)
+#define MCHP_PCR_PRS_HOST_RESET_STATE_RO	(1u << 3)
+#define MCHP_PCR_PRS_VBAT_RST_RWC		(1u << 5)
+#define MCHP_PCR_PRS_VTR_RST_RWC		(1u << 6)
+#define MCHP_PCR_PRS_JTAG_RST_RWC		(1u << 7)
+#define MCHP_PCR_PRS_32K_ACTIVE_RO		(1u << 10)
+#define MCHP_PCR_PRS_LPC_ESPI_CLK_ACTIVE_RO	(1u << 11)
 
 /*
  * PCR Power Reset Control Register
  */
-#define MCHP_PCR_PR_CTRL_MASK			0x101ul
-#define MCHP_PCR_PR_CTRL_PWR_INV		(1ul << 0)
-#define MCHP_PCR_PR_CTRL_USE_ESPI_PLTRST	(0ul << 8)
-#define MCHP_PCR_PR_CTRL_USE_PCI_RST		(1ul << 8)
+#define MCHP_PCR_PR_CTRL_MASK			0x101u
+#define MCHP_PCR_PR_CTRL_PWR_INV		(1u << 0)
+#define MCHP_PCR_PR_CTRL_USE_ESPI_PLTRST	(0u << 8)
+#define MCHP_PCR_PR_CTRL_USE_PCI_RST		(1u << 8)
 
 /*
  * PCR System Reset Register
  */
-#define MCHP_PCR_SYS_RESET_MASK		0x100ul
-#define MCHP_PCR_SYS_RESET_NOW		(1ul << 8)
+#define MCHP_PCR_SYS_RESET_MASK		0x100u
+#define MCHP_PCR_SYS_RESET_NOW		(1u << 8)
 
 /*
  * PCR PKE Clock Register
  */
-#define MCHP_PCR_PKE_CLK_CTRL_MASK	0x03ul
-#define MCHP_PCR_PKE_CLK_CTRL_96M	0x00ul
-#define MCHP_PCR_PKE_CLK_CTRL_48M	0x03ul
+#define MCHP_PCR_PKE_CLK_CTRL_MASK	0x03u
+#define MCHP_PCR_PKE_CLK_CTRL_96M	0x00u
+#define MCHP_PCR_PKE_CLK_CTRL_48M	0x03u
 
 /*
  * Sleep Enable Reg 0	    (Offset +30h)
@@ -305,8 +305,8 @@
 #define MCHP_PCR3_CCT_POS	30u
 
 #define MCHP_PCR3_CRYPTO_MASK \
-	((1ul << (MCHP_PCR3_PKE_POS)) +\
-	(1ul << (MCHP_PCR3_RNG_POS)) + (1ul << (MCHP_PCR3_AESH_POS)))
+	((1u << (MCHP_PCR3_PKE_POS)) +\
+	(1u << (MCHP_PCR3_RNG_POS)) + (1u << (MCHP_PCR3_AESH_POS)))
 
 /*
  * Sleep Enable Reg 4	    (Offset +40h)
@@ -321,8 +321,8 @@
 #define MCHP_PCR4_SPISLV_POS	16u
 
 /* Reset Enable Lock	    (Offset +84h) */
-#define MCHP_PCR_RSTEN_UNLOCK	0xA6382D4Cul
-#define MCHP_PCR_RSTEN_LOCK	0xA6382D4Dul
+#define MCHP_PCR_RSTEN_UNLOCK	0xa6382d4cu
+#define MCHP_PCR_RSTEN_LOCK	0xa6382d4du
 
 /*
  * PCR register access
@@ -351,10 +351,10 @@
 #define MCHP_PCR_PERIPH_RST(n)	REG32(MCHP_PCR_PERIPH_RESET_ADDR(n))
 
 #define MCHP_PCR_DEV_SLP_EN_CLR(n, b) \
-	REG32(MCHP_PCR_SLP_EN_ADDR(n)) &= ~(1ul << (uint32_t)(b))
+	REG32(MCHP_PCR_SLP_EN_ADDR(n)) &= ~(1u << (uint32_t)(b))
 
 #define MCHP_PCR_DEV_SLP_EN_SET(n, b) \
-	 REG32(MCHP_PCR_SLP_EN_ADDR(n)) |= (1ul << (uint32_t)(b))
+	 REG32(MCHP_PCR_SLP_EN_ADDR(n)) |= (1u << (uint32_t)(b))
 
 /*
  * PCR SleepEn/CLK_REQ/ResetOnSleep register offset from
@@ -448,7 +448,7 @@ typedef struct pcr_regs
 	__IOM uint32_t SYS_SLP_CTRL;	/*!< (@ 0x0000) System Sleep Control */
 	__IOM uint32_t PROC_CLK_CTRL;	/*!< (@ 0x0004) Processor Clock Control */
 	__IOM uint32_t SLOW_CLK_CTRL;	/*!< (@ 0x0008) Slow Clock Control */
-	__IOM uint32_t OSC_ID;	/*!< (@ 0x000C) Processor Clock Control */
+	__IOM uint32_t OSC_ID;	/*!< (@ 0x000c) Processor Clock Control */
 	__IOM uint32_t PWR_RST_STS;	/*!< (@ 0x0010) Power Reset Status */
 	__IOM uint32_t PWR_RST_CTRL;	/*!< (@ 0x0014) Power Reset Control */
 	__IOM uint32_t SYS_RST;	/*!< (@ 0x0018) System Reset */
@@ -458,19 +458,19 @@ typedef struct pcr_regs
 	__IOM uint32_t SLP_EN0;	/*!< (@ 0x0030) Sleep Enable 0 */
 	__IOM uint32_t SLP_EN1;	/*!< (@ 0x0034) Sleep Enable 1 */
 	__IOM uint32_t SLP_EN2;	/*!< (@ 0x0038) Sleep Enable 2 */
-	__IOM uint32_t SLP_EN3;	/*!< (@ 0x003C) Sleep Enable 3 */
+	__IOM uint32_t SLP_EN3;	/*!< (@ 0x003c) Sleep Enable 3 */
 	__IOM uint32_t SLP_EN4;	/*!< (@ 0x0040) Sleep Enable 4 */
 	uint8_t RSVD2[12];
 	__IOM uint32_t CLK_REQ0;	/*!< (@ 0x0050) Clock Required 0 (RO) */
 	__IOM uint32_t CLK_REQ1;	/*!< (@ 0x0054) Clock Required 1 (RO) */
 	__IOM uint32_t CLK_REQ2;	/*!< (@ 0x0058) Clock Required 2 (RO) */
-	__IOM uint32_t CLK_REQ3;	/*!< (@ 0x005C) Clock Required 3 (RO) */
+	__IOM uint32_t CLK_REQ3;	/*!< (@ 0x005c) Clock Required 3 (RO) */
 	__IOM uint32_t CLK_REQ4;	/*!< (@ 0x0060) Clock Required 4 (RO) */
 	uint8_t RSVD3[12];
 	__IOM uint32_t RST_EN0;	/*!< (@ 0x0070) Peripheral Reset 0 */
 	__IOM uint32_t RST_EN1;	/*!< (@ 0x0074) Peripheral Reset 1 */
 	__IOM uint32_t RST_EN2;	/*!< (@ 0x0078) Peripheral Reset 2 */
-	__IOM uint32_t RST_EN3;	/*!< (@ 0x007C) Peripheral Reset 3 */
+	__IOM uint32_t RST_EN3;	/*!< (@ 0x007c) Peripheral Reset 3 */
 	__IOM uint32_t RST_EN4;	/*!< (@ 0x0080) Peripheral Reset 4 */
 	__IOM uint32_t RST_EN_LOCK;	/*!< (@ 0x0084) Peripheral Lock */
 } PCR_Type;
@@ -479,13 +479,13 @@ static __attribute__ ((always_inline)) inline void
 mchp_pcr_periph_slp_ctrl(PCR_ID pcr_id, uint8_t enable)
 {
 	uintptr_t raddr = (uintptr_t) (MCHP_PCR_SLP_EN0_ADDR);
-	uint32_t bitpos = (uint32_t) pcr_id & 0x1F;
+	uint32_t bitpos = (uint32_t) pcr_id & 0x1f;
 
 	raddr += ((uint32_t) pcr_id >> 5);
 	if (enable) {
-		REG32(raddr) |= (1ul << bitpos);
+		REG32(raddr) |= (1u << bitpos);
 	} else {
-		REG32(raddr) &= ~(1ul << bitpos);
+		REG32(raddr) &= ~(1u << bitpos);
 	}
 }
 
@@ -493,11 +493,11 @@ static __attribute__ ((always_inline)) inline void
 mchp_pcr_periph_reset(PCR_ID pcr_id)
 {
 	uintptr_t raddr = (uintptr_t) (MCHP_PCR_PERIPH_RST0_ADDR);
-	uint32_t bitpos = (uint32_t) pcr_id & 0x1F;
+	uint32_t bitpos = (uint32_t) pcr_id & 0x1f;
 
 	raddr += ((uint32_t) pcr_id >> 5);
 	REG32(MCHP_PCR_PERIPH_RESET_LOCK_ADDR) = MCHP_PCR_RSTEN_UNLOCK;
-	REG32(raddr) = (1ul << bitpos);
+	REG32(raddr) = (1u << bitpos);
 	REG32(MCHP_PCR_PERIPH_RESET_LOCK_ADDR) = MCHP_PCR_RSTEN_LOCK;
 }
 

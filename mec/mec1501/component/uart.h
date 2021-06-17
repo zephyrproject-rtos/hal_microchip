@@ -46,43 +46,43 @@
 #define MCHP_UART_RX_FIFO_MAX_LEN	16u
 #define MCHP_UART_TX_FIFO_MAX_LEN	16u
 
-#define MCHP_UART_BAUD_RATE_MIN		50ul
-#define MCHP_UART_BAUD_RATE_MAX		1500000ul
+#define MCHP_UART_BAUD_RATE_MIN		50u
+#define MCHP_UART_BAUD_RATE_MAX		1500000u
 
-#define MCHP_UART0_BASE_ADDRESS		0x400F2400ul
-#define MCHP_UART1_BASE_ADDRESS		0x400F2800ul
-#define MCHP_UART2_BASE_ADDRESS		0x400F2C00ul
+#define MCHP_UART0_BASE_ADDRESS		0x400f2400u
+#define MCHP_UART1_BASE_ADDRESS		0x400f2800u
+#define MCHP_UART2_BASE_ADDRESS		0x400f2c00u
 
 #define MCHP_UART_BASE_ADDR(n) \
 	(MCHP_UART0_BASE_ADDRESS + ((uint32_t)(n) << 10u))
 
 #define MCHP_UART_GIRQ_NUM		15u
 #define MCHP_UART_GIRQ_ID		7u
-#define MCHP_UART_GIRQ_SRC_ADDR		0x4000E08Cul
-#define MCHP_UART_GIRQ_EN_SET_ADDR	0x4000E090ul
-#define MCHP_UART_GIRQ_RESULT_ADDR	0x4000E094ul
-#define MCHP_UART_GIRQ_EN_CLR_ADDR	0x4000E098ul
+#define MCHP_UART_GIRQ_SRC_ADDR		0x4000e08cu
+#define MCHP_UART_GIRQ_EN_SET_ADDR	0x4000e090u
+#define MCHP_UART_GIRQ_RESULT_ADDR	0x4000e094u
+#define MCHP_UART_GIRQ_EN_CLR_ADDR	0x4000e098u
 #define MCHP_UART0_GIRQ_BIT		0u
 #define MCHP_UART1_GIRQ_BIT		1u
 #define MCHP_UART2_GIRQ_BIT		4u
-#define MCHP_UART0_GIRQ_VAL		(1ul << (MCHP_UART0_GIRQ_BIT))
-#define MCHP_UART1_GIRQ_VAL		(1ul << (MCHP_UART1_GIRQ_BIT))
-#define MCHP_UART2_GIRQ_VAL		(1ul << (MCHP_UART2_GIRQ_BIT))
+#define MCHP_UART0_GIRQ_VAL		(1u << (MCHP_UART0_GIRQ_BIT))
+#define MCHP_UART1_GIRQ_VAL		(1u << (MCHP_UART1_GIRQ_BIT))
+#define MCHP_UART2_GIRQ_VAL		(1u << (MCHP_UART2_GIRQ_BIT))
 #define MCHP_UART0_NVIC_DIRECT_NUM	40u
 #define MCHP_UART1_NVIC_DIRECT_NUM	41u
 #define MCHP_UART2_NVIC_DIRECT_NUM	44u
-#define MCHP_UART_NVIC_SETEN_GIRQ_ADDR	0xE000E100ul
+#define MCHP_UART_NVIC_SETEN_GIRQ_ADDR	0xe000e100u
 #define MCHP_UART_NVIC_SETEN_GIRQ_BIT	7u	/* aggregated */
-#define MCHP_UART_NVIC_SETEN_DIRECT_ADDR	0xE000E104ul
+#define MCHP_UART_NVIC_SETEN_DIRECT_ADDR	0xe000e104u
 #define MCHP_UART0_NVIC_SETEN_DIRECT_BIT	(40u - 32u)
 #define MCHP_UART1_NVIC_SETEN_DIRECT_BIT	(41u - 32u)
 #define MCHP_UART2_NVIC_SETEN_DIRECT_BIT	(44u - 32u)
 
 /* CMSIS NVIC macro IRQn parameter */
-#define MCHP_UART_NVIC_IRQn	7ul	/* aggregated */
-#define MCHP_UART0_NVIC_IRQn	41ul	/* UART0 direct mode */
-#define MCHP_UART1_NVIC_IRQn	42ul	/* UART1 direct mode */
-#define MCHP_UART2_NVIC_IRQn	44ul	/* UART2 direct mode */
+#define MCHP_UART_NVIC_IRQn	7u	/* aggregated */
+#define MCHP_UART0_NVIC_IRQn	41u	/* UART0 direct mode */
+#define MCHP_UART1_NVIC_IRQn	42u	/* UART1 direct mode */
+#define MCHP_UART2_NVIC_IRQn	44u	/* UART2 direct mode */
 
 /*
  * LCR DLAB=0
@@ -99,39 +99,39 @@
  */
 #define MCHP_UART_BRGD_MSB_OFS	1u
 #define MCHP_UART_IER_OFS	1u
-#define MCHP_UART_IER_MASK	0x0Ful
-#define MCHP_UART_IER_ERDAI	0x01ul	/* Received data available and timeouts */
-#define MCHP_UART_IER_ETHREI	0x02ul	/* TX Holding register empty */
-#define MCHP_UART_IER_ELSI	0x04ul	/* Errors: Overrun, Parity, Framing, and Break */
-#define MCHP_UART_IER_EMSI	0x08ul	/* Modem Status */
-#define MCHP_UART_IER_ALL	0x0Ful
+#define MCHP_UART_IER_MASK	0x0fu
+#define MCHP_UART_IER_ERDAI	0x01u	/* Received data available and timeouts */
+#define MCHP_UART_IER_ETHREI	0x02u	/* TX Holding register empty */
+#define MCHP_UART_IER_ELSI	0x04u	/* Errors: Overrun, Parity, Framing, and Break */
+#define MCHP_UART_IER_EMSI	0x08u	/* Modem Status */
+#define MCHP_UART_IER_ALL	0x0fu
 
 /* FIFO Contro Register, Write-Only */
 #define MCHP_UART_FCR_OFS		2u
-#define MCHP_UART_FCR_MASK		0xCFu
+#define MCHP_UART_FCR_MASK		0xcfu
 #define MCHP_UART_FCR_EXRF		0x01u	/* Enable TX & RX FIFO's */
 #define MCHP_UART_FCR_CLR_RX_FIFO	0x02u	/* Clear RX FIFO, bit is self-clearing */
 #define MCHP_UART_FCR_CLR_TX_FIFO	0x04u	/* Clear TX FIFO, bit is self-clearing */
 #define MCHP_UART_FCR_DMA_EN		0x08u	/* DMA Mode Enable. Not implemented */
-#define MCHP_UART_FCR_RX_FIFO_LVL_MASK	0xC0u	/* RX FIFO trigger level mask */
+#define MCHP_UART_FCR_RX_FIFO_LVL_MASK	0xc0u	/* RX FIFO trigger level mask */
 #define MCHP_UART_FCR_RX_FIFO_LVL_1	0x00u
 #define MCHP_UART_FCR_RX_FIFO_LVL_4	0x40u
 #define MCHP_UART_FCR_RX_FIFO_LVL_8	0x80u
-#define MCHP_UART_FCR_RX_FIFO_LVL_14	0xC0u
+#define MCHP_UART_FCR_RX_FIFO_LVL_14	0xc0u
 
 /* Interrupt Identification Register, Read-Only */
 #define MCHP_UART_IIR_OFS		2u
-#define MCHP_UART_IIR_MASK		0xCFu
+#define MCHP_UART_IIR_MASK		0xcfu
 #define MCHP_UART_IIR_NOT_IPEND		0x01u
 #define MCHP_UART_IIR_INTID_MASK0	0x07u
 #define MCHP_UART_IIR_INTID_POS		1u
-#define MCHP_UART_IIR_INTID_MASK	0x0Eu
-#define MCHP_UART_IIR_FIFO_EN_MASK	0xC0u
+#define MCHP_UART_IIR_INTID_MASK	0x0eu
+#define MCHP_UART_IIR_FIFO_EN_MASK	0xc0u
 /* interrupt values */
 #define MCHP_UART_IIR_INT_NONE		0x01u
 #define MCHP_UART_IIR_INT_LS		0x06u	/* Highest priority: Line status, overrun, framing, or break */
 #define MCHP_UART_IIR_INT_RX		0x04u	/* Highest-1. RX data available or RX FIFO trigger level reached */
-#define MCHP_UART_IIR_INT_RX_TMOUT	0x0Cu	/* Highest-2. RX timeout */
+#define MCHP_UART_IIR_INT_RX_TMOUT	0x0cu	/* Highest-2. RX timeout */
 #define MCHP_UART_IIR_INT_THRE		0x02u	/* Highest-3. TX Holding register empty. */
 #define MCHP_UART_IIR_INT_MS		0x00u	/* Highest-4. MODEM status. */
 
@@ -154,7 +154,7 @@
 
 /* MODEM Control Register R/W */
 #define MCHP_UART_MCR_OFS		4u
-#define MCHP_UART_MCR_MASK		0x1Fu
+#define MCHP_UART_MCR_MASK		0x1fu
 #define MCHP_UART_MCR_DTRn		0x01u
 #define MCHP_UART_MCR_RTSn		0x02u
 #define MCHP_UART_MCR_OUT1		0x04u
@@ -171,7 +171,7 @@
 #define MCHP_UART_LSR_THRE	0x20u
 #define MCHP_UART_LSR_TEMT	0x40u
 #define MCHP_UART_LSR_FIFO_ERR	0x80u
-#define MCHP_UART_LSR_ANY	0xFFu
+#define MCHP_UART_LSR_ANY	0xffu
 
 /* MODEM Status Register RO */
 #define MCHP_UART_MSR_OFS		6u
@@ -188,11 +188,11 @@
 #define MCHP_UART_SCR_OFS	7u
 
 /* UART Logical Device Activate Register */
-#define MCHP_UART_LD_ACT	0x330ul
-#define MCHP_UART_LD_ACTIVATE	0x01ul
+#define MCHP_UART_LD_ACT	0x330u
+#define MCHP_UART_LD_ACTIVATE	0x01u
 
 /* UART Logical Device Config Register */
-#define MCHP_UART_LD_CFG		0x3F0ul
+#define MCHP_UART_LD_CFG		0x3f0u
 #define MCHP_UART_LD_CFG_INTCLK		(0u << 0)
 #define MCHP_UART_LD_CFG_EXTCLK		(1u << 0)
 #define MCHP_UART_LD_CFG_RESET_SYS	(0u << 1)
@@ -201,7 +201,7 @@
 #define MCHP_UART_LD_CFG_INVERT		(1u << 2)
 
 /* BAUD rate generator */
-#define MCHP_UART_INT_CLK_24M	(1ul << 15)
+#define MCHP_UART_INT_CLK_24M	(1u << 15)
 
 /* 1.8MHz internal clock source */
 #define MCHP_UART_1P8M_BAUD_50		2304u
@@ -271,11 +271,11 @@
   */
 
 #define MCHP_UART_NUM_INSTANCES		3u
-#define MCHP_UART_SPACING		0x400ul
+#define MCHP_UART_SPACING		0x400u
 #define MCHP_UART_SPACING_PWROF2	10u
 
 typedef struct uart_regs
-{		/*!< (@ 0x400F2400) UART Structure   */
+{		/*!< (@ 0x400f2400) UART Structure   */
 	__IOM uint8_t RTXB;	/*!< (@ 0x0000) UART RXB(RO), TXB(WO). BRGD_LSB(RW LCR.DLAB=1) */
 	__IOM uint8_t IER;	/*!< (@ 0x0001) UART IER(RW). BRGD_MSB(RW LCR.DLAB=1) */
 	__IOM uint8_t IIR_FCR;	/*!< (@ 0x0002) UART IIR(RO), FCR(WO) */
@@ -286,8 +286,8 @@ typedef struct uart_regs
 	__IOM uint8_t SCR;	/*!< (@ 0x0007) UART Scratch(RW) */
 	uint8_t RSVDA[0x330u - 0x08u];
 	__IOM uint8_t ACTV;	/*!< (@ 0x0330) UART Activate(RW) */
-	uint8_t RSVDB[0x3F0u - 0x331u];
-	__IOM uint8_t CFG_SEL;	/*!< (@ 0x03F0) UART Configuration Select(RW) */
+	uint8_t RSVDB[0x3f0u - 0x331u];
+	__IOM uint8_t CFG_SEL;	/*!< (@ 0x03f0) UART Configuration Select(RW) */
 } UART_Type;
 
 #endif				/* #ifndef _MCHP_UART_H */

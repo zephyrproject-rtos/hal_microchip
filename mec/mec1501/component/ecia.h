@@ -38,7 +38,7 @@
 
 #include "regaccess.h"
 
-#define MCHP_ECIA_ADDR	0x4000E000ul
+#define MCHP_ECIA_ADDR	0x4000e000u
 #define MCHP_FIRST_GIRQ	8u
 #define MCHP_LAST_GIRQ	26u
 
@@ -56,25 +56,25 @@
  * MEC15xx has 173 external sources requiring 6 32-bit registers.
   */
 #define MCHP_NUM_NVIC_REGS	6u
-#define MCHP_NVIC_SET_EN_BASE	0xE000E100ul
-#define MCHP_NVIC_CLR_EN_BASE	0xE000E180ul
-#define MCHP_NVIC_SET_PEND_BASE	0xE000E200ul
-#define MCHP_NVIC_CLR_PEND_BASE	0xE000E280ul
-#define MCHP_NVIC_ACTIVE_BASE	0xE000E800ul
-#define MCHP_NVIC_PRI_BASE	0xE000E400ul
+#define MCHP_NVIC_SET_EN_BASE	0xe000e100u
+#define MCHP_NVIC_CLR_EN_BASE	0xe000e180u
+#define MCHP_NVIC_SET_PEND_BASE	0xe000e200u
+#define MCHP_NVIC_CLR_PEND_BASE	0xe000e280u
+#define MCHP_NVIC_ACTIVE_BASE	0xe000e800u
+#define MCHP_NVIC_PRI_BASE	0xe000e400u
 
 /* 0 <= n < MCHP_NUM_NVIC_REGS */
 #define MCHP_NVIC_SET_EN(n) \
-	REG32(MCHP_NVIC_SET_EN_BASE + ((uintptr_t)(n) * 4U))
+	REG32(MCHP_NVIC_SET_EN_BASE + ((uintptr_t)(n) * 4u))
 
 #define MCHP_NVIC_CLR_EN(n) \
-	REG32(MCHP_NVIC_CLR_EN_BASE + ((uintptr_t)(n) * 4U))
+	REG32(MCHP_NVIC_CLR_EN_BASE + ((uintptr_t)(n) * 4u))
 
 #define MCHP_NVIC_SET_PEND(n) \
-	REG32(MCHP_NVIC_SET_PEND_BASE + ((uintptr_t)(n) * 4U))
+	REG32(MCHP_NVIC_SET_PEND_BASE + ((uintptr_t)(n) * 4u))
 
 #define MCHP_NVIC_CLR_PEND(n) \
-	REG32(MCHP_NVIC_CLR_PEND_BASE + ((uintptr_t)(n) * 4U))
+	REG32(MCHP_NVIC_CLR_PEND_BASE + ((uintptr_t)(n) * 4u))
 
 /*
  * ECIA registers
@@ -127,9 +127,9 @@
 #define MCHP_GIRQ26_ZID		17u
 #define MCHP_GIRQ_ZID_MAX	18u
 
-#define MCHP_ECIA_BLK_ENSET_OFS		0x200ul
-#define MCHP_ECIA_BLK_ENCLR_OFS		0x204ul
-#define MCHP_ECIA_BLK_ACTIVE_OFS	0x208ul
+#define MCHP_ECIA_BLK_ENSET_OFS		0x200u
+#define MCHP_ECIA_BLK_ENCLR_OFS		0x204u
+#define MCHP_ECIA_BLK_ACTIVE_OFS	0x208u
 
 #define MCHP_GIRQ_BLK_ENSET_ADDR \
 	(MCHP_ECIA_ADDR + MCHP_ECIA_BLK_ENSET_OFS)
@@ -145,16 +145,16 @@
 
 /* 8 <= n <= 26 */
 #define MCHP_GIRQ_SRC_ADDR(n) \
-	((MCHP_ECIA_ADDR + 0x00ul) + (((uint32_t)(n) - 8ul) * 0x14ul))
+	((MCHP_ECIA_ADDR + 0x00u) + (((uint32_t)(n) - 8u) * 0x14u))
 
 #define MCHP_GIRQ_ENSET_ADDR(n) \
-	((MCHP_ECIA_ADDR + 0x04ul) + (((uint32_t)(n) - 8ul) * 0x14ul))
+	((MCHP_ECIA_ADDR + 0x04u) + (((uint32_t)(n) - 8u) * 0x14u))
 
 #define MCHP_GIRQ_RESULT_ADDR(n) \
-	((MCHP_ECIA_ADDR + 0x08ul) + (((uint32_t)(n) - 8ul) * 0x14ul))
+	((MCHP_ECIA_ADDR + 0x08u) + (((uint32_t)(n) - 8u) * 0x14u))
 
 #define MCHP_GIRQ_ENCLR_ADDR(n) \
-	((MCHP_ECIA_ADDR + 0x0Cul) + (((uint32_t)(n) - 8ul) * 0x14ul))
+	((MCHP_ECIA_ADDR + 0x0cu) + (((uint32_t)(n) - 8u) * 0x14u))
 
 #define MCHP_GIRQ08_SRC_ADDR	MCHP_GIRQ_SRC_ADDR(8)
 #define MCHP_GIRQ08_ENSET_ADDR	MCHP_GIRQ_ENSET_ADDR(8)
@@ -275,7 +275,7 @@
 	REG32(MCHP_GIRQ_BLK_ENCLR_ADDR) = BIT(n)
 
 #define MCHP_GIRQ_BLK_IS_ACTIVE(n) \
-	((REG32(MCHP_GIRQ_BLK_ACTIVE_ADDR) & BIT(n)) != 0ul)
+	((REG32(MCHP_GIRQ_BLK_ACTIVE_ADDR) & BIT(n)) != 0u)
 
 /* 8 <= n <= 26 corresponding to GIRQ08, GIRQ09, ..., GIRQ26 */
 #define MCHP_GIRQ_SRC(n) REG32(MCHP_GIRQ_SRC_ADDR(n))
@@ -299,7 +299,7 @@
 	REG32(MCHP_GIRQ_ENCLR_ADDR(n)) = BIT(pos)
 
 #define MCHP_GIRQ_IS_RESULT(n, pos) \
-	((REG32(MCHP_GIRQ_RESULT_ADDR(n)) & BIT(pos)) != 0ul)
+	((REG32(MCHP_GIRQ_RESULT_ADDR(n)) & BIT(pos)) != 0u)
 
 /* =========================================================================*/
 /* ================	       ECIA			   ================ */
@@ -360,7 +360,7 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_GPIO_0171_GIRQ_BIT		BIT(25)
 #define MCHP_GPIO_0172_GIRQ_BIT		BIT(26)
 #define MCHP_GPIO_0175_GIRQ_BIT		BIT(29)
-#define MCHP_GPIO_0140_0176_GIRQ_MASK	0x272EFFFFu
+#define MCHP_GPIO_0140_0176_GIRQ_MASK	0x272effffu
 
 /* GIRQ09 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_GPIO_0100_GIRQ_BIT		BIT(0)
@@ -387,7 +387,7 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_GPIO_0130_GIRQ_BIT		BIT(24)
 #define MCHP_GPIO_0131_GIRQ_BIT		BIT(25)
 #define MCHP_GPIO_0132_GIRQ_BIT		BIT(26)
-#define MCHP_GPIO_0100_0136_GIRQ_MASK	0x07FFFCF7u
+#define MCHP_GPIO_0100_0136_GIRQ_MASK	0x07fffcf7u
 
 /* GIRQ10 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_GPIO_0040_GIRQ_BIT		BIT(0)
@@ -419,7 +419,7 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_GPIO_0073_GIRQ_BIT		BIT(27)
 #define MCHP_GPIO_0074_GIRQ_BIT		BIT(28)
 #define MCHP_GPIO_0075_GIRQ_BIT		BIT(29)
-#define MCHP_GPIO_0040_0076_GIRQ_MASK	0x3FFFFFFDu
+#define MCHP_GPIO_0040_0076_GIRQ_MASK	0x3ffffffdu
 
 /* GIRQ11 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_GPIO_0000_GIRQ_BIT		BIT(0)
@@ -450,7 +450,7 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_GPIO_0034_GIRQ_BIT		BIT(28)
 #define MCHP_GPIO_0035_GIRQ_BIT		BIT(29)
 #define MCHP_GPIO_0036_GIRQ_BIT		BIT(30)
-#define MCHP_GPIO_0000_0036_GIRQ_MASK	0x7FFFFF9Du
+#define MCHP_GPIO_0000_0036_GIRQ_MASK	0x7fffff9du
 
 /* GIRQ12 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_GPIO_0200_GIRQ_BIT		BIT(0)
@@ -470,7 +470,7 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_GPIO_0224_GIRQ_BIT		BIT(20)
 #define MCHP_GPIO_0226_GIRQ_BIT		BIT(22)
 #define MCHP_GPIO_0227_GIRQ_BIT		BIT(23)
-#define MCHP_GPIO_0200_0236_GIRQ_MASK	0x00DE0EFFu
+#define MCHP_GPIO_0200_0236_GIRQ_MASK	0x00de0effu
 
 /* GIRQ13 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_I2C_SMB_0_GIRQ_BIT		BIT(0)
@@ -482,8 +482,8 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_I2C_1_GIRQ_BIT		BIT(6)
 #define MCHP_I2C_2_GIRQ_BIT		BIT(7)
 /* Masks for blocks with multiple instances or sources */
-#define MCHP_SMB_I2C_GIRQ_MASK		0x1Fu
-#define MCHP_I2C_GIRQ_MASK		0xE0u
+#define MCHP_SMB_I2C_GIRQ_MASK		0x1fu
+#define MCHP_I2C_GIRQ_MASK		0xe0u
 
 /* GIRQ14 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_DMA_CH00_GIRQ_BIT		BIT(0)
@@ -498,7 +498,7 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_DMA_CH09_GIRQ_BIT		BIT(9)
 #define MCHP_DMA_CH10_GIRQ_BIT		BIT(10)
 #define MCHP_DMA_CH11_GIRQ_BIT		BIT(11)
-#define MCHP_DMA_GIRQ_MASK		0x0FFFu
+#define MCHP_DMA_GIRQ_MASK		0x0fffu
 
 /* GIRQ15 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_UART_0_GIRQ_BIT		BIT(0)
@@ -524,12 +524,12 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_P80BD_1_GIRQ_BIT		BIT(23)
 /* Masks for blocks with multiple instances or sources */
 #define MCHP_UART_GIRQ_MASK		0x13u
-#define MCHP_UART_EMI_GIRQ_MASK		0x0Cu
-#define MCHP_ACPI_EC_GIRQ_MASK		0x01FE0u
+#define MCHP_UART_EMI_GIRQ_MASK		0x0cu
+#define MCHP_ACPI_EC_GIRQ_MASK		0x01fe0u
 #define MCHP_ACPI_PM1_GIRQ_MASK		0x38000u
-#define MCHP_KBC_GIRQ_MASK		0xC0000u
-#define MCHP_BDP_MASK			0xC00000u
-#define MCHP_HOST_PERIPH_GIRQ_MASK	0xDF9FFFu
+#define MCHP_KBC_GIRQ_MASK		0xc0000u
+#define MCHP_BDP_MASK			0xc00000u
+#define MCHP_HOST_PERIPH_GIRQ_MASK	0xdf9fffu
 
 /* GIRQ16 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_PK_ERR_GIRQ_BIT		BIT(0)
@@ -537,7 +537,7 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_RNG_GIRQ_BIT		BIT(2)
 #define MCHP_AES_GIRQ_BIT		BIT(3)
 #define MCHP_HASH_GIRQ_BIT		BIT(4)
-#define MCHP_CRYPTO_GIRQ_MASK		0x1Fu
+#define MCHP_CRYPTO_GIRQ_MASK		0x1fu
 
 /* GIRQ17 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_PECI_GIRQ_BIT		BIT(0)
@@ -553,10 +553,10 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_LED_2_GIRQ_BIT		BIT(15)
 #define MCHP_PHOT_0_GIRQ_BIT		BIT(17)
 /* Masks for blocks with multiple instances or sources */
-#define MCHP_TACH_GIRQ_MASK		0x1Eu
+#define MCHP_TACH_GIRQ_MASK		0x1eu
 #define MCHP_ADC_GIRQ_MASK		0x300u
-#define MCHP_LED_GIRQ_MASK		0xE000u
-#define MCHP_PERIPH_GROUP_1_MASK	0x2E33Fu
+#define MCHP_LED_GIRQ_MASK		0xe000u
+#define MCHP_PERIPH_GROUP_1_MASK	0x2e33fu
 
 /* GIRQ18 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_SPIEP_0_GIRQ_BIT		BIT(0)
@@ -574,9 +574,9 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_CCT_0_CMP0_GIRQ_BIT	BIT(27)
 #define MCHP_CCT_0_CMP1_GIRQ_BIT	BIT(28)
 /* Masks for blocks with multiple instances or sources */
-#define MCHP_PS2_GIRQ_MASK		0xC00u
-#define MCHP_CCT_0_GIRQ_MASK		0x1FF00000u
-#define MCHP_PERIPH_GROUP_2_MASK	0x1FF02C03u
+#define MCHP_PS2_GIRQ_MASK		0xc00u
+#define MCHP_CCT_0_GIRQ_MASK		0x1ff00000u
+#define MCHP_PERIPH_GROUP_2_MASK	0x1ff02c03u
 
 /* GIRQ19 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_ESPI_PC_GIRQ_BIT		BIT(0)
@@ -594,7 +594,7 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_ESPI_BM_GIRQ_MASK		0x006u
 #define MCHP_ESPI_OOB_GIRQ_MASK		0x030u
 #define MCHP_ESPI_SAF_GIRQ_MASK		0x600u
-#define MCHP_ESPI_GIRQ_MASK		0xFFFu
+#define MCHP_ESPI_GIRQ_MASK		0xfffu
 
 /* GIRQ20 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_STAP_OBF_GIRQ_BIT		BIT(0)
@@ -603,7 +603,7 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_OTP_READY_GIRQ_BIT		BIT(3)
 /* Masks for blocks with multiple instances or sources */
 #define MCHP_STAP_GIRQ_MASK		0x007u
-#define MCHP_PERIPH_GROUP_3_MASK	0x00Fu
+#define MCHP_PERIPH_GROUP_3_MASK	0x00fu
 
 /* GIRQ21 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_WDT_GIRQ_BIT		BIT(2)
@@ -625,11 +625,11 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_KEYSCAN_GIRQ_BIT		BIT(25)
 #define MCHP_GLUE_GIRQ_BIT		BIT(26)
 /* Masks for blocks with multiple instances or sources */
-#define MCHP_WTMR_GIRQ_MASK		0xF8u
+#define MCHP_WTMR_GIRQ_MASK		0xf8u
 #define MCHP_RTC_GIRQ_MASK		0x300u
-#define MCHP_VCI_GIRQ_MASK		0x7C00u
-#define MCHP_PS2_PORT_WK_GIRQ_MASK	0x2C0000u
-#define MCHP_PERIPH_GROUP_4_MASK	0x62C7FFCu
+#define MCHP_VCI_GIRQ_MASK		0x7c00u
+#define MCHP_PS2_PORT_WK_GIRQ_MASK	0x2c0000u
+#define MCHP_PERIPH_GROUP_4_MASK	0x62c7ffcu
 
 /*
  * GIRQ22 Source, Enable_Set/Clr, Result registers bit positions
@@ -649,9 +649,9 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_I2C_2_WK_CLK_GIRQ_BIT	BIT(8)
 #define MCHP_ESPI_WK_CLK_GIRQ_BIT	BIT(9)
 /* Masks for blocks with multiple instances or sources */
-#define MCHP_I2C_SMB_WK_CLK_GIRQ_MASK	0x3Eu
-#define MCHP_I2C_WK_CLK_GIRQ_MASK	0x1C0u
-#define MCHP_CLK_WK_CLK_GIRQ_MASK	0x3FFu
+#define MCHP_I2C_SMB_WK_CLK_GIRQ_MASK	0x3eu
+#define MCHP_I2C_WK_CLK_GIRQ_MASK	0x1c0u
+#define MCHP_CLK_WK_CLK_GIRQ_MASK	0x3ffu
 
 /* GIRQ23 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_BTMR16_0_GIRQ_BIT		BIT(0)
@@ -668,9 +668,9 @@ enum MCHP_GIRQ_IDS {
 /* Masks for blocks with multiple instances or sources */
 #define MCHP_BTMR16_GIRQ_MASK		0x03u
 #define MCHP_BTMR32_GIRQ_MASK		0x30u
-#define MCHP_RMTR_GIRQ_MASK		0x7C00u
+#define MCHP_RMTR_GIRQ_MASK		0x7c00u
 #define MCHP_HTMR_GIRQ_MASK		0x30000u
-#define MCHP_PERIPH_GROUP_5_GIRQ_MASK	0x37C33u
+#define MCHP_PERIPH_GROUP_5_GIRQ_MASK	0x37c33u
 
 /* GIRQ24 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_MSVW00_SRC0_GIRQ_BIT	BIT(0)
@@ -702,14 +702,14 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_MSVW06_SRC2_GIRQ_BIT	BIT(26)
 #define MCHP_MSVW06_SRC3_GIRQ_BIT	BIT(27)
 /* Masks for blocks with multiple instances or sources */
-#define MCHP_MSVW00_GIRQ_MASK		0xFu
-#define MCHP_MSVW01_GIRQ_MASK		0xF0u
-#define MCHP_MSVW02_GIRQ_MASK		0xF00u
-#define MCHP_MSVW03_GIRQ_MASK		0xF000u
-#define MCHP_MSVW04_GIRQ_MASK		0xF0000u
-#define MCHP_MSVW05_GIRQ_MASK		0xF00000u
-#define MCHP_MSVW06_GIRQ_MASK		0xF000000u
-#define MCHP_MSVW00_06_GIRQ_MASK	0x0FFFFFFFu
+#define MCHP_MSVW00_GIRQ_MASK		0xfu
+#define MCHP_MSVW01_GIRQ_MASK		0xf0u
+#define MCHP_MSVW02_GIRQ_MASK		0xf00u
+#define MCHP_MSVW03_GIRQ_MASK		0xf000u
+#define MCHP_MSVW04_GIRQ_MASK		0xf0000u
+#define MCHP_MSVW05_GIRQ_MASK		0xf00000u
+#define MCHP_MSVW06_GIRQ_MASK		0xf000000u
+#define MCHP_MSVW00_06_GIRQ_MASK	0x0fffffffu
 
 /* GIRQ25 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_MSVW07_SRC0_GIRQ_BIT	BIT(0)
@@ -729,11 +729,11 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_MSVW10_SRC2_GIRQ_BIT	BIT(14)
 #define MCHP_MSVW10_SRC3_GIRQ_BIT	BIT(15)
 /* Masks for blocks with multiple instances or sources */
-#define MCHP_MSVW07_GIRQ_MASK		0xFu
-#define MCHP_MSVW08_GIRQ_MASK		0xF0u
-#define MCHP_MSVW09_GIRQ_MASK		0xF00u
-#define MCHP_MSVW10_GIRQ_MASK		0xF000u
-#define MCHP_MSVW07_10_GIRQ_MASK	0xFFFFu
+#define MCHP_MSVW07_GIRQ_MASK		0xfu
+#define MCHP_MSVW08_GIRQ_MASK		0xf0u
+#define MCHP_MSVW09_GIRQ_MASK		0xf00u
+#define MCHP_MSVW10_GIRQ_MASK		0xf000u
+#define MCHP_MSVW07_10_GIRQ_MASK	0xffffu
 
 /* GIRQ26 Source, Enable_Set/Clr, Result registers bit positions */
 #define MCHP_GPIO_0240_GIRQ_BIT		BIT(0)
@@ -748,11 +748,11 @@ enum MCHP_GIRQ_IDS {
 #define MCHP_GPIO_0254_GIRQ_BIT		BIT(12)
 #define MCHP_GPIO_0255_GIRQ_BIT		BIT(13)
 /* Masks for blocks with multiple instances or sources */
-#define MCHP_GPIO_0240_0276_GIRQ_MASK	0x397Fu
+#define MCHP_GPIO_0240_0276_GIRQ_MASK	0x397fu
 
 #define MCHP_GIRQ_START_NUM	8u
 #define MCHP_GIRQ_LAST_NUM	26u
-#define MCHP_GIRQ_IDX(girq)	((uint32_t)(girq) - 8ul)
+#define MCHP_GIRQ_IDX(girq)	((uint32_t)(girq) - 8u)
 #define MCHP_GIRQ_IDX_FIRST	0u
 #define MCHP_GIRQ_IDX_MAX	19u
 #define MCHP_MAX_NVIC_IDX	6u
@@ -769,32 +769,32 @@ typedef struct girq_regs
 
 /** @brief EC Interrupt Aggregator (ECIA) */
 typedef struct ecia_regs
-{		/*!< (@ 0x4000E000) ECIA Structure   */
+{		/*!< (@ 0x4000e000) ECIA Structure   */
 	union {
 		struct {
 			GIRQ_Type GIRQ08;	/*!< (@ 0x0000) GIRQ08 registers */
 			GIRQ_Type GIRQ09;	/*!< (@ 0x0014) GIRQ09 registers */
 			GIRQ_Type GIRQ10;	/*!< (@ 0x0028) GIRQ10 registers */
-			GIRQ_Type GIRQ11;	/*!< (@ 0x003C) GIRQ11 registers */
+			GIRQ_Type GIRQ11;	/*!< (@ 0x003c) GIRQ11 registers */
 			GIRQ_Type GIRQ12;	/*!< (@ 0x0050) GIRQ12 registers */
 			GIRQ_Type GIRQ13;	/*!< (@ 0x0064) GIRQ13 registers */
 			GIRQ_Type GIRQ14;	/*!< (@ 0x0078) GIRQ14 registers */
-			GIRQ_Type GIRQ15;	/*!< (@ 0x008C) GIRQ15 registers */
-			GIRQ_Type GIRQ16;	/*!< (@ 0x00A0) GIRQ16 registers */
-			GIRQ_Type GIRQ17;	/*!< (@ 0x00B4) GIRQ17 registers */
-			GIRQ_Type GIRQ18;	/*!< (@ 0x00C8) GIRQ18 registers */
-			GIRQ_Type GIRQ19;	/*!< (@ 0x00DC) GIRQ19 registers */
-			GIRQ_Type GIRQ20;	/*!< (@ 0x00F0) GIRQ20 registers */
+			GIRQ_Type GIRQ15;	/*!< (@ 0x008c) GIRQ15 registers */
+			GIRQ_Type GIRQ16;	/*!< (@ 0x00a0) GIRQ16 registers */
+			GIRQ_Type GIRQ17;	/*!< (@ 0x00b4) GIRQ17 registers */
+			GIRQ_Type GIRQ18;	/*!< (@ 0x00c8) GIRQ18 registers */
+			GIRQ_Type GIRQ19;	/*!< (@ 0x00dc) GIRQ19 registers */
+			GIRQ_Type GIRQ20;	/*!< (@ 0x00f0) GIRQ20 registers */
 			GIRQ_Type GIRQ21;	/*!< (@ 0x0104) GIRQ21 registers */
 			GIRQ_Type GIRQ22;	/*!< (@ 0x0118) GIRQ22 registers */
-			GIRQ_Type GIRQ23;	/*!< (@ 0x012C) GIRQ23 registers */
+			GIRQ_Type GIRQ23;	/*!< (@ 0x012c) GIRQ23 registers */
 			GIRQ_Type GIRQ24;	/*!< (@ 0x0140) GIRQ24 registers */
 			GIRQ_Type GIRQ25;	/*!< (@ 0x0154) GIRQ25 registers */
 			GIRQ_Type GIRQ26;	/*!< (@ 0x0168) GIRQ26 registers */
 		};
 		GIRQ_Type GIRQ[19];
 	};
-	uint8_t RSVD2[(0x0200ul - 0x017Cul)];	/* offsets 0x017C - 0x1FF */
+	uint8_t RSVD2[(0x0200u - 0x017cu)];	/* offsets 0x017c - 0x1ff */
 	__IOM uint32_t BLK_EN_SET;	/*! (@ 0x00000200) Aggregated GIRQ output Enable Set */
 	__IOM uint32_t BLK_EN_CLR;	/*! (@ 0x00000204) Aggregated GIRQ output Enable Clear */
 	__IM uint32_t BLK_ACTIVE;	/*! (@ 0x00000204) GIRQ Active bitmap (RO) */

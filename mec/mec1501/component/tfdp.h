@@ -42,38 +42,38 @@
 /* ================		TFDP			=================== */
 /* =========================================================================*/
 
-#define MCHP_TFDP_BASE_ADDR	0x40008c00ul
+#define MCHP_TFDP_BASE_ADDR	0x40008c00u
 
 #define MCHP_TFDP_DATA_OUT_ADDR	((MCHP_TFDP_BASE_ADDR) + 0)
-#define MCHP_TFDP_CTRL_ADDR	((MCHP_TFDP_BASE_ADDR) + 4ul)
+#define MCHP_TFDP_CTRL_ADDR	((MCHP_TFDP_BASE_ADDR) + 4u)
 
-#define MCHP_TFDP_CTRL_REG_MASK		0x7Ful
+#define MCHP_TFDP_CTRL_REG_MASK		0x7fu
 #define MCHP_TFDP_CTRL_EN_POS		0u
 #define MCHP_TFDP_CTRL_EDGE_SEL_POS	1u
 #define MCHP_TFDP_CTRL_DIV_SEL_POS	2u
 #define MCHP_TFDP_CTRL_IP_DLY_POS	4u
 
-#define MCHP_TFDP_CTRL_EN		(1ul << 0)
+#define MCHP_TFDP_CTRL_EN		(1u << 0)
 
-#define MCHP_TFDP_OUT_ON_RISING_EDGE	(0ul << 1)
-#define MCHP_TFDP_OUT_ON_FALLING_EDGE	(1ul << 1)
-#define MCHP_TFDP_CLK_AHB_DIV_2		(0ul << 2)
-#define MCHP_TFDP_CLK_AHB_DIV_4		(1ul << 2)
-#define MCHP_TFDP_CLK_AHB_DIV_8		(2ul << 2)
-#define MCHP_TFDP_CLK_AHB_DIV_2_ALT	(3ul << 2)
+#define MCHP_TFDP_OUT_ON_RISING_EDGE	(0u << 1)
+#define MCHP_TFDP_OUT_ON_FALLING_EDGE	(1u << 1)
+#define MCHP_TFDP_CLK_AHB_DIV_2		(0u << 2)
+#define MCHP_TFDP_CLK_AHB_DIV_4		(1u << 2)
+#define MCHP_TFDP_CLK_AHB_DIV_8		(2u << 2)
+#define MCHP_TFDP_CLK_AHB_DIV_2_ALT	(3u << 2)
 
 /* Number of AHB clocks between each byte shifted out */
-#define MCHP_TFDP_IP_DLY_1		(0ul << 4)
-#define MCHP_TFDP_IP_DLY_2		(1ul << 4)
-#define MCHP_TFDP_IP_DLY_3		(2ul << 4)
-#define MCHP_TFDP_IP_DLY_4		(3ul << 4)
-#define MCHP_TFDP_IP_DLY_5		(4ul << 4)
-#define MCHP_TFDP_IP_DLY_6		(5ul << 4)
-#define MCHP_TFDP_IP_DLY_7		(6ul << 4)
-#define MCHP_TFDP_IP_DLY_8		(7ul << 4)
+#define MCHP_TFDP_IP_DLY_1		(0u << 4)
+#define MCHP_TFDP_IP_DLY_2		(1u << 4)
+#define MCHP_TFDP_IP_DLY_3		(2u << 4)
+#define MCHP_TFDP_IP_DLY_4		(3u << 4)
+#define MCHP_TFDP_IP_DLY_5		(4u << 4)
+#define MCHP_TFDP_IP_DLY_6		(5u << 4)
+#define MCHP_TFDP_IP_DLY_7		(6u << 4)
+#define MCHP_TFDP_IP_DLY_8		(7u << 4)
 
 /* First byte indicates start of packet */
-#define MCHP_TFDP_PKT_START		0xFDu
+#define MCHP_TFDP_PKT_START		0xfdu
 
 /**
   * @brief Trace FIFO Debug Port Registers (TFDP)
