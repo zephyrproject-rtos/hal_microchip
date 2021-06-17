@@ -235,7 +235,8 @@
  * 0 <= v <= 6
  * 0 <= s <= 3
  */
-#define MEC_ESPI_MSVW_00_06_GIRQ_POS(v, s) (((uint32_t)(v) << 2) + (uint32_t)(s))
+#define MEC_ESPI_MSVW_00_06_GIRQ_POS(v, s) \
+	(((uint32_t)(v) << 2) + (uint32_t)(s))
 
 #define MEC_ESPI_VSVW_07_10_GIRQ    25u
 #define MEC_ESPI_VSVW_07_10_NVIC    16u
@@ -279,7 +280,7 @@
  * 0 <= s <= 3
  */
 #define MEC_ESPI_MSVW_07_10_GIRQ_POS(v, s) \
-		((((uint32_t)(v) - 7ul) << 2) + (uint32_t)(s))
+	((((uint32_t)(v) - 7ul) << 2) + (uint32_t)(s))
 
 /* Master-to-Slave VW byte indices(offsets) */
 #define MSVW_INDEX_OFS      0u
@@ -305,7 +306,7 @@
 /*
  * ESPI_IO_VW - eSPI IO component registers related to VW channel @ 0x400F36B0
  */
-typedef struct {
+typedef struct espi_io_vw_en {
 	__IOM uint32_t VW_EN_STS;	/*! (@ 0x0000) Virtual Wire Enable Status */
 	uint8_t RSVD1[0x30];
 	__IOM uint8_t VW_CAP;		/*! (@ 0x0034) Virtual Wire Chan Capabilities */
@@ -367,7 +368,7 @@ typedef struct espi_msvw_reg {
 	__IOM uint32_t SRC;
 } ESPI_MSVW_REG;
 
-typedef struct {
+typedef struct espi_msvw_named_regs {
 	ESPI_MSVW_REG MSVW00;
 	ESPI_MSVW_REG MSVW01;
 	ESPI_MSVW_REG MSVW02;
@@ -391,7 +392,7 @@ typedef struct espi_smvw_reg {
 	__IOM uint32_t SRC;
 } ESPI_SMVW_REG;
 
-typedef struct {
+typedef struct espi_smvw_named_regs {
 	ESPI_SMVW_REG SMVW00;
 	ESPI_SMVW_REG SMVW01;
 	ESPI_SMVW_REG SMVW02;
@@ -404,6 +405,56 @@ typedef struct {
 	ESPI_SMVW_REG SMVW09;
 	ESPI_SMVW_REG SMVW10;
 } ESPI_S2M_VW_Type;
+
+/* Virtual Wire registers all-in-one register structures */
+enum espi_h2d_vw_id { /* each ID controls 4 Virtual Wires */
+	MCHP_H2D_VW00 = 0,
+	MCHP_H2D_VW01,
+	MCHP_H2D_VW02,
+	MCHP_H2D_VW03,
+	MCHP_H2D_VW04,
+	MCHP_H2D_VW05,
+	MCHP_H2D_VW06,
+	MCHP_H2D_VW07,
+	MCHP_H2D_VW08,
+	MCHP_H2D_VW09,
+	MCHP_H2D_VW10,
+	MCHP_H2D_VW_MAX,
+};
+
+enum espi_d2h_vw_id { /* each ID controls 4 Virtual Wires */
+	MCHP_D2H_VW00 = 0,
+	MCHP_D2H_VW01,
+	MCHP_D2H_VW02,
+	MCHP_D2H_VW03,
+	MCHP_D2H_VW04,
+	MCHP_D2H_VW05,
+	MCHP_D2H_VW06,
+	MCHP_D2H_VW07,
+	MCHP_D2H_VW08,
+	MCHP_D2H_VW09,
+	MCHP_D2H_VW10,
+	MCHP_D2H_VW_MAX,
+};
+
+/** @brief eSPI Host to Device 96-bit register: controls 4 Virtual Wires */
+struct espi_vw_h2d_reg {
+	volatile uint32_t  IRSS;
+	volatile uint32_t  IRQ_SELECT;
+	volatile uint32_t  SRC;
+}; /* Size = 12 (0xc) */
+
+/** @brief Device to eSPI Host 64-bit register: controls 4 Virtual Wires */
+struct espi_vw_d2h_reg {
+	volatile uint32_t  IRSCH;
+	volatile uint32_t  SRC;
+}; /* Size = 8 (0x8) */
+
+struct espi_vw_regs { /* @ 0x400F9C00 */
+	struct espi_vw_h2d_reg HDVW[11]; /* @ 0x0000 Host-to-Device VW */
+	uint32_t  RESERVED[95];
+	struct espi_vw_d2h_reg DHVW[11]; /* @ 0x0200 Device-to-Host VW */
+}; /* Size = 600 (0x258) */
 
 /* MSVW helper inline functions */
 

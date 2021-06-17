@@ -357,7 +357,7 @@ typedef enum IRQn {
 #define TACH3_BASE          (PERIPH_BASE + 0x6030ul)	/*!< (TACH3 ) Base Address */
 #define PECI_BASE           (PERIPH_BASE + 0x6400ul)	/*!< (PECI ) Base Address */
 #define HDMI_CEC_BASE       (PERIPH_BASE + 0x6800ul)	/*!< (HDMI_CEC ) Base Address */
-#define SPISLV_BASE         (PERIPH_BASE + 0x7000ul)	/*!< (SPISLV ) Base Address */
+#define SPIP_BASE           (PERIPH_BASE + 0x7000ul)	/*!< (SPIP ) Base Address */
 #define RTMR_BASE           (PERIPH_BASE + 0x7400ul)	/*!< (RTMR ) Base Address */
 #define ADC_BASE            (PERIPH_BASE + 0x7C00ul)	/*!< (ADC ) Base Address */
 #define TFDP_BASE           (PERIPH_BASE + 0x8C00ul)	/*!< (TFDP ) Base Address */
@@ -460,7 +460,7 @@ typedef enum IRQn {
 #define MCHP_RPMFAN_INSTANCES 0
 #define MCHP_RTC_INSTANCES 1
 #define MCHP_RTMR_INSTANCES 1
-#define MCHP_SPIEP_INSTANCES 1
+#define MCHP_SPIP_INSTANCES 1
 #define MCHP_TACH_INSTANCES 4
 #define MCHP_TFDP_INSTANCES 1
 #define MCHP_UART_INSTANCES 3
@@ -511,7 +511,7 @@ typedef enum IRQn {
 #include "component/qmspi.h"
 #include "component/rtc.h"
 #include "component/smb.h"
-#include "component/spi_slave.h"
+#include "component/spi_periph.h"
 #include "component/tach.h"
 #include "component/tfdp.h"
 #include "component/timer.h"
@@ -576,7 +576,7 @@ typedef enum IRQn {
 
 #define HDMI_CEC_REGS	((HDMI_CEC_Type *) HDMI_CEC_BASE)
 
-#define SPISLV_REGS	((SPISLV_Type *) SPISLV_BASE)
+#define SPIP_REGS	((SPIP_Type *) SPIP_BASE)
 
 #define RTMR_REGS       ((RTMR_Type *) RTMR_BASE)
 

@@ -901,6 +901,122 @@ typedef struct espi_io_sirq_regs
 	__IOM uint8_t UART_2_SIRQ;
 } ESPI_IO_SIRQ_Type;
 
+/* All eSPI IO registers in one structure */
+struct espi_io_mbar { /* 80-bit register */
+	volatile uint16_t  LDN_MASK;
+	volatile uint16_t  RESERVED[4];
+}; /* Size = 10 (0xa) */
+
+struct espi_sram_bar {
+	volatile uint16_t  VACCSZ; /* valid, access type, and size */
+	volatile uint16_t  EC_SRAM_BASE_LSH; /* EC SRAM base address b[15:0] */
+	volatile uint16_t  EC_SRAM_BASE_MSH; /* EC SRAM base address b[31:16] */
+	volatile uint16_t  RESERVED[2];
+}; /* Size = 10 (0xa) */
+
+struct espi_mbar_host {
+	volatile uint16_t  VALID;
+	volatile uint16_t  HADDR_LSH;
+	volatile uint16_t  HADDR_MSH;
+	volatile uint16_t  RESERVED[2];
+}; /* Size = 10 (0xa) */
+
+struct espi_sram_host_bar {
+	volatile uint16_t  ACCSZ; /* read-only copy of EC access type and size */
+	volatile uint16_t  HBASE_LSH; /* Host memory base b[15:0] */
+	volatile uint16_t  HBASE_MSH; /* Host memory base b[31:16] */
+	volatile uint16_t  RESERVED[2];
+}; /* Size = 10 (0xa) */
+
+struct espi_io_regs { /* @ 0x400F3400 */
+	volatile uint8_t   RTIDX;		/* @ 0x0000 */
+	volatile uint8_t   RTDAT;		/* @ 0x0001 */
+	volatile uint16_t  RESERVED;
+	volatile uint32_t  RESERVED1[63];
+	volatile uint32_t  PCLC[3];		/* @ 0x0100 */
+	volatile uint32_t  PCERR[2];		/* @ 0x010C */
+	volatile uint32_t  PCSTS;		/* @ 0x0114 */
+	volatile uint32_t  PCIEN;		/* @ 0x0118 */
+	volatile uint32_t  RESERVED2;
+	volatile uint32_t  PCBINH[2];		/* @ 0x0120 */
+	volatile uint32_t  PCBINIT;		/* @ 0x0128 */
+	volatile uint32_t  PCECIRQ;		/* @ 0x012C */
+	volatile uint32_t  PCCKNP;		/* @ 0x0130 */
+	volatile uint32_t  IOBAR[23];		/* @ 0x0134 */
+	volatile uint32_t  RESERVED3[36];
+	volatile uint32_t  PCLTRSTS;		/* @ 0x0220 */
+	volatile uint32_t  PCLTREN;		/* @ 0x0224 */
+	volatile uint32_t  PCLTRCTL;		/* @ 0x0228 */
+	volatile uint32_t  PCLTRM;		/* @ 0x022C */
+	volatile uint32_t  RESERVED4[4];
+	volatile uint32_t  OOBRXA[2];		/* @ 0x0240 */
+	volatile uint32_t  OOBTXA[2];		/* @ 0x0248 */
+	volatile uint32_t  OOBRXL;		/* @ 0x0250 */
+	volatile uint32_t  OOBTXL;		/* @ 0x0254 */
+	volatile uint32_t  OOBRXC;		/* @ 0x0258 */
+	volatile uint32_t  OOBRXIEN;		/* @ 0x025C */
+	volatile uint32_t  OOBRXSTS;		/* @ 0x0260 */
+	volatile uint32_t  OOBTXC;		/* @ 0x0264 */
+	volatile uint32_t  OOBTXIEN;		/* @ 0x0268 */
+	volatile uint32_t  OOBTXSTS;		/* @ 0x026C */
+	volatile uint32_t  RESERVED5[4];
+	volatile uint32_t  FCFA[2];		/* @ 0x0280 */
+	volatile uint32_t  FCBA[2];		/* @ 0x0288 */
+	volatile uint32_t  FCLEN;		/* @ 0x0290 */
+	volatile uint32_t  FCCTL;		/* @ 0x0294 */
+	volatile uint32_t  FCIEN;		/* @ 0x0298 */
+	volatile uint32_t  FCCFG;		/* @ 0x029C */
+	volatile uint32_t  FCSTS;		/* @ 0x02A0 */
+	volatile uint32_t  RESERVED6[3];
+	volatile uint32_t  VWSTS;		/* @ 0x02B0 */
+	volatile uint32_t  RESERVED7[11];
+	volatile uint8_t   CAPID;		/* @ 0x02E0 */
+	volatile uint8_t   CAP0;		/* @ 0x02E1 */
+	volatile uint8_t   CAP1;		/* @ 0x02E2 */
+	volatile uint8_t   CAPPC;		/* @ 0x02E3 */
+	volatile uint8_t   CAPVW;		/* @ 0x02E4 */
+	volatile uint8_t   CAPOOB;		/* @ 0x02E5 */
+	volatile uint8_t   CAPFC;		/* @ 0x02E6 */
+	volatile uint8_t   PCRDY;		/* @ 0x02E7 */
+	volatile uint8_t   OOBRDY;		/* @ 0x02E8 */
+	volatile uint8_t   FCRDY;		/* @ 0x02E9 */
+	volatile uint8_t   ERIS;		/* @ 0x02EA */
+	volatile uint8_t   ERIE;		/* @ 0x02EB */
+	volatile uint8_t   PLTSRC;		/* @ 0x02EC */
+	volatile uint8_t   VWRDY;		/* @ 0x02ED */
+	volatile uint8_t   SAFEBS;		/* @ 0x02EE */
+	volatile uint8_t   RESERVED8;
+	volatile uint32_t  RESERVED9[16];
+	volatile uint32_t  ACTV;		/* @ 0x0330 */
+	volatile uint32_t  IOHBAR[23];		/* @ 0x0334 */
+	volatile uint8_t   SIRQ[20];		/* @ 0x03AC */
+	volatile uint32_t  RESERVED10[12];
+	volatile uint32_t  VWERREN;		/* @ 0x03F0 */
+	volatile uint32_t  RESERVED11[79];
+	struct espi_io_mbar MBAR[8];		/* @ 0x0530 */
+	volatile uint32_t  RESERVED12[11];
+	struct espi_sram_bar SRAMBAR[2];	/* @ 0x05AC */
+	volatile uint32_t  RESERVED13[16];
+	volatile uint32_t  BM_STATUS;		/* @ 0x0600 */
+	volatile uint32_t  BM_IEN;		/* @ 0x0604 */
+	volatile uint32_t  BM_CONFIG;		/* @ 0x0608 */
+	volatile uint32_t  RESERVED14;
+	volatile uint32_t  BM_CTRL1;		/* @ 0x0610 */
+	volatile uint32_t  BM_HADDR1_LSW;	/* @ 0x0614 */
+	volatile uint32_t  BM_HADDR1_MSW;	/* @ 0x0618 */
+	volatile uint32_t  BM_EC_ADDR1_LSW;	/* @ 0x061C */
+	volatile uint32_t  BM_EC_ADDR1_MSW;	/* @ 0x0620 */
+	volatile uint32_t  BM_CTRL2;		/* @ 0x0624 */
+	volatile uint32_t  BM_HADDR2_LSW;	/* @ 0x0628 */
+	volatile uint32_t  BM_HADDR2_MSW;	/* @ 0x062C */
+	volatile uint32_t  BM_EC_ADDR2_LSW;	/* @ 0x0630 */
+	volatile uint32_t  BM_EC_ADDR2_MSW;	/* @ 0x0634 */
+	volatile uint32_t  RESERVED15[62];
+	struct espi_mbar_host HMBAR[8];		/* @ 0x0730 */
+	volatile uint32_t  RESERVED16[11];
+	struct espi_sram_host_bar HSRAMBAR[2];	/* @ 0x07AC */
+}; /* Size = 1984 (0x7c0) */
+
 #endif				/* #ifndef _ESPI_IO_H */
 /* end espi_io.h */
 /**   @}

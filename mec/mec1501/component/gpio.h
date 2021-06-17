@@ -39,6 +39,7 @@
 #define NUM_MCHP_GPIO_PORTS	6u
 #define MAX_NUM_MCHP_GPIO	(NUM_MCHP_GPIO_PORTS * 32u)
 
+#define MCHP_GPIO_BASE_ADDR	0x40081000ul
 #define MCHP_GPIO_CTRL_BASE	0x40081000ul
 #define MCHP_GPIO_PARIN_OFS	0x0300ul
 #define MCHP_GPIO_PAROUT_OFS	0x0380ul
@@ -60,7 +61,7 @@
 	((uintptr_t)(MCHP_GPIO_CTRL_BASE) + ((uintptr_t)(n) << 2))
 
 #define MCHP_GPIO_CTRL2_ADDR(n) \
-	((uintptr_t)(MCHP_GPIO_CTRL2_BASE + MCHP_GPIO_CTRL2_OFS) +\
+	((uintptr_t)(MCHP_GPIO_CTRL_BASE + MCHP_GPIO_CTRL2_OFS) +\
 	((uintptr_t)(n) << 2))
 
 /*
@@ -510,6 +511,7 @@ enum mec_gpio_idx {
 	MCHP_GPIO_0253_ID = 171u,
 	MCHP_GPIO_0254_ID = 172u,
 	MCHP_GPIO_0255_ID = 173u,	/* Port F bit[13] */
+	MCHP_GPIO_MAX_ID
 };
 
 #define MCHP_GPIO_PIN2PORT(pin_id) ((uint32_t)(pin_id) >> 5)
