@@ -42,7 +42,7 @@
 /* ================		  WDT  			====================*/
 /* =========================================================================*/
 
-#define MCHP_WDT_BASE_ADDR		0x40000400ul
+#define MCHP_WDT_BASE_ADDR		0x40000400u
 
 /* WDT Interrupt */
 #define MCHP_WDT_GIRQ			21u
@@ -53,28 +53,28 @@
 #define MCHP_WDT_GIRQ_POS		2u
 
 /* Interrupt Aggregator Source, Enable Set/Clear registers value */
-#define MCHP_WDT_GIRQ_VAL		(1ul << MCHP_WDT_GIRQ_POS)
+#define MCHP_WDT_GIRQ_VAL		(1u << MCHP_WDT_GIRQ_POS)
 
 
 /* Load register */
-#define MCHP_WDT_LOAD_REG_OFS		0x00ul
-#define MCHP_WDT_LOAD_REG_MASK		0xFFFFul
+#define MCHP_WDT_LOAD_REG_OFS		0x00u
+#define MCHP_WDT_LOAD_REG_MASK		0xffffu
 
 /* Control register */
-#define MCHP_WDT_CTRL_REG_OFS		0x04ul
-#define MCHP_WDT_CTRL_REG_MASK		0x021Dul
+#define MCHP_WDT_CTRL_REG_OFS		0x04u
+#define MCHP_WDT_CTRL_REG_MASK		0x021du
 #define MCHP_WDT_CTRL_EN_POS		0u
-#define MCHP_WDT_CTRL_EN_MASK		(1ul << MCHP_WDT_CTRL_EN_POS)
-#define MCHP_WDT_CTRL_EN		(1ul << MCHP_WDT_CTRL_EN_POS)
+#define MCHP_WDT_CTRL_EN_MASK		(1u << MCHP_WDT_CTRL_EN_POS)
+#define MCHP_WDT_CTRL_EN		(1u << MCHP_WDT_CTRL_EN_POS)
 #define MCHP_WDT_CTRL_HTMR_STALL_POS	2u
-#define MCHP_WDT_CTRL_HTMR_STALL_MASK	(1ul << MCHP_WDT_CTRL_HTMR_STALL_POS)
-#define MCHP_WDT_CTRL_HTMR_STALL_EN	(1ul << MCHP_WDT_CTRL_HTMR_STALL_POS)
+#define MCHP_WDT_CTRL_HTMR_STALL_MASK	(1u << MCHP_WDT_CTRL_HTMR_STALL_POS)
+#define MCHP_WDT_CTRL_HTMR_STALL_EN	(1u << MCHP_WDT_CTRL_HTMR_STALL_POS)
 #define MCHP_WDT_CTRL_WKTMR_STALL_POS	3u
-#define MCHP_WDT_CTRL_WKTMR_STALL_MASK	(1ul << MCHP_WDT_CTRL_WKTMR_STALL_POS)
-#define MCHP_WDT_CTRL_WKTMR_STALL_EN	(1ul << MCHP_WDT_CTRL_WKTMR_STALL_POS)
+#define MCHP_WDT_CTRL_WKTMR_STALL_MASK	(1u << MCHP_WDT_CTRL_WKTMR_STALL_POS)
+#define MCHP_WDT_CTRL_WKTMR_STALL_EN	(1u << MCHP_WDT_CTRL_WKTMR_STALL_POS)
 #define MCHP_WDT_CTRL_JTAG_STALL_POS	4u
-#define MCHP_WDT_CTRL_JTAG_STALL_MASK	(1ul << MCHP_WDT_CTRL_JTAG_STALL_POS)
-#define MCHP_WDT_CTRL_JTAG_STALL_EN	(1ul << MCHP_WDT_CTRL_JTAG_STALL_POS)
+#define MCHP_WDT_CTRL_JTAG_STALL_MASK	(1u << MCHP_WDT_CTRL_JTAG_STALL_POS)
+#define MCHP_WDT_CTRL_JTAG_STALL_EN	(1u << MCHP_WDT_CTRL_JTAG_STALL_POS)
 /*
  * WDT mode selecting action taken upon count expiration.
  * 0 = Generate chip reset
@@ -86,31 +86,31 @@
  * to the WDT ISR.
  */
 #define MCHP_WDT_CTRL_MODE_POS		9u
-#define MCHP_WDT_CTRL_MODE_MASK		(1ul << MCHP_WDT_CTRL_MODE_POS)
-#define MCHP_WDT_CTRL_MODE_RESET	(0ul << MCHP_WDT_CTRL_MODE_POS)
-#define MCHP_WDT_CTRL_MODE_IRQ		(1ul << MCHP_WDT_CTRL_MODE_POS)
+#define MCHP_WDT_CTRL_MODE_MASK		(1u << MCHP_WDT_CTRL_MODE_POS)
+#define MCHP_WDT_CTRL_MODE_RESET	(0u << MCHP_WDT_CTRL_MODE_POS)
+#define MCHP_WDT_CTRL_MODE_IRQ		(1u << MCHP_WDT_CTRL_MODE_POS)
 
 /* WDT Kick register. Write any value to reload counter */
-#define MCHP_WDT_KICK_REG_OFS		0x08ul
-#define MCHP_WDT_KICK_REG_MASK		0xFFul
+#define MCHP_WDT_KICK_REG_OFS		0x08u
+#define MCHP_WDT_KICK_REG_MASK		0xffu
 #define MCHP_WDT_KICK_VAL		0
 
 /* WDT Count register. Read only */
-#define MCHP_WDT_CNT_RO_REG_OFS		0x0Cul
-#define MCHP_WDT_CNT_RO_REG_MASK	0xFFFFul
+#define MCHP_WDT_CNT_RO_REG_OFS		0x0cu
+#define MCHP_WDT_CNT_RO_REG_MASK	0xffffu
 
 /* Status Register */
-#define MCHP_WDT_STS_REG_OFS		0x10ul
-#define MCHP_WDT_STS_REG_MASK		0x01ul
+#define MCHP_WDT_STS_REG_OFS		0x10u
+#define MCHP_WDT_STS_REG_MASK		0x01u
 #define MCHP_WDT_STS_EVENT_IRQ_POS	0u
-#define MCHP_WDT_STS_EVENT_IRQ		(1ul << MCHP_WDT_STS_EVENT_IRQ_POS)
+#define MCHP_WDT_STS_EVENT_IRQ		(1u << MCHP_WDT_STS_EVENT_IRQ_POS)
 
 /* Interrupt Enable Register */
-#define MCHP_WDT_IEN_REG_OFS		0x14ul
-#define MCHP_WDT_IEN_REG_MASK		0x01ul
+#define MCHP_WDT_IEN_REG_OFS		0x14u
+#define MCHP_WDT_IEN_REG_MASK		0x01u
 #define MCHP_WDT_IEN_EVENT_IRQ_POS	0u
-#define MCHP_WDT_IEN_EVENT_IRQ_MASK	(1ul << (MCHP_WDT_IEN_EVENT_IRQ_POS))
-#define MCHP_WDT_IEN_EVENT_IRQ_EN	(1ul << (MCHP_WDT_IEN_EVENT_IRQ_POS))
+#define MCHP_WDT_IEN_EVENT_IRQ_MASK	(1u << (MCHP_WDT_IEN_EVENT_IRQ_POS))
+#define MCHP_WDT_IEN_EVENT_IRQ_EN	(1u << (MCHP_WDT_IEN_EVENT_IRQ_POS))
 
 /* Register access */
 #define MCHP_WDT_LOAD_REG_ADDR	(MCHP_WDT_BASE_ADDR + MCHP_WDT_LOAD_REG_OFS)
@@ -136,7 +136,7 @@ typedef struct wdt_regs {
 	uint8_t RSVD2[2];
 	__OM uint8_t KICK;	/*!< (@ 0x00000008) WDT Kick (WO) */
 	uint8_t RSVD3[3];
-	__IM uint16_t CNT;	/*!< (@ 0x0000000C) WDT Count (RO)  */
+	__IM uint16_t CNT;	/*!< (@ 0x0000000c) WDT Count (RO)  */
 	uint8_t RSVD4[2];
 	__IOM uint16_t STS;	/*!< (@ 0x00000010) WDT Status	*/
 	uint8_t RSVD5[2];

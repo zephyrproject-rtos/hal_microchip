@@ -42,7 +42,7 @@
 /* ================   MAILBOX				   ================ */
 /* =========================================================================*/
 
-#define MCHP_MBOX_BASE_ADDR	0x400F0000ul
+#define MCHP_MBOX_BASE_ADDR	0x400f0000u
 
 /*
  * KBC interrupts
@@ -52,39 +52,39 @@
 #define MCHP_MBOX_NVIC_DIRECT	60u
 
 #define MCHP_KBC_MBOX_GIRQ_POS	20u
-#define MCHP_KBC_MBOX_GIRQ	(1ul << 20u)
+#define MCHP_KBC_MBOX_GIRQ	(1u << 20u)
 
 /*
  * SMI Source register
  */
 #define MCHP_MBOX_SMI_SRC_EC_WR_POS	0u
-#define MCHP_MBOX_SMI_SRC_EC_WR		(1ul << (MCHP_MBOX_SMI_SRC_WR_POS))
+#define MCHP_MBOX_SMI_SRC_EC_WR		(1u << (MCHP_MBOX_SMI_SRC_WR_POS))
 #define MCHP_MBOX_SMI_SRC_SWI_POS	1u
-#define MCHP_MBOX_SMI_SRC_SWI_MASK0	0x7Ful
-#define MCHP_MBOX_SMI_SRC_SWI_MASK	0xFEul
-#define MCHP_MBOX_SMI_SRC_SWI0		(1ul << 1)
-#define MCHP_MBOX_SMI_SRC_SWI1		(1ul << 2)
-#define MCHP_MBOX_SMI_SRC_SWI2		(1ul << 3)
-#define MCHP_MBOX_SMI_SRC_SWI3		(1ul << 4)
-#define MCHP_MBOX_SMI_SRC_SWI4		(1ul << 5)
-#define MCHP_MBOX_SMI_SRC_SWI5		(1ul << 6)
-#define MCHP_MBOX_SMI_SRC_SWI6		(1ul << 7)
+#define MCHP_MBOX_SMI_SRC_SWI_MASK0	0x7fu
+#define MCHP_MBOX_SMI_SRC_SWI_MASK	0xfeu
+#define MCHP_MBOX_SMI_SRC_SWI0		(1u << 1)
+#define MCHP_MBOX_SMI_SRC_SWI1		(1u << 2)
+#define MCHP_MBOX_SMI_SRC_SWI2		(1u << 3)
+#define MCHP_MBOX_SMI_SRC_SWI3		(1u << 4)
+#define MCHP_MBOX_SMI_SRC_SWI4		(1u << 5)
+#define MCHP_MBOX_SMI_SRC_SWI5		(1u << 6)
+#define MCHP_MBOX_SMI_SRC_SWI6		(1u << 7)
 
 /*
  * SMI Mask register
  */
 #define MCHP_MBOX_SMI_MASK_WR_EN_POS	0u
-#define MCHP_MBOX_SMI_MASK_WR_EN	(1ul << (MCHP_MBOX_SMI_MASK_WR_EN_POS))
+#define MCHP_MBOX_SMI_MASK_WR_EN	(1u << (MCHP_MBOX_SMI_MASK_WR_EN_POS))
 #define MCHP_MBOX_SMI_SWI_EN_POS	1u
-#define MCHP_MBOX_SMI_SWI_EN_MASK0	0x7Ful
-#define MCHP_MBOX_SMI_SWI_EN_MASK	0xFEul
-#define MCHP_MBOX_SMI_SRC_EN_SWI0	(1ul << 1)
-#define MCHP_MBOX_SMI_SRC_EN_SWI1	(1ul << 2)
-#define MCHP_MBOX_SMI_SRC_EN_SWI2	(1ul << 3)
-#define MCHP_MBOX_SMI_SRC_EN_SWI3	(1ul << 4)
-#define MCHP_MBOX_SMI_SRC_EN_SWI4	(1ul << 5)
-#define MCHP_MBOX_SMI_SRC_EN_SWI5	(1ul << 6)
-#define MCHP_MBOX_SMI_SRC_EN_SWI6	(1ul << 7)
+#define MCHP_MBOX_SMI_SWI_EN_MASK0	0x7fu
+#define MCHP_MBOX_SMI_SWI_EN_MASK	0xfeu
+#define MCHP_MBOX_SMI_SRC_EN_SWI0	(1u << 1)
+#define MCHP_MBOX_SMI_SRC_EN_SWI1	(1u << 2)
+#define MCHP_MBOX_SMI_SRC_EN_SWI2	(1u << 3)
+#define MCHP_MBOX_SMI_SRC_EN_SWI3	(1u << 4)
+#define MCHP_MBOX_SMI_SRC_EN_SWI4	(1u << 5)
+#define MCHP_MBOX_SMI_SRC_EN_SWI5	(1u << 6)
+#define MCHP_MBOX_SMI_SRC_EN_SWI6	(1u << 7)
 
 /**
   * @brief Mailbox Registers (MBOX)
@@ -97,15 +97,15 @@ typedef struct mbox_regs
 	__IOM uint32_t HOST_TO_EC;	/*!< (@ 0x0100) Host to EC */
 	__IOM uint32_t EC_TO_HOST;	/*!< (@ 0x0104) EC to Host */
 	__IOM uint32_t SMI_SRC;		/*!< (@ 0x0108) SMI Source */
-	__IOM uint32_t SMI_MASK;	/*!< (@ 0x010C) SMI Mask */
+	__IOM uint32_t SMI_MASK;	/*!< (@ 0x010c) SMI Mask */
 	__IOM uint32_t MBX_0_3;		/*!< (@ 0x0110) Mailboxes 0 - 3 */
 	__IOM uint32_t MBX_4_7;		/*!< (@ 0x0114) Mailboxes 4 - 7 */
 	__IOM uint32_t MBX_8_11;	/*!< (@ 0x0118) Mailboxes 8 - 11 */
-	__IOM uint32_t MBX_12_15;	/*!< (@ 0x011C) Mailboxes 12 - 15 */
+	__IOM uint32_t MBX_12_15;	/*!< (@ 0x011c) Mailboxes 12 - 15 */
 	__IOM uint32_t MBX_16_19;	/*!< (@ 0x0120) Mailboxes 16 - 19 */
 	__IOM uint32_t MBX_20_23;	/*!< (@ 0x0124) Mailboxes 20 - 23 */
 	__IOM uint32_t MBX_24_27;	/*!< (@ 0x0128) Mailboxes 24 - 27 */
-	__IOM uint32_t MBX_28_31;	/*!< (@ 0x012C) Mailboxes 28 - 31 */
+	__IOM uint32_t MBX_28_31;	/*!< (@ 0x012c) Mailboxes 28 - 31 */
 } MBOX_Type;
 
 #endif	/* #ifndef _MAILBOX_H */

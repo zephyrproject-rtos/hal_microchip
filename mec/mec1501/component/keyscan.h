@@ -42,7 +42,7 @@
 /* ================   KBC				   ================ */
 /* =========================================================================*/
 
-#define MCHP_KSCAN_BASE_ADDR	0x40009C00ul
+#define MCHP_KSCAN_BASE_ADDR	0x40009c00u
 
 /*
  * KSCAN interrupts
@@ -54,42 +54,42 @@
 
 #define MCHP_KSCAN_GIRQ_POS	25u
 
-#define MCHP_KSCAN_GIRQ_VAL	(1ul << 25)
+#define MCHP_KSCAN_GIRQ_VAL	(1u << 25)
 
 /*
  * KSO_SEL
  */
-#define MCHP_KSCAN_KSO_SEL_REG_MASK	0xFFul
+#define MCHP_KSCAN_KSO_SEL_REG_MASK	0xffu
 #define MCHP_KSCAN_KSO_LINES_POS	0u
-#define MCHP_KSCAN_KSO_LINES_MASK0	0x1Ful
-#define MCHP_KSCAN_KSO_LINES_MASK	0x1Ful
+#define MCHP_KSCAN_KSO_LINES_MASK0	0x1fu
+#define MCHP_KSCAN_KSO_LINES_MASK	0x1fu
 #define MCHP_KSCAN_KSO_ALL_POS		5u
-#define MCHP_KSCAN_KSO_ALL		(1ul << 5)
+#define MCHP_KSCAN_KSO_ALL		(1u << 5)
 #define MCHP_KSCAN_KSO_EN_POS		6u
-#define MCHP_KSCAN_KSO_EN		(1ul << 6)
+#define MCHP_KSCAN_KSO_EN		(1u << 6)
 #define MCHP_KSCAN_KSO_INV_POS		7u
-#define MCHP_KSCAN_KSO_INV		(1ul << 7)
+#define MCHP_KSCAN_KSO_INV		(1u << 7)
 
 /*
  * KSI_IN
  */
-#define MCHP_KSCAN_KSI_IN_REG_MASK	0xFFul
+#define MCHP_KSCAN_KSI_IN_REG_MASK	0xffu
 
 /*
  * KSI_STS
  */
-#define MCHP_KSCAN_KSI_STS_REG_MASK	0xFFul
+#define MCHP_KSCAN_KSI_STS_REG_MASK	0xffu
 
 /*
  * KSI_IEN
  */
-#define MCHP_KSCAN_KSI_IEN_REG_MASK	0xFFul
+#define MCHP_KSCAN_KSI_IEN_REG_MASK	0xffu
 
 /*
  * EXT_CTRL
  */
-#define MCHP_KSCAN_EXT_CTRL_REG_MASK	0x01ul
-#define MCHP_KSCAN_EXT_CTRL_PREDRV_EN	0x01ul
+#define MCHP_KSCAN_EXT_CTRL_REG_MASK	0x01u
+#define MCHP_KSCAN_EXT_CTRL_PREDRV_EN	0x01u
 
 /**
   * @brief Keyboard Controller Registers (KSCAN)
@@ -99,7 +99,7 @@ typedef struct kscan_regs
 	uint8_t RSVD[4];
 	__IOM uint32_t KSO_SEL;	/*!< (@ 0x0004) KSO Select */
 	uint32_t KSI_IN;	/*!< (@ 0x0008) KSI Input States */
-	__IOM uint32_t KSI_STS;	/*!< (@ 0x000C) KSI Status */
+	__IOM uint32_t KSI_STS;	/*!< (@ 0x000c) KSI Status */
 	__IOM uint32_t KSI_IEN;	/*!< (@ 0x0010) KSI Interrupt Enable */
 	__IOM uint32_t EXT_CTRL;	/*!< (@ 0x0014) Extended Control */
 } KSCAN_Type;

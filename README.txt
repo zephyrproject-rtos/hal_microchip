@@ -15,3 +15,12 @@ https://github.com/MicrochipTech/hal_microchip
 
 Version: 1.2.1
 Add missing eSPI Virtual Wires groups 8 - 10 GIRQ definitions.
+Make sure all typedef's of structures are "typedef struct struct_name".
+Remove non-printable character from SAF header
+Add max name to GPIO ID enum
+Rename the SPISLV to SPIP
+
+Version: 1.2.1
+Update eSPI definitions
+Changed all hex upper case 'ABCDEF' to lower case
+Changed all 'ul/UL' unsigned numeric suffix to 'u' 

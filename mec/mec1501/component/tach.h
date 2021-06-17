@@ -42,10 +42,10 @@
 /* ================		 TACH 				=========== */
 /* =========================================================================*/
 
-#define MCHP_TACH_BASE_ADDR		0x40006000ul
+#define MCHP_TACH_BASE_ADDR		0x40006000u
 
 #define MCHP_TACH_MAX_INSTANCES		4u
-#define MCHP_TACH_INST_SPACING		0x10ul
+#define MCHP_TACH_INST_SPACING		0x10u
 #define MCHP_TACH_INST_SPACING_P2	4u
 
 #define MCHP_TACH_ADDR(n)		(MCHP_TACH_BASE_ADDR + \
@@ -65,10 +65,10 @@
 #define MCHP_TACH2_GIRQ_POS	3u
 #define MCHP_TACH3_GIRQ_POS	4u
 
-#define MCHP_TACH0_GIRQ_VAL	(1ul << MCHP_TACH0_GIRQ_POS)
-#define MCHP_TACH1_GIRQ_VAL	(1ul << MCHP_TACH1_GIRQ_POS)
-#define MCHP_TACH2_GIRQ_VAL	(1ul << MCHP_TACH2_GIRQ_POS)
-#define MCHP_TACH3_GIRQ_VAL	(1ul << MCHP_TACH3_GIRQ_POS)
+#define MCHP_TACH0_GIRQ_VAL	(1u << MCHP_TACH0_GIRQ_POS)
+#define MCHP_TACH1_GIRQ_VAL	(1u << MCHP_TACH1_GIRQ_POS)
+#define MCHP_TACH2_GIRQ_VAL	(1u << MCHP_TACH2_GIRQ_POS)
+#define MCHP_TACH3_GIRQ_VAL	(1u << MCHP_TACH3_GIRQ_POS)
 
 /* TACH GIRQ aggregated NVIC input */
 #define MCHP_TACH0_NVIC_AGGR	9u
@@ -86,43 +86,43 @@
  * TACH Control register
  */
 #define MCHP_TACH_CONTROL_REG_OFS		0U
-#define MCHP_TACH_CONTROL_MASK			0xffffdd03U
+#define MCHP_TACH_CONTROL_MASK			0xffffdd03u
 /* Enable exceed high or low limit detection */
 #define MCHP_TACH_CTRL_EXCEED_LIM_EN_POS	0
 #define MCHP_TACH_CTRL_EXCEED_LIM_EN	\
-		(1ul << MCHP_TACH_CTRL_EXCEED_LIM_EN_POS)
+		(1u << MCHP_TACH_CTRL_EXCEED_LIM_EN_POS)
 /* Enable TACH operation */
 #define MCHP_TACH_CTRL_EN_POS		1
-#define MCHP_TACH_CTRL_EN		(1ul << MCHP_TACH_CTRL_EN_POS)
+#define MCHP_TACH_CTRL_EN		(1u << MCHP_TACH_CTRL_EN_POS)
 /* Enable input filter */
 #define MCHP_TACH_CTRL_FILTER_EN_POS	8
-#define MCHP_TACH_CTRL_FILTER_EN	(1ul << MCHP_TACH_CTRL_FILTER_EN_POS)
+#define MCHP_TACH_CTRL_FILTER_EN	(1u << MCHP_TACH_CTRL_FILTER_EN_POS)
 /* Select read mode. Latch data on rising edge of selected trigger */
 #define MCHP_TACH_CTRL_READ_MODE_SEL_POS	10
 #define MCHP_TACH_CTRL_READ_MODE_INPUT	\
-		(0ul << MCHP_TACH_CTRL_READ_MODE_SEL_POS)
+		(0u << MCHP_TACH_CTRL_READ_MODE_SEL_POS)
 #define MCHP_TACH_CTRL_READ_MODE_100K_CLOCK	\
-		(1ul << MCHP_TACH_CTRL_READ_MODE_SEL_POS)
+		(1u << MCHP_TACH_CTRL_READ_MODE_SEL_POS)
 /* Select TACH edges for counter increment */
 #define MCHP_TACH_CTRL_NUM_EDGES_POS	11
-#define MCHP_TACH_CTRL_NUM_EDGES_MASK0	0x03U
+#define MCHP_TACH_CTRL_NUM_EDGES_MASK0	0x03u
 #define MCHP_TACH_CTRL_NUM_EDGES_MASK	(MCHP_TACH_CTRL_NUM_EDGES_MASK0 \
 					 << MCHP_TACH_CTRL_NUM_EDGES_POS)
-#define MCHP_TACH_CTRL_EDGES_2	(0ul << MCHP_TACH_CTRL_NUM_EDGES_POS)
-#define MCHP_TACH_CTRL_EDGES_3	(1ul << MCHP_TACH_CTRL_NUM_EDGES_POS)
-#define MCHP_TACH_CTRL_EDGES_5	(2ul << MCHP_TACH_CTRL_NUM_EDGES_POS)
-#define MCHP_TACH_CTRL_EDGES_9	(3ul << MCHP_TACH_CTRL_NUM_EDGES_POS)
+#define MCHP_TACH_CTRL_EDGES_2	(0u << MCHP_TACH_CTRL_NUM_EDGES_POS)
+#define MCHP_TACH_CTRL_EDGES_3	(1u << MCHP_TACH_CTRL_NUM_EDGES_POS)
+#define MCHP_TACH_CTRL_EDGES_5	(2u << MCHP_TACH_CTRL_NUM_EDGES_POS)
+#define MCHP_TACH_CTRL_EDGES_9	(3u << MCHP_TACH_CTRL_NUM_EDGES_POS)
 /* Enable count ready interrupt */
 #define MCHP_TACH_CTRL_CNT_RDY_INT_EN_POS	14
 #define MCHP_TACH_CTRL_CNT_RDY_INT_EN	\
-	(1ul << MCHP_TACH_CTRL_CNT_RDY_INT_EN_POS)
+	(1u << MCHP_TACH_CTRL_CNT_RDY_INT_EN_POS)
 /* Enable input toggle interrupt */
 #define MCHP_TACH_CTRL_TOGGLE_INT_EN_POS	15
 #define MCHP_TACH_CTRL_TOGGLE_INT_EN	\
-	(1ul << MCHP_TACH_CTRL_TOGGLE_INT_EN_POS)
+	(1u << MCHP_TACH_CTRL_TOGGLE_INT_EN_POS)
 /* Read-only latched TACH pulse counter */
 #define MCHP_TACH_CTRL_COUNTER_POS	16
-#define MCHP_TACH_CTRL_COUNTER_MASK0	0xfffful
+#define MCHP_TACH_CTRL_COUNTER_MASK0	0xffffu
 #define MCHP_TACH_CTRL_COUNTER_MASK	\
 	(MCHP_TACH_CTRL_COUNTER_MASK0 << MCHP_TACH_CTRL_COUNTER_POS)
 
@@ -132,7 +132,7 @@
  * bit[1] is Read-Only
  */
 #define MCHP_TACH_STATUS_REG_OFS	4U
-#define MCHP_TACH_STATUS_MASK		0x0FU
+#define MCHP_TACH_STATUS_MASK		0x0fu
 #define MCHP_TACH_STS_EXCEED_LIMIT_POS	0
 #define MCHP_TACH_STS_EXCEED_LIMIT	(1U << MCHP_TACH_STS_EXCEED_LIMIT_POS)
 #define MCHP_TACH_STS_PIN_STATE_POS	1
@@ -146,13 +146,13 @@
  * TACH High Limit Register
  */
 #define MCHP_TACH_HI_LIMIT_REG_OFS	8U
-#define MCHP_TACH_HI_LIMIT_MASK		0xffffU
+#define MCHP_TACH_HI_LIMIT_MASK		0xffffu
 
 /*
  * TACH Low Limit Register
  */
-#define MCHP_TACH_LO_LIMIT_REG_OFS	0x0CU
-#define MCHP_TACH_LO_LIMIT_MASK		0xffffU
+#define MCHP_TACH_LO_LIMIT_REG_OFS	0x0cu
+#define MCHP_TACH_LO_LIMIT_MASK		0xffffu
 
 
 /**
@@ -162,7 +162,7 @@ typedef struct tach_regs {
 	__IOM uint32_t CONTROL;	/*!< (@ 0x0000) TACH Control b[31:0] */
 	__IOM uint32_t STATUS;	/*!< (@ 0x0004) TACH Status b[7:0] */
 	__IOM uint32_t LIMIT_HI; /*!< (@ 0x0008) TACH High LImit b[15:0] */
-	__IOM uint32_t LIMIT_LO; /*!< (@ 0x000C) TACH Low Limit b[15:0] */
+	__IOM uint32_t LIMIT_LO; /*!< (@ 0x000c) TACH Low Limit b[15:0] */
 } TACH_Type;
 
 #endif	/* #ifndef _TACH_H */

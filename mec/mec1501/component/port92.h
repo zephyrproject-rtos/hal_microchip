@@ -42,47 +42,47 @@
 /* ================   PORT92				   ================ */
 /* =========================================================================*/
 
-#define MCHP_PORT92_BASE_ADDR	0x400F2000ul
+#define MCHP_PORT92_BASE_ADDR	0x400f2000u
 
 /*
  * HOST_P92
  */
-#define MCHP_PORT92_HOST_MASK			0x03ul
+#define MCHP_PORT92_HOST_MASK			0x03u
 #define MCHP_PORT92_HOST_ALT_CPU_RST_POS	0u
-#define MCHP_PORT92_HOST_ALT_CPU_RST		(1ul << 0)
+#define MCHP_PORT92_HOST_ALT_CPU_RST		(1u << 0)
 #define MCHP_PORT92_HOST_ALT_GA20_POS		1u
-#define MCHP_PORT92_HOST_ALT_GA20		(1ul << 1)
+#define MCHP_PORT92_HOST_ALT_GA20		(1u << 1)
 
 /*
  * GATEA20_CTRL
  */
-#define MCHP_PORT92_GA20_CTRL_MASK	0x01ul
+#define MCHP_PORT92_GA20_CTRL_MASK	0x01u
 #define MCHP_PORT92_GA20_CTRL_VAL_POS	0u
-#define MCHP_PORT92_GA20_CTRL_VAL_MASK	(1ul << 0)
-#define MCHP_PORT92_GA20_CTRL_VAL_HI	(1ul << 0)
-#define MCHP_PORT92_GA20_CTRL_VAL_LO	(0ul << 0)
+#define MCHP_PORT92_GA20_CTRL_VAL_MASK	(1u << 0)
+#define MCHP_PORT92_GA20_CTRL_VAL_HI	(1u << 0)
+#define MCHP_PORT92_GA20_CTRL_VAL_LO	(0u << 0)
 
 /*
  * SETGA20L - writes of any data to this register causes
  * GATEA20 latch to be set.
  */
-#define MCHP_PORT92_SETGA20L_MASK	0x01ul
+#define MCHP_PORT92_SETGA20L_MASK	0x01u
 #define MCHP_PORT92_SETGA20L_SET_POS	0u
-#define MCHP_PORT92_SETGA20L_SET	(1ul << 0)
+#define MCHP_PORT92_SETGA20L_SET	(1u << 0)
 
 /*
  * RSTGA20L - writes of any data to this register causes
  * the GATEA20 latch to be reset
  */
-#define MCHP_PORT92_RSTGA20L_MASK	0x01ul
+#define MCHP_PORT92_RSTGA20L_MASK	0x01u
 #define MCHP_PORT92_RSTGA20L_SET_POS	0u
-#define MCHP_PORT92_RSTGA20L_RST	(1ul << 0)
+#define MCHP_PORT92_RSTGA20L_RST	(1u << 0)
 
 /*
  * ACTV
  */
-#define MCHP_PORT92_ACTV_MASK		0x01ul
-#define MCHP_PORT92_ACTV_ENABLE		0x01ul
+#define MCHP_PORT92_ACTV_MASK		0x01u
+#define MCHP_PORT92_ACTV_ENABLE		0x01u
 
 /**
   * @brief Fast Port92h Registers (PORT92)
@@ -94,8 +94,8 @@ typedef struct port92_regs
 	__IOM uint32_t GATEA20_CTRL;	/*!< (@ 0x0100) Gate A20 Control */
 	uint8_t RSVD2[4];
 	__IOM uint32_t SETGA20L;	/*!< (@ 0x0108) Set Gate A20 */
-	__IOM uint32_t RSTGA20L;	/*!< (@ 0x010C) Reset Gate A20 */
-	uint8_t RSVD3[0x0330ul - 0x0110ul];
+	__IOM uint32_t RSTGA20L;	/*!< (@ 0x010c) Reset Gate A20 */
+	uint8_t RSVD3[0x0330u - 0x0110u];
 	__IOM uint32_t ACTV;	/*!< (@ 0x0330) Logical device Activate */
 } PORT92_Type;
 
