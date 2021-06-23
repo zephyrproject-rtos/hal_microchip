@@ -29,7 +29,7 @@
  * OPA: read status1, resume, suspend, write enable
  * OPB: erase 4KB, erase 32KB, erase 64KB, page program
  * OPC: Fast Read Quad or Dual, N/A, continuous mode byte, read status 2
- * OP_DESCR: contains QMSPI descriptor indices for various opcode fields.
+ * OP_DESCR: contains QMSPI descriptor indices for various opcode fields.
  */
 struct mchp_espi_saf_op {
 	volatile uint32_t OPA;
