@@ -1,1 +1,2 @@
 add_subdirectory_ifdef(CONFIG_HAS_MEC_HAL mec)
+add_subdirectory_ifdef(CONFIG_HAS_MPFS_HAL mpfs)
