@@ -24,3 +24,18 @@ Version: 1.2.1
 Update eSPI definitions
 Changed all hex upper case 'ABCDEF' to lower case
 Changed all 'ul/UL' unsigned numeric suffix to 'u' 
+
+
+The Microchip Polarfire SOC HAL was downloaded from:
+
+https://github.com/polarfire-soc/platform
+
+Addditionally, the bare metal samples from https://github.com/polarfire-soc/polarfire-soc-bare-metal-examples
+are required to extract the Icicle Kit bopard configuration files.
+
+Both are from Tag 21.08
+
+The following changes were made:
+
+ - platform-2021.08 top folder renamed to mpfs and located at modules/hal/microchip
+ - The applications/mpfs-pmp-demo/mpfs-pmp-app-u54-1/src/boards folder is copied to modules/hal/microchip/mpfs
