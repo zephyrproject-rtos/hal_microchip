@@ -39,3 +39,6 @@ The following changes were made:
 
  - platform-2021.08 top folder renamed to mpfs and located at modules/hal/microchip
  - The applications/mpfs-pmp-demo/mpfs-pmp-app-u54-1/src/boards folder is copied to modules/hal/microchip/mpfs
+
+-----------------------------------------------------
+2024-04-04 change default branch from master to main.
