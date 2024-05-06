@@ -1,5 +1,5 @@
 /*
- * Header file for PIC32CX1025SG41100
+ * Header file for PIC32CX1025SG41064
  *
  * Copyright (c) 2024 Microchip Technology Inc. and its subsidiaries.
  *
@@ -17,9 +17,9 @@
  *
  */
 
-/* File generated from device description file (ATDF) version 2023-03-17T09:48:29Z */
-#ifndef _PIC32CX1025SG41100_H_
-#define _PIC32CX1025SG41100_H_
+/* File generated from device description file (ATDF) version 2023-03-17T09:50:01Z */
+#ifndef _PIC32CX1025SG41064_H_
+#define _PIC32CX1025SG41064_H_
 
 /* Header version uses Semantic Versioning 2.0.0 (https://semver.org/) */
 #define HEADER_FORMAT_VERSION "2.1.1"
@@ -28,8 +28,8 @@
 #define HEADER_FORMAT_VERSION_MINOR (1)
 #define HEADER_FORMAT_VERSION_PATCH (1)
 
-/* PIC32CX1025SG41100 definitions
-  This file defines all structures and symbols for PIC32CX1025SG41100:
+/* PIC32CX1025SG41064 definitions
+  This file defines all structures and symbols for PIC32CX1025SG41064:
     - registers and bitfields
     - peripheral base address
     - peripheral ID
@@ -64,7 +64,7 @@
 #endif /* SKIP_INTEGER_LITERALS */
 
 /* ************************************************************************** */
-/* CMSIS DEFINITIONS FOR PIC32CX1025SG41100                                 */
+/* CMSIS DEFINITIONS FOR PIC32CX1025SG41064                                 */
 /* ************************************************************************** */
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))
 /* Interrupt Number Definition */
@@ -82,7 +82,7 @@ typedef enum IRQn
   PendSV_IRQn               =  -2, /* -2  Pendable request for system service */
   SysTick_IRQn              =  -1, /* -1  System Tick Timer                   */
 
-/******  PIC32CX1025SG41100 specific Interrupt Numbers ***********************************/
+/******  PIC32CX1025SG41064 specific Interrupt Numbers ***********************************/
   PM_IRQn                   =   0, /* 0   Power Manager (PM)                  */
   MCLK_IRQn                 =   1, /* 1   Main Clock (MCLK)                   */
   OSCCTRL_XOSC0_IRQn        =   2, /* 2   Oscillators Control (OSCCTRL)       */
@@ -150,16 +150,6 @@ typedef enum IRQn
   SERCOM5_1_IRQn            =  67, /* 67  Serial Communication Interface (SERCOM5) */
   SERCOM5_2_IRQn            =  68, /* 68  Serial Communication Interface (SERCOM5) */
   SERCOM5_OTHER_IRQn        =  69, /* 69  Serial Communication Interface (SERCOM5) */
-  SERCOM6_0_IRQn            =  70, /* 70  Serial Communication Interface (SERCOM6) */
-  SERCOM6_1_IRQn            =  71, /* 71  Serial Communication Interface (SERCOM6) */
-  SERCOM6_2_IRQn            =  72, /* 72  Serial Communication Interface (SERCOM6) */
-  SERCOM6_OTHER_IRQn        =  73, /* 73  Serial Communication Interface (SERCOM6) */
-  SERCOM7_0_IRQn            =  74, /* 74  Serial Communication Interface (SERCOM7) */
-  SERCOM7_1_IRQn            =  75, /* 75  Serial Communication Interface (SERCOM7) */
-  SERCOM7_2_IRQn            =  76, /* 76  Serial Communication Interface (SERCOM7) */
-  SERCOM7_OTHER_IRQn        =  77, /* 77  Serial Communication Interface (SERCOM7) */
-  CAN0_IRQn                 =  78, /* 78  Control Area Network (CAN0)         */
-  CAN1_IRQn                 =  79, /* 79  Control Area Network (CAN1)         */
   USB_OTHER_IRQn            =  80, /* 80  Universal Serial Bus (USB)          */
   USB_SOF_HSOF_IRQn         =  81, /* 81  Universal Serial Bus (USB)          */
   USB_TRCPT0_IRQn           =  82, /* 82  Universal Serial Bus (USB)          */
@@ -193,8 +183,6 @@ typedef enum IRQn
   TC3_IRQn                  = 110, /* 110 Basic Timer Counter (TC3)           */
   TC4_IRQn                  = 111, /* 111 Basic Timer Counter (TC4)           */
   TC5_IRQn                  = 112, /* 112 Basic Timer Counter (TC5)           */
-  TC6_IRQn                  = 113, /* 113 Basic Timer Counter (TC6)           */
-  TC7_IRQn                  = 114, /* 114 Basic Timer Counter (TC7)           */
   PDEC_OTHER_IRQn           = 115, /* 115 Quadrature Decodeur (PDEC)          */
   PDEC_MC0_IRQn             = 116, /* 116 Quadrature Decodeur (PDEC)          */
   PDEC_MC1_IRQn             = 117, /* 117 Quadrature Decodeur (PDEC)          */
@@ -206,6 +194,8 @@ typedef enum IRQn
   DAC_OTHER_IRQn            = 123, /* 123 Digital-to-Analog Converter (DAC)   */
   DAC_EMPTY_0_IRQn          = 124, /* 124 Digital-to-Analog Converter (DAC)   */
   DAC_EMPTY_1_IRQn          = 125, /* 125 Digital-to-Analog Converter (DAC)   */
+  DAC_RESRDY_0_IRQn         = 126, /* 126 Digital-to-Analog Converter (DAC)   */
+  DAC_RESRDY_1_IRQn         = 127, /* 127 Digital-to-Analog Converter (DAC)   */
   I2S_IRQn                  = 128, /* 128 Inter-IC Sound Interface (I2S)      */
   PCC_IRQn                  = 129, /* 129 Parallel Capture Controller (PCC)   */
   AES_IRQn                  = 130, /* 130 Advanced Encryption Standard (AES)  */
@@ -214,9 +204,8 @@ typedef enum IRQn
   PUKCC_IRQn                = 133, /* 133 PUblic-Key Cryptography Controller (PUKCC) */
   QSPI_IRQn                 = 134, /* 134 Quad SPI interface (QSPI)           */
   SDHC0_IRQn                = 135, /* 135 SD/MMC Host Controller (SDHC0)      */
-  SDHC1_IRQn                = 136, /* 136 SD/MMC Host Controller (SDHC1)      */
 
-  PERIPH_MAX_IRQn           = 136  /* Max peripheral ID */
+  PERIPH_MAX_IRQn           = 135  /* Max peripheral ID */
 } IRQn_Type;
 #endif /* !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__)) */
 
@@ -313,16 +302,16 @@ typedef struct _DeviceVectors
   void* pfnSERCOM5_1_Handler;                    /*  67 Serial Communication Interface (SERCOM5) */
   void* pfnSERCOM5_2_Handler;                    /*  68 Serial Communication Interface (SERCOM5) */
   void* pfnSERCOM5_OTHER_Handler;                /*  69 Serial Communication Interface (SERCOM5) */
-  void* pfnSERCOM6_0_Handler;                    /*  70 Serial Communication Interface (SERCOM6) */
-  void* pfnSERCOM6_1_Handler;                    /*  71 Serial Communication Interface (SERCOM6) */
-  void* pfnSERCOM6_2_Handler;                    /*  72 Serial Communication Interface (SERCOM6) */
-  void* pfnSERCOM6_OTHER_Handler;                /*  73 Serial Communication Interface (SERCOM6) */
-  void* pfnSERCOM7_0_Handler;                    /*  74 Serial Communication Interface (SERCOM7) */
-  void* pfnSERCOM7_1_Handler;                    /*  75 Serial Communication Interface (SERCOM7) */
-  void* pfnSERCOM7_2_Handler;                    /*  76 Serial Communication Interface (SERCOM7) */
-  void* pfnSERCOM7_OTHER_Handler;                /*  77 Serial Communication Interface (SERCOM7) */
-  void* pfnCAN0_Handler;                         /*  78 Control Area Network (CAN0) */
-  void* pfnCAN1_Handler;                         /*  79 Control Area Network (CAN1) */
+  void* pvReserved70;
+  void* pvReserved71;
+  void* pvReserved72;
+  void* pvReserved73;
+  void* pvReserved74;
+  void* pvReserved75;
+  void* pvReserved76;
+  void* pvReserved77;
+  void* pvReserved78;
+  void* pvReserved79;
   void* pfnUSB_OTHER_Handler;                    /*  80 Universal Serial Bus (USB) */
   void* pfnUSB_SOF_HSOF_Handler;                 /*  81 Universal Serial Bus (USB) */
   void* pfnUSB_TRCPT0_Handler;                   /*  82 Universal Serial Bus (USB) */
@@ -356,8 +345,8 @@ typedef struct _DeviceVectors
   void* pfnTC3_Handler;                          /* 110 Basic Timer Counter (TC3) */
   void* pfnTC4_Handler;                          /* 111 Basic Timer Counter (TC4) */
   void* pfnTC5_Handler;                          /* 112 Basic Timer Counter (TC5) */
-  void* pfnTC6_Handler;                          /* 113 Basic Timer Counter (TC6) */
-  void* pfnTC7_Handler;                          /* 114 Basic Timer Counter (TC7) */
+  void* pvReserved113;
+  void* pvReserved114;
   void* pfnPDEC_OTHER_Handler;                   /* 115 Quadrature Decodeur (PDEC) */
   void* pfnPDEC_MC0_Handler;                     /* 116 Quadrature Decodeur (PDEC) */
   void* pfnPDEC_MC1_Handler;                     /* 117 Quadrature Decodeur (PDEC) */
@@ -369,8 +358,8 @@ typedef struct _DeviceVectors
   void* pfnDAC_OTHER_Handler;                    /* 123 Digital-to-Analog Converter (DAC) */
   void* pfnDAC_EMPTY_0_Handler;                  /* 124 Digital-to-Analog Converter (DAC) */
   void* pfnDAC_EMPTY_1_Handler;                  /* 125 Digital-to-Analog Converter (DAC) */
-  void* pvReserved126;
-  void* pvReserved127;
+  void* pfnDAC_RESRDY_0_Handler;                 /* 126 Digital-to-Analog Converter (DAC) */
+  void* pfnDAC_RESRDY_1_Handler;                 /* 127 Digital-to-Analog Converter (DAC) */
   void* pfnI2S_Handler;                          /* 128 Inter-IC Sound Interface (I2S) */
   void* pfnPCC_Handler;                          /* 129 Parallel Capture Controller (PCC) */
   void* pfnAES_Handler;                          /* 130 Advanced Encryption Standard (AES) */
@@ -379,7 +368,6 @@ typedef struct _DeviceVectors
   void* pfnPUKCC_Handler;                        /* 133 PUblic-Key Cryptography Controller (PUKCC) */
   void* pfnQSPI_Handler;                         /* 134 Quad SPI interface (QSPI) */
   void* pfnSDHC0_Handler;                        /* 135 SD/MMC Host Controller (SDHC0) */
-  void* pfnSDHC1_Handler;                        /* 136 SD/MMC Host Controller (SDHC1) */
 } DeviceVectors;
 
 #endif /* !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__)) */
@@ -468,16 +456,6 @@ void SERCOM5_0_Handler             ( void );
 void SERCOM5_1_Handler             ( void );
 void SERCOM5_2_Handler             ( void );
 void SERCOM5_OTHER_Handler         ( void );
-void SERCOM6_0_Handler             ( void );
-void SERCOM6_1_Handler             ( void );
-void SERCOM6_2_Handler             ( void );
-void SERCOM6_OTHER_Handler         ( void );
-void SERCOM7_0_Handler             ( void );
-void SERCOM7_1_Handler             ( void );
-void SERCOM7_2_Handler             ( void );
-void SERCOM7_OTHER_Handler         ( void );
-void CAN0_Handler                  ( void );
-void CAN1_Handler                  ( void );
 void USB_OTHER_Handler             ( void );
 void USB_SOF_HSOF_Handler          ( void );
 void USB_TRCPT0_Handler            ( void );
@@ -511,8 +489,6 @@ void TC2_Handler                   ( void );
 void TC3_Handler                   ( void );
 void TC4_Handler                   ( void );
 void TC5_Handler                   ( void );
-void TC6_Handler                   ( void );
-void TC7_Handler                   ( void );
 void PDEC_OTHER_Handler            ( void );
 void PDEC_MC0_Handler              ( void );
 void PDEC_MC1_Handler              ( void );
@@ -524,6 +500,8 @@ void AC_Handler                    ( void );
 void DAC_OTHER_Handler             ( void );
 void DAC_EMPTY_0_Handler           ( void );
 void DAC_EMPTY_1_Handler           ( void );
+void DAC_RESRDY_0_Handler          ( void );
+void DAC_RESRDY_1_Handler          ( void );
 void I2S_Handler                   ( void );
 void PCC_Handler                   ( void );
 void AES_Handler                   ( void );
@@ -532,7 +510,6 @@ void ICM_Handler                   ( void );
 void PUKCC_Handler                 ( void );
 void QSPI_Handler                  ( void );
 void SDHC0_Handler                 ( void );
-void SDHC1_Handler                 ( void );
 #endif /* DONT_USE_PREDEFINED_PERIPHERALS_HANDLERS */
 #endif /* !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__)) */
 
@@ -555,12 +532,11 @@ void SDHC1_Handler                 ( void );
 #endif /* USE_CMSIS_INIT */
 
 /* ************************************************************************** */
-/*   SOFTWARE PERIPHERAL API DEFINITION FOR PIC32CX1025SG41100                */
+/*   SOFTWARE PERIPHERAL API DEFINITION FOR PIC32CX1025SG41064                */
 /* ************************************************************************** */
 #include "component/ac.h"
 #include "component/adc.h"
 #include "component/aes.h"
-#include "component/can.h"
 #include "component/ccl.h"
 #include "component/cmcc.h"
 #include "component/dac.h"
@@ -599,14 +575,12 @@ void SDHC1_Handler                 ( void );
 #include "component/wdt.h"
 
 /* ************************************************************************** */
-/*   INSTANCE DEFINITIONS FOR PIC32CX1025SG41100 */
+/*   INSTANCE DEFINITIONS FOR PIC32CX1025SG41064 */
 /* ************************************************************************** */
 #include "instance/ac.h"
 #include "instance/adc0.h"
 #include "instance/adc1.h"
 #include "instance/aes.h"
-#include "instance/can0.h"
-#include "instance/can1.h"
 #include "instance/ccl.h"
 #include "instance/cmcc.h"
 #include "instance/dac.h"
@@ -635,15 +609,12 @@ void SDHC1_Handler                 ( void );
 #include "instance/rstc.h"
 #include "instance/rtc.h"
 #include "instance/sdhc0.h"
-#include "instance/sdhc1.h"
 #include "instance/sercom0.h"
 #include "instance/sercom1.h"
 #include "instance/sercom2.h"
 #include "instance/sercom3.h"
 #include "instance/sercom4.h"
 #include "instance/sercom5.h"
-#include "instance/sercom6.h"
-#include "instance/sercom7.h"
 #include "instance/supc.h"
 #include "instance/tc0.h"
 #include "instance/tc1.h"
@@ -651,8 +622,6 @@ void SDHC1_Handler                 ( void );
 #include "instance/tc3.h"
 #include "instance/tc4.h"
 #include "instance/tc5.h"
-#include "instance/tc6.h"
-#include "instance/tc7.h"
 #include "instance/tcc0.h"
 #include "instance/tcc1.h"
 #include "instance/tcc2.h"
@@ -663,7 +632,7 @@ void SDHC1_Handler                 ( void );
 #include "instance/wdt.h"
 
 /* ************************************************************************** */
-/*  PERIPHERAL ID DEFINITIONS FOR PIC32CX1025SG41100                          */
+/*  PERIPHERAL ID DEFINITIONS FOR PIC32CX1025SG41064                          */
 /* ************************************************************************** */
 #define ID_PAC           (  0) /* Instance index for PAC (PAC) */
 #define ID_PM            (  1) /* Instance index for PM (PM) */
@@ -696,13 +665,11 @@ void SDHC1_Handler                 ( void );
 #define ID_TC2           ( 45) /* Instance index for TC2 (TC2) */
 #define ID_TC3           ( 46) /* Instance index for TC3 (TC3) */
 #define ID_RAMECC        ( 48) /* Instance index for RAMECC (RAMECC) */
-#define ID_CAN0          ( 64) /* Instance index for CAN0 (CAN0) */
-#define ID_CAN1          ( 65) /* Instance index for CAN1 (CAN1) */
 #define ID_GMAC          ( 66) /* Instance index for GMAC (GMAC) */
 #define ID_TCC2          ( 67) /* Instance index for TCC2 (TCC2) */
 #define ID_TCC3          ( 68) /* Instance index for TCC3 (TCC3) */
 #define ID_TC4           ( 69) /* Instance index for TC4 (TC4) */
-#define ID_TC5           ( 70) /* Instance index for TC5 (TC5) */
+#define ID_TC5           ( 70) /* Basic Timer Counter (TC5) */
 #define ID_PDEC          ( 71) /* Instance index for PDEC (PDEC) */
 #define ID_AC            ( 72) /* Instance index for AC (AC) */
 #define ID_AES           ( 73) /* Instance index for AES (AES) */
@@ -712,12 +679,8 @@ void SDHC1_Handler                 ( void );
 #define ID_QSPI          ( 77) /* Instance index for QSPI (QSPI) */
 #define ID_CCL           ( 78) /* Instance index for CCL (CCL) */
 #define ID_SERCOM4       ( 96) /* Instance index for SERCOM4 (SERCOM4) */
-#define ID_SERCOM5       ( 97) /* Instance index for SERCOM5 (SERCOM5) */
-#define ID_SERCOM6       ( 98) /* Instance index for SERCOM6 (SERCOM6) */
-#define ID_SERCOM7       ( 99) /* Instance index for SERCOM7 (SERCOM7) */
+#define ID_SERCOM5       ( 97) /* Serial Communication Interface (SERCOM5) */
 #define ID_TCC4          (100) /* Instance index for TCC4 (TCC4) */
-#define ID_TC6           (101) /* Instance index for TC6 (TC6) */
-#define ID_TC7           (102) /* Instance index for TC7 (TC7) */
 #define ID_ADC0          (103) /* Instance index for ADC0 (ADC0) */
 #define ID_ADC1          (104) /* Instance index for ADC1 (ADC1) */
 #define ID_DAC           (105) /* Instance index for DAC (DAC) */
@@ -727,15 +690,13 @@ void SDHC1_Handler                 ( void );
 #define ID_PERIPH_MAX    (107) /* Number of peripheral IDs */
 
 /* ************************************************************************** */
-/*   REGISTER STRUCTURE ADDRESS DEFINITIONS FOR PIC32CX1025SG41100            */
+/*   REGISTER STRUCTURE ADDRESS DEFINITIONS FOR PIC32CX1025SG41064            */
 /* ************************************************************************** */
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))
 #define AC_REGS                          ((ac_registers_t*)0x42002000)                 /* AC Registers Address         */
 #define ADC0_REGS                        ((adc_registers_t*)0x43001c00)                /* ADC0 Registers Address       */
 #define ADC1_REGS                        ((adc_registers_t*)0x43002000)                /* ADC1 Registers Address       */
 #define AES_REGS                         ((aes_registers_t*)0x42002400)                /* AES Registers Address        */
-#define CAN0_REGS                        ((can_registers_t*)0x42000000)                /* CAN0 Registers Address       */
-#define CAN1_REGS                        ((can_registers_t*)0x42000400)                /* CAN1 Registers Address       */
 #define CCL_REGS                         ((ccl_registers_t*)0x42003800)                /* CCL Registers Address        */
 #define CMCC_REGS                        ((cmcc_registers_t*)0x41006000)               /* CMCC Registers Address       */
 #define DAC_REGS                         ((dac_registers_t*)0x43002400)                /* DAC Registers Address        */
@@ -752,6 +713,7 @@ void SDHC1_Handler                 ( void );
 #define MCLK_REGS                        ((mclk_registers_t*)0x40000800)               /* MCLK Registers Address       */
 #define NVMCTRL_REGS                     ((nvmctrl_registers_t*)0x41004000)            /* NVMCTRL Registers Address    */
 #define SW0_FUSES_REGS                   ((fuses_sw0_fuses_registers_t*)0x00800080)    /* FUSES Registers Address      */
+#define TEMP_LOG_FUSES_REGS              ((fuses_temp_log_fuses_registers_t*)0x00800100) /* FUSES Registers Address      */
 #define USER_FUSES_REGS                  ((fuses_user_fuses_registers_t*)0x00804000)   /* FUSES Registers Address      */
 #define OSCCTRL_REGS                     ((oscctrl_registers_t*)0x40001000)            /* OSCCTRL Registers Address    */
 #define OSC32KCTRL_REGS                  ((osc32kctrl_registers_t*)0x40001400)         /* OSC32KCTRL Registers Address */
@@ -765,15 +727,12 @@ void SDHC1_Handler                 ( void );
 #define RSTC_REGS                        ((rstc_registers_t*)0x40000c00)               /* RSTC Registers Address       */
 #define RTC_REGS                         ((rtc_registers_t*)0x40002400)                /* RTC Registers Address        */
 #define SDHC0_REGS                       ((sdhc_registers_t*)0x45000000)               /* SDHC0 Registers Address      */
-#define SDHC1_REGS                       ((sdhc_registers_t*)0x46000000)               /* SDHC1 Registers Address      */
 #define SERCOM0_REGS                     ((sercom_registers_t*)0x40003000)             /* SERCOM0 Registers Address    */
 #define SERCOM1_REGS                     ((sercom_registers_t*)0x40003400)             /* SERCOM1 Registers Address    */
 #define SERCOM2_REGS                     ((sercom_registers_t*)0x41012000)             /* SERCOM2 Registers Address    */
 #define SERCOM3_REGS                     ((sercom_registers_t*)0x41014000)             /* SERCOM3 Registers Address    */
 #define SERCOM4_REGS                     ((sercom_registers_t*)0x43000000)             /* SERCOM4 Registers Address    */
 #define SERCOM5_REGS                     ((sercom_registers_t*)0x43000400)             /* SERCOM5 Registers Address    */
-#define SERCOM6_REGS                     ((sercom_registers_t*)0x43000800)             /* SERCOM6 Registers Address    */
-#define SERCOM7_REGS                     ((sercom_registers_t*)0x43000c00)             /* SERCOM7 Registers Address    */
 #define SUPC_REGS                        ((supc_registers_t*)0x40001800)               /* SUPC Registers Address       */
 #define TC0_REGS                         ((tc_registers_t*)0x40003800)                 /* TC0 Registers Address        */
 #define TC1_REGS                         ((tc_registers_t*)0x40003c00)                 /* TC1 Registers Address        */
@@ -781,8 +740,6 @@ void SDHC1_Handler                 ( void );
 #define TC3_REGS                         ((tc_registers_t*)0x4101c000)                 /* TC3 Registers Address        */
 #define TC4_REGS                         ((tc_registers_t*)0x42001400)                 /* TC4 Registers Address        */
 #define TC5_REGS                         ((tc_registers_t*)0x42001800)                 /* TC5 Registers Address        */
-#define TC6_REGS                         ((tc_registers_t*)0x43001400)                 /* TC6 Registers Address        */
-#define TC7_REGS                         ((tc_registers_t*)0x43001800)                 /* TC7 Registers Address        */
 #define TCC0_REGS                        ((tcc_registers_t*)0x41016000)                /* TCC0 Registers Address       */
 #define TCC1_REGS                        ((tcc_registers_t*)0x41018000)                /* TCC1 Registers Address       */
 #define TCC2_REGS                        ((tcc_registers_t*)0x42000c00)                /* TCC2 Registers Address       */
@@ -794,14 +751,12 @@ void SDHC1_Handler                 ( void );
 #endif /* (defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__)) */
 
 /* ************************************************************************** */
-/*   BASE ADDRESS DEFINITIONS FOR PIC32CX1025SG41100                          */
+/*   BASE ADDRESS DEFINITIONS FOR PIC32CX1025SG41064                          */
 /* ************************************************************************** */
 #define AC_BASE_ADDRESS                  _UINT32_(0x42002000)                          /* AC Base Address */
 #define ADC0_BASE_ADDRESS                _UINT32_(0x43001c00)                          /* ADC0 Base Address */
 #define ADC1_BASE_ADDRESS                _UINT32_(0x43002000)                          /* ADC1 Base Address */
 #define AES_BASE_ADDRESS                 _UINT32_(0x42002400)                          /* AES Base Address */
-#define CAN0_BASE_ADDRESS                _UINT32_(0x42000000)                          /* CAN0 Base Address */
-#define CAN1_BASE_ADDRESS                _UINT32_(0x42000400)                          /* CAN1 Base Address */
 #define CCL_BASE_ADDRESS                 _UINT32_(0x42003800)                          /* CCL Base Address */
 #define CMCC_BASE_ADDRESS                _UINT32_(0x41006000)                          /* CMCC Base Address */
 #define DAC_BASE_ADDRESS                 _UINT32_(0x43002400)                          /* DAC Base Address */
@@ -818,6 +773,7 @@ void SDHC1_Handler                 ( void );
 #define MCLK_BASE_ADDRESS                _UINT32_(0x40000800)                          /* MCLK Base Address */
 #define NVMCTRL_BASE_ADDRESS             _UINT32_(0x41004000)                          /* NVMCTRL Base Address */
 #define SW0_FUSES_BASE_ADDRESS           _UINT32_(0x00800080)                          /* FUSES Base Address */
+#define TEMP_LOG_FUSES_BASE_ADDRESS      _UINT32_(0x00800100)                          /* FUSES Base Address */
 #define USER_FUSES_BASE_ADDRESS          _UINT32_(0x00804000)                          /* FUSES Base Address */
 #define OSCCTRL_BASE_ADDRESS             _UINT32_(0x40001000)                          /* OSCCTRL Base Address */
 #define OSC32KCTRL_BASE_ADDRESS          _UINT32_(0x40001400)                          /* OSC32KCTRL Base Address */
@@ -831,15 +787,12 @@ void SDHC1_Handler                 ( void );
 #define RSTC_BASE_ADDRESS                _UINT32_(0x40000c00)                          /* RSTC Base Address */
 #define RTC_BASE_ADDRESS                 _UINT32_(0x40002400)                          /* RTC Base Address */
 #define SDHC0_BASE_ADDRESS               _UINT32_(0x45000000)                          /* SDHC0 Base Address */
-#define SDHC1_BASE_ADDRESS               _UINT32_(0x46000000)                          /* SDHC1 Base Address */
 #define SERCOM0_BASE_ADDRESS             _UINT32_(0x40003000)                          /* SERCOM0 Base Address */
 #define SERCOM1_BASE_ADDRESS             _UINT32_(0x40003400)                          /* SERCOM1 Base Address */
 #define SERCOM2_BASE_ADDRESS             _UINT32_(0x41012000)                          /* SERCOM2 Base Address */
 #define SERCOM3_BASE_ADDRESS             _UINT32_(0x41014000)                          /* SERCOM3 Base Address */
 #define SERCOM4_BASE_ADDRESS             _UINT32_(0x43000000)                          /* SERCOM4 Base Address */
 #define SERCOM5_BASE_ADDRESS             _UINT32_(0x43000400)                          /* SERCOM5 Base Address */
-#define SERCOM6_BASE_ADDRESS             _UINT32_(0x43000800)                          /* SERCOM6 Base Address */
-#define SERCOM7_BASE_ADDRESS             _UINT32_(0x43000c00)                          /* SERCOM7 Base Address */
 #define SUPC_BASE_ADDRESS                _UINT32_(0x40001800)                          /* SUPC Base Address */
 #define TC0_BASE_ADDRESS                 _UINT32_(0x40003800)                          /* TC0 Base Address */
 #define TC1_BASE_ADDRESS                 _UINT32_(0x40003c00)                          /* TC1 Base Address */
@@ -847,8 +800,6 @@ void SDHC1_Handler                 ( void );
 #define TC3_BASE_ADDRESS                 _UINT32_(0x4101c000)                          /* TC3 Base Address */
 #define TC4_BASE_ADDRESS                 _UINT32_(0x42001400)                          /* TC4 Base Address */
 #define TC5_BASE_ADDRESS                 _UINT32_(0x42001800)                          /* TC5 Base Address */
-#define TC6_BASE_ADDRESS                 _UINT32_(0x43001400)                          /* TC6 Base Address */
-#define TC7_BASE_ADDRESS                 _UINT32_(0x43001800)                          /* TC7 Base Address */
 #define TCC0_BASE_ADDRESS                _UINT32_(0x41016000)                          /* TCC0 Base Address */
 #define TCC1_BASE_ADDRESS                _UINT32_(0x41018000)                          /* TCC1 Base Address */
 #define TCC2_BASE_ADDRESS                _UINT32_(0x42000c00)                          /* TCC2 Base Address */
@@ -859,18 +810,22 @@ void SDHC1_Handler                 ( void );
 #define WDT_BASE_ADDRESS                 _UINT32_(0x40002000)                          /* WDT Base Address */
 
 /* ************************************************************************** */
-/*   PIO DEFINITIONS FOR PIC32CX1025SG41100                                   */
+/*   PIO DEFINITIONS FOR PIC32CX1025SG41064                                   */
 /* ************************************************************************** */
-#include "pio/pic32cx1025sg41100.h"
+#include "pio/pic32cx1025sg41064.h"
 
 /* ************************************************************************** */
-/*   MEMORY MAPPING DEFINITIONS FOR PIC32CX1025SG41100                        */
+/*   MEMORY MAPPING DEFINITIONS FOR PIC32CX1025SG41064                        */
 /* ************************************************************************** */
 #define FLASH_SIZE                     _UINT32_(0x00100000)    /* 1024kB Memory segment type: flash */
 #define FLASH_PAGE_SIZE                _UINT32_(       512)
 #define FLASH_NB_OF_PAGES              _UINT32_(      2048)
 
-#define SW0_SIZE                       _UINT32_(0x00000008)    /*    0kB Memory segment type: fuses */
+#define SW0_SIZE                       _UINT32_(0x00000010)    /*    0kB Memory segment type: fuses */
+#define TEMP_LOG_SIZE                  _UINT32_(0x00000200)    /*    0kB Memory segment type: fuses */
+#define TEMP_LOG_PAGE_SIZE             _UINT32_(       512)
+#define TEMP_LOG_NB_OF_PAGES           _UINT32_(         1)
+
 #define USER_PAGE_SIZE                 _UINT32_(0x00000200)    /*    0kB Memory segment type: user_page */
 #define USER_PAGE_PAGE_SIZE            _UINT32_(       512)
 #define USER_PAGE_NB_OF_PAGES          _UINT32_(         1)
@@ -889,13 +844,13 @@ void SDHC1_Handler                 ( void );
 #define HPB3_SIZE                      _UINT32_(0x00003000)    /*   12kB Memory segment type: io */
 #define SEEPROM_SIZE                   _UINT32_(0x00020000)    /*  128kB Memory segment type: io */
 #define SDHC0_SIZE                     _UINT32_(0x00000c00)    /*    3kB Memory segment type: io */
-#define SDHC1_SIZE                     _UINT32_(0x00000c00)    /*    3kB Memory segment type: io */
 #define BKUPRAM_SIZE                   _UINT32_(0x00002000)    /*    8kB Memory segment type: ram */
 #define PPB_SIZE                       _UINT32_(0x00100000)    /* 1024kB Memory segment type: io */
 #define SCS_SIZE                       _UINT32_(0x00001000)    /*    4kB Memory segment type: io */
 
 #define FLASH_ADDR                     _UINT32_(0x00000000)    /* FLASH base address (type: flash)*/
 #define SW0_ADDR                       _UINT32_(0x00800080)    /* SW0 base address (type: fuses)*/
+#define TEMP_LOG_ADDR                  _UINT32_(0x00800100)    /* TEMP_LOG base address (type: fuses)*/
 #define USER_PAGE_ADDR                 _UINT32_(0x00804000)    /* USER_PAGE base address (type: user_page)*/
 #define CMCC_ADDR                      _UINT32_(0x03000000)    /* CMCC base address (type: io)*/
 #define CMCC_DATARAM_ADDR              _UINT32_(0x03000000)    /* CMCC_DATARAM base address (type: io)*/
@@ -911,22 +866,21 @@ void SDHC1_Handler                 ( void );
 #define HPB3_ADDR                      _UINT32_(0x43000000)    /* HPB3 base address (type: io)*/
 #define SEEPROM_ADDR                   _UINT32_(0x44000000)    /* SEEPROM base address (type: io)*/
 #define SDHC0_ADDR                     _UINT32_(0x45000000)    /* SDHC0 base address (type: io)*/
-#define SDHC1_ADDR                     _UINT32_(0x46000000)    /* SDHC1 base address (type: io)*/
 #define BKUPRAM_ADDR                   _UINT32_(0x47000000)    /* BKUPRAM base address (type: ram)*/
 #define PPB_ADDR                       _UINT32_(0xe0000000)    /* PPB base address (type: io)*/
 #define SCS_ADDR                       _UINT32_(0xe000e000)    /* SCS base address (type: io)*/
 
 /* ************************************************************************** */
-/*   DEVICE SIGNATURES FOR PIC32CX1025SG41100                                 */
+/*   DEVICE SIGNATURES FOR PIC32CX1025SG41064                                 */
 /* ************************************************************************** */
-#define CHIP_DSU_DID                   _UINT32_(0X61870501)
+#define CHIP_DSU_DID                   _UINT32_(0X61870602)
 
 /* ************************************************************************** */
-/*   ELECTRICAL DEFINITIONS FOR PIC32CX1025SG41100                            */
+/*   ELECTRICAL DEFINITIONS FOR PIC32CX1025SG41064                            */
 /* ************************************************************************** */
 
 /* ************************************************************************** */
-/* Event Generator IDs for C32CX1025SG41100 */
+/* Event Generator IDs for C32CX1025SG41064 */
 /* ************************************************************************** */
 #define EVENT_ID_GEN_OSCCTRL_XOSC_FAIL_0                  1 /* ID for OSCCTRL event generator XOSC_FAIL_0 */
 #define EVENT_ID_GEN_OSCCTRL_XOSC_FAIL_1                  2 /* ID for OSCCTRL event generator XOSC_FAIL_1 */
@@ -1016,12 +970,6 @@ void SDHC1_Handler                 ( void );
 #define EVENT_ID_GEN_TC5_OVF                             88 /* ID for TC5 event generator OVF */
 #define EVENT_ID_GEN_TC5_MC_0                            89 /* ID for TC5 event generator MC_0 */
 #define EVENT_ID_GEN_TC5_MC_1                            90 /* ID for TC5 event generator MC_1 */
-#define EVENT_ID_GEN_TC6_OVF                             91 /* ID for TC6 event generator OVF */
-#define EVENT_ID_GEN_TC6_MC_0                            92 /* ID for TC6 event generator MC_0 */
-#define EVENT_ID_GEN_TC6_MC_1                            93 /* ID for TC6 event generator MC_1 */
-#define EVENT_ID_GEN_TC7_OVF                             94 /* ID for TC7 event generator OVF */
-#define EVENT_ID_GEN_TC7_MC_0                            95 /* ID for TC7 event generator MC_0 */
-#define EVENT_ID_GEN_TC7_MC_1                            96 /* ID for TC7 event generator MC_1 */
 #define EVENT_ID_GEN_PDEC_OVF                            97 /* ID for PDEC event generator OVF */
 #define EVENT_ID_GEN_PDEC_ERR                            98 /* ID for PDEC event generator ERR */
 #define EVENT_ID_GEN_PDEC_DIR                            99 /* ID for PDEC event generator DIR */
@@ -1037,6 +985,8 @@ void SDHC1_Handler                 ( void );
 #define EVENT_ID_GEN_AC_WIN_0                           109 /* ID for AC event generator WIN_0 */
 #define EVENT_ID_GEN_DAC_EMPTY_0                        110 /* ID for DAC event generator EMPTY_0 */
 #define EVENT_ID_GEN_DAC_EMPTY_1                        111 /* ID for DAC event generator EMPTY_1 */
+#define EVENT_ID_GEN_DAC_RESRDY_0                       112 /* ID for DAC event generator RESRDY_0 */
+#define EVENT_ID_GEN_DAC_RESRDY_1                       113 /* ID for DAC event generator RESRDY_1 */
 #define EVENT_ID_GEN_GMAC_TSU_CMP                       114 /* ID for GMAC event generator TSU_CMP */
 #define EVENT_ID_GEN_TRNG_READY                         115 /* ID for TRNG event generator READY */
 #define EVENT_ID_GEN_CCL_LUTOUT_0                       116 /* ID for CCL event generator LUTOUT_0 */
@@ -1045,7 +995,7 @@ void SDHC1_Handler                 ( void );
 #define EVENT_ID_GEN_CCL_LUTOUT_3                       119 /* ID for CCL event generator LUTOUT_3 */
 
 /* ************************************************************************** */
-/*  Event User IDs for C32CX1025SG41100 */
+/*  Event User IDs for C32CX1025SG41064 */
 /* ************************************************************************** */
 #define EVENT_ID_USER_RTC_TAMPER                          0 /* ID for RTC event user TAMPER */
 #define EVENT_ID_USER_PORT_EV_0                           1 /* ID for PORT event user EV_0 */
@@ -1096,8 +1046,6 @@ void SDHC1_Handler                 ( void );
 #define EVENT_ID_USER_TC3_EVU                            47 /* ID for TC3 event user EVU */
 #define EVENT_ID_USER_TC4_EVU                            48 /* ID for TC4 event user EVU */
 #define EVENT_ID_USER_TC5_EVU                            49 /* ID for TC5 event user EVU */
-#define EVENT_ID_USER_TC6_EVU                            50 /* ID for TC6 event user EVU */
-#define EVENT_ID_USER_TC7_EVU                            51 /* ID for TC7 event user EVU */
 #define EVENT_ID_USER_PDEC_EVU_0                         52 /* ID for PDEC event user EVU_0 */
 #define EVENT_ID_USER_PDEC_EVU_1                         53 /* ID for PDEC event user EVU_1 */
 #define EVENT_ID_USER_PDEC_EVU_2                         54 /* ID for PDEC event user EVU_2 */
@@ -1118,5 +1066,5 @@ void SDHC1_Handler                 ( void );
 }
 #endif
 
-#endif /* _PIC32CX1025SG41100_H_ */
+#endif /* _PIC32CX1025SG41064_H_ */
 

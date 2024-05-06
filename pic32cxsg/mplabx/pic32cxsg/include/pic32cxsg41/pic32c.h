@@ -1,7 +1,7 @@
 /*
  * Top level header file
  *
- * Copyright (c) 2023 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2024 Microchip Technology Inc. and its subsidiaries.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,9 @@
 #ifndef _PIC32C_H_
 #define _PIC32C_H_
 
-#if   defined(__PIC32CX1025SG41100__) || defined(__PIC32CX1025SG41100__)
+#if   defined(__PIC32CX1025SG41064__) || defined(__PIC32CX1025SG41064__)
+  #include "pic32cx1025sg41064.h"
+#elif defined(__PIC32CX1025SG41100__) || defined(__PIC32CX1025SG41100__)
   #include "pic32cx1025sg41100.h"
 #elif defined(__PIC32CX1025SG41128__) || defined(__PIC32CX1025SG41128__)
   #include "pic32cx1025sg41128.h"
