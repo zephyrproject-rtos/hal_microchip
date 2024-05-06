@@ -1,0 +1,11 @@
+.clangd
+.dir-locals.el
+.editorconfig
+.vscode
+# Tag files
+GPATH
+GRTAGS
+GTAGS
+TAGS
+tags
+
