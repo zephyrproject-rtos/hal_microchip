@@ -1,0 +1,2 @@
+add_subdirectory(common)
+add_subdirectory_ifdef(CONFIG_SOC_FAMILY_MICROCHIP_PIC32CXSG pic32cxsg)

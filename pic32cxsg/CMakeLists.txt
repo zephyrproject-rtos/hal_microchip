@@ -1,0 +1,2 @@
+zephyr_include_directories_ifdef(CONFIG_MPLABX include)
+add_subdirectory(mplabx)
