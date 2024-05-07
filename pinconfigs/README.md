@@ -1,13 +1,13 @@
-# Microchip PIC32 pin configurations
+# Microchip PIC32C/PIC32M pin configurations
 
 This directory contains a set of files describing valid pin configurations for
-multiple Microchiop PIC32 MCUs (PIC32) devices. This configuration files maps a
+multiple Microchiop PIC32C/PIC32M MCUs (PIC32C/PIC32M) devices. This configuration files maps a
 pin to a peripheral signal which multiplex, at end, I/O lines pins. For example,
 `sercom1, pad1` signal can be mapped to `PA01`, `PA17`, `PC23` or `PC28`
 for `PIC32CX` SoC. These configurations can be used to generate valid pin
 mappings.
 
-Microchip PIC32 devices use distinct controllers to configure signal
+Microchip PIC32C devices use distinct controllers to configure signal
 multiplexing: PORT (PIC32CK, PIC32CM, PIC32CX) or PIO(PIC32CZ). In general, all devices
 use similar definitions where each pin has one or more associated alternate
 function. These alternate functions can be sometimes changed using especific
@@ -55,7 +55,7 @@ family: cx
 
 map: PIC32CX_PINMUX
 
-series: [cx1025cx1025sg41, cx1025cx1025sg60, cx1025cx1025sg61]
+series: [cx1025sg41, cx1025sg60, cx1025sg61]
 
 variants:
   - pincode: 064

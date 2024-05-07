@@ -1,4 +1,4 @@
-# Microchip PIC32CXSG41 PIC32CXSG60 PIC32CXSG61 scripts
+# Microchip PIC32C/PIC32M scripts
 
 This folder contains `hal_microchip` scripts.
 
