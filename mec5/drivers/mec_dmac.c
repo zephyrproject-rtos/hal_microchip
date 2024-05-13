@@ -551,9 +551,30 @@ int mec_dma_chan_reload(struct dma_regs *base, enum mec_dmac_channel chan,
     return MEC_RET_OK;
 }
 
+/* Configure a DMA channel for transfer.
+ * DMA termination is based on channel memory start address incrementing until it matches
+ * the memory end address. Device has start address register but no end address.
+ * Control register has a bit to select the direction Memory to Device or Device to Memory.
+ * Memory to Device: source is memory, destination is device.
+ *  Control direction bit = 1 (Mem2Dev)
+ *  Control Increment Mem = 1
+ *  Control Increment Dev is optional. Current MCHP peripherals which can use central DMA
+ *  expose their data as a single data register.
+ *  Memory Start address reg = source address
+ *  Memory End addresss reg = source address + transfer size in bytes
+ *  Device Start address reg = destination address
+ *
+ * Device to Memory: source is device HW register, destination is memory
+ *  Control direction bit = 0 (Dev2Mem)
+ *  Control Increment Mem = 1 may be 0 if writing same value to device.
+ *  Control Increment Dev is optional.
+ *  Memory Start address reg = destination address (memory)
+ *  Memory End address regs = destination address + transfer size in bytes
+ *  Device Start address reg = source address (device register address)
+ */
 int mec_dma_chan_cfg(struct dma_regs *base, enum mec_dmac_channel chan, struct mec_dma_cfg *cfg)
 {
-    uint32_t ctrl = 0u;
+    uint32_t ctrl = 0u; /* dir = Dev2Mem, IncrMem=0, IncrDev=0 */
 
     if (!base || !cfg || (chan >= MEC_DMAC_CHAN_MAX)) {
         return MEC_RET_ERR_INVAL;
@@ -562,27 +583,22 @@ int mec_dma_chan_cfg(struct dma_regs *base, enum mec_dmac_channel chan, struct m
     mec_dma_chan_init(base, chan);
 
     ctrl = (1u << (cfg->unitsz + DMA_CHAN_CTRL_UNITSZ_Pos));
-    if (cfg->dir != MEC_DMAC_DIR_DEV_TO_MEM) {
+    if (cfg->dir == MEC_DMAC_DIR_MEM_TO_DEV) {
         ctrl |= MEC_BIT(DMA_CHAN_CTRL_MEM2DEV_Pos);
-        base->CHAN[chan].MSTART = cfg->dst_addr;
-        base->CHAN[chan].MEND = cfg->dst_addr + cfg->nbytes;
-        base->CHAN[chan].DSTART = cfg->src_addr;
-        if (cfg->flags & MEC_DMA_CFG_FLAG_INCR_SRC_ADDR) {
-            ctrl |= MEC_BIT(DMA_CHAN_CTRL_INCRD_Pos);
-        }
-        if (cfg->flags & MEC_DMA_CFG_FLAG_INCR_DST_ADDR) {
-            ctrl |= MEC_BIT(DMA_CHAN_CTRL_INCRM_Pos);
-        }
-    } else { /* memory to device */
         base->CHAN[chan].MSTART = cfg->src_addr;
         base->CHAN[chan].MEND = cfg->src_addr + cfg->nbytes;
         base->CHAN[chan].DSTART = cfg->dst_addr;
-        if (cfg->flags & MEC_DMA_CFG_FLAG_INCR_SRC_ADDR) {
-            ctrl |= MEC_BIT(DMA_CHAN_CTRL_INCRM_Pos);
-        }
-        if (cfg->flags & MEC_DMA_CFG_FLAG_INCR_DST_ADDR) {
-            ctrl |= MEC_BIT(DMA_CHAN_CTRL_INCRD_Pos);
-        }
+    } else { /* device(source address) to memory(destination address) */
+        base->CHAN[chan].MSTART = cfg->dst_addr;
+        base->CHAN[chan].MEND = cfg->dst_addr + cfg->nbytes;
+        base->CHAN[chan].DSTART = cfg->src_addr;
+    }
+
+    if (cfg->flags & MEC_DMA_CFG_FLAG_INCR_SRC_ADDR) {
+        ctrl |= MEC_BIT(DMA_CHAN_CTRL_INCRM_Pos);
+    }
+    if (cfg->flags & MEC_DMA_CFG_FLAG_INCR_DST_ADDR) {
+        ctrl |= MEC_BIT(DMA_CHAN_CTRL_INCRD_Pos);
     }
 
     if (cfg->hwfc_dev < MEC_DMAC_DEV_ID_NONE) {
