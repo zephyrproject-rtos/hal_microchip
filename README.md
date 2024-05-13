@@ -1,6 +1,6 @@
 # Introduction
 
-The **hal_microchip** is a set of register definitions for Microchip PIC32C/PIC32X SoC's.
+The **hal_microchip** is a set of register definitions for Microchip PIC32C/PIC32M SoC's.
 The HAL is organized following the directory structure detailed below.
 
 ## Directory Structure
