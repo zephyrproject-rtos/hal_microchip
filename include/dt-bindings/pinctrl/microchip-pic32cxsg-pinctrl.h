@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef DT_BINDINGS_PINCTRL_MCHP_PIC32CXSG_PINCTRL_H_
-#define DT_BINDINGS_PINCTRL_MCHP_PIC32CXSG_PINCTRL_H_
+#ifndef DT_BINDINGS_PINCTRL_MICROCHIP_PIC32CXSG_PINCTRL_H_
+#define DT_BINDINGS_PINCTRL_MICROCHIP_PIC32CXSG_PINCTRL_H_
 
 /*
- * @name Atmel PIC32 gpio port list.
+ * @name Microchip PIC32CXSG gpio port list.
  * @{
  */
 
@@ -31,7 +31,7 @@
 /** @} */
 
 /**
- * @name Atmel PIC32 peripheral list.
+ * @name Microchip PIC32CXSG peripheral list.
  * @{
  */
 
@@ -78,7 +78,7 @@
 /** @} */
 
 /**
- * @name Atmel PIC32 pin function list.
+ * @name Microchip PIC32CXSG pin function list.
  * @{
  */
 
@@ -98,7 +98,7 @@
 /** @} */
 
 /**
- * @name Atmel PIC32 pinmux bit field mask and positions.
+ * @name Microchip PIC32CXSG pinmux bit field mask and positions.
  * @{
  */
 
@@ -176,4 +176,4 @@
 	((PIC32CXSG_PINMUX_GET(pincfg) >> PIC32CXSG_PINMUX_PERIPH_POS) \
 	 & PIC32CXSG_PINMUX_PERIPH_MSK)
 
-#endif  /* DT_BINDINGS_PINCTRL_MCHP_PIC32CXSG_PINCTRL_H_ */
+#endif  /* DT_BINDINGS_PINCTRL_MICROCHIP_PIC32CXSG_PINCTRL_H_ */
