@@ -44,8 +44,8 @@ enum mec_i2c_status {
     MEC_I2C_STS_CM_TX_NACK_POS = 24, /* Controller mode transmit received NACK from target */
     MEC_I2C_STS_CM_TX_DONE_RO_POS,
     MEC_I2C_STS_IDLE_POS = 29,
-    MEC_I2C_STS_CM_DONE,
-    MEC_I2C_STS_TM_DONE,
+    MEC_I2C_STS_CM_DONE_POS,
+    MEC_I2C_STS_TM_DONE_POS,
 };
 
 enum mec_i2c_ctrl {
@@ -73,6 +73,9 @@ enum mec_i2c_start {
 enum mec_i2c_ien {
     MEC_I2C_IEN_BYTE_MODE_POS = 0,
     MEC_I2C_IEN_IDLE_POS,
+    MEC_I2C_NL_IEN_CM_DONE_POS,
+    MEC_I2C_NL_IEN_TM_DONE_POS,
+    MEC_I2C_NL_IEN_AAT_POS,
 };
 
 struct mec_i2c_freq_cfg {
@@ -130,6 +133,9 @@ void mec_i2c_smb_wake_status_clr(struct mec_i2c_smb_ctx *ctx);
 
 int mec_i2c_smb_idle_intr_enable(struct mec_i2c_smb_ctx *ctx, uint8_t enable);
 
+/* mask are enum mec_i2c_ien values */
+int mec_i2c_smb_intr_ctrl(struct mec_i2c_smb_ctx *ctx, uint32_t mask, uint8_t en);
+
 uint32_t mec_i2c_smb_status(struct mec_i2c_smb_ctx *ctx, uint8_t clear);
 int mec_i2c_smb_is_idle_intr(struct mec_i2c_smb_ctx *ctx);
 int mec_i2c_smb_idle_status_clr(struct mec_i2c_smb_ctx *ctx);
@@ -153,6 +159,14 @@ int mec_i2c_smb_read_byte(struct mec_i2c_smb_ctx *ctx, uint8_t *msg_byte);
 
 int mec_i2c_smb_bbctrl(struct mec_i2c_smb_ctx *ctx, uint8_t enable, uint8_t pin_drive);
 uint8_t mec_i2c_smb_bbctrl_pin_states(struct mec_i2c_smb_ctx *ctx);
+
+/* I2C Network Layer */
+#define MEC_I2C_NL_FLAG_START       0x01
+#define MEC_I2C_NL_FLAG_RPT_START   0x02
+#define MEC_I2C_NL_FLAG_STOP        0x04
+#define MEC_I2C_NL_FLAG_CM_DONE_IEN 0x100u
+
+int mec_i2c_nl_cm_cfg_start(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint16_t nrx, uint32_t flags);
 
 #ifdef __cplusplus
 }

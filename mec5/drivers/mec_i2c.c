@@ -395,6 +395,49 @@ int mec_i2c_smb_idle_intr_enable(struct mec_i2c_smb_ctx *ctx, uint8_t enable)
     return MEC_RET_OK;
 }
 
+int mec_i2c_smb_intr_ctrl(struct mec_i2c_smb_ctx *ctx, uint32_t mask, uint8_t enable)
+{
+    uint32_t cfg = 0;
+
+#ifdef MEC_I2C_BASE_CHECK
+    if (!ctx || !ctx->base) {
+        return MEC_RET_ERR_INVAL;
+    }
+#endif
+
+    struct i2c_smb_regs *regs = ctx->base;
+
+    if (mask & MEC_BIT(MEC_I2C_IEN_BYTE_MODE_POS)) {
+        if (enable) {
+            ctx->i2c_ctrl_cached |= MEC_BIT(I2C_SMB_CTRL_ENI_Pos);
+        } else {
+            ctx->i2c_ctrl_cached &= (uint8_t)~MEC_BIT(I2C_SMB_CTRL_ENI_Pos);
+        }
+        regs->CTRL = ctx->i2c_ctrl_cached;
+    }
+
+    if (mask & MEC_BIT(MEC_I2C_IEN_IDLE_POS)) {
+        cfg |= MEC_BIT(I2C_SMB_CONFIG_ENI_IDLE_Pos);
+    }
+    if (mask & MEC_BIT(MEC_I2C_NL_IEN_CM_DONE_POS)) {
+        cfg |= MEC_BIT(I2C_SMB_CONFIG_ENMI_Pos);
+    }
+    if (mask & MEC_BIT(MEC_I2C_NL_IEN_TM_DONE_POS)) {
+        cfg |= MEC_BIT(I2C_SMB_CONFIG_ENSI_Pos);
+    }
+    if (mask & MEC_BIT(MEC_I2C_NL_IEN_AAT_POS)) {
+        cfg |= MEC_BIT(I2C_SMB_CONFIG_ENI_AAS_Pos);
+    }
+
+    if (enable) {
+        regs->CONFIG |= cfg;
+    } else {
+        regs->CONFIG &= ~cfg;
+    }
+
+    return MEC_RET_OK;
+}
+
 /* Returns 32-bit unsigned containing combined I2C status
  * b[7:0] = I2C.Status read-only register (byte status)
  * b[31:8] = I2C.Completion status bits.
@@ -625,5 +668,52 @@ uint8_t mec_i2c_smb_bbctrl_pin_states(struct mec_i2c_smb_ctx *ctx)
     struct i2c_smb_regs *base = ctx->base;
 
     return (base->BBCTRL >> I2C_SMB_BBCTRL_BBCLKI_Pos) & 0x3u;
+}
+
+/* -------- I2C-NL -------- */
+
+int mec_i2c_nl_cm_cfg_start(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint16_t nrx, uint32_t flags)
+{
+#ifdef MEC_I2C_BASE_CHECK
+    if (!ctx || !ctx->base) {
+        return MEC_RET_ERR_INVAL;
+    }
+#endif
+    struct i2c_smb_regs *regs = ctx->base;
+    uint32_t cmd = 0;
+
+    if (!ntx) { /* Any I2C transaction requires transmit of target address! */
+        return MEC_RET_ERR_INVAL;
+    }
+
+    regs->CONFIG &= (uint32_t)~MEC_BIT(I2C_SMB_CONFIG_ENMI_Pos);
+    regs->CONFIG |= MEC_BIT(I2C_SMB_CONFIG_FLUSH_CTXB_Pos) | MEC_BIT(I2C_SMB_CONFIG_FLUSH_CRXB_Pos);
+    regs->COMPL |= MEC_BIT(I2C_SMB_COMPL_MDONE_Pos);
+
+    regs->EXTLEN = ((ntx >> 8) & 0xffu) | (nrx & 0xff00u);
+
+    cmd = (uint32_t)(ntx & 0xffu) << I2C_SMB_MCMD_WRCNT_LSB_Pos;
+    cmd |= ((uint32_t)(nrx & 0xffu) << I2C_SMB_MCMD_RDCNT_LSB_Pos);
+    cmd |= (MEC_BIT(I2C_SMB_MCMD_MRUN_Pos) | MEC_BIT(I2C_SMB_MCMD_MPROCEED_Pos));
+
+    if (flags & MEC_I2C_NL_FLAG_START) {
+        cmd |= MEC_BIT(I2C_SMB_MCMD_START0_Pos);
+    }
+
+    if (flags & MEC_I2C_NL_FLAG_RPT_START) {
+        cmd |= MEC_BIT(I2C_SMB_MCMD_STARTN_Pos);
+    }
+
+    if (flags & MEC_I2C_NL_FLAG_STOP) {
+        cmd |= MEC_BIT(I2C_SMB_MCMD_STOP_Pos);
+    }
+
+    if (flags & MEC_I2C_NL_FLAG_CM_DONE_IEN) {
+        regs->CONFIG |= MEC_BIT(I2C_SMB_CONFIG_ENMI_Pos);
+    }
+
+    regs->MCMD = cmd;
+
+    return MEC_RET_OK;
 }
 /* end mec_i2c.c */
