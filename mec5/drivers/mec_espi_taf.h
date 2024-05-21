@@ -19,10 +19,10 @@ extern "C"
 #endif
 
 /* forward declarations */
-struct espi_io_regs;
-struct espi_mem_regs;
-struct espi_vw_regs;
-struct espi_taf_regs;
+struct mec_espi_io_regs;
+struct mec_espi_mem_regs;
+struct mec_espi_vw_regs;
+struct mec_espi_taf_regs;
 
 /* ---- eSPI Target Attached Flash (TAF) ---- */
 enum mec_espi_taf_intr {
@@ -183,61 +183,62 @@ enum mec_taf_protection_region_index {
  * b[20:4] = ProtectionRegions[16:0]
  *
  */
-#define MCHP_SAF_PR_FLAG_ENABLE 0x01U
-#define MCHP_SAF_PR_FLAG_LOCK 0x02U
+#define MCHP_TAF_PR_FLAG_ENABLE 0x01U
+#define MCHP_TAF_PR_FLAG_LOCK 0x02U
 
-#define MCHP_SAF_MSTR_HOST_PCH		0U
-#define MCHP_SAF_MSTR_HOST_CPU		1U
-#define MCHP_SAF_MSTR_HOST_PCH_ME	2U
-#define MCHP_SAF_MSTR_HOST_PCH_LAN	3U
-#define MCHP_SAF_MSTR_RSVD4		4U
-#define MCHP_SAF_MSTR_EC		5U
-#define MCHP_SAF_MSTR_HOST_PCH_IE	6U
+#define MCHP_TAF_REQ_FROM_HOST_PCH     0U
+#define MCHP_TAF_REQ_FROM_HOST_CPU     1U
+#define MCHP_TAF_REQ_FROM_HOST_PCH_ME  2U
+#define MCHP_TAF_REQ_FROM_HOST_PCH_LAN 3U
+#define MCHP_TAF_REQ_FROM_RSVD4        4U
+#define MCHP_TAF_REQ_FROM_EC           5U
+#define MCHP_TAF_REQ_FROM_HOST_PCH_IE  6U
 
 struct espi_taf_pr {
-	uint32_t start;
-	uint32_t size;
-	uint8_t  req_bm_we;
-	uint8_t  req_bm_rd;
-	uint8_t  pr_num;
-	uint8_t  flags; /* bit[0]==1 is lock the region */
+    uint32_t start;
+    uint32_t size;
+    uint8_t  req_bm_we;
+    uint8_t  req_bm_rd;
+    uint8_t  pr_num;
+    uint8_t  flags; /* bit[0]==1 is lock the region */
 };
 
 struct espi_taf_protection {
-	size_t nregions;
-	const struct espi_taf_pr *pregions;
+    size_t nregions;
+    const struct espi_taf_pr *pregions;
 };
 
 /* future eSPI name change */
 #define espi_saf_protection espi_taf_protection
 
 /* API */
-void mec_espi_taf_girq_ctrl(uint8_t enable, uint32_t flags);
-void mec_espi_taf_girq_status_clr(uint32_t flags);
-uint32_t mec_espi_taf_girq_status(void);
-uint32_t mec_espi_taf_girq_result(void);
+void mec_hal_espi_taf_girq_ctrl(uint8_t enable, uint32_t flags);
+void mec_hal_espi_taf_girq_status_clr(uint32_t flags);
+uint32_t mec_hal_espi_taf_girq_status(void);
+uint32_t mec_hal_espi_taf_girq_result(void);
 
-bool mec_espi_taf_is_activated(void);
-void mec_espi_taf_activate(uint8_t enable);
+bool mec_hal_espi_taf_is_activated(void);
+void mec_hal_espi_taf_activate(uint8_t enable);
 
 /* TAF initialization */
 #define MEC_ESPI_TAF_INIT_RESET_POS 0
+#define MEC_ESPI_TAF_CAF_SHARE_POS 1
 
-int mec_espi_taf_init(struct espi_taf_regs *regs, uint32_t initflags);
+int mec_hal_espi_taf_init(struct mec_espi_taf_regs *regs, uint32_t initflags);
 
 /* TAF configuration */
-int mec_espi_taf_qspi_init(struct espi_taf_regs *tregs, struct qspi_regs *qregs,
-                           const struct espi_taf_hw_cfg *thwcfg);
+int mec_hal_espi_taf_qspi_init(struct mec_espi_taf_regs *tregs, struct mec_qspi_regs *qregs,
+                               const struct espi_taf_hw_cfg *thwcfg);
 
 /* TAF protection regions */
-bool mec_espi_taf_pr_is_dirty(struct espi_taf_regs *regs, uint8_t pr_idx);
-int mec_espi_taf_pr_dirty_clr(struct espi_taf_regs *regs, uint8_t pr_idx);
-int mec_espi_taf_pr_dirty_clr_mask(struct espi_taf_regs *regs, uint32_t mask);
+bool mec_hal_espi_taf_pr_is_dirty(struct mec_espi_taf_regs *regs, uint8_t pr_idx);
+int mec_hal_espi_taf_pr_dirty_clr(struct mec_espi_taf_regs *regs, uint8_t pr_idx);
+int mec_hal_espi_taf_pr_dirty_clr_mask(struct mec_espi_taf_regs *regs, uint32_t mask);
 
-uint32_t mec_espi_taf_pr_lock_get(struct espi_taf_regs *regs);
-int mec_espi_taf_pr_lock(struct espi_taf_regs *regs, uint32_t lockmap);
+uint32_t mec_hal_espi_taf_pr_lock_get(struct mec_espi_taf_regs *regs);
+int mec_hal_espi_taf_pr_lock(struct mec_espi_taf_regs *regs, uint32_t lockmap);
 
-int mec_espi_taf_pr_set(struct espi_taf_regs *regs, struct espi_taf_pr *pr);
+int mec_hal_espi_taf_pr_set(struct mec_espi_taf_regs *regs, struct espi_taf_pr *pr);
 
 #ifdef __cplusplus
 }

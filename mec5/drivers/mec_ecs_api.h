@@ -10,6 +10,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "mec_defs.h"
+
 /* Interfaces to any C modules */
 #ifdef __cplusplus
 extern "C"
@@ -36,13 +38,16 @@ extern "C"
 #define ECS_FEAT_LOCK_EMC_SHDN    70
 #define ECS_FEAT_LOCK_SYSPWRP     71
 
-void mec_ecs_ictrl(uint8_t direct_en);
-int mec_ecs_is_idirect(void);
+void mec_hal_ecs_ictrl(uint8_t direct_en);
+int mec_hal_ecs_is_idirect(void);
 
-void mec_ecs_ahb_error_ctrl(uint8_t ahb_err_enable);
-uint32_t mec_ecs_ahb_error_val(uint8_t clr_after_read);
+void mec_hal_ecs_ahb_error_ctrl(uint8_t ahb_err_enable);
+uint32_t mec_hal_ecs_ahb_error_val(uint8_t clr_after_read);
 
-int mec_ecs_is_feature_disabled(uint8_t feature);
+int mec_hal_ecs_is_feature_disabled(uint8_t feature);
+
+void mec_hal_ecs_peci_vtt_ref_pin_ctrl(uint8_t enable);
+uint8_t mec_hal_ecs_peci_vtt_ref_pin_is_enabled(void);
 
 #define ECS_ETM_PINS_DISABLE 0
 #define ECS_ETM_PINS_ENABLE 1
@@ -57,7 +62,33 @@ enum mec_debug_mode {
     MEC_DEBUG_MODE_MAX,
 };
 
-void mec_ecs_debug_port(enum mec_debug_mode mode);
+void mec_hal_ecs_debug_port(enum mec_debug_mode mode);
+
+enum mec_analog_comparator_config {
+    MEC_ACMP_CFG_EN0 = MEC_BIT(0),
+    MEC_ACMP_CFG_DS0 = MEC_BIT(1),
+    MEC_ACMP_CFG_LOCK0 = MEC_BIT(2),
+    MEC_ACMP_CFG_EN1 = MEC_BIT(4),
+    MEC_ACMP_CFG_DS1 = MEC_BIT(5),
+};
+
+void mec_hal_ecs_analog_comparator_config(uint32_t config);
+
+/* ---- ECS Embedded Reset ---- */
+bool mec_hal_ecs_emb_reset_is_enabled(void);
+void mec_hal_ecs_emb_reset_enable(uint8_t enable);
+uint8_t mec_hal_ecs_emb_reset_timeout_get(void);
+void mec_hal_ecs_emb_reset_timeout(uint8_t timeout);
+uint32_t mec_hal_ecs_emb_reset_status(void);
+void mec_hal_ecs_emb_reset_status_clear(void);
+uint32_t mec_hal_ecs_emb_reset_count(void);
+
+/* ---- PM ---- */
+void mec_hal_ecs_debug_ifc_save_disable(void);
+void mec_hal_ecs_debug_ifc_restore(void);
+
+void mec_hal_ecs_pm_save_disable(void);
+void mec_hal_ecs_pm_restore(void);
 
 #ifdef __cplusplus
 }

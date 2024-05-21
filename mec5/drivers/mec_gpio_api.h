@@ -291,102 +291,107 @@ struct mec_gpio_props {
 #define MEC5_GPIO_CFG_OUT_VAL_HI (1u << MEC5_GPIO_CFG_OUT_VAL_POS)
 
 
-static inline uint32_t mec_gpio_pin_num_nc(uint8_t port, uint8_t pin_port_pos)
+static inline uint32_t mec_hal_gpio_pin_num_nc(uint8_t port, uint8_t pin_port_pos)
 {
     return ((uint32_t)(port & 0x7u) * 32u) + (pin_port_pos & 0x1fu);
 }
 
-int mec_gpio_pin_num(uint8_t port, uint8_t pin_port_pos, uint32_t *pin_num);
-int mec_gpio_pin_valid(uint32_t pin);
-int mec_gpio_port_pin_valid(uint8_t port, uint8_t pin_port_pos);
-int mec_gpio_port_valid_mask(uint8_t port, uint32_t *valid_msk);
+int mec_hal_gpio_pin_num(uint8_t port, uint8_t pin_port_pos, uint32_t *pin_num);
+int mec_hal_gpio_pin_valid(uint32_t pin);
+int mec_hal_gpio_port_pin_valid(uint8_t port, uint8_t pin_port_pos);
+int mec_hal_gpio_port_valid_mask(uint8_t port, uint32_t *valid_msk);
 
-int mec_gpio_pin_config(uint32_t pin, uint32_t config);
+int mec_hal_gpio_pin_config(uint32_t pin, uint32_t config);
 
 /* Extract property from 32-bit GPIO control value */
-int mec_gpio_get_ctrl_property(uint32_t ctrl, uint8_t prop_id, uint8_t *prop);
+int mec_hal_gpio_get_ctrl_property(uint32_t ctrl, uint8_t prop_id, uint8_t *prop);
 
 /* Modify property of 32-bit GPIO control register value passed in ctrl.
  * Returns modified value. Does not touch HW. If property is out of range,
  * return unmodified ctrl.
  */
-uint32_t mec_gpio_set_ctrl_property(uint32_t ctrl, uint8_t prop_id, uint8_t val);
+uint32_t mec_hal_gpio_set_ctrl_property(uint32_t ctrl, uint8_t prop_id, uint8_t val);
 
 /* Get specified property from GPIO Control register */
-int mec_gpio_get_property(uint32_t pin, uint8_t prop_id, uint8_t *prop);
+int mec_hal_gpio_get_property(uint32_t pin, uint8_t prop_id, uint8_t *prop);
 /* Modify specified propertie(s) of GPIO Control register */
-int mec_gpio_set_property(uint32_t pin, uint8_t prop_id, uint8_t new_val);
-int mec_gpio_set_props(uint32_t pin, const struct mec_gpio_props *gprops, size_t nprops);
+int mec_hal_gpio_set_property(uint32_t pin, uint8_t prop_id, uint8_t new_val);
+int mec_hal_gpio_set_props(uint32_t pin, const struct mec_gpio_props *gprops, size_t nprops);
 
 /* returns 1 if pin direction is configured as output else 0 */
-int mec_gpio_is_output(uint32_t pin);
+int mec_hal_gpio_is_output(uint32_t pin);
 
 /* disable a pin: turns off input pad */
-int mec_gpio_disable_input_pad(uint32_t pin);
+int mec_hal_gpio_disable_input_pad(uint32_t pin);
 /* enable a pin: turns on input pad */
-int mec_gpio_enable_input_pad(uint32_t pin);
+int mec_hal_gpio_enable_input_pad(uint32_t pin);
 
 /* Check if pin control registers are locked */
-int mec_gpio_is_locked(uint32_t pin);
+int mec_hal_gpio_is_locked(uint32_t pin);
 
 /* Get address of GPIO Control and Control2 registers */
-uintptr_t mec_gpio_ctrl_addr(uint32_t pin);
-uintptr_t mec_gpio_ctrl2_addr(uint32_t pin);
+uintptr_t mec_hal_gpio_ctrl_addr(uint32_t pin);
+uintptr_t mec_hal_gpio_ctrl2_addr(uint32_t pin);
 
 /* Get/Set GPIO Control configuration b[15:0] */
-int mec_gpio_get_config(uint32_t pin, uint32_t *config);
-int mec_gpio_set_config(uint32_t pin, uint32_t new_cfg);
-int mec_gpio_set_config_mask(uint32_t pin, uint32_t new_cfg, uint32_t mask);
+int mec_hal_gpio_get_config(uint32_t pin, uint32_t *config);
+int mec_hal_gpio_set_config(uint32_t pin, uint32_t new_cfg);
+int mec_hal_gpio_set_config_mask(uint32_t pin, uint32_t new_cfg, uint32_t mask);
 
 /* Get/Set GPIO Control full register */
-int mec_gpio_get_ctrl(uint32_t pin, uint32_t *ctrl);
-int mec_gpio_set_ctrl(uint32_t pin, uint32_t new_ctrl);
-int mec_gpio_set_ctrl_mask(uint32_t pin, uint32_t val, uint32_t mask);
+int mec_hal_gpio_get_ctrl(uint32_t pin, uint32_t *ctrl);
+int mec_hal_gpio_set_ctrl(uint32_t pin, uint32_t new_ctrl);
+int mec_hal_gpio_set_ctrl_mask(uint32_t pin, uint32_t val, uint32_t mask);
 
-uint32_t mec_gpio_get_ctrl_nc(uint32_t pin);
-void mec_gpio_set_ctrl_nc(uint32_t pin, uint32_t ctrl_val);
+uint32_t mec_hal_gpio_get_ctrl_nc(uint32_t pin);
+void mec_hal_gpio_set_ctrl_nc(uint32_t pin, uint32_t ctrl_val);
 
-uint32_t mec_gpio_get_ctrl_nc(uint32_t pin);
-void mec_gpio_set_ctrl_nc(uint32_t pin, uint32_t ctrl_val);
-uint32_t mec_gpio_port_get_ctrl_nc(uint8_t port, uint8_t port_pin_pos);
-void mec_gpio_port_set_ctrl_nc(uint8_t port, uint8_t port_pin_pos, uint32_t ctrl_val);
+uint32_t mec_hal_gpio_get_ctrl_nc(uint32_t pin);
+void mec_hal_gpio_set_ctrl_nc(uint32_t pin, uint32_t ctrl_val);
+uint32_t mec_hal_gpio_port_get_ctrl_nc(uint8_t port, uint8_t port_pin_pos);
+void mec_hal_gpio_port_set_ctrl_nc(uint8_t port, uint8_t port_pin_pos, uint32_t ctrl_val);
 
-int mec_gpio_get_ctrl2(uint32_t pin, uint32_t *ctrl2);
-int mec_gpio_set_ctrl2(uint32_t pin, uint32_t new_ctrl2);
-int mec_gpio_ctrl2_mask(const uint32_t pin, uint32_t val, uint32_t mask);
+int mec_hal_gpio_get_ctrl2(uint32_t pin, uint32_t *ctrl2);
+int mec_hal_gpio_set_ctrl2(uint32_t pin, uint32_t new_ctrl2);
+int mec_hal_gpio_ctrl2_mask(const uint32_t pin, uint32_t val, uint32_t mask);
 
-int mec_gpio_get_slew_rate(uint32_t pin);
-int mec_gpio_set_slew_rate(uint32_t pin, enum mec_gpio_slew_rate slew_rate);
+int mec_hal_gpio_get_slew_rate(uint32_t pin);
+int mec_hal_gpio_set_slew_rate(uint32_t pin, enum mec_gpio_slew_rate slew_rate);
 
-int mec_gpio_get_drive_strength(uint32_t pin);
-int mec_gpio_set_drive_strength(uint32_t pin, enum mec_gpio_drive_str drive_str);
+int mec_hal_gpio_get_drive_strength(uint32_t pin);
+int mec_hal_gpio_set_drive_strength(uint32_t pin, enum mec_gpio_drive_str drive_str);
 
-int mec_gpio_alt_out(const uint32_t pin, uint8_t new_val);
-int mec_gpio_alt_out_toggle(const uint32_t pin);
+int mec_hal_gpio_alt_out(const uint32_t pin, uint8_t new_val);
+int mec_hal_gpio_alt_out_toggle(const uint32_t pin);
 
-int mec_gpio_pad_in(const uint32_t pin, uint8_t *padin);
+int mec_hal_gpio_pad_in(const uint32_t pin, uint8_t *padin);
 
-int mec_gpio_par_in(const uint32_t pin, uint8_t *pinval);
-int mec_gpio_par_out(const uint32_t pin, const uint8_t pin_state);
+int mec_hal_gpio_par_in(const uint32_t pin, uint8_t *pinval);
+int mec_hal_gpio_par_out(const uint32_t pin, const uint8_t pin_state);
 
-int mec_gpio_parin_port(const uint8_t port, uint32_t *val);
-int mec_gpio_parin_by_pin(uint32_t pin, uint32_t *val);
-int mec_gpio_parout_port_get(const uint8_t port, uint32_t *val);
-int mec_gpio_parout_port_get_by_pin(uint32_t pin, uint32_t *val);
-int mec_gpio_parout_port(const uint8_t port, const uint32_t newval);
-int mec_gpio_parout_port_set_bits(const uint8_t port, const uint32_t mask);
-int mec_gpio_parout_port_xor(const uint8_t port, const uint32_t xormask);
-int mec_gpio_parout_port_mask(const uint8_t port, const uint32_t newval,
-                              const uint32_t mask);
+int mec_hal_gpio_parin_port(const uint8_t port, uint32_t *val);
+int mec_hal_gpio_parin_by_pin(uint32_t pin, uint32_t *val);
+int mec_hal_gpio_parout_port_get(const uint8_t port, uint32_t *val);
+int mec_hal_gpio_parout_port_get_by_pin(uint32_t pin, uint32_t *val);
+int mec_hal_gpio_parout_port(const uint8_t port, const uint32_t newval);
+int mec_hal_gpio_parout_port_set_bits(const uint8_t port, const uint32_t mask);
+int mec_hal_gpio_parout_port_xor(const uint8_t port, const uint32_t xormask);
+int mec_hal_gpio_parout_port_mask(const uint8_t port, const uint32_t newval,
+                                  const uint32_t mask);
 
-int mec_gpio_port_ia_ctrl(uint8_t port, uint8_t enable);
-int mec_gpio_port_pin_ia_enable(uint8_t port, uint8_t port_pin_pos, uint8_t enable);
-int mec_gpio_pin_ia_enable(uint8_t pin, uint8_t enable);
-int mec_gpio_pin_ia_status_clr(uint8_t pin);
-int mec_gpio_port_pin_ia_status_clr(uint8_t port, uint8_t port_pin_pos);
-int mec_gpio_port_ia_status(uint8_t port, uint32_t *status);
-int mec_gpio_port_ia_status_clr_mask(uint8_t port, uint32_t mask);
-int mec_gpio_port_ia_result(uint8_t port, uint32_t *result);
+int mec_hal_gpio_port_ia_ctrl(uint8_t port, uint8_t enable);
+int mec_hal_gpio_port_pin_ia_enable(uint8_t port, uint8_t port_pin_pos, uint8_t enable);
+int mec_hal_gpio_pin_ia_enable(uint8_t pin, uint8_t enable);
+int mec_hal_gpio_pin_ia_status_clr(uint8_t pin);
+int mec_hal_gpio_port_pin_ia_status_clr(uint8_t port, uint8_t port_pin_pos);
+int mec_hal_gpio_port_ia_status(uint8_t port, uint32_t *status);
+int mec_hal_gpio_port_ia_status_clr_mask(uint8_t port, uint32_t mask);
+int mec_hal_gpio_port_ia_result(uint8_t port, uint32_t *result);
+
+/* VCI capable GPIO pins */
+bool mec_hal_gpio_pin_is_vci_capable(uint16_t pin);
+int mec_hal_gpio_vci_disable(uint16_t pin);
+int mec_hal_gpio_vci_get_func(uint16_t pin, uint8_t *func);
 
 #ifdef __cplusplus
 }

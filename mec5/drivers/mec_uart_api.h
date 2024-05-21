@@ -132,70 +132,73 @@ struct mec_uart_cfg {
  * external clock source on UART_CLK alternate GPIO function.
  */
 
-
 /* forward declaration */
-struct uart_regs;
+struct mec_uart_regs;
 
-int mec_uart_init(struct uart_regs *base, uint32_t baud_rate,
-                  uint32_t config, uint32_t extclk_hz);
+int mec_hal_uart_init(struct mec_uart_regs *base, uint32_t baud_rate,
+                      uint32_t config, uint32_t extclk_hz);
 
-int mec_uart_power_on(struct uart_regs *regs, uint32_t cfg_flags);
+int mec_hal_uart_power_on(struct mec_uart_regs *regs, uint32_t cfg_flags);
 
-int mec_uart_clock_freq_get(struct uart_regs * base, uint32_t *clock_freq);
+int mec_hal_uart_clock_freq_get(struct mec_uart_regs *base, uint32_t *clock_freq);
 
-int mec_uart_baud_rate_set(struct uart_regs *base, uint32_t baud, uint32_t extclk_hz);
+int mec_hal_uart_baud_rate_set(struct mec_uart_regs *base, uint32_t baud, uint32_t extclk_hz);
 
-int mec_uart_word_len_set(struct uart_regs * base, uint8_t word_len);
-int mec_uart_word_len_get(struct uart_regs * base, uint8_t * word_len);
+int mec_hal_uart_word_len_set(struct mec_uart_regs *base, uint8_t word_len);
+int mec_hal_uart_word_len_get(struct mec_uart_regs *base, uint8_t *word_len);
 
-int mec_uart_stop_bits_set(struct uart_regs * base, uint8_t stop_bits);
-int mec_uart_stop_bits_get(struct uart_regs * base, uint8_t * stop_bits);
+int mec_hal_uart_stop_bits_set(struct mec_uart_regs *base, uint8_t stop_bits);
+int mec_hal_uart_stop_bits_get(struct mec_uart_regs *base, uint8_t *stop_bits);
 
-int mec_uart_parity_set(struct uart_regs * base, uint8_t parity);
-int mec_uart_parity_get(struct uart_regs * base, uint8_t * parity);
+int mec_hal_uart_parity_set(struct mec_uart_regs *base, uint8_t parity);
+int mec_hal_uart_parity_get(struct mec_uart_regs *base, uint8_t *parity);
 
-int mec_uart_fifo_control(struct uart_regs * base, uint8_t fifo_cfg);
+int mec_hal_uart_fifo_control(struct mec_uart_regs *base, uint8_t fifo_cfg);
 
-int mec_uart_intr_control(struct uart_regs * base, uint8_t enmask);
+int mec_hal_uart_intr_control(struct mec_uart_regs *base, uint8_t enmask);
 
-int mec_uart_intr_mask(struct uart_regs * base, uint8_t msk, uint8_t val);
+int mec_hal_uart_intr_mask(struct mec_uart_regs *base, uint8_t msk, uint8_t val);
 
 /* Read selected status and return raw value */
-int mec_uart_raw_status(struct uart_regs * base, enum mec_uart_sts_reg regid, uint8_t * status);
+int mec_hal_uart_raw_status(struct mec_uart_regs *base, enum mec_uart_sts_reg regid,
+                            uint8_t *status);
 
-int mec_uart_pending_status(struct uart_regs * base, enum mec_uart_ipend * ipend);
+int mec_hal_uart_pending_status(struct mec_uart_regs *base, enum mec_uart_ipend *ipend);
 
-int mec_uart_is_rx_data(struct uart_regs * base);
+int mec_hal_uart_is_rx_data(struct mec_uart_regs *base);
 
-int mec_uart_is_tx_fifo_empty(struct uart_regs * base);
-int mec_uart_is_tx_empty(struct uart_regs * base);
+int mec_hal_uart_is_tx_fifo_empty(struct mec_uart_regs *base);
+int mec_hal_uart_is_tx_empty(struct mec_uart_regs *base);
 
-int mec_uart_tx_fifo_size(struct uart_regs * base);
-int mec_uart_rx_fifo_size(struct uart_regs * base);
+int mec_hal_uart_tx_fifo_size(struct mec_uart_regs *base);
+int mec_hal_uart_rx_fifo_size(struct mec_uart_regs *base);
 
 /* 16550 style UART only has TX Holding Register Empty status. There is no
  * HW mechanism to determine the amount of data in the TX FIFO.
  * This routine writes a byte to the HW TX buffer if the TX Holding Register
  * is empty else it returns MEC_RET_ERR_BUSY.
  */
-int mec_uart_tx_byte(struct uart_regs * base, uint8_t data);
+int mec_hal_uart_tx_byte(struct mec_uart_regs *base, uint8_t data);
 
 /* blocking */
-int mec_uart_tx(struct uart_regs * base, const uint8_t * data, size_t datasz);
+int mec_hal_uart_tx(struct mec_uart_regs *base, const uint8_t *data, size_t datasz);
 
 /* If data is available read the data and store in data buffer.
  * If data present and overrun, parity, or framing error returns MEC_RET_ERR_BAD_DATA
  * If no data returns MEC_RET_ERR_NO_DATA.
  * If base or data is bad returns MEC_RET_ERR_INVAL
  */
-int mec_uart_rx_byte(struct uart_regs * base, uint8_t * data);
+int mec_hal_uart_rx_byte(struct mec_uart_regs *base, uint8_t *data);
 
 /* Modem: set state of DTR or RTS pin */
 #define MEC_UART_DTR_SELECT 0
 #define MEC_UART_RTS_SELECT 1
 
-int mec_uart_dtr_rts_set(struct uart_regs * base, uint8_t sel_rts,
-                         uint8_t pin_state);
+int mec_hal_uart_dtr_rts_set(struct mec_uart_regs *base, uint8_t sel_rts,
+                             uint8_t pin_state);
+
+void mec_hal_uart_pm_save_disable(void);
+void mec_hal_uart_pm_restore(void);
 
 #ifdef __cplusplus
 }

@@ -83,29 +83,34 @@ struct mec_adc_config {
     uint32_t sar_config;
 };
 
-int mec_adc_init(struct adc_regs *regs, struct mec_adc_config *cfg);
-int mec_adc_activate(struct adc_regs *regs, uint8_t enable);
+int mec_hal_adc_init(struct mec_adc_regs *regs, struct mec_adc_config *cfg);
+int mec_hal_adc_activate(struct mec_adc_regs *regs, uint8_t enable);
 
-int mec_adc_girq_ctrl(struct adc_regs *regs, uint32_t flags, uint8_t enable);
-int mec_adc_girq_status_clr(struct adc_regs *regs, uint32_t flags);
+int mec_hal_adc_girq_ctrl(struct mec_adc_regs *regs, uint32_t flags, uint8_t enable);
+int mec_hal_adc_girq_status_clr(struct mec_adc_regs *regs, uint32_t flags);
 
-int mec_adc_repeat_delay_set(struct adc_regs *regs, uint16_t start_delay, uint16_t repeat_delay);
-int mec_adc_repeat_mode_chan_set(struct adc_regs *regs, uint32_t rpt_chan_bm);
+int mec_hal_adc_repeat_delay_set(struct mec_adc_regs *regs, uint16_t start_delay,
+                                 uint16_t repeat_delay);
+int mec_hal_adc_repeat_mode_chan_set(struct mec_adc_regs *regs, uint32_t rpt_chan_bm);
 
-int mec_adc_chan_vref_select(struct adc_regs *regs, uint8_t chan_id, enum mec_adc_chan_vref vref);
+int mec_hal_adc_chan_vref_select(struct mec_adc_regs *regs, uint8_t chan_id,
+                                 enum mec_adc_chan_vref vref);
 
 /* Enable/disable differential input mode for ALL channels */
-int mec_adc_differential_input_enable(struct adc_regs *regs, uint8_t enable);
+int mec_hal_adc_differential_input_enable(struct mec_adc_regs *regs, uint8_t enable);
 
-int mec_adc_resolution_set(struct adc_regs *regs, uint8_t resolution_bits);
+int mec_hal_adc_resolution_set(struct mec_adc_regs *regs, uint8_t resolution_bits);
 
-int mec_adc_start(struct adc_regs *regs, uint16_t single_chan_bm, uint16_t rpt_chan_bm);
+int mec_hal_adc_start(struct mec_adc_regs *regs, uint16_t single_chan_bm, uint16_t rpt_chan_bm);
 
-uint32_t mec_adc_channels_done(struct adc_regs *regs);
+uint32_t mec_hal_adc_channels_done(struct mec_adc_regs *regs);
 
-int mec_adc_status_clear(struct adc_regs *regs, uint32_t flags);
+int mec_hal_adc_status_clear(struct mec_adc_regs *regs, uint32_t flags);
 
-uint32_t mec_adc_channel_reading(struct adc_regs *regs, uint8_t channel);
+uint32_t mec_hal_adc_channel_reading(struct mec_adc_regs *regs, uint8_t channel);
+
+void mec_hal_adc_pm_save_disable(void);
+void mec_hal_adc_pm_restore(void);
 
 #ifdef __cplusplus
 }

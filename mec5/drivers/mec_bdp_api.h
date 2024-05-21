@@ -88,26 +88,26 @@ enum mec5_bdp_status {
 #define MEC_BDP_FIFO_ATTR_THRES_POS         14
 
 /* forward reference */
-struct bdp_regs;
+struct mec_bdp_regs;
 
-int mec_bdp_init(struct bdp_regs *regs, uint32_t cfg_flags);
+int mec_hal_bdp_init(struct mec_bdp_regs *regs, uint32_t cfg_flags);
 
 #define MEC_BDP_SELECT_ALIAS 1
-int mec_bdp_activate(struct bdp_regs *regs, uint8_t enable, uint8_t is_alias);
+int mec_hal_bdp_activate(struct mec_bdp_regs *regs, uint8_t enable, uint8_t is_alias);
 
-void mec_bdp_intr_en(struct bdp_regs *regs, uint8_t enable);
+void mec_hal_bdp_intr_en(struct mec_bdp_regs *regs, uint8_t enable);
 
-int mec_bdp_girq_ctrl(struct bdp_regs *regs, uint8_t enable);
-int mec_bdp_girq_status_clr(struct bdp_regs *regs);
+int mec_hal_bdp_girq_ctrl(struct mec_bdp_regs *regs, uint8_t enable);
+int mec_hal_bdp_girq_status_clr(struct mec_bdp_regs *regs);
 
 /* set threshold level based on encoded value */
-int mec_bdp_fifo_thresh_set(struct bdp_regs *regs, uint32_t cfg_thrh);
+int mec_hal_bdp_fifo_thresh_set(struct mec_bdp_regs *regs, uint32_t cfg_thrh);
 
 /* return configured threshold level in bytes */
-uint32_t mec_bdp_fifo_thresh_get(struct bdp_regs *regs);
+uint32_t mec_hal_bdp_fifo_thresh_get(struct mec_bdp_regs *regs);
 
-uint32_t mec_bdp_status(struct bdp_regs *regs);
-uint32_t mec_bdp_snapshot(struct bdp_regs *regs);
+uint32_t mec_hal_bdp_status(struct mec_bdp_regs *regs);
+uint32_t mec_hal_bdp_snapshot(struct mec_bdp_regs *regs);
 
 /* Captured Host I/O cycle
  * flags[3:0] = start byte lane
@@ -123,10 +123,10 @@ struct mec_bdp_io {
     uint8_t flags;
 };
 
-int mec_bdp_get_host_io(struct bdp_regs *regs, struct mec_bdp_io *capio);
+int mec_hal_bdp_get_host_io(struct mec_bdp_regs *regs, struct mec_bdp_io *capio);
 
 
-inline static uint32_t mec_bdp_fifo_not_empty(struct bdp_regs *regs)
+inline static uint32_t mec_hal_bdp_fifo_not_empty(struct mec_bdp_regs *regs)
 {
     return (regs->STATUS & MEC_BIT(0));
 }
@@ -136,7 +136,7 @@ inline static uint32_t mec_bdp_fifo_not_empty(struct bdp_regs *regs)
  * b[15:8] = attributes, always valid
  * b[31:16] = 0 rsvd
  */
-inline static uint32_t mec_bdp_fifo_read(struct bdp_regs *regs)
+inline static uint32_t mec_hal_bdp_fifo_read(struct mec_bdp_regs *regs)
 {
     return regs->DATRB;
 }

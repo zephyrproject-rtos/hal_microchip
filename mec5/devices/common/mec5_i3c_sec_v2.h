@@ -9,12 +9,11 @@
 /** @addtogroup Device_Peripheral_peripherals
   * @{
   */
-
 /**
-  * @brief I3C Secondary Controller (I3C_SEC)
+  * @brief I3C Secondary Controller 0 (MEC_I3C_SEC0)
   */
 
-typedef struct i3c_sec_regs {                   /*!< (@ 0x40010000) I3C_SEC Structure                                         */
+typedef struct mec_i3c_sec_regs {               /*!< (@ 0x40010000) MEC_I3C_SEC0 Structure                                     */
   __IOM uint32_t  DEV_CTRL;                     /*!< (@ 0x00000000) Target device control register                             */
   __IOM uint32_t  DEV_ADDR;                     /*!< (@ 0x00000004) Target device address register                             */
   __IM  uint32_t  HW_CAP;                       /*!< (@ 0x00000008) I3C Host controller hardware capabilities                  */
@@ -93,7 +92,7 @@ typedef struct i3c_sec_regs {                   /*!< (@ 0x40010000) I3C_SEC Stru
   __IOM uint32_t  I3C_DBG0;                     /*!< (@ 0x000004D4) I3C debug 0 register                                       */
   __IOM uint32_t  I3C_DBG1;                     /*!< (@ 0x000004D8) I3C debug 1 register                                       */
   __IOM uint32_t  I3C_CFG_DMA_DBG;              /*!< (@ 0x000004DC) I3C configuration and DMA interface debug register         */
-} I3C_SEC_Type;                                 /*!< Size = 1248 (0x4e0)                                                       */
+} MEC_I3C_SEC_Type;                             /*!< Size = 1248 (0x4e0)                                                       */
 
 /** @} */ /* End of group Device_Peripheral_peripherals */
 
@@ -106,102 +105,102 @@ typedef struct i3c_sec_regs {                   /*!< (@ 0x40010000) I3C_SEC Stru
 /** @addtogroup EnumValue_peripherals
   * @{
   */
-/* ===================================================  I3C_SEC0 DCT_LOC  ==================================================== */
-typedef enum {                                  /*!< I3C_SEC0_DCT_LOC                                                          */
-  SDCT_DEV1_T1_L1                      = 0,     /*!< T1_L1 : Device 1: Table 1 Location 1                                      */
-  SDCT_DEV1_T1_L2                      = 1,     /*!< T1_L2 : Device 1: Table 1 Location 2                                      */
-  SDCT_DEV1_T1_L3                      = 2,     /*!< T1_L3 : Device 1: Table 1 Location 3                                      */
-  SDCT_DEV1_T1_L4                      = 3,     /*!< T1_L4 : Device 1: Table 1 Location 4                                      */
-  SDCT_DEV1_T2_L1                      = 4,     /*!< T2_L1 : Device 1: Table 2 Location 1                                      */
-  SDCT_DEV1_T2_L2                      = 5,     /*!< T2_L2 : Device 1: Table 2 Location 2                                      */
-  SDCT_DEV1_T2_L3                      = 6,     /*!< T2_L3 : Device 1: Table 2 Location 3                                      */
-  SDCT_DEV1_T2_L4                      = 7,     /*!< T2_L4 : Device 1: Table 2 Location 4                                      */
-  SDCT_DEV1_T3_L1                      = 8,     /*!< T3_L1 : Device 1: Table 3 Location 1                                      */
-  SDCT_DEV1_T3_L2                      = 8,     /*!< T3_L2 : Device 1: Table 3 Location 2                                      */
-  SDCT_DEV1_T3_L3                      = 10,    /*!< T3_L3 : Device 1: Table 3 Location 3                                      */
-  SDCT_DEV1_T3_L4                      = 11,    /*!< T3_L4 : Device 1: Table 3 Location 4                                      */
-  SDCT_DEV1_T4_L1                      = 12,    /*!< T4_L1 : Device 1: Table 4 Location 1                                      */
-  SDCT_DEV1_T4_L2                      = 13,    /*!< T4_L2 : Device 1: Table 4 Location 2                                      */
-  SDCT_DEV1_T4_L3                      = 14,    /*!< T4_L3 : Device 1: Table 4 Location 3                                      */
-  SDCT_DEV1_T4_L4                      = 15,    /*!< T4_L4 : Device 1: Table 4 Location 4                                      */
-  SDCT_DEV1_T5_L1                      = 16,    /*!< T5_L1 : Device 1: Table 5 Location 1                                      */
-  SDCT_DEV1_T5_L2                      = 17,    /*!< T5_L2 : Device 1: Table 5 Location 2                                      */
-  SDCT_DEV1_T5_L3                      = 18,    /*!< T5_L3 : Device 1: Table 5 Location 3                                      */
-  SDCT_DEV1_T5_L4                      = 19,    /*!< T5_L4 : Device 1: Table 5 Location 4                                      */
-  SDCT_DEV1_T6_L1                      = 20,    /*!< T6_L1 : Device 1: Table 6 Location 1                                      */
-  SDCT_DEV1_T6_L2                      = 21,    /*!< T6_L2 : Device 1: Table 6 Location 2                                      */
-  SDCT_DEV1_T6_L3                      = 22,    /*!< T6_L3 : Device 1: Table 6 Location 3                                      */
-  SDCT_DEV1_T6_L4                      = 23,    /*!< T6_L4 : Device 1: Table 6 Location 4                                      */
-  SDCT_DEV1_T7_L1                      = 24,    /*!< T7_L1 : Device 1: Table 7 Location 1                                      */
-  SDCT_DEV1_T7_L2                      = 25,    /*!< T7_L2 : Device 1: Table 7 Location 2                                      */
-  SDCT_DEV1_T7_L3                      = 26,    /*!< T7_L3 : Device 1: Table 7 Location 3                                      */
-  SDCT_DEV1_T7_L4                      = 27,    /*!< T7_L4 : Device 1: Table 7 Location 4                                      */
-  SDCT_DEV1_T8_L1                      = 28,    /*!< T8_L1 : Device 1: Table 8 Location 1                                      */
-  SDCT_DEV1_T8_L2                      = 29,    /*!< T8_L2 : Device 1: Table 8 Location 2                                      */
-  SDCT_DEV1_T8_L3                      = 30,    /*!< T8_L3 : Device 1: Table 8 Location 3                                      */
-  SDCT_DEV1_T8_L4                      = 31,    /*!< T8_L4 : Device 1: Table 8 Location 4                                      */
-  SDCT_DEV1_T9_L1                      = 32,    /*!< T9_L1 : Device 1: Table 9 Location 1                                      */
-  SDCT_DEV1_T9_L2                      = 33,    /*!< T9_L2 : Device 1: Table 9 Location 2                                      */
-  SDCT_DEV1_T9_L3                      = 34,    /*!< T9_L3 : Device 1: Table 9 Location 3                                      */
-  SDCT_DEV1_T9_L4                      = 35,    /*!< T9_L4 : Device 1: Table 9 Location 4                                      */
-  SDCT_DEV1_T10_L1                     = 36,    /*!< T10_L1 : Device 1: Table 10 Location 1                                    */
-  SDCT_DEV1_T10_L2                     = 37,    /*!< T10_L2 : Device 1: Table 10 Location 2                                    */
-  SDCT_DEV1_T10_L3                     = 38,    /*!< T10_L3 : Device 1: Table 10 Location 3                                    */
-  SDCT_DEV1_T10_L4                     = 39,    /*!< T10_L4 : Device 1: Table 10 Location 4                                    */
-  SDCT_DEV1_T11_L1                     = 40,    /*!< T11_L1 : Device 1: Table 11 Location 1                                    */
-  SDCT_DEV1_T11_L2                     = 41,    /*!< T11_L2 : Device 1: Table 11 Location 2                                    */
-  SDCT_DEV1_T11_L3                     = 42,    /*!< T11_L3 : Device 1: Table 11 Location 3                                    */
-  SDCT_DEV1_T11_L4                     = 43,    /*!< T11_L4 : Device 1: Table 11 Location 4                                    */
-  SDCT_DEV1_T12_L1                     = 44,    /*!< T12_L1 : Device 1: Table 12 Location 1                                    */
-  SDCT_DEV1_T12_L2                     = 45,    /*!< T12_L2 : Device 1: Table 12 Location 2                                    */
-  SDCT_DEV1_T12_L3                     = 46,    /*!< T12_L3 : Device 1: Table 12 Location 3                                    */
-  SDCT_DEV1_T12_L4                     = 47,    /*!< T12_L4 : Device 1: Table 12 Location 4                                    */
-  SDCT_DEV1_T13_L1                     = 48,    /*!< T13_L1 : Device 1: Table 13 Location 1                                    */
-  SDCT_DEV1_T13_L2                     = 49,    /*!< T13_L2 : Device 1: Table 13 Location 2                                    */
-  SDCT_DEV1_T13_L3                     = 50,    /*!< T13_L3 : Device 1: Table 13 Location 3                                    */
-  SDCT_DEV1_T13_L4                     = 51,    /*!< T13_L4 : Device 1: Table 13 Location 4                                    */
-  SDCT_DEV1_T14_L1                     = 52,    /*!< T14_L1 : Device 1: Table 14 Location 1                                    */
-  SDCT_DEV1_T14_L2                     = 53,    /*!< T14_L2 : Device 1: Table 14 Location 2                                    */
-  SDCT_DEV1_T14_L3                     = 54,    /*!< T14_L3 : Device 1: Table 14 Location 3                                    */
-  SDCT_DEV1_T14_L4                     = 55,    /*!< T14_L4 : Device 1: Table 14 Location 4                                    */
-  SDCT_DEV1_T15_L1                     = 56,    /*!< T15_L1 : Device 1: Table 15 Location 1                                    */
-  SDCT_DEV1_T15_L2                     = 57,    /*!< T15_L2 : Device 1: Table 15 Location 2                                    */
-  SDCT_DEV1_T15_L3                     = 58,    /*!< T15_L3 : Device 1: Table 15 Location 3                                    */
-  SDCT_DEV1_T15_L4                     = 59,    /*!< T15_L4 : Device 1: Table 15 Location 4                                    */
-  SDCT_DEV1_T16_L1                     = 60,    /*!< T16_L1 : Device 1: Table 16 Location 1                                    */
-  SDCT_DEV1_T16_L2                     = 61,    /*!< T16_L2 : Device 1: Table 16 Location 2                                    */
-  SDCT_DEV1_T16_L3                     = 62,    /*!< T16_L3 : Device 1: Table 16 Location 3                                    */
-  SDCT_DEV1_T16_L4                     = 63,    /*!< T16_L4 : Device 1: Table 16 Location 4                                    */
-  SDCT_DEV1_T17_L1                     = 64,    /*!< T17_L1 : Device 1: Table 17 Location 1                                    */
-  SDCT_DEV1_T17_L2                     = 65,    /*!< T17_L2 : Device 1: Table 17 Location 2                                    */
-  SDCT_DEV1_T17_L3                     = 66,    /*!< T17_L3 : Device 1: Table 17 Location 3                                    */
-  SDCT_DEV1_T17_L4                     = 67,    /*!< T17_L4 : Device 1: Table 17 Location 4                                    */
-  SDCT_DEV1_T18_L1                     = 68,    /*!< T18_L1 : Device 1: Table 18 Location 1                                    */
-  SDCT_DEV1_T18_L2                     = 69,    /*!< T18_L2 : Device 1: Table 18 Location 2                                    */
-  SDCT_DEV1_T18_L3                     = 70,    /*!< T18_L3 : Device 1: Table 18 Location 3                                    */
-  SDCT_DEV1_T18_L4                     = 71,    /*!< T18_L4 : Device 1: Table 18 Location 4                                    */
-} SDCT_DEV1_Enum;
+/* =================================================  MEC_I3C_SEC DCT_LOC  ================================================== */
+typedef enum {                                  /*!< MEC_I3C_SEC_DCT_LOC                                                      */
+  MEC_I3C_SDCT_DEV1_T1_L1              = 0,     /*!< T1_L1 : Device 1: Table 1 Location 1                                      */
+  MEC_I3C_SDCT_DEV1_T1_L2              = 1,     /*!< T1_L2 : Device 1: Table 1 Location 2                                      */
+  MEC_I3C_SDCT_DEV1_T1_L3              = 2,     /*!< T1_L3 : Device 1: Table 1 Location 3                                      */
+  MEC_I3C_SDCT_DEV1_T1_L4              = 3,     /*!< T1_L4 : Device 1: Table 1 Location 4                                      */
+  MEC_I3C_SDCT_DEV1_T2_L1              = 4,     /*!< T2_L1 : Device 1: Table 2 Location 1                                      */
+  MEC_I3C_SDCT_DEV1_T2_L2              = 5,     /*!< T2_L2 : Device 1: Table 2 Location 2                                      */
+  MEC_I3C_SDCT_DEV1_T2_L3              = 6,     /*!< T2_L3 : Device 1: Table 2 Location 3                                      */
+  MEC_I3C_SDCT_DEV1_T2_L4              = 7,     /*!< T2_L4 : Device 1: Table 2 Location 4                                      */
+  MEC_I3C_SDCT_DEV1_T3_L1              = 8,     /*!< T3_L1 : Device 1: Table 3 Location 1                                      */
+  MEC_I3C_SDCT_DEV1_T3_L2              = 8,     /*!< T3_L2 : Device 1: Table 3 Location 2                                      */
+  MEC_I3C_SDCT_DEV1_T3_L3              = 10,    /*!< T3_L3 : Device 1: Table 3 Location 3                                      */
+  MEC_I3C_SDCT_DEV1_T3_L4              = 11,    /*!< T3_L4 : Device 1: Table 3 Location 4                                      */
+  MEC_I3C_SDCT_DEV1_T4_L1              = 12,    /*!< T4_L1 : Device 1: Table 4 Location 1                                      */
+  MEC_I3C_SDCT_DEV1_T4_L2              = 13,    /*!< T4_L2 : Device 1: Table 4 Location 2                                      */
+  MEC_I3C_SDCT_DEV1_T4_L3              = 14,    /*!< T4_L3 : Device 1: Table 4 Location 3                                      */
+  MEC_I3C_SDCT_DEV1_T4_L4              = 15,    /*!< T4_L4 : Device 1: Table 4 Location 4                                      */
+  MEC_I3C_SDCT_DEV1_T5_L1              = 16,    /*!< T5_L1 : Device 1: Table 5 Location 1                                      */
+  MEC_I3C_SDCT_DEV1_T5_L2              = 17,    /*!< T5_L2 : Device 1: Table 5 Location 2                                      */
+  MEC_I3C_SDCT_DEV1_T5_L3              = 18,    /*!< T5_L3 : Device 1: Table 5 Location 3                                      */
+  MEC_I3C_SDCT_DEV1_T5_L4              = 19,    /*!< T5_L4 : Device 1: Table 5 Location 4                                      */
+  MEC_I3C_SDCT_DEV1_T6_L1              = 20,    /*!< T6_L1 : Device 1: Table 6 Location 1                                      */
+  MEC_I3C_SDCT_DEV1_T6_L2              = 21,    /*!< T6_L2 : Device 1: Table 6 Location 2                                      */
+  MEC_I3C_SDCT_DEV1_T6_L3              = 22,    /*!< T6_L3 : Device 1: Table 6 Location 3                                      */
+  MEC_I3C_SDCT_DEV1_T6_L4              = 23,    /*!< T6_L4 : Device 1: Table 6 Location 4                                      */
+  MEC_I3C_SDCT_DEV1_T7_L1              = 24,    /*!< T7_L1 : Device 1: Table 7 Location 1                                      */
+  MEC_I3C_SDCT_DEV1_T7_L2              = 25,    /*!< T7_L2 : Device 1: Table 7 Location 2                                      */
+  MEC_I3C_SDCT_DEV1_T7_L3              = 26,    /*!< T7_L3 : Device 1: Table 7 Location 3                                      */
+  MEC_I3C_SDCT_DEV1_T7_L4              = 27,    /*!< T7_L4 : Device 1: Table 7 Location 4                                      */
+  MEC_I3C_SDCT_DEV1_T8_L1              = 28,    /*!< T8_L1 : Device 1: Table 8 Location 1                                      */
+  MEC_I3C_SDCT_DEV1_T8_L2              = 29,    /*!< T8_L2 : Device 1: Table 8 Location 2                                      */
+  MEC_I3C_SDCT_DEV1_T8_L3              = 30,    /*!< T8_L3 : Device 1: Table 8 Location 3                                      */
+  MEC_I3C_SDCT_DEV1_T8_L4              = 31,    /*!< T8_L4 : Device 1: Table 8 Location 4                                      */
+  MEC_I3C_SDCT_DEV1_T9_L1              = 32,    /*!< T9_L1 : Device 1: Table 9 Location 1                                      */
+  MEC_I3C_SDCT_DEV1_T9_L2              = 33,    /*!< T9_L2 : Device 1: Table 9 Location 2                                      */
+  MEC_I3C_SDCT_DEV1_T9_L3              = 34,    /*!< T9_L3 : Device 1: Table 9 Location 3                                      */
+  MEC_I3C_SDCT_DEV1_T9_L4              = 35,    /*!< T9_L4 : Device 1: Table 9 Location 4                                      */
+  MEC_I3C_SDCT_DEV1_T10_L1             = 36,    /*!< T10_L1 : Device 1: Table 10 Location 1                                    */
+  MEC_I3C_SDCT_DEV1_T10_L2             = 37,    /*!< T10_L2 : Device 1: Table 10 Location 2                                    */
+  MEC_I3C_SDCT_DEV1_T10_L3             = 38,    /*!< T10_L3 : Device 1: Table 10 Location 3                                    */
+  MEC_I3C_SDCT_DEV1_T10_L4             = 39,    /*!< T10_L4 : Device 1: Table 10 Location 4                                    */
+  MEC_I3C_SDCT_DEV1_T11_L1             = 40,    /*!< T11_L1 : Device 1: Table 11 Location 1                                    */
+  MEC_I3C_SDCT_DEV1_T11_L2             = 41,    /*!< T11_L2 : Device 1: Table 11 Location 2                                    */
+  MEC_I3C_SDCT_DEV1_T11_L3             = 42,    /*!< T11_L3 : Device 1: Table 11 Location 3                                    */
+  MEC_I3C_SDCT_DEV1_T11_L4             = 43,    /*!< T11_L4 : Device 1: Table 11 Location 4                                    */
+  MEC_I3C_SDCT_DEV1_T12_L1             = 44,    /*!< T12_L1 : Device 1: Table 12 Location 1                                    */
+  MEC_I3C_SDCT_DEV1_T12_L2             = 45,    /*!< T12_L2 : Device 1: Table 12 Location 2                                    */
+  MEC_I3C_SDCT_DEV1_T12_L3             = 46,    /*!< T12_L3 : Device 1: Table 12 Location 3                                    */
+  MEC_I3C_SDCT_DEV1_T12_L4             = 47,    /*!< T12_L4 : Device 1: Table 12 Location 4                                    */
+  MEC_I3C_SDCT_DEV1_T13_L1             = 48,    /*!< T13_L1 : Device 1: Table 13 Location 1                                    */
+  MEC_I3C_SDCT_DEV1_T13_L2             = 49,    /*!< T13_L2 : Device 1: Table 13 Location 2                                    */
+  MEC_I3C_SDCT_DEV1_T13_L3             = 50,    /*!< T13_L3 : Device 1: Table 13 Location 3                                    */
+  MEC_I3C_SDCT_DEV1_T13_L4             = 51,    /*!< T13_L4 : Device 1: Table 13 Location 4                                    */
+  MEC_I3C_SDCT_DEV1_T14_L1             = 52,    /*!< T14_L1 : Device 1: Table 14 Location 1                                    */
+  MEC_I3C_SDCT_DEV1_T14_L2             = 53,    /*!< T14_L2 : Device 1: Table 14 Location 2                                    */
+  MEC_I3C_SDCT_DEV1_T14_L3             = 54,    /*!< T14_L3 : Device 1: Table 14 Location 3                                    */
+  MEC_I3C_SDCT_DEV1_T14_L4             = 55,    /*!< T14_L4 : Device 1: Table 14 Location 4                                    */
+  MEC_I3C_SDCT_DEV1_T15_L1             = 56,    /*!< T15_L1 : Device 1: Table 15 Location 1                                    */
+  MEC_I3C_SDCT_DEV1_T15_L2             = 57,    /*!< T15_L2 : Device 1: Table 15 Location 2                                    */
+  MEC_I3C_SDCT_DEV1_T15_L3             = 58,    /*!< T15_L3 : Device 1: Table 15 Location 3                                    */
+  MEC_I3C_SDCT_DEV1_T15_L4             = 59,    /*!< T15_L4 : Device 1: Table 15 Location 4                                    */
+  MEC_I3C_SDCT_DEV1_T16_L1             = 60,    /*!< T16_L1 : Device 1: Table 16 Location 1                                    */
+  MEC_I3C_SDCT_DEV1_T16_L2             = 61,    /*!< T16_L2 : Device 1: Table 16 Location 2                                    */
+  MEC_I3C_SDCT_DEV1_T16_L3             = 62,    /*!< T16_L3 : Device 1: Table 16 Location 3                                    */
+  MEC_I3C_SDCT_DEV1_T16_L4             = 63,    /*!< T16_L4 : Device 1: Table 16 Location 4                                    */
+  MEC_I3C_SDCT_DEV1_T17_L1             = 64,    /*!< T17_L1 : Device 1: Table 17 Location 1                                    */
+  MEC_I3C_SDCT_DEV1_T17_L2             = 65,    /*!< T17_L2 : Device 1: Table 17 Location 2                                    */
+  MEC_I3C_SDCT_DEV1_T17_L3             = 66,    /*!< T17_L3 : Device 1: Table 17 Location 3                                    */
+  MEC_I3C_SDCT_DEV1_T17_L4             = 67,    /*!< T17_L4 : Device 1: Table 17 Location 4                                    */
+  MEC_I3C_SDCT_DEV1_T18_L1             = 68,    /*!< T18_L1 : Device 1: Table 18 Location 1                                    */
+  MEC_I3C_SDCT_DEV1_T18_L2             = 69,    /*!< T18_L2 : Device 1: Table 18 Location 2                                    */
+  MEC_I3C_SDCT_DEV1_T18_L3             = 70,    /*!< T18_L3 : Device 1: Table 18 Location 3                                    */
+  MEC_I3C_SDCT_DEV1_T18_L4             = 71,    /*!< T18_L4 : Device 1: Table 18 Location 4                                    */
+} MEC_I3C_SDCT_DEV1_Enum;
 
 /* ========================================================  DAT_LOC  ======================================================== */
-/* ===================================================  I3C_SEC0 DAT_LOC  ==================================================== */
-typedef enum {                                  /*!< I3C_SEC0_DAT_LOC                                                          */
-  SDAT_DEV1_T1_L1                      = 0,     /*!< T1_L1 : Device 1: Table 1 Location 1                                      */
-  SDAT_DEV1_T2_L1                      = 1,     /*!< T2_L1 : Device 1: Table 2 Location 1                                      */
-  SDAT_DEV1_T3_L1                      = 2,     /*!< T3_L1 : Device 1: Table 3 Location 1                                      */
-  SDAT_DEV1_T4_L1                      = 3,     /*!< T4_L1 : Device 1: Table 4 Location 1                                      */
-  SDAT_DEV1_T5_L1                      = 4,     /*!< T5_L1 : Device 1: Table 5 Location 1                                      */
-  SDAT_DEV1_T6_L1                      = 5,     /*!< T6_L1 : Device 1: Table 6 Location 1                                      */
-  SDAT_DEV1_T7_L1                      = 6,     /*!< T7_L1 : Device 1: Table 7 Location 1                                      */
-  SDAT_DEV1_T8_L1                      = 7,     /*!< T8_L1 : Device 1: Table 8 Location 1                                      */
-  SDAT_DEV1_T9_L1                      = 8,     /*!< T9_L1 : Device 1: Table 9 Location 1                                      */
-  SDAT_DEV1_T10_L1                     = 8,     /*!< T10_L1 : Device 1: Table 10 Location 1                                    */
-  SDAT_DEV1_T11_L1                     = 10,    /*!< T11_L1 : Device 1: Table 11 Location 1                                    */
-  SDAT_DEV1_T12_L1                     = 11,    /*!< T12_L1 : Device 1: Table 12 Location 1                                    */
-  SDAT_DEV1_T13_L1                     = 12,    /*!< T13_L1 : Device 1: Table 13 Location 1                                    */
-  SDAT_DEV1_T14_L1                     = 13,    /*!< T14_L1 : Device 1: Table 14 Location 1                                    */
-  SDAT_DEV1_T15_L1                     = 14,    /*!< T15_L1 : Device 1: Table 15 Location 1                                    */
-  SDAT_DEV1_T16_L1                     = 15,    /*!< T16_L1 : Device 1: Table 16 Location 1                                    */
-} SDAT_DEV1_Enum;
+/* =================================================  MEC_I3C_SEC DAT_LOC  ================================================== */
+typedef enum {                                  /*!< MEC_I3C_SEC_DAT_LOC                                                      */
+  MEC_I3C_SDAT_DEV1_T1_L1              = 0,     /*!< T1_L1 : Device 1: Table 1 Location 1                                      */
+  MEC_I3C_SDAT_DEV1_T2_L1              = 1,     /*!< T2_L1 : Device 1: Table 2 Location 1                                      */
+  MEC_I3C_SDAT_DEV1_T3_L1              = 2,     /*!< T3_L1 : Device 1: Table 3 Location 1                                      */
+  MEC_I3C_SDAT_DEV1_T4_L1              = 3,     /*!< T4_L1 : Device 1: Table 4 Location 1                                      */
+  MEC_I3C_SDAT_DEV1_T5_L1              = 4,     /*!< T5_L1 : Device 1: Table 5 Location 1                                      */
+  MEC_I3C_SDAT_DEV1_T6_L1              = 5,     /*!< T6_L1 : Device 1: Table 6 Location 1                                      */
+  MEC_I3C_SDAT_DEV1_T7_L1              = 6,     /*!< T7_L1 : Device 1: Table 7 Location 1                                      */
+  MEC_I3C_SDAT_DEV1_T8_L1              = 7,     /*!< T8_L1 : Device 1: Table 8 Location 1                                      */
+  MEC_I3C_SDAT_DEV1_T9_L1              = 8,     /*!< T9_L1 : Device 1: Table 9 Location 1                                      */
+  MEC_I3C_SDAT_DEV1_T10_L1             = 8,     /*!< T10_L1 : Device 1: Table 10 Location 1                                    */
+  MEC_I3C_SDAT_DEV1_T11_L1             = 10,    /*!< T11_L1 : Device 1: Table 11 Location 1                                    */
+  MEC_I3C_SDAT_DEV1_T12_L1             = 11,    /*!< T12_L1 : Device 1: Table 12 Location 1                                    */
+  MEC_I3C_SDAT_DEV1_T13_L1             = 12,    /*!< T13_L1 : Device 1: Table 13 Location 1                                    */
+  MEC_I3C_SDAT_DEV1_T14_L1             = 13,    /*!< T14_L1 : Device 1: Table 14 Location 1                                    */
+  MEC_I3C_SDAT_DEV1_T15_L1             = 14,    /*!< T15_L1 : Device 1: Table 15 Location 1                                    */
+  MEC_I3C_SDAT_DEV1_T16_L1             = 15,    /*!< T16_L1 : Device 1: Table 16 Location 1                                    */
+} MEC_I3C_SDAT_DEV1_Enum;
 
 /** @} */ /* End of group EnumValue_peripherals */
 

@@ -22,7 +22,8 @@
 #define MEC_HTMR1_NVIC_NUM  113
 #define MEC_HTMR1_ECIA_INFO MEC5_ECIA_INFO(MEC_HTMR_GIRQ, MEC_HTMR0_GIRQ_POS, 14, 113)
 
-int mec_htimer_init(struct htmr_regs *regs, struct mec_htimer_context *ctx, uint8_t cfg_flags)
+int mec_hal_htimer_init(struct mec_htmr_regs *regs, struct mec_htimer_context *ctx,
+                        uint8_t cfg_flags)
 {
     int irq_en = 0;
     uint16_t pcr_id = 0;
@@ -32,12 +33,12 @@ int mec_htimer_init(struct htmr_regs *regs, struct mec_htimer_context *ctx, uint
     }
 
     switch ((uintptr_t)regs) {
-    case HTMR0_BASE:
+    case MEC_HTMR0_BASE:
         ctx->regs = regs;
         ctx->devi = MEC_HTMR0_ECIA_INFO;
         pcr_id = MEC_PCR_HTMR0;
         break;
-    case HTMR1_BASE:
+    case MEC_HTMR1_BASE:
         ctx->regs = regs;
         ctx->devi = MEC_HTMR1_ECIA_INFO;
         pcr_id = MEC_PCR_HTMR1;
@@ -46,21 +47,23 @@ int mec_htimer_init(struct htmr_regs *regs, struct mec_htimer_context *ctx, uint
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_pcr_clr_blk_slp_en(pcr_id);
+    mec_hal_pcr_clr_blk_slp_en(pcr_id);
 
     regs->PRELOAD = 0;
     regs->CTRL = 0;
 
+    mec_hal_girq_ctrl(ctx->devi, 0);
+
     if (cfg_flags & MEC_BIT(MEC_HTMR_CFG_RESOLUTION_125MS_POS)) {
-        regs->CTRL |= MEC_BIT(HTMR_CTRL_RES_Pos);
+        regs->CTRL |= MEC_BIT(MEC_HTMR_CTRL_RES_Pos);
     }
 
     if (cfg_flags & MEC_BIT(MEC_HTMR_CFG_IEN_POS)) {
         irq_en = 1;
     }
 
-    mec_girq_clr_src(ctx->devi);
-    mec_girq_ctrl(ctx->devi, irq_en);
+    mec_hal_girq_clr_src(ctx->devi);
+    mec_hal_girq_ctrl(ctx->devi, irq_en);
 
     /* Load count by writing it to the preload register.
      * If the value != 0 the timer begins counting down.
@@ -71,25 +74,28 @@ int mec_htimer_init(struct htmr_regs *regs, struct mec_htimer_context *ctx, uint
     return MEC_RET_OK;
 }
 
-void mec_htimer_intr_ctrl(struct mec_htimer_context *ctx, uint8_t enable)
+void mec_hal_htimer_intr_ctrl(struct mec_htimer_context *ctx, uint8_t enable)
 {
-    mec_girq_ctrl(ctx->devi, (int)enable);
+    mec_hal_girq_ctrl(ctx->devi, (int)enable);
 }
 
-uint32_t mec_htimer_status(struct mec_htimer_context *ctx)
+uint32_t mec_hal_htimer_status(struct mec_htimer_context *ctx)
 {
-    if (mec_girq_src(ctx->devi)) {
+    if (mec_hal_girq_src(ctx->devi)) {
         return MEC_BIT(MEC_HTMR_STATUS_TERM_POS);
     }
 
     return 0;
 }
 
-void mec_htimer_status_clear(struct mec_htimer_context *ctx, uint32_t status)
+void mec_hal_htimer_status_clear(struct mec_htimer_context *ctx)
 {
-    if (status & MEC_BIT(MEC_HTMR_STATUS_TERM_POS)) {
-        mec_girq_clr_src(ctx->devi);
-    }
+    mec_hal_girq_clr_src(ctx->devi);
+}
+
+void mec_hal_htimer_stop(struct mec_htmr_regs *regs)
+{
+    regs->PRELOAD = 0;
 }
 
 /* Halt hibernation timer by writing PRELOAD to 0. A side effect is
@@ -98,9 +104,9 @@ void mec_htimer_status_clear(struct mec_htimer_context *ctx, uint32_t status)
  * the 32 KHz clock edge the timer decrements on occurs between reading
  * COUNT and writing PRELOAD.
  */
-void mec_htimer_halt(struct mec_htimer_context *ctx)
+void mec_hal_htimer_halt(struct mec_htimer_context *ctx)
 {
-    struct htmr_regs *regs = ctx->regs;
+    struct mec_htmr_regs *regs = ctx->regs;
 
     ctx->count = regs->COUNT;
     regs->PRELOAD = 0;
@@ -109,17 +115,17 @@ void mec_htimer_halt(struct mec_htimer_context *ctx)
 /* Unhalt the hibernation timer by writing the COUNT value saved
  * when timer was halted to the PRELOAD register.
  */
-void mec_htimer_unhalt(struct mec_htimer_context *ctx)
+void mec_hal_htimer_unhalt(struct mec_htimer_context *ctx)
 {
-    struct htmr_regs *regs = ctx->regs;
+    struct mec_htmr_regs *regs = ctx->regs;
 
     regs->PRELOAD = ctx->count;
 }
 
 /* Restart hibernation timer with a new count down value. */
-void mec_htimer_restart(struct mec_htimer_context *ctx, uint16_t new_count)
+void mec_hal_htimer_restart(struct mec_htimer_context *ctx, uint16_t new_count)
 {
-    struct htmr_regs *regs = ctx->regs;
+    struct mec_htmr_regs *regs = ctx->regs;
 
     regs->PRELOAD = 0;
     regs->PRELOAD = new_count;

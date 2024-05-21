@@ -89,7 +89,7 @@ static inline int ldn_has_memb(uint8_t ldn)
     }
 }
 
-static uint8_t mec_espi_sirq_get(struct espi_io_regs *iobase, uint8_t sirq_idx)
+static uint8_t mec_espi_sirq_get(struct mec_espi_io_regs *iobase, uint8_t sirq_idx)
 {
     if ((sirq_idx > 31) || !(MEC_BIT(sirq_idx) & MEC5_ESPI_PC_SIRQ_BITMAP)) {
         return MEC_ESPI_SIRQ_SLOT_DIS;
@@ -99,7 +99,7 @@ static uint8_t mec_espi_sirq_get(struct espi_io_regs *iobase, uint8_t sirq_idx)
 }
 
 /* Set SERIRQ slot number for specified SERIRQ index */
-static void mec_espi_sirq_set(struct espi_io_regs *iobase, uint8_t sirq_idx, uint8_t slot)
+static void espi_sirq_set(struct mec_espi_io_regs *iobase, uint8_t sirq_idx, uint8_t slot)
 {
     if ((sirq_idx > 31) || !(MEC_BIT(sirq_idx) & MEC5_ESPI_PC_SIRQ_BITMAP)) {
         return;
@@ -110,7 +110,8 @@ static void mec_espi_sirq_set(struct espi_io_regs *iobase, uint8_t sirq_idx, uin
 
 /*-----------------------------------------------------------------------*/
 
-int mec_espi_iobar_cfg(struct espi_io_regs *base, uint8_t ldn, uint16_t io_base, uint8_t enable)
+int mec_hal_espi_iobar_cfg(struct mec_espi_io_regs *base, uint8_t ldn,
+                           uint16_t io_base, uint8_t enable)
 {
     const struct ld_info *ldi = find_bar(ldn);
     uint32_t bar_val = (uint32_t)io_base << 16;
@@ -130,13 +131,13 @@ int mec_espi_iobar_cfg(struct espi_io_regs *base, uint8_t ldn, uint16_t io_base,
     base->HOST_BAR[idx] = bar_val;
 
     if (enable) {
-        base->HOST_BAR[idx] |= MEC_BIT(ESPI_IO_HOST_BAR_VALID_Pos);
+        base->HOST_BAR[idx] |= MEC_BIT(MEC_ESPI_IO_HOST_BAR_VALID_Pos);
     }
 
     return MEC_RET_OK;
 }
 
-int mec_espi_iobar_enable(struct espi_io_regs *base, uint8_t ldn, uint8_t enable)
+int mec_hal_espi_iobar_enable(struct mec_espi_io_regs *base, uint8_t ldn, uint8_t enable)
 {
     const struct ld_info *ldi = find_bar(ldn);
     uint8_t idx;
@@ -152,15 +153,15 @@ int mec_espi_iobar_enable(struct espi_io_regs *base, uint8_t ldn, uint8_t enable
     idx = (uint8_t)(ldi->io_bar_idx - 1u);
 
     if (enable) {
-        base->HOST_BAR[idx] |= MEC_BIT(ESPI_IO_HOST_BAR_VALID_Pos);
+        base->HOST_BAR[idx] |= MEC_BIT(MEC_ESPI_IO_HOST_BAR_VALID_Pos);
     } else {
-        base->HOST_BAR[idx] &= (uint32_t)~MEC_BIT(ESPI_IO_HOST_BAR_VALID_Pos);
+        base->HOST_BAR[idx] &= (uint32_t)~MEC_BIT(MEC_ESPI_IO_HOST_BAR_VALID_Pos);
     }
 
     return MEC_RET_OK;
 }
 
-int mec_espi_iobar_is_enabled(struct espi_io_regs *base, uint8_t ldn)
+int mec_hal_espi_iobar_is_enabled(struct mec_espi_io_regs *base, uint8_t ldn)
 {
     const struct ld_info *ldi = find_bar(ldn);
     uint8_t idx;
@@ -174,14 +175,14 @@ int mec_espi_iobar_is_enabled(struct espi_io_regs *base, uint8_t ldn)
     }
 
     idx = (uint8_t)(ldi->io_bar_idx - 1u);
-    if (base->HOST_BAR[idx] & MEC_BIT(ESPI_IO_HOST_BAR_VALID_Pos)) {
+    if (base->HOST_BAR[idx] & MEC_BIT(MEC_ESPI_IO_HOST_BAR_VALID_Pos)) {
         return 1;
     }
 
     return 0;
 }
 
-uint32_t mec_espi_iobar_mask(struct espi_io_regs *base, uint8_t ldn)
+uint32_t mec_hal_espi_iobar_mask(struct mec_espi_io_regs *base, uint8_t ldn)
 {
     const struct ld_info *ldi = find_bar(ldn);
     uint8_t idx;
@@ -204,7 +205,7 @@ uint32_t mec_espi_iobar_mask(struct espi_io_regs *base, uint8_t ldn)
  * NOTE2: The mask field is only writable when the I/O BAR is not in reset
  * and the valid bit in the corresponding LDN's Host I/O BAR is not set.
  */
-int mec_espi_iobar_mask_set(struct espi_io_regs *base, uint8_t ldn, uint8_t mask)
+int mec_hal_espi_iobar_mask_set(struct mec_espi_io_regs *base, uint8_t ldn, uint8_t mask)
 {
     const struct ld_info *ldi = find_bar(ldn);
 
@@ -219,8 +220,8 @@ int mec_espi_iobar_mask_set(struct espi_io_regs *base, uint8_t ldn, uint8_t mask
     uint8_t idx = (uint8_t)(ldi->io_bar_idx - 1u);
     uint32_t temp = base->EC_LDN_MSK[idx];
 
-    temp &= ~(ESPI_IO_EC_LDN_MSK_MSK_Msk << ESPI_IO_EC_LDN_MSK_MSK_Pos);
-    temp |= (((uint32_t)mask << ESPI_IO_EC_LDN_MSK_MSK_Pos) | ESPI_IO_EC_LDN_MSK_MSK_Msk);
+    temp &= ~(MEC_ESPI_IO_EC_LDN_MSK_MSK_Msk << MEC_ESPI_IO_EC_LDN_MSK_MSK_Pos);
+    temp |= (((uint32_t)mask << MEC_ESPI_IO_EC_LDN_MSK_MSK_Pos) | MEC_ESPI_IO_EC_LDN_MSK_MSK_Msk);
 
     *((volatile uint32_t *)&base->EC_LDN_MSK[idx]) = temp;
 
@@ -235,7 +236,8 @@ int mec_espi_iobar_mask_set(struct espi_io_regs *base, uint8_t ldn, uint8_t mask
  * BAR's must be located in the same 4GB region and the upper address bits are
  * specified in the MBAR Host Extended Address register.
  */
-int mec_espi_mbar_cfg(struct espi_mem_regs *base, uint8_t ldn, uint32_t mem_base, uint8_t enable)
+int mec_hal_espi_mbar_cfg(struct mec_espi_mem_regs *base, uint8_t ldn,
+                          uint32_t mem_base, uint8_t enable)
 {
     const struct ld_info *ldi = find_bar(ldn);
     uint8_t idx;
@@ -250,21 +252,22 @@ int mec_espi_mbar_cfg(struct espi_mem_regs *base, uint8_t ldn, uint32_t mem_base
 
     idx = (uint8_t)(ldi->mem_bar_idx - 1u);
 
-    volatile struct espi_mem_host_mem_bar_regs *mbar = &base->HOST_MEM_BAR[idx];
+    volatile struct mec_espi_mem_host_mem_bar_regs *mbar = &base->HOST_MEM_BAR[idx];
 
-    mbar->VALID &= (uint16_t)~MEC_BIT(ESPI_MEM_HOST_MBAR_VALID_EN_Pos);
+    mbar->VALID &= (uint16_t)~MEC_BIT(MEC_ESPI_MEM_HOST_MEM_BAR_VALID_EN_Pos);
     mbar->HOST_MEM_ADDR_B15_0 = (uint16_t)mem_base;
     mbar->HOST_MEM_ADDR_B31_16 = (uint16_t)(mem_base >> 16);
 
     if (enable) {
-        mbar->VALID |= MEC_BIT(ESPI_MEM_HOST_MBAR_VALID_EN_Pos);
+        mbar->VALID |= MEC_BIT(MEC_ESPI_MEM_HOST_MEM_BAR_VALID_EN_Pos);
     }
 
     return MEC_RET_OK;
 }
 
-int mec_espi_sram_bar_cfg(struct espi_mem_regs *base, const struct espi_mec5_sram_bar_cfg *barcfg,
-                          uint8_t sram_bar_id, uint8_t enable)
+int mec_hal_espi_sram_bar_cfg(struct mec_espi_mem_regs *base,
+                              const struct espi_mec5_sram_bar_cfg *barcfg,
+                              uint8_t sram_bar_id, uint8_t enable)
 {
     uint32_t temp;
 
@@ -276,9 +279,10 @@ int mec_espi_sram_bar_cfg(struct espi_mem_regs *base, const struct espi_mec5_sra
 
     base->EC_SRAM_BAR[sram_bar_id].VASZ = 0; /* disable before modification */
     temp = barcfg->size;
-    temp = (temp << ESPI_MEM_EC_SRAM_BAR_VASZ_SIZE_Pos) & ESPI_MEM_EC_SRAM_BAR_VASZ_SIZE_Msk;
-    temp |= (((uint32_t)barcfg->access << ESPI_MEM_EC_SRAM_BAR_VASZ_ACCESS_Pos) &
-        ESPI_MEM_EC_SRAM_BAR_VASZ_ACCESS_Msk);
+    temp = (temp << MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_SIZE_Pos)
+           & MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_SIZE_Msk;
+    temp |= (((uint32_t)barcfg->access << MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_ACCESS_Pos) &
+            MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_ACCESS_Msk);
     base->EC_SRAM_BAR[sram_bar_id].VASZ = (uint16_t)temp;
 
     base->EC_SRAM_BAR[sram_bar_id].EC_SRAM_ADDR_15_0 = barcfg->maddr & 0xffffu;
@@ -288,7 +292,7 @@ int mec_espi_sram_bar_cfg(struct espi_mem_regs *base, const struct espi_mec5_sra
     base->HOST_SRAM_BAR[sram_bar_id].HOST_ADDR_31_16 = (uint16_t)(barcfg->haddr >> 16);
 
     if (enable) {
-        base->EC_SRAM_BAR[sram_bar_id].VASZ |= MEC_BIT(ESPI_MEM_EC_SRAM_BAR_VASZ_VALID_Pos);
+        base->EC_SRAM_BAR[sram_bar_id].VASZ |= MEC_BIT(MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_VALID_Pos);
     }
 
     return MEC_RET_OK;
@@ -299,7 +303,7 @@ int mec_espi_sram_bar_cfg(struct espi_mem_regs *base, const struct espi_mec5_sra
  * Host address bits [47:32] are the same for all memory BAR's. Therefore all memory
  * BAR's must be located in the same 4GB host address space range.
  */
-int mec_espi_mbar_extended_addr_set(struct espi_mem_regs *base, uint32_t extended_addr)
+int mec_hal_espi_mbar_extended_addr_set(struct mec_espi_mem_regs *base, uint32_t extended_addr)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -310,7 +314,8 @@ int mec_espi_mbar_extended_addr_set(struct espi_mem_regs *base, uint32_t extende
     return MEC_RET_OK;
 }
 
-int mec_espi_sram_bar_extended_addr_set(struct espi_mem_regs *base, uint32_t extended_addr)
+int mec_hal_espi_sram_bar_extended_addr_set(struct mec_espi_mem_regs *base,
+                                            uint32_t extended_addr)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -321,7 +326,7 @@ int mec_espi_sram_bar_extended_addr_set(struct espi_mem_regs *base, uint32_t ext
     return MEC_RET_OK;
 }
 
-int mec_espi_mbar_enable(struct espi_mem_regs *base, uint8_t ldn, uint8_t enable)
+int mec_hal_espi_mbar_enable(struct mec_espi_mem_regs *base, uint8_t ldn, uint8_t enable)
 {
     const struct ld_info *ldi = find_bar(ldn);
     uint8_t idx;
@@ -336,18 +341,18 @@ int mec_espi_mbar_enable(struct espi_mem_regs *base, uint8_t ldn, uint8_t enable
 
     idx = (uint8_t)(ldi->mem_bar_idx - 1u);
 
-    volatile struct espi_mem_host_mem_bar_regs *mbar = &base->HOST_MEM_BAR[idx];
+    volatile struct mec_espi_mem_host_mem_bar_regs *mbar = &base->HOST_MEM_BAR[idx];
 
     if (enable) {
-        mbar->VALID |= MEC_BIT(ESPI_MEM_HOST_MBAR_VALID_EN_Pos);
+        mbar->VALID |= MEC_BIT(MEC_ESPI_MEM_HOST_MEM_BAR_VALID_EN_Pos);
     } else {
-        mbar->VALID &= (uint16_t)~MEC_BIT(ESPI_MEM_HOST_MBAR_VALID_EN_Pos);
+        mbar->VALID &= (uint16_t)~MEC_BIT(MEC_ESPI_MEM_HOST_MEM_BAR_VALID_EN_Pos);
     }
 
     return MEC_RET_OK;
 }
 
-int mec_espi_mbar_is_enabled(struct espi_mem_regs *base, uint8_t ldn)
+int mec_hal_espi_mbar_is_enabled(struct mec_espi_mem_regs *base, uint8_t ldn)
 {
     const struct ld_info *ldi = find_bar(ldn);
     uint8_t idx;
@@ -362,9 +367,9 @@ int mec_espi_mbar_is_enabled(struct espi_mem_regs *base, uint8_t ldn)
 
     idx = (uint8_t)(ldi->mem_bar_idx - 1u);
 
-    volatile struct espi_mem_host_mem_bar_regs *mbar = &base->HOST_MEM_BAR[idx];
+    volatile struct mec_espi_mem_host_mem_bar_regs *mbar = &base->HOST_MEM_BAR[idx];
 
-    if (mbar->VALID & MEC_BIT(ESPI_MEM_HOST_MBAR_VALID_EN_Pos)) {
+    if (mbar->VALID & MEC_BIT(MEC_ESPI_MEM_HOST_MEM_BAR_VALID_EN_Pos)) {
         return 1;
     }
 
@@ -372,7 +377,7 @@ int mec_espi_mbar_is_enabled(struct espi_mem_regs *base, uint8_t ldn)
 }
 
 /* Disable I/O and Memory BARs for a logical device */
-int mec_espi_bar_inhibit(struct espi_io_regs *base, uint8_t ldn, uint8_t inhibit)
+int mec_hal_espi_bar_inhibit(struct mec_espi_io_regs *base, uint8_t ldn, uint8_t inhibit)
 {
     const struct ld_info *ldi = find_bar(ldn);
 
@@ -402,8 +407,8 @@ int mec_espi_bar_inhibit(struct espi_io_regs *base, uint8_t ldn, uint8_t inhibit
     return MEC_RET_OK;
 }
 
-int mec_espi_bar_inhibit_msk(struct espi_io_regs *base, uint8_t inhibit,
-                             uint32_t msklo, uint32_t mskhi)
+int mec_hal_espi_bar_inhibit_msk(struct mec_espi_io_regs *base, uint8_t inhibit,
+                                 uint32_t msklo, uint32_t mskhi)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -423,7 +428,7 @@ int mec_espi_bar_inhibit_msk(struct espi_io_regs *base, uint8_t inhibit,
 /* ---- Logical Device Serial IRQ ---- */
 
 /* Return the number of Serial IRQs a logical device implements */
-uint8_t mec_espi_ld_sirq_num(struct espi_io_regs *iobase, uint8_t ldn)
+uint8_t mec_hal_espi_ld_sirq_num(struct mec_espi_io_regs *iobase, uint8_t ldn)
 {
     const struct ld_info *ldi = find_bar(ldn);
 
@@ -437,7 +442,7 @@ uint8_t mec_espi_ld_sirq_num(struct espi_io_regs *iobase, uint8_t ldn)
 /* get current slot number the specified logical device SIRQ instance is programmed to.
  * NOTE: a value of 255 (0xff) indicates this SIRQ is disabled.
  */
-uint8_t mec_espi_ld_sirq_get(struct espi_io_regs *iobase, uint8_t ldn, uint8_t ldn_sirq_id)
+uint8_t mec_hal_espi_ld_sirq_get(struct mec_espi_io_regs *iobase, uint8_t ldn, uint8_t ldn_sirq_id)
 {
     const struct ld_info *ldi = find_bar(ldn);
     uint8_t idx = 0;
@@ -455,7 +460,8 @@ uint8_t mec_espi_ld_sirq_get(struct espi_io_regs *iobase, uint8_t ldn, uint8_t l
     return mec_espi_sirq_get(iobase, idx);
 }
 
-void mec_espi_ld_sirq_set(struct espi_io_regs *iobase, uint8_t ldn, uint8_t ldn_sirq_id, uint8_t slot)
+void mec_hal_espi_ld_sirq_set(struct mec_espi_io_regs *iobase, uint8_t ldn,
+                             uint8_t ldn_sirq_id, uint8_t slot)
 {
     const struct ld_info *ldi = find_bar(ldn);
     uint8_t idx = 0;
@@ -470,19 +476,19 @@ void mec_espi_ld_sirq_set(struct espi_io_regs *iobase, uint8_t ldn, uint8_t ldn_
 
     idx = ldi->sirq_idx + ldn_sirq_id;
 
-    mec_espi_sirq_set(iobase, idx, slot);
+    espi_sirq_set(iobase, idx, slot);
 }
 
 /* Generate EC_IRQ Serial IRQ to the Host using the Serial IRQ slot
  * number previously programmed by mec_espi_ld_sirq_set().
  */
-int mec_espi_gen_ec_sirq(struct espi_io_regs *iobase)
+int mec_hal_espi_gen_ec_sirq(struct mec_espi_io_regs *iobase)
 {
     if (!iobase) {
         return MEC_RET_ERR_INVAL;
     }
 
-    iobase->PCECIRQ |= MEC_BIT(ESPI_IO_PCECIRQ_GEN_EC_IRQ_Pos);
+    iobase->PCECIRQ |= MEC_BIT(MEC_ESPI_IO_PCECIRQ_GEN_EC_IRQ_Pos);
 
     return MEC_RET_OK;
 }

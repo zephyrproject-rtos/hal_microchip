@@ -35,26 +35,26 @@ enum mec_mbox_swi_events {
     MEC_MBOX_SWI_7_POS,
 };
 
-struct mbox_regs;
+struct mec_mbox_regs;
 
-int mec_mbox_init(struct mbox_regs *base, uint32_t swi_ien_msk, uint32_t flags);
-int mec_mbox_girq_ctrl(struct mbox_regs *base, uint8_t enable);
-int mec_mbox_girq_clr(struct mbox_regs *base);
-uint32_t mec_mbox_girq_result(struct mbox_regs *base);
+int mec_hal_mbox_init(struct mec_mbox_regs *base, uint32_t swi_ien_msk, uint32_t flags);
+int mec_hal_mbox_girq_ctrl(struct mec_mbox_regs *base, uint8_t enable);
+int mec_hal_mbox_girq_clr(struct mec_mbox_regs *base);
+uint32_t mec_hal_mbox_girq_result(struct mec_mbox_regs *base);
 
-int mec_mbox_sirq_set(struct mbox_regs *base, uint8_t bitmap);
-int mec_mbox_sirq_en_mask(struct mbox_regs *base, uint8_t val, uint8_t mask);
+int mec_hal_mbox_sirq_set(struct mec_mbox_regs *base, uint8_t bitmap);
+int mec_hal_mbox_sirq_en_mask(struct mec_mbox_regs *base, uint8_t val, uint8_t mask);
 
-int mec_mbox_get_host_to_ec(struct mbox_regs *base, uint8_t *data);
-int mec_mbox_set_host_to_ec(struct mbox_regs *base, uint8_t data);
-int mec_mbox_get_ec_to_host(struct mbox_regs *base, uint8_t *data);
-int mec_mbox_set_ec_to_host(struct mbox_regs *base, uint8_t data);
+int mec_hal_mbox_get_host_to_ec(struct mec_mbox_regs *base, uint8_t *data);
+int mec_hal_mbox_set_host_to_ec(struct mec_mbox_regs *base, uint8_t data);
+int mec_hal_mbox_get_ec_to_host(struct mec_mbox_regs *base, uint8_t *data);
+int mec_hal_mbox_set_ec_to_host(struct mec_mbox_regs *base, uint8_t data);
 
-int mec_mbox_get(struct mbox_regs *base, uint8_t mbox, uint8_t *data);
-int mec_mbox_put(struct mbox_regs *base, uint8_t mbox, uint8_t data);
+int mec_hal_mbox_get(struct mec_mbox_regs *base, uint8_t mbox, uint8_t *data);
+int mec_hal_mbox_put(struct mec_mbox_regs *base, uint8_t mbox, uint8_t data);
 
-int mec_mbox32_get(struct mbox_regs *base, uint8_t mbox, uint32_t *data);
-int mec_mbox32_put(struct mbox_regs *base, uint8_t mbox, uint32_t data);
+int mec_hal_mbox32_get(struct mec_mbox_regs *base, uint8_t mbox, uint32_t *data);
+int mec_hal_mbox32_put(struct mec_mbox_regs *base, uint8_t mbox, uint32_t data);
 
 #ifdef __cplusplus
 }

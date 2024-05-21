@@ -24,6 +24,8 @@
  *          is not checked during a STOP phase. If LAB occurs this controller will tri-state
  *          its pins and continue to clock in the address/data from the external controller.
  *          On the 9th clock NIPEND and LAB will both assert.
+ *          I2C-NL CM FSM will transition to IDLE state after 9th clock (n)ACK bit and
+ *          clear the PIN bit to 1(de-asserted).
  * bit[2] = AAS = 1 indicates an external Controller issued (RPT)-START + target address
  *          the target address matches one of the two target addresses in this controller's
  *          own address register or the I2C generate call address(0x00). NOTE: general
@@ -76,6 +78,8 @@
 #define MEC_I2C_SMB3_ECIA_INFO MEC5_ECIA_INFO(13, 3, 5, 23)
 #define MEC_I2C_SMB4_ECIA_INFO MEC5_ECIA_INFO(13, 4, 5, 158)
 
+/* #define MEC_I2C_NL_DEBUG_SAVE_CM_CMD */
+
 struct mec_i2c_info {
     uintptr_t base_addr;
     uint32_t devi;
@@ -110,14 +114,14 @@ static const struct mec_i2c_freq_cfg freq_cfg_dflt[MEC_I2C_STD_FREQ_MAX] = {
 };
 
 static const struct mec_i2c_info i2c_instances[MEC5_I2C_SMB_INSTANCES] = {
-    {I2C_SMB0_BASE, MEC_I2C_SMB0_ECIA_INFO, MEC_PCR_I2C_SMB0 },
-    {I2C_SMB1_BASE, MEC_I2C_SMB1_ECIA_INFO, MEC_PCR_I2C_SMB1 },
-    {I2C_SMB2_BASE, MEC_I2C_SMB2_ECIA_INFO, MEC_PCR_I2C_SMB2 },
-    {I2C_SMB3_BASE, MEC_I2C_SMB3_ECIA_INFO, MEC_PCR_I2C_SMB3 },
-    {I2C_SMB4_BASE, MEC_I2C_SMB4_ECIA_INFO, MEC_PCR_I2C_SMB4 },
+    {MEC_I2C_SMB0_BASE, MEC_I2C_SMB0_ECIA_INFO, MEC_PCR_I2C_SMB0 },
+    {MEC_I2C_SMB1_BASE, MEC_I2C_SMB1_ECIA_INFO, MEC_PCR_I2C_SMB1 },
+    {MEC_I2C_SMB2_BASE, MEC_I2C_SMB2_ECIA_INFO, MEC_PCR_I2C_SMB2 },
+    {MEC_I2C_SMB3_BASE, MEC_I2C_SMB3_ECIA_INFO, MEC_PCR_I2C_SMB3 },
+    {MEC_I2C_SMB4_BASE, MEC_I2C_SMB4_ECIA_INFO, MEC_PCR_I2C_SMB4 },
 };
 
-static struct mec_i2c_info const *get_i2c_smb_info(struct i2c_smb_regs *base)
+static struct mec_i2c_info const *get_i2c_smb_info(struct mec_i2c_smb_regs *base)
 {
     for (int i = 0; i < MEC5_I2C_SMB_INSTANCES; i++) {
         const struct mec_i2c_info *p = &i2c_instances[i];
@@ -130,7 +134,7 @@ static struct mec_i2c_info const *get_i2c_smb_info(struct i2c_smb_regs *base)
     return NULL;
 }
 
-int mec_i2c_smb_reset(struct mec_i2c_smb_ctx *ctx)
+int mec_hal_i2c_smb_reset(struct mec_i2c_smb_ctx *ctx)
 {
     if (!ctx) {
         return MEC_RET_ERR_INVAL;
@@ -142,12 +146,12 @@ int mec_i2c_smb_reset(struct mec_i2c_smb_ctx *ctx)
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_pcr_blk_reset(info->pcr_id);
+    mec_hal_pcr_blk_reset(info->pcr_id);
 
     return MEC_RET_OK;
 }
 
-static void i2c_timing(struct i2c_smb_regs *base, const struct mec_i2c_freq_cfg *freq_cfg)
+static void i2c_timing(struct mec_i2c_smb_regs *base, const struct mec_i2c_freq_cfg *freq_cfg)
 {
     base->BUSCLK = freq_cfg->bus_clk;
     base->RSHT = freq_cfg->rpt_start_hold_time;
@@ -159,12 +163,13 @@ static void i2c_timing(struct i2c_smb_regs *base, const struct mec_i2c_freq_cfg 
 static void i2c_config(struct mec_i2c_smb_ctx *ctx, struct mec_i2c_smb_cfg *config,
                        struct mec_i2c_freq_cfg *custom_freq_cfg)
 {
-    struct i2c_smb_regs *base = ctx->base;
-    uint8_t control = MEC_BIT(I2C_SMB_CTRL_PIN_Pos); /* clear low level HW status */
+    struct mec_i2c_smb_regs *base = ctx->base;
+    uint8_t control = MEC_BIT(MEC_I2C_SMB_CTRL_PIN_Pos); /* clear low level HW status */
 
     /* disable and set port MUX */
-    base->CONFIG = (((uint32_t)config->port << I2C_SMB_CONFIG_PORT_SEL_Pos) & I2C_SMB_CONFIG_PORT_SEL_Msk);
-    base->CONFIG |= MEC_BIT(I2C_SMB_CONFIG_FEN_Pos); /* enable digital filter */
+    base->CONFIG = (((uint32_t)config->port << MEC_I2C_SMB_CONFIG_PORT_SEL_Pos)
+                    & MEC_I2C_SMB_CONFIG_PORT_SEL_Msk);
+    base->CONFIG |= MEC_BIT(MEC_I2C_SMB_CONFIG_FEN_Pos); /* enable digital filter */
 
     base->CTRL = control;
     ctx->i2c_ctrl_cached = control;
@@ -185,20 +190,20 @@ static void i2c_config(struct mec_i2c_smb_ctx *ctx, struct mec_i2c_smb_cfg *conf
     base->COMPL = MEC_I2C_SMB_COMPL_STS_RW1C_MSK;
 
     /* Enable output drive and HW ACK generation */
-    control = (MEC_BIT(I2C_SMB_CTRL_PIN_Pos) | MEC_BIT(I2C_SMB_CTRL_ESO_Pos)
-               | MEC_BIT(I2C_SMB_CTRL_ACK_Pos));
+    control = (MEC_BIT(MEC_I2C_SMB_CTRL_PIN_Pos) | MEC_BIT(MEC_I2C_SMB_CTRL_ESO_Pos)
+               | MEC_BIT(MEC_I2C_SMB_CTRL_ACK_Pos));
     ctx->i2c_ctrl_cached = control;
     base->CTRL = control;
 
-    base->CONFIG |= MEC_BIT(I2C_SMB_CONFIG_ENAB_Pos);
+    base->CONFIG |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENAB_Pos);
     for (int i = 0; i < 8; i++) {
         base->EXTLEN = 0;
     }
     base->COMPL |= MEC_I2C_SMB_COMPL_STS_RW1C_MSK;
 }
 
-int mec_i2c_smb_init(struct mec_i2c_smb_ctx *ctx, struct mec_i2c_smb_cfg *config,
-                     struct mec_i2c_freq_cfg *custom_freq_cfg)
+int mec_hal_i2c_smb_init(struct mec_i2c_smb_ctx *ctx, struct mec_i2c_smb_cfg *config,
+                         struct mec_i2c_freq_cfg *custom_freq_cfg)
 {
     if (!ctx) {
         return MEC_RET_ERR_INVAL;
@@ -212,8 +217,8 @@ int mec_i2c_smb_init(struct mec_i2c_smb_ctx *ctx, struct mec_i2c_smb_cfg *config
 
     ctx->devi = info->devi;
 
-    mec_pcr_clr_blk_slp_en(info->pcr_id);
-    mec_pcr_blk_reset(info->pcr_id);
+    mec_hal_pcr_clr_blk_slp_en(info->pcr_id);
+    mec_hal_pcr_blk_reset(info->pcr_id);
 
     if (!(MEC_BIT(config->port) & MEC5_I2C_SMB_PORT_MAP)) {
         return MEC_RET_ERR_INVAL;
@@ -229,90 +234,90 @@ int mec_i2c_smb_init(struct mec_i2c_smb_ctx *ctx, struct mec_i2c_smb_cfg *config
     i2c_config(ctx, config, custom_freq_cfg);
 
     /* clear GIRQ latched status */
-    mec_girq_clr_src(ctx->devi);
+    mec_hal_girq_clr_src(ctx->devi);
 
     return MEC_RET_OK;
 }
 
-int mec_i2c_smb_girq_status_clr(struct mec_i2c_smb_ctx *ctx)
+int mec_hal_i2c_smb_girq_status_clr(struct mec_i2c_smb_ctx *ctx)
 {
     if (!ctx) {
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_girq_clr_src(ctx->devi);
+    mec_hal_girq_clr_src(ctx->devi);
 
     return MEC_RET_OK;
 }
 
 /* Enable/disable I2C controller interrupt signal from propagating to NVIC */
-int mec_i2c_smb_girq_ctrl(struct mec_i2c_smb_ctx *ctx, int flags)
+int mec_hal_i2c_smb_girq_ctrl(struct mec_i2c_smb_ctx *ctx, int flags)
 {
     if (!ctx) {
         return MEC_RET_ERR_INVAL;
     }
 
     if (flags & MEC_I2C_SMB_GIRQ_DIS) {
-        mec_girq_ctrl(ctx->devi, 0);
+        mec_hal_girq_ctrl(ctx->devi, 0);
     }
 
     if (flags & MEC_I2C_SMB_GIRQ_CLR_STS) {
-        mec_girq_clr_src(ctx->devi);
+        mec_hal_girq_clr_src(ctx->devi);
     }
 
     if (flags & MEC_I2C_SMB_GIRQ_EN) {
-        mec_girq_ctrl(ctx->devi, 1);
+        mec_hal_girq_ctrl(ctx->devi, 1);
     }
 
     return MEC_RET_OK;
 }
 
-int mec_i2c_smb_girq_status(struct mec_i2c_smb_ctx *ctx)
+int mec_hal_i2c_smb_girq_status(struct mec_i2c_smb_ctx *ctx)
 {
     if (!ctx) {
         return 0;
     }
 
-    return (int)mec_girq_src(ctx->devi);
+    return (int)mec_hal_girq_src(ctx->devi);
 }
 
-int mec_i2c_smb_girq_result(struct mec_i2c_smb_ctx *ctx)
+int mec_hal_i2c_smb_girq_result(struct mec_i2c_smb_ctx *ctx)
 {
     if (!ctx) {
         return 0;
     }
 
-    return (int)mec_girq_result(ctx->devi);
+    return (int)mec_hal_girq_result(ctx->devi);
 }
 
 /* check I2C.Status Not Busy bit. If set the bus is NOT owned by this controller.
  * Returns 0 if not owned or the parameter check fails.
  *         1 if bus is owned by this controller.
  */
-int mec_i2c_smb_is_bus_owned(struct mec_i2c_smb_ctx *ctx)
+int mec_hal_i2c_smb_is_bus_owned(struct mec_i2c_smb_ctx *ctx)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
         return 0;
     }
 #endif
-    struct i2c_smb_regs *base = ctx->base;
+    struct mec_i2c_smb_regs *base = ctx->base;
 
-    if (base->STATUS & MEC_BIT(I2C_SMB_STATUS_NBB_Pos)) {
+    if (base->STATUS & MEC_BIT(MEC_I2C_SMB_STATUS_NBB_Pos)) {
         return 0;
     }
 
     return 1;
 }
 
-int mec_i2c_smb_ctrl_set(struct mec_i2c_smb_ctx * ctx, uint8_t ctrl)
+int mec_hal_i2c_smb_ctrl_set(struct mec_i2c_smb_ctx * ctx, uint8_t ctrl)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
         return MEC_RET_ERR_INVAL;
     }
 #endif
-    struct i2c_smb_regs *base = ctx->base;
+    struct mec_i2c_smb_regs *base = ctx->base;
 
     ctx->i2c_ctrl_cached = ctrl;
     base->CTRL = ctrl;
@@ -320,7 +325,7 @@ int mec_i2c_smb_ctrl_set(struct mec_i2c_smb_ctx * ctx, uint8_t ctrl)
     return MEC_RET_OK;
 }
 
-uint8_t mec_i2c_smb_ctrl_get(struct mec_i2c_smb_ctx *ctx)
+uint8_t mec_hal_i2c_smb_ctrl_get(struct mec_i2c_smb_ctx *ctx)
 {
     if (!ctx) {
         return 0u;
@@ -330,26 +335,26 @@ uint8_t mec_i2c_smb_ctrl_get(struct mec_i2c_smb_ctx *ctx)
 }
 
 /* Re-arm Target mode receive after an external STOP.  */
-int mec_i2c_smb_rearm_target_rx(struct mec_i2c_smb_ctx *ctx)
+int mec_hal_i2c_smb_rearm_target_rx(struct mec_i2c_smb_ctx *ctx)
 {
-    uint8_t ctr = (MEC_BIT(I2C_SMB_CTRL_PIN_Pos) | MEC_BIT(I2C_SMB_CTRL_ESO_Pos)
-                   | MEC_BIT(I2C_SMB_CTRL_ACK_Pos));
+    uint8_t ctr = (MEC_BIT(MEC_I2C_SMB_CTRL_PIN_Pos) | MEC_BIT(MEC_I2C_SMB_CTRL_ESO_Pos)
+                   | MEC_BIT(MEC_I2C_SMB_CTRL_ACK_Pos));
 
-    return mec_i2c_smb_ctrl_set(ctx, ctr);
+    return mec_hal_i2c_smb_ctrl_set(ctx, ctr);
 }
 
-int mec_i2c_smb_auto_ack_enable(struct mec_i2c_smb_ctx *ctx, uint8_t ien)
+int mec_hal_i2c_smb_auto_ack_enable(struct mec_i2c_smb_ctx *ctx, uint8_t ien)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
         return MEC_RET_ERR_INVAL;
     }
 #endif
-    struct i2c_smb_regs *base = ctx->base;
-    uint8_t ctr = MEC_BIT(I2C_SMB_CTRL_ESO_Pos) | MEC_BIT(I2C_SMB_CTRL_ACK_Pos);
+    struct mec_i2c_smb_regs *base = ctx->base;
+    uint8_t ctr = MEC_BIT(MEC_I2C_SMB_CTRL_ESO_Pos) | MEC_BIT(MEC_I2C_SMB_CTRL_ACK_Pos);
 
     if (ien) {
-        ctr |= MEC_BIT(I2C_SMB_CTRL_ENI_Pos);
+        ctr |= MEC_BIT(MEC_I2C_SMB_CTRL_ENI_Pos);
     }
 
     ctx->i2c_ctrl_cached = ctr;
@@ -357,18 +362,18 @@ int mec_i2c_smb_auto_ack_enable(struct mec_i2c_smb_ctx *ctx, uint8_t ien)
     return MEC_RET_OK;
 }
 
-int mec_i2c_smb_auto_ack_disable(struct mec_i2c_smb_ctx *ctx, uint8_t ien)
+int mec_hal_i2c_smb_auto_ack_disable(struct mec_i2c_smb_ctx *ctx, uint8_t ien)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
         return MEC_RET_ERR_INVAL;
     }
 #endif
-    struct i2c_smb_regs *base = ctx->base;
-    uint8_t ctr = MEC_BIT(I2C_SMB_CTRL_ESO_Pos);
+    struct mec_i2c_smb_regs *base = ctx->base;
+    uint8_t ctr = MEC_BIT(MEC_I2C_SMB_CTRL_ESO_Pos);
 
     if (ien) {
-        ctr |= MEC_BIT(I2C_SMB_CTRL_ENI_Pos);
+        ctr |= MEC_BIT(MEC_I2C_SMB_CTRL_ENI_Pos);
     }
 
     ctx->i2c_ctrl_cached = ctr;
@@ -376,7 +381,7 @@ int mec_i2c_smb_auto_ack_disable(struct mec_i2c_smb_ctx *ctx, uint8_t ien)
     return MEC_RET_OK;
 }
 
-int mec_i2c_smb_idle_intr_enable(struct mec_i2c_smb_ctx *ctx, uint8_t enable)
+int mec_hal_i2c_smb_idle_intr_enable(struct mec_i2c_smb_ctx *ctx, uint8_t enable)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
@@ -384,18 +389,18 @@ int mec_i2c_smb_idle_intr_enable(struct mec_i2c_smb_ctx *ctx, uint8_t enable)
     }
 #endif
 
-    struct i2c_smb_regs *base = ctx->base;
+    struct mec_i2c_smb_regs *base = ctx->base;
 
     if (enable) {
-        base->CONFIG |= MEC_BIT(I2C_SMB_COMPL_IDLE_Pos);
+        base->CONFIG |= MEC_BIT(MEC_I2C_SMB_COMPL_IDLE_Pos);
     } else {
-        base->CONFIG &= (uint32_t)~MEC_BIT(I2C_SMB_COMPL_IDLE_Pos);
+        base->CONFIG &= (uint32_t)~MEC_BIT(MEC_I2C_SMB_COMPL_IDLE_Pos);
     }
 
     return MEC_RET_OK;
 }
 
-int mec_i2c_smb_intr_ctrl(struct mec_i2c_smb_ctx *ctx, uint32_t mask, uint8_t enable)
+int mec_hal_i2c_smb_intr_ctrl(struct mec_i2c_smb_ctx *ctx, uint32_t mask, uint8_t enable)
 {
     uint32_t cfg = 0;
 
@@ -405,28 +410,28 @@ int mec_i2c_smb_intr_ctrl(struct mec_i2c_smb_ctx *ctx, uint32_t mask, uint8_t en
     }
 #endif
 
-    struct i2c_smb_regs *regs = ctx->base;
+    struct mec_i2c_smb_regs *regs = ctx->base;
 
     if (mask & MEC_BIT(MEC_I2C_IEN_BYTE_MODE_POS)) {
         if (enable) {
-            ctx->i2c_ctrl_cached |= MEC_BIT(I2C_SMB_CTRL_ENI_Pos);
+            ctx->i2c_ctrl_cached |= MEC_BIT(MEC_I2C_SMB_CTRL_ENI_Pos);
         } else {
-            ctx->i2c_ctrl_cached &= (uint8_t)~MEC_BIT(I2C_SMB_CTRL_ENI_Pos);
+            ctx->i2c_ctrl_cached &= (uint8_t)~MEC_BIT(MEC_I2C_SMB_CTRL_ENI_Pos);
         }
         regs->CTRL = ctx->i2c_ctrl_cached;
     }
 
     if (mask & MEC_BIT(MEC_I2C_IEN_IDLE_POS)) {
-        cfg |= MEC_BIT(I2C_SMB_CONFIG_ENI_IDLE_Pos);
+        cfg |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_IDLE_Pos);
     }
     if (mask & MEC_BIT(MEC_I2C_NL_IEN_CM_DONE_POS)) {
-        cfg |= MEC_BIT(I2C_SMB_CONFIG_ENMI_Pos);
+        cfg |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENMI_Pos);
     }
     if (mask & MEC_BIT(MEC_I2C_NL_IEN_TM_DONE_POS)) {
-        cfg |= MEC_BIT(I2C_SMB_CONFIG_ENSI_Pos);
+        cfg |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENSI_Pos);
     }
     if (mask & MEC_BIT(MEC_I2C_NL_IEN_AAT_POS)) {
-        cfg |= MEC_BIT(I2C_SMB_CONFIG_ENI_AAS_Pos);
+        cfg |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_AAS_Pos);
     }
 
     if (enable) {
@@ -446,14 +451,14 @@ int mec_i2c_smb_intr_ctrl(struct mec_i2c_smb_ctx *ctx, uint32_t mask, uint8_t en
  * If parameter clear != 0 this routine will clear the R/W1C
  * bits in I2C.Completion after reading them.
  */
-uint32_t mec_i2c_smb_status(struct mec_i2c_smb_ctx *ctx, uint8_t clear)
+uint32_t mec_hal_i2c_smb_status(struct mec_i2c_smb_ctx *ctx, uint8_t clear)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
         return 0;
     }
 #endif
-    struct i2c_smb_regs *base = ctx->base;
+    struct mec_i2c_smb_regs *base = ctx->base;
     uint32_t status = base->STATUS;
     uint32_t compl = base->COMPL;
 
@@ -464,18 +469,18 @@ uint32_t mec_i2c_smb_status(struct mec_i2c_smb_ctx *ctx, uint8_t clear)
     return (status | (compl & 0xffffff00u));
 }
 
-uint32_t mec_i2c_smb_wake_status(struct mec_i2c_smb_ctx *ctx)
+uint32_t mec_hal_i2c_smb_wake_status(struct mec_i2c_smb_ctx *ctx)
 {
     if (!ctx) {
         return 0;
     }
 
-    struct i2c_smb_regs *base = ctx->base;
+    struct mec_i2c_smb_regs *base = ctx->base;
 
     return base->WAKE_STS;
 }
 
-void mec_i2c_smb_wake_status_clr(struct mec_i2c_smb_ctx *ctx)
+void mec_hal_i2c_smb_wake_status_clr(struct mec_i2c_smb_ctx *ctx)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
@@ -483,21 +488,21 @@ void mec_i2c_smb_wake_status_clr(struct mec_i2c_smb_ctx *ctx)
     }
 #endif
 
-    struct i2c_smb_regs *base = ctx->base;
+    struct mec_i2c_smb_regs *base = ctx->base;
 
-    base->WAKE_STS = MEC_BIT(I2C_SMB_WAKE_STS_START_DET_Pos);
+    base->WAKE_STS = MEC_BIT(MEC_I2C_SMB_WAKE_STS_START_DET_Pos);
 }
 
-int mec_i2c_smb_is_idle_intr(struct mec_i2c_smb_ctx *ctx)
+int mec_hal_i2c_smb_is_idle_intr(struct mec_i2c_smb_ctx *ctx)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
         return 0;
     }
 #endif
-    struct i2c_smb_regs *base = ctx->base;
-    uint32_t cfg = base->CONFIG & MEC_BIT(I2C_SMB_CONFIG_ENI_IDLE_Pos);
-    uint32_t compl = base->COMPL & MEC_BIT(I2C_SMB_COMPL_IDLE_Pos);
+    struct mec_i2c_smb_regs *base = ctx->base;
+    uint32_t cfg = base->CONFIG & MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_IDLE_Pos);
+    uint32_t compl = base->COMPL & MEC_BIT(MEC_I2C_SMB_COMPL_IDLE_Pos);
 
     if (cfg && compl) {
         return 1;
@@ -506,16 +511,16 @@ int mec_i2c_smb_is_idle_intr(struct mec_i2c_smb_ctx *ctx)
     return 0;
 }
 
-int mec_i2c_smb_idle_status_clr(struct mec_i2c_smb_ctx *ctx)
+int mec_hal_i2c_smb_idle_status_clr(struct mec_i2c_smb_ctx *ctx)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
         return 0;
     }
 #endif
-    struct i2c_smb_regs *base = ctx->base;
+    struct mec_i2c_smb_regs *base = ctx->base;
 
-    base->COMPL |= MEC_BIT(I2C_SMB_COMPL_IDLE_Pos);
+    base->COMPL |= MEC_BIT(MEC_I2C_SMB_COMPL_IDLE_Pos);
 
     return 0;
 }
@@ -528,23 +533,23 @@ int mec_i2c_smb_idle_status_clr(struct mec_i2c_smb_ctx *ctx)
  *    write 0x45 or 0x4b to I2C.Control
  *    write addr I2C.Data
  */
-int mec_i2c_smb_start_gen(struct mec_i2c_smb_ctx *ctx, uint8_t target_addr, int flags)
+int mec_hal_i2c_smb_start_gen(struct mec_i2c_smb_ctx *ctx, uint8_t target_addr, int flags)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
         return MEC_RET_ERR_INVAL;
     }
 #endif
-    struct i2c_smb_regs *base = ctx->base;
-    uint8_t ctr = (MEC_BIT(I2C_SMB_CTRL_ESO_Pos) | MEC_BIT(I2C_SMB_CTRL_STA_Pos)
-                   | MEC_BIT(I2C_SMB_CTRL_ACK_Pos));
+    struct mec_i2c_smb_regs *base = ctx->base;
+    uint8_t ctr = (MEC_BIT(MEC_I2C_SMB_CTRL_ESO_Pos) | MEC_BIT(MEC_I2C_SMB_CTRL_STA_Pos)
+                   | MEC_BIT(MEC_I2C_SMB_CTRL_ACK_Pos));
 
     if (flags & MEC_I2C_SMB_BYTE_ENI) {
-        ctr |= MEC_BIT(I2C_SMB_CTRL_ENI_Pos);
+        ctr |= MEC_BIT(MEC_I2C_SMB_CTRL_ENI_Pos);
     }
 
-    if (base->STATUS & MEC_BIT(I2C_SMB_STATUS_NBB_Pos)) {
-        ctr |= MEC_BIT(I2C_SMB_CTRL_PIN_Pos);
+    if (base->STATUS & MEC_BIT(MEC_I2C_SMB_STATUS_NBB_Pos)) {
+        ctr |= MEC_BIT(MEC_I2C_SMB_CTRL_PIN_Pos);
         ctx->i2c_ctrl_cached = ctr;
         base->DATA = target_addr;
         base->CTRL = ctr;
@@ -557,19 +562,19 @@ int mec_i2c_smb_start_gen(struct mec_i2c_smb_ctx *ctx, uint8_t target_addr, int 
     return MEC_RET_OK;
 }
 
-int mec_i2c_smb_stop_gen(struct mec_i2c_smb_ctx *ctx)
+int mec_hal_i2c_smb_stop_gen(struct mec_i2c_smb_ctx *ctx)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
         return MEC_RET_ERR_INVAL;
     }
 #endif
-    struct i2c_smb_regs *base = ctx->base;
-    uint8_t control = (MEC_BIT(I2C_SMB_CTRL_PIN_Pos) | MEC_BIT(I2C_SMB_CTRL_ESO_Pos)
-                       | MEC_BIT(I2C_SMB_CTRL_ACK_Pos) | MEC_BIT(I2C_SMB_CTRL_STO_Pos));
+    struct mec_i2c_smb_regs *base = ctx->base;
+    uint8_t control = (MEC_BIT(MEC_I2C_SMB_CTRL_PIN_Pos) | MEC_BIT(MEC_I2C_SMB_CTRL_ESO_Pos)
+                       | MEC_BIT(MEC_I2C_SMB_CTRL_ACK_Pos) | MEC_BIT(MEC_I2C_SMB_CTRL_STO_Pos));
 
     /* Nothing to do. Controller does not own the bus at this time */
-    if (base->STATUS & MEC_BIT(I2C_SMB_STATUS_NBB_Pos)) {
+    if (base->STATUS & MEC_BIT(MEC_I2C_SMB_STATUS_NBB_Pos)) {
         return MEC_RET_ERR_NOP;
     }
 
@@ -585,14 +590,14 @@ int mec_i2c_smb_stop_gen(struct mec_i2c_smb_ctx *ctx)
  * If byte mode interrupts are required they should be enabled in the (Rpt)START
  * generation API.
  */
-int mec_i2c_smb_xmit_byte(struct mec_i2c_smb_ctx *ctx, uint8_t msg_byte)
+int mec_hal_i2c_smb_xmit_byte(struct mec_i2c_smb_ctx *ctx, uint8_t msg_byte)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
         return MEC_RET_ERR_INVAL;
     }
 #endif
-    struct i2c_smb_regs *base = ctx->base;
+    struct mec_i2c_smb_regs *base = ctx->base;
 
     /* TODO should we check for NBB==1 and return error?
      * Only for data bytes. In the case of START we write target
@@ -609,14 +614,14 @@ int mec_i2c_smb_xmit_byte(struct mec_i2c_smb_ctx *ctx, uint8_t msg_byte)
 /* Read byte currently in receive buffer and generate clocks for next
  * byte if CTRL.STO == 0.
  */
-int mec_i2c_smb_read_byte(struct mec_i2c_smb_ctx *ctx, uint8_t *msg_byte)
+int mec_hal_i2c_smb_read_byte(struct mec_i2c_smb_ctx *ctx, uint8_t *msg_byte)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
         return MEC_RET_ERR_INVAL;
     }
 #endif
-    struct i2c_smb_regs *base = ctx->base;
+    struct mec_i2c_smb_regs *base = ctx->base;
     uint8_t b = base->DATA;
 
     if (msg_byte) {
@@ -626,23 +631,23 @@ int mec_i2c_smb_read_byte(struct mec_i2c_smb_ctx *ctx, uint8_t *msg_byte)
     return MEC_RET_OK;
 }
 
-int mec_i2c_smb_bbctrl(struct mec_i2c_smb_ctx *ctx, uint8_t enable, uint8_t pin_drive)
+int mec_hal_i2c_smb_bbctrl(struct mec_i2c_smb_ctx *ctx, uint8_t enable, uint8_t pin_drive)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
         return MEC_RET_ERR_INVAL;
     }
 #endif
-    struct i2c_smb_regs *base = ctx->base;
+    struct mec_i2c_smb_regs *base = ctx->base;
     uint8_t bbctr = 0u;
 
     if (enable) {
-        bbctr |= MEC_BIT(I2C_SMB_BBCTRL_BBEN_Pos);
+        bbctr |= MEC_BIT(MEC_I2C_SMB_BBCTRL_BBEN_Pos);
         if (!(pin_drive & MEC_BIT(MEC_I2C_BB_SCL_POS))) { /* drive low? */
-            bbctr |= MEC_BIT(I2C_SMB_BBCTRL_CLDIR_Pos);
+            bbctr |= MEC_BIT(MEC_I2C_SMB_BBCTRL_CLDIR_Pos);
         }
         if (!(pin_drive & MEC_BIT(MEC_I2C_BB_SDA_POS))) { /* drive low? */
-            bbctr |= MEC_BIT(I2C_SMB_BBCTRL_DADIR_Pos);
+            bbctr |= MEC_BIT(MEC_I2C_SMB_BBCTRL_DADIR_Pos);
         }
     }
 
@@ -658,62 +663,135 @@ int mec_i2c_smb_bbctrl(struct mec_i2c_smb_ctx *ctx, uint8_t enable, uint8_t pin_
  * I2C logic to BB logic. When bit-bang is is disabled one must allow
  * time for I2C logic to resync to pins.
  */
-uint8_t mec_i2c_smb_bbctrl_pin_states(struct mec_i2c_smb_ctx *ctx)
+uint8_t mec_hal_i2c_smb_bbctrl_pin_states(struct mec_i2c_smb_ctx *ctx)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
         return 0x3u;
     }
 #endif
-    struct i2c_smb_regs *base = ctx->base;
+    struct mec_i2c_smb_regs *base = ctx->base;
 
-    return (base->BBCTRL >> I2C_SMB_BBCTRL_BBCLKI_Pos) & 0x3u;
+    return (base->BBCTRL >> MEC_I2C_SMB_BBCTRL_BBCLKI_Pos) & 0x3u;
 }
 
 /* -------- I2C-NL -------- */
 
-int mec_i2c_nl_cm_cfg_start(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint16_t nrx, uint32_t flags)
+#ifdef MEC_I2C_NL_DEBUG_SAVE_CM_CMD
+static volatile uint32_t mec_i2c_nl_dbg_save[4];
+#endif
+
+int mec_hal_i2c_nl_cm_cfg_start(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint16_t nrx,
+                                uint32_t flags)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
         return MEC_RET_ERR_INVAL;
     }
 #endif
-    struct i2c_smb_regs *regs = ctx->base;
+    struct mec_i2c_smb_regs *regs = ctx->base;
     uint32_t cmd = 0;
 
     if (!ntx) { /* Any I2C transaction requires transmit of target address! */
         return MEC_RET_ERR_INVAL;
     }
 
-    regs->CONFIG &= (uint32_t)~MEC_BIT(I2C_SMB_CONFIG_ENMI_Pos);
-    regs->CONFIG |= MEC_BIT(I2C_SMB_CONFIG_FLUSH_CTXB_Pos) | MEC_BIT(I2C_SMB_CONFIG_FLUSH_CRXB_Pos);
-    regs->COMPL |= MEC_BIT(I2C_SMB_COMPL_MDONE_Pos);
+    regs->CONFIG &= (uint32_t)~MEC_BIT(MEC_I2C_SMB_CONFIG_ENMI_Pos);
+    regs->CONFIG |= (MEC_BIT(MEC_I2C_SMB_CONFIG_FLUSH_CTXB_Pos)
+                     | MEC_BIT(MEC_I2C_SMB_CONFIG_FLUSH_CRXB_Pos));
+    regs->COMPL |= MEC_BIT(MEC_I2C_SMB_COMPL_MDONE_Pos);
 
     regs->EXTLEN = ((ntx >> 8) & 0xffu) | (nrx & 0xff00u);
 
-    cmd = (uint32_t)(ntx & 0xffu) << I2C_SMB_MCMD_WRCNT_LSB_Pos;
-    cmd |= ((uint32_t)(nrx & 0xffu) << I2C_SMB_MCMD_RDCNT_LSB_Pos);
-    cmd |= (MEC_BIT(I2C_SMB_MCMD_MRUN_Pos) | MEC_BIT(I2C_SMB_MCMD_MPROCEED_Pos));
+    cmd = (uint32_t)(ntx & 0xffu) << MEC_I2C_SMB_CM_CMD_WRCNT_LSB_Pos;
+    cmd |= ((uint32_t)(nrx & 0xffu) << MEC_I2C_SMB_CM_CMD_RDCNT_LSB_Pos);
+    cmd |= (MEC_BIT(MEC_I2C_SMB_CM_CMD_MRUN_Pos) | MEC_BIT(MEC_I2C_SMB_CM_CMD_MPROCEED_Pos));
 
     if (flags & MEC_I2C_NL_FLAG_START) {
-        cmd |= MEC_BIT(I2C_SMB_MCMD_START0_Pos);
+        cmd |= MEC_BIT(MEC_I2C_SMB_CM_CMD_START0_Pos);
     }
 
     if (flags & MEC_I2C_NL_FLAG_RPT_START) {
-        cmd |= MEC_BIT(I2C_SMB_MCMD_STARTN_Pos);
+        cmd |= MEC_BIT(MEC_I2C_SMB_CM_CMD_STARTN_Pos);
     }
 
     if (flags & MEC_I2C_NL_FLAG_STOP) {
-        cmd |= MEC_BIT(I2C_SMB_MCMD_STOP_Pos);
+        cmd |= MEC_BIT(MEC_I2C_SMB_CM_CMD_STOP_Pos);
     }
 
     if (flags & MEC_I2C_NL_FLAG_CM_DONE_IEN) {
-        regs->CONFIG |= MEC_BIT(I2C_SMB_CONFIG_ENMI_Pos);
+        regs->CONFIG |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENMI_Pos);
     }
 
-    regs->MCMD = cmd;
+#ifdef MEC_I2C_NL_DEBUG_SAVE_CM_CMD
+    mec_i2c_nl_dbg_save[0] = cmd;
+    mec_i2c_nl_dbg_save[1] = regs->CONFIG;
+    mec_i2c_nl_dbg_save[2] = regs->COMPL;
+    mec_i2c_nl_dbg_save[3] = regs->EXTLEN;
+#endif
+
+    regs->CM_CMD = cmd;
 
     return MEC_RET_OK;
 }
+
+/* I2C-NL FSM clears MRUN and MPROCEED when both wrCnt and rdCnt transition to 0.
+ * MRUN==1 and MPROCEED is cleared to 0 when FSM requires software to reconfigure
+ * DMA for the direction change from write to read. After the Rpt-Start and rdAddr
+ * are transmitted and (n)ACK'd the FSM clears MPROCEED only.
+ * NOTE: any error should clear MRUN and MPROCEED.
+ */
+uint32_t mec_hal_i2c_nl_cm_event(struct mec_i2c_smb_regs *regs)
+{
+#ifdef MEC_I2C_BASE_CHECK
+    if (!regs) {
+        return MEC_I2C_NL_CM_EVENT_NONE;
+    }
+#endif
+
+    uint32_t cm_cmd = regs->CM_CMD & 0x03u;
+
+    if (cm_cmd == 0) {
+        return MEC_I2C_NL_CM_EVENT_ALL_DONE;
+    } else if (cm_cmd == 0x01) {
+        return MEC_I2C_NL_CM_EVENT_W2R;
+    } else {
+        return MEC_I2C_NL_CM_EVENT_NONE;
+    }
+}
+
+/* ---- Power Management ----
+ * Each controller has a wake enable interrupt on detection of an
+ * external I2C START. This is only required if the controller is
+ * being used in target mode.
+ */
+
+static uint8_t i2c_pm_save_buf[MEC5_I2C_SMB_INSTANCES];
+
+/* Save and disable the controller */
+void mec_hal_i2c_pm_save_disable(void)
+{
+    for (int i = 0; i < MEC5_I2C_SMB_INSTANCES; i++) {
+        struct mec_i2c_smb_regs *regs = (struct mec_i2c_smb_regs *)i2c_instances[i].base_addr;
+
+        if (regs->CONFIG & MEC_BIT(MEC_I2C_SMB_CONFIG_ENAB_Pos)) {
+            regs->CONFIG &= (uint32_t)~MEC_BIT(MEC_I2C_SMB_CONFIG_ENAB_Pos);
+            i2c_pm_save_buf[i] = 1;
+        } else {
+            i2c_pm_save_buf[i] = 0;
+        }
+    }
+}
+
+void mec_hal_i2c_pm_restore(void)
+{
+    for (int i = 0; i < MEC5_I2C_SMB_INSTANCES; i++) {
+        struct mec_i2c_smb_regs *regs = (struct mec_i2c_smb_regs *)i2c_instances[i].base_addr;
+
+        if (i2c_pm_save_buf[i]) {
+            regs->CONFIG |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENAB_Pos);
+        }
+    }
+}
+
 /* end mec_i2c.c */

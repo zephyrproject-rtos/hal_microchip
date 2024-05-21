@@ -11,10 +11,10 @@
   */
 
 /**
-  * @brief Keyboard Port92 emulation (PORT92)
+  * @brief Keyboard Port92 emulation (MEC_PORT92)
   */
 
-typedef struct port92_regs {                    /*!< (@ 0x400F2000) PORT92 Structure                                           */
+typedef struct mec_port92_regs {                /*!< (@ 0x400F2000) MEC_PORT92 Structure                                       */
   __IM  uint8_t   HP92D;                        /*!< (@ 0x00000000) Port92 Host accessible register                            */
   __IM  uint8_t   RESERVED[255];
   __IOM uint8_t   CTRLGA20;                     /*!< (@ 0x00000100) EC-only: Port92 Gate A20 control                           */
@@ -24,21 +24,20 @@ typedef struct port92_regs {                    /*!< (@ 0x400F2000) PORT92 Struc
   __OM  uint8_t   RSTGA20L;                     /*!< (@ 0x0000010C) EC-only: Port92 Reset Gate A20                             */
   __IM  uint8_t   RESERVED3[547];
   __IOM uint8_t   P92ACT;                       /*!< (@ 0x00000330) Port92 Logical device activate                             */
-} PORT92_Type;                                  /*!< Size = 817 (0x331)                                                        */
+} MEC_PORT92_Type;                              /*!< Size = 817 (0x331)                                                        */
+
 /** @} */ /* End of group Device_Peripheral_peripherals */
 
 /** @addtogroup PosMask_peripherals
   * @{
   */
-/* =========================================================  HP92D  ========================================================= */
 /* =======================================================  CTRLGA20  ======================================================== */
-#define PORT92_CTRLGA20_GA20_Pos          (0UL)                     /*!< GA20 (Bit 0)                                          */
-#define PORT92_CTRLGA20_GA20_Msk          (0x1UL)                   /*!< GA20 (Bitfield-Mask: 0x01)                            */
-/* =======================================================  SETGA20L  ======================================================== */
-/* =======================================================  RSTGA20L  ======================================================== */
+#define MEC_PORT92_CTRLGA20_GA20_Pos      (0UL)                     /*!< GA20 (Bit 0)                                          */
+#define MEC_PORT92_CTRLGA20_GA20_Msk      (0x1UL)                   /*!< GA20 (Bitfield-Mask: 0x01)                            */
 /* ========================================================  P92ACT  ========================================================= */
-#define PORT92_P92ACT_ENABLE_Pos          (0UL)                     /*!< ENABLE (Bit 0)                                        */
-#define PORT92_P92ACT_ENABLE_Msk          (0x1UL)                   /*!< ENABLE (Bitfield-Mask: 0x01)                          */
+#define MEC_PORT92_P92ACT_ENABLE_Pos      (0UL)                     /*!< ENABLE (Bit 0)                                        */
+#define MEC_PORT92_P92ACT_ENABLE_Msk      (0x1UL)                   /*!< ENABLE (Bitfield-Mask: 0x01)                          */
+
 /** @} */ /* End of group PosMask_peripherals */
 
 #endif /* _MEC5_PORT92_V1_H */

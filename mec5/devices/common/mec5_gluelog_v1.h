@@ -11,10 +11,10 @@
   */
 
 /**
-  * @brief Glue Logic (GLUE)
+  * @brief Glue Logic (MEC_GLUE)
   */
 
-typedef struct glue_regs {                      /*!< (@ 0x400F3C00) GLUE Structure                                             */
+typedef struct mec_glue_regs {                  /*!< (@ 0x400F3C00) MEC_GLUE Structure                                         */
   __IM  uint32_t  RESERVED;
   __IOM uint8_t   S0IX_DEN;                     /*!< (@ 0x00000004) Glue Runtime: S0ix Detection Enable                        */
   __IM  uint8_t   RESERVED1;
@@ -26,7 +26,8 @@ typedef struct glue_regs {                      /*!< (@ 0x400F3C00) GLUE Structu
   __IM  uint32_t  SMON;                         /*!< (@ 0x00000128) Glue Signal Monitor State                                  */
   __IOM uint32_t  SMON_IPEND;                   /*!< (@ 0x0000012C) Glue Signal Monitor Interrupt Pending                      */
   __IOM uint32_t  SMON_IEN;                     /*!< (@ 0x00000130) Glue Signal Monitor Interrupt Enable                       */
-} GLUE_Type;                                    /*!< Size = 308 (0x134)                                                        */
+} MEC_GLUE_Type;                                /*!< Size = 308 (0x134)                                                        */
+
 /** @} */ /* End of group Device_Peripheral_peripherals */
 
 /** @} */ /* End of group EnumValue_peripherals */

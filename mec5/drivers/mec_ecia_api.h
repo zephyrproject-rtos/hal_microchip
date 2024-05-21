@@ -59,7 +59,7 @@ extern "C"
 #define MEC_ECIA_INIT_FLAG_ALL_DIRECT_NVIC 2
 #define MEC_ECIA_INIT_FLAG_ALL_AGGR_GIRQ 4
 
-void mec_ecia_init(uint32_t direct_bitmap, uint8_t dflt_priority, uint32_t flags);
+void mec_hal_ecia_init(uint32_t direct_bitmap, uint8_t dflt_priority, uint32_t flags);
 
 /*
  * The following routines do not globally mask interrupts and
@@ -69,21 +69,21 @@ void mec_ecia_init(uint32_t direct_bitmap, uint8_t dflt_priority, uint32_t flags
  * to priority, etc. will affect all peripheral sources connected to
  * the aggregated GIRQ.
  */
-void mec_girq_ctrl(uint32_t devi, int enable);
+void mec_hal_girq_ctrl(uint32_t devi, int enable);
 
-uint32_t mec_girq_src(uint32_t devi);
-uint32_t mec_girq_result(uint32_t devi);
+uint32_t mec_hal_girq_src(uint32_t devi);
+uint32_t mec_hal_girq_result(uint32_t devi);
 
-void mec_girq_clr_src(uint32_t devi);
+void mec_hal_girq_clr_src(uint32_t devi);
 
-int mec_girq_bm_en(uint32_t girq_num, uint32_t bitmap, uint8_t enable);
+int mec_hal_girq_bm_en(uint32_t girq_num, uint32_t bitmap, uint8_t enable);
 
-int mec_girq_bm_clr_src(uint32_t girq, uint32_t clr_src_bitmap);
+int mec_hal_girq_bm_clr_src(uint32_t girq, uint32_t clr_src_bitmap);
 
-uint32_t mec_girq_source_get(uint32_t girq_num);
-uint32_t mec_girq_result_get(uint32_t girq);
+uint32_t mec_hal_girq_source_get(uint32_t girq_num);
+uint32_t mec_hal_girq_result_get(uint32_t girq);
 
-uint32_t mec_girq_result_test(uint32_t girq, uint32_t bitpos);
+uint32_t mec_hal_girq_result_test(uint32_t girq, uint32_t bitpos);
 
 /* Check if a peripheral interrupt source is direct capable.
  * This is not a simple question.
@@ -92,21 +92,21 @@ uint32_t mec_girq_result_test(uint32_t girq, uint32_t bitpos);
  * developer calls mec_ecia_init() or duplicates its
  * functionality.
  */
-int mec_ecia_is_direct(uint32_t devi);
+int mec_hal_ecia_is_direct(uint32_t devi);
 
 /* NVIC external interrupt API
  * !!!! WARNING: Touching NVIC registers requires CPU in privileged mode !!!!
  */
-void mec_ecia_nvic_enable(uint32_t devi);
-void mec_ecia_nvic_disable(uint32_t devi);
+void mec_hal_ecia_nvic_enable(uint32_t devi);
+void mec_hal_ecia_nvic_disable(uint32_t devi);
 /* Clear NVIC interrupt pending for a specific device source */
-void mec_ecia_nvic_clr_pend(uint32_t devi);
+void mec_hal_ecia_nvic_clr_pend(uint32_t devi);
 /* Get NVIC interrupt pending status for a specific device source. */
-uint32_t mec_ecia_nvic_get_pending(uint32_t devi);
+uint32_t mec_hal_ecia_nvic_get_pending(uint32_t devi);
 /* Return peripheral source NVIC priority 0=highest,...,7=lowest */
-uint8_t mec_ecia_nvic_get_pri(uint32_t devi);
+uint8_t mec_hal_ecia_nvic_get_pri(uint32_t devi);
 /* Set peripheral's NVIC priority 0=highest,...,7=lowest */
-void mec_ecia_nvic_set_pri(uint32_t devi, uint8_t priority);
+void mec_hal_ecia_nvic_set_pri(uint32_t devi, uint8_t priority);
 
 #ifdef __cplusplus
 }

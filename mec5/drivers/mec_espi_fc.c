@@ -27,59 +27,59 @@
 
 /* Flash channel status errors */
 #define MEC_ESPI_FC_ERR_ALL \
-    (MEC_BIT(ESPI_IO_FCSTS_BAD_REQ_Pos) | MEC_BIT(ESPI_IO_FCSTS_START_OVRFL_Pos) \
-     | MEC_BIT(ESPI_IO_FCSTS_FAIL_Pos) | MEC_BIT(ESPI_IO_FCSTS_DATA_INCOMPL_Pos) \
-     | MEC_BIT(ESPI_IO_FCSTS_DATA_OVRUN_Pos) | MEC_BIT(ESPI_IO_FCSTS_ABORT_FW_Pos) \
-     | MEC_BIT(ESPI_IO_FCSTS_EC_BUS_ERR_Pos) | MEC_BIT(ESPI_IO_FCSTS_DIS_BY_HOST_Pos))
+    (MEC_BIT(MEC_ESPI_IO_FCSTS_BAD_REQ_Pos) | MEC_BIT(MEC_ESPI_IO_FCSTS_START_OVRFL_Pos) \
+     | MEC_BIT(MEC_ESPI_IO_FCSTS_FAIL_Pos) | MEC_BIT(MEC_ESPI_IO_FCSTS_DATA_INCOMPL_Pos) \
+     | MEC_BIT(MEC_ESPI_IO_FCSTS_DATA_OVRUN_Pos) | MEC_BIT(MEC_ESPI_IO_FCSTS_ABORT_FW_Pos) \
+     | MEC_BIT(MEC_ESPI_IO_FCSTS_EC_BUS_ERR_Pos) | MEC_BIT(MEC_ESPI_IO_FCSTS_DIS_BY_HOST_Pos))
 
 /* ---- Public API ---- */
 
-void mec_espi_fc_girq_ctrl(uint8_t enable)
+void mec_hal_espi_fc_girq_ctrl(uint8_t enable)
 {
-    mec_girq_ctrl(MEC_ESPI_FC_ECIA_INFO, (int)enable);
+    mec_hal_girq_ctrl(MEC_ESPI_FC_ECIA_INFO, (int)enable);
 }
 
-void mec_espi_fc_girq_status_clr(void)
+void mec_hal_espi_fc_girq_status_clr(void)
 {
-    mec_girq_clr_src(MEC_ESPI_FC_ECIA_INFO);
+    mec_hal_girq_clr_src(MEC_ESPI_FC_ECIA_INFO);
 }
 
-uint32_t mec_espi_fc_girq_status(void)
+uint32_t mec_hal_espi_fc_girq_status(void)
 {
-    return mec_girq_src(MEC_ESPI_FC_ECIA_INFO);
+    return mec_hal_girq_src(MEC_ESPI_FC_ECIA_INFO);
 }
 
-uint32_t mec_espi_fc_girq_result(void)
+uint32_t mec_hal_espi_fc_girq_result(void)
 {
-    return mec_girq_result(MEC_ESPI_FC_ECIA_INFO);
+    return mec_hal_girq_result(MEC_ESPI_FC_ECIA_INFO);
 }
 
 /* Flash channel HW bits for channel enable state and enable change match API definition:
  * bit[0] = enable state
  * bit[1] = enable state changed
  */
-uint32_t mec_espi_fc_en_status(struct espi_io_regs *iobase)
+uint32_t mec_hal_espi_fc_en_status(struct mec_espi_io_regs *iobase)
 {
     return (iobase->FCSTS & 0x3u);
 }
 
-void mec_espi_fc_ready_set(struct espi_io_regs *iobase)
+void mec_hal_espi_fc_ready_set(struct mec_espi_io_regs *iobase)
 {
-    iobase->FCRDY = MEC_BIT(ESPI_IO_FCRDY_FC_READY_Pos);
+    iobase->FCRDY = MEC_BIT(MEC_ESPI_IO_FCRDY_FC_READY_Pos);
 }
 
-int mec_espi_fc_is_ready(struct espi_io_regs *iobase)
+int mec_hal_espi_fc_is_ready(struct mec_espi_io_regs *iobase)
 {
-    if (iobase->FCRDY & MEC_BIT(ESPI_IO_FCRDY_FC_READY_Pos)) {
+    if (iobase->FCRDY & MEC_BIT(MEC_ESPI_IO_FCRDY_FC_READY_Pos)) {
         return 1;
     }
 
     return 0;
 }
 
-int mec_espi_fc_is_busy(struct espi_io_regs *iobase)
+int mec_hal_espi_fc_is_busy(struct mec_espi_io_regs *iobase)
 {
-    if (iobase->FCCFG & MEC_BIT(ESPI_IO_FCCFG_BUSY_Pos)) {
+    if (iobase->FCCFG & MEC_BIT(MEC_ESPI_IO_FCCFG_BUSY_Pos)) {
         return 1;
     }
 
@@ -93,25 +93,25 @@ int mec_espi_fc_is_busy(struct espi_io_regs *iobase)
  * 2. Enable or disable FC transfer done interrupt per passed flag
  * 3. Start transaction.
  */
-void mec_espi_fc_op_start(struct espi_io_regs *iobase, uint32_t flags)
+void mec_hal_espi_fc_op_start(struct mec_espi_io_regs *iobase, uint32_t flags)
 {
-    iobase->FCSTS = MEC_ESPI_FC_ERR_ALL | MEC_BIT(ESPI_IO_FCSTS_DONE_Pos);
+    iobase->FCSTS = MEC_ESPI_FC_ERR_ALL | MEC_BIT(MEC_ESPI_IO_FCSTS_DONE_Pos);
 
     if (flags & MEC_BIT(MEC_ESPI_FC_XFR_FLAG_START_IEN_POS)) {
-        iobase->FCIEN |= MEC_BIT(ESPI_IO_FCIEN_DONE_Pos);
+        iobase->FCIEN |= MEC_BIT(MEC_ESPI_IO_FCIEN_DONE_Pos);
     } else {
-        iobase->FCIEN &= (uint32_t)~MEC_BIT(ESPI_IO_FCIEN_DONE_Pos);
+        iobase->FCIEN &= (uint32_t)~MEC_BIT(MEC_ESPI_IO_FCIEN_DONE_Pos);
     }
 
-    iobase->FCCTL |= MEC_BIT(ESPI_IO_FCCTL_START_Pos);
+    iobase->FCCTL |= MEC_BIT(MEC_ESPI_IO_FCCTL_START_Pos);
 }
 
-void mec_espi_fc_op_abort(struct espi_io_regs *iobase)
+void mec_hal_espi_fc_op_abort(struct mec_espi_io_regs *iobase)
 {
-    iobase->FCCTL |= MEC_BIT(ESPI_IO_FCCTL_ABORT_Pos);
+    iobase->FCCTL |= MEC_BIT(MEC_ESPI_IO_FCCTL_ABORT_Pos);
 }
 
-void mec_espi_fc_intr_ctrl(struct espi_io_regs *iobase, uint32_t msk, uint8_t en)
+void mec_hal_espi_fc_intr_ctrl(struct mec_espi_io_regs *iobase, uint32_t msk, uint8_t en)
 {
     uint32_t r = 0;
 
@@ -120,10 +120,10 @@ void mec_espi_fc_intr_ctrl(struct espi_io_regs *iobase, uint32_t msk, uint8_t en
     }
 
     if (msk & MEC_BIT(MEC_ESPI_FC_INTR_DONE_POS)) {
-        r |= MEC_BIT(ESPI_IO_FCIEN_DONE_Pos);
+        r |= MEC_BIT(MEC_ESPI_IO_FCIEN_DONE_Pos);
     }
     if (msk & MEC_BIT(MEC_ESPI_FC_INTR_CHEN_CHG_POS)) {
-        r |= MEC_BIT(ESPI_IO_FCIEN_CHEN_CHG_Pos);
+        r |= MEC_BIT(MEC_ESPI_IO_FCIEN_CHEN_CHG_Pos);
     }
 
     if (en) {
@@ -133,7 +133,7 @@ void mec_espi_fc_intr_ctrl(struct espi_io_regs *iobase, uint32_t msk, uint8_t en
     }
 }
 
-uint32_t mec_espi_fc_status(struct espi_io_regs *iobase)
+uint32_t mec_hal_espi_fc_status(struct mec_espi_io_regs *iobase)
 {
     if (!iobase) {
         return 0;
@@ -142,17 +142,17 @@ uint32_t mec_espi_fc_status(struct espi_io_regs *iobase)
     return iobase->FCSTS;
 }
 
-void mec_espi_fc_status_clr(struct espi_io_regs *iobase, uint32_t msk)
+void mec_hal_espi_fc_status_clr(struct mec_espi_io_regs *iobase, uint32_t msk)
 {
     if (!iobase) {
         return;
     }
 
     iobase->FCSTS = msk;
-    mec_girq_clr_src(MEC_ESPI_FC_ECIA_INFO);
+    mec_hal_girq_clr_src(MEC_ESPI_FC_ECIA_INFO);
 }
 
-int mec_espi_fc_is_error(uint32_t fc_status)
+int mec_hal_espi_fc_is_error(uint32_t fc_status)
 {
     if (fc_status & (MEC_ESPI_FC_ERR_ALL)) {
         return 1;
@@ -162,11 +162,12 @@ int mec_espi_fc_is_error(uint32_t fc_status)
 }
 
 /* Return flash channel maximum read size selected by eSPI Host */
-uint32_t mec_espi_fc_max_read_req_sz(struct espi_io_regs *iobase)
+uint32_t mec_hal_espi_fc_max_read_req_sz(struct mec_espi_io_regs *iobase)
 {
     uint32_t exp = 0;
 
-    exp = (iobase->FCCFG & ESPI_IO_FCCFG_MAX_RD_REQ_SZ_Msk) >> ESPI_IO_FCCFG_MAX_RD_REQ_SZ_Pos;
+    exp = ((iobase->FCCFG & MEC_ESPI_IO_FCCFG_MAX_RD_REQ_SZ_Msk) >>
+            MEC_ESPI_IO_FCCFG_MAX_RD_REQ_SZ_Pos);
     if (exp == 0u) {
         return 0u;
     }
@@ -177,11 +178,11 @@ uint32_t mec_espi_fc_max_read_req_sz(struct espi_io_regs *iobase)
 }
 
 /* Return flash channel maximum payload size selected by eSPI Host */
-uint32_t mec_espi_fc_max_pld_sz(struct espi_io_regs *iobase)
+uint32_t mec_hal_espi_fc_max_pld_sz(struct mec_espi_io_regs *iobase)
 {
     uint32_t exp = 0;
 
-    exp = (iobase->FCCFG & ESPI_IO_FCCFG_MAX_PLD_SZ_Msk) >> ESPI_IO_FCCFG_MAX_PLD_SZ_Pos;
+    exp = (iobase->FCCFG & MEC_ESPI_IO_FCCFG_MAX_PLD_SZ_Msk) >> MEC_ESPI_IO_FCCFG_MAX_PLD_SZ_Pos;
     if ((exp == 0u) || (exp > 3u)) { /* reserved values */
         return 0u;
     }
@@ -196,7 +197,7 @@ uint32_t mec_espi_fc_max_pld_sz(struct espi_io_regs *iobase)
  * A return value of 0 indicates the flash channel has not been properly
  * configured during eSPI link negoitation.
  */
-uint32_t mec_espi_fc_get_erase_sz(struct espi_io_regs *iobase)
+uint32_t mec_hal_espi_fc_get_erase_sz(struct mec_espi_io_regs *iobase)
 {
     uint16_t erb1, erb2;
     uint8_t ersz_encoding;
@@ -205,25 +206,26 @@ uint32_t mec_espi_fc_get_erase_sz(struct espi_io_regs *iobase)
         return 0;
     }
 
-    ersz_encoding = (uint8_t)((iobase->FCCFG & ESPI_IO_FCCFG_EBSZ_Msk) >> ESPI_IO_FCCFG_EBSZ_Pos);
+    ersz_encoding =
+        (uint8_t)((iobase->FCCFG & MEC_ESPI_IO_FCCFG_EBSZ_Msk) >> MEC_ESPI_IO_FCCFG_EBSZ_Pos);
     switch (ersz_encoding) {
-    case ESPI_IO_FCCFG_EBSZ_4KB:
+    case MEC_ESPI_IO_FCCFG_EBSZ_4KB:
         erb1 = 4u;
         erb2 = erb1;
         break;
-    case ESPI_IO_FCCFG_EBSZ_64KB:
+    case MEC_ESPI_IO_FCCFG_EBSZ_64KB:
         erb1 = 64u;
         erb2 = erb1;
         break;
-    case ESPI_IO_FCCFG_EBSZ_4KB_OR_64KB:
+    case MEC_ESPI_IO_FCCFG_EBSZ_4KB_OR_64KB:
         erb1 = 4u;
         erb2 = 64u;
         break;
-    case ESPI_IO_FCCFG_EBSZ_128KB:
+    case MEC_ESPI_IO_FCCFG_EBSZ_128KB:
         erb1 = 128u;
         erb2 = erb1;
         break;
-    case ESPI_IO_FCCFG_EBSZ_256KB:
+    case MEC_ESPI_IO_FCCFG_EBSZ_256KB:
         erb1 = 256u;
         erb2 = erb1;
         break;
@@ -236,9 +238,9 @@ uint32_t mec_espi_fc_get_erase_sz(struct espi_io_regs *iobase)
     return (uint32_t)erb1 + ((uint32_t)erb2 << 16);
 }
 
-int mec_espi_fc_check_erase_sz(struct espi_io_regs *iobase, uint32_t ersz_bytes)
+int mec_hal_espi_fc_check_erase_sz(struct mec_espi_io_regs *iobase, uint32_t ersz_bytes)
 {
-    uint32_t ersz = mec_espi_fc_get_erase_sz(iobase);
+    uint32_t ersz = mec_hal_espi_fc_get_erase_sz(iobase);
     uint32_t er1 = (ersz & 0xffffu) * 1024u;
     uint32_t er2 = ((ersz >> 16) & 0xffffu) * 1024u;
 
@@ -261,9 +263,9 @@ int mec_espi_fc_check_erase_sz(struct espi_io_regs *iobase, uint32_t ersz_bytes)
  * size. FC hardware will signal done or error when the last request
  * is done or there was an error on any packet in the transaction.
  */
-int mec_espi_fc_xfr_start(struct espi_io_regs *iobase,
-                          struct mec_espi_fc_xfr *pxfr,
-                          uint32_t flags)
+int mec_hal_espi_fc_xfr_start(struct mec_espi_io_regs *iobase,
+                              struct mec_espi_fc_xfr *pxfr,
+                              uint32_t flags)
 {
     uint32_t xfr_len, fc_op;
 
@@ -276,45 +278,46 @@ int mec_espi_fc_xfr_start(struct espi_io_regs *iobase,
         return MEC_RET_ERR_DATA_ALIGN;
     }
 
-    if (mec_espi_fc_is_ready(iobase)) {
+    if (mec_hal_espi_fc_is_ready(iobase)) {
         return MEC_RET_ERR_HW_NOT_INIT;
     }
 
-    if (mec_espi_fc_is_busy(iobase)) {
+    if (mec_hal_espi_fc_is_busy(iobase)) {
         return MEC_RET_ERR_BUSY;
     }
 
     switch (pxfr->operation) {
     case MEC_ESPI_FC_OP_ERASE_L:
-        fc_op = ESPI_IO_FCCTL_OP_ERASE_LARGER;
+        fc_op = MEC_ESPI_IO_FCCTL_OP_ERASE_LARGER;
         xfr_len = MEC_ESPI_FC_ERASE_SIZE;
         break;
     case MEC_ESPI_FC_OP_ERASE_S:
-        fc_op = ESPI_IO_FCCTL_OP_ERASE_SMALLER;
+        fc_op = MEC_ESPI_IO_FCCTL_OP_ERASE_SMALLER;
         xfr_len = MEC_ESPI_FC_ERASE_SIZE;
         break;
     case MEC_ESPI_FC_OP_WRITE:
-        fc_op = ESPI_IO_FCCTL_OP_WRITE;
+        fc_op = MEC_ESPI_IO_FCCTL_OP_WRITE;
         xfr_len = pxfr->byte_len;
         break;
     default:
-        fc_op = ESPI_IO_FCCTL_OP_READ;
+        fc_op = MEC_ESPI_IO_FCCTL_OP_READ;
         xfr_len = pxfr->byte_len;
         break;
     }
 
-    iobase->FCIEN &= (uint32_t)~MEC_BIT(ESPI_IO_FCIEN_DONE_Pos);
-    iobase->FCSTS = MEC_ESPI_FC_ERR_ALL | MEC_BIT(ESPI_IO_FCSTS_DONE_Pos);
+    iobase->FCIEN &= (uint32_t)~MEC_BIT(MEC_ESPI_IO_FCIEN_DONE_Pos);
+    iobase->FCSTS = MEC_ESPI_FC_ERR_ALL | MEC_BIT(MEC_ESPI_IO_FCSTS_DONE_Pos);
     iobase->FCFA = pxfr->flash_addr;
     iobase->FCBA = pxfr->buf_addr;
     iobase->FCLEN = xfr_len;
     if (flags & MEC_BIT(MEC_ESPI_FC_XFR_FLAG_START_IEN_POS)) {
-        iobase->FCIEN |= MEC_BIT(ESPI_IO_FCIEN_DONE_Pos);
+        iobase->FCIEN |= MEC_BIT(MEC_ESPI_IO_FCIEN_DONE_Pos);
     }
 
-    iobase->FCCTL = ((((uint32_t)pxfr->tag << ESPI_IO_FCCTL_TAG_Pos) & ESPI_IO_FCCTL_TAG_Msk)
-                     | ((fc_op << ESPI_IO_FCCTL_OP_Pos) & ESPI_IO_FCCTL_OP_Msk)
-                     | MEC_BIT(ESPI_IO_FCCTL_START_Pos));
+    iobase->FCCTL = ((((uint32_t)pxfr->tag << MEC_ESPI_IO_FCCTL_TAG_Pos)
+                      & MEC_ESPI_IO_FCCTL_TAG_Msk)
+                     | ((fc_op << MEC_ESPI_IO_FCCTL_OP_Pos) & MEC_ESPI_IO_FCCTL_OP_Msk)
+                     | MEC_BIT(MEC_ESPI_IO_FCCTL_START_Pos));
 
     return MEC_RET_OK;
 }

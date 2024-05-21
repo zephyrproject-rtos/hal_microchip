@@ -11,10 +11,10 @@
   */
 
 /**
-  * @brief ACPI PM1 interface (ACPI_PM1)
+  * @brief ACPI PM1 interface (MEC_ACPI_PM1)
   */
 
-typedef struct acpi_pm1_regs {                  /*!< (@ 0x400F1C00) ACPI_PM1 Structure                                         */
+typedef struct mec_acpi_pm1_regs {              /*!< (@ 0x400F1C00) MEC_ACPI_PM1 Structure                                     */
   __IM  uint8_t   HSTS1;                        /*!< (@ 0x00000000) ACPI PM1 status 1                                          */
   __IOM uint8_t   HSTS2;                        /*!< (@ 0x00000001) ACPI PM1 status 2                                          */
   __IM  uint8_t   HEN1;                         /*!< (@ 0x00000002) ACPI PM1 status 1                                          */
@@ -34,7 +34,7 @@ typedef struct acpi_pm1_regs {                  /*!< (@ 0x400F1C00) ACPI_PM1 Str
   __IM  uint8_t   EP2CTRL2;                     /*!< (@ 0x00000107) EC-only: ACPI PM1 power-man 2 control 2                    */
   __IM  uint8_t   RESERVED1[8];
   __IOM uint8_t   EPMSTS1;                      /*!< (@ 0x00000110) EC-only: ACPI PM1 EC PM SCI Status                         */
-} ACPI_PM1_Type;                                /*!< Size = 273 (0x111)                                                        */
+} MEC_ACPI_PM1_Type;                            /*!< Size = 273 (0x111)                                                        */
 /** @} */ /* End of group Device_Peripheral_peripherals */
 
 #endif /* _MEC5_ACPI_PM1_V1_H */

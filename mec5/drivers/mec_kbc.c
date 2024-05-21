@@ -26,12 +26,12 @@
 
 static void port92h_ctrl(uint8_t enable)
 {
-    struct port92_regs *regs = (struct port92_regs *)PORT92_BASE;
+    struct mec_port92_regs *regs = (struct mec_port92_regs *)MEC_PORT92_BASE;
 
     if (enable) {
-        regs->P92ACT |= MEC_BIT(PORT92_P92ACT_ENABLE_Pos);
+        regs->P92ACT |= MEC_BIT(MEC_PORT92_P92ACT_ENABLE_Pos);
     } else {
-        regs->P92ACT &= (uint8_t)~MEC_BIT(PORT92_P92ACT_ENABLE_Pos);
+        regs->P92ACT &= (uint8_t)~MEC_BIT(MEC_PORT92_P92ACT_ENABLE_Pos);
     }
 }
 
@@ -66,84 +66,84 @@ static void port92h_ctrl(uint8_t enable)
  *  AUXH = 0. MIRQ goes active on writes to EC AUX Data register.
  *  AUXH = 1. MIRQ goes active on writes to AUXOBF bit in EC KB Status register.
  */
-int mec_kbc_init(struct kbc_regs *base, uint32_t flags)
+int mec_hal_kbc_init(struct mec_kbc_regs *base, uint32_t flags)
 {
     uint8_t ctrl = 0u, msk = 0u, val = 0u;
 
-    if ((uintptr_t)base != (uintptr_t)KBC0_BASE) {
+    if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_pcr_clr_blk_slp_en(MEC_PCR_KBC0);
+    mec_hal_pcr_clr_blk_slp_en(MEC_PCR_KBC0);
     if (flags & MEC_KBC_RESET) {
-        mec_pcr_blk_reset(MEC_PCR_KBC0);
+        mec_hal_pcr_blk_reset(MEC_PCR_KBC0);
     } else {
-        base->ACTV &= (uint8_t)~MEC_BIT(KBC_ACTV_ENABLE_Pos);
+        base->ACTV &= (uint8_t)~MEC_BIT(MEC_KBC_ACTV_ENABLE_Pos);
     }
 
-    mec_kbc_girq_dis(base, MEC_KBC_IBF_IRQ | MEC_KBC_OBE_IRQ);
-    mec_kbc_girq_clr(base, MEC_KBC_IBF_IRQ | MEC_KBC_OBE_IRQ);
+    mec_hal_kbc_girq_dis(base, MEC_KBC_IBF_IRQ | MEC_KBC_OBE_IRQ);
+    mec_hal_kbc_girq_clr(base, MEC_KBC_IBF_IRQ | MEC_KBC_OBE_IRQ);
 
     val = (flags & MEC_KBC_PORT92_EN) ? 1 : 0;
     port92h_ctrl(val);
 
     if (flags & MEC_KBC_GATEA20_FWC_EN) {
-        ctrl |= MEC_BIT(KBC_KECR_SAEN_Pos);
+        ctrl |= MEC_BIT(MEC_KBC_KECR_SAEN_Pos);
     }
 
     if (flags & (MEC_KBC_IBF_IRQ | MEC_KBC_OBE_IRQ)) {
-        ctrl |= MEC_BIT(KBC_KECR_OBFEN_Pos);
+        ctrl |= MEC_BIT(MEC_KBC_KECR_OBFEN_Pos);
     }
 
     if (flags & MEC_KBC_PCOBF_EN) {
-        ctrl |= MEC_BIT(KBC_KECR_PCOBFEN_Pos);
+        ctrl |= MEC_BIT(MEC_KBC_KECR_PCOBFEN_Pos);
     }
     if (flags & MEC_KBC_AUXOBF_EN) {
-        ctrl |= MEC_BIT(KBC_KECR_AUXH_Pos);
+        ctrl |= MEC_BIT(MEC_KBC_KECR_AUXH_Pos);
     }
 
     if (flags & MEC_KBC_UD3_SET) {
         if (flags & MEC_KBC_UD3_ONE) {
-            ctrl |= MEC_BIT(KBC_KECR_UD3_Pos);
+            ctrl |= MEC_BIT(MEC_KBC_KECR_UD3_Pos);
         }
     }
 
     if (flags & MEC_KBC_UD4_SET) {
         if (flags & MEC_KBC_UD4_0_ONE) {
-            ctrl |= MEC_BIT(KBC_KECR_UD4_Pos);
+            ctrl |= MEC_BIT(MEC_KBC_KECR_UD4_Pos);
         }
         if (flags & MEC_KBC_UD4_1_ONE) {
-            ctrl |= MEC_BIT(KBC_KECR_UD4_Pos + 1);
+            ctrl |= MEC_BIT(MEC_KBC_KECR_UD4_Pos + 1);
         }
     }
 
     if (flags & MEC_KBC_UD5_SET) {
         if (flags & MEC_KBC_UD5_ONE) {
-            ctrl |= MEC_BIT(KBC_KECR_UD5_Pos);
+            ctrl |= MEC_BIT(MEC_KBC_KECR_UD5_Pos);
         }
     }
 
     if (flags & MEC_KBC_UD0_SET) {
-        msk |= KBC_KESTATUS_UD0_Msk;
+        msk |= MEC_KBC_KESTATUS_UD0_Msk;
         if (flags & MEC_KBC_UD0_ONE) {
-            val |= MEC_BIT(KBC_KESTATUS_UD0_Pos);
+            val |= MEC_BIT(MEC_KBC_KESTATUS_UD0_Pos);
         }
     }
 
     if (flags & MEC_KBC_UD1_SET) {
-        msk |= KBC_KESTATUS_UD1_Msk;
+        msk |= MEC_KBC_KESTATUS_UD1_Msk;
         if (flags & MEC_KBC_UD1_SET) {
-            val |= MEC_BIT(KBC_KESTATUS_UD1_Pos);
+            val |= MEC_BIT(MEC_KBC_KESTATUS_UD1_Pos);
         }
     }
 
     if (flags & MEC_KBC_UD2_SET) {
-        msk |= KBC_KESTATUS_UD2_Msk;
+        msk |= MEC_KBC_KESTATUS_UD2_Msk;
         if (flags & MEC_KBC_UD2_0_ONE) {
-            val |= MEC_BIT(KBC_KESTATUS_UD2_Pos);
+            val |= MEC_BIT(MEC_KBC_KESTATUS_UD2_Pos);
         }
         if (flags & MEC_KBC_UD2_1_ONE) {
-            val |= MEC_BIT(KBC_KESTATUS_UD2_Pos + 1);
+            val |= MEC_BIT(MEC_KBC_KESTATUS_UD2_Pos + 1);
         }
     }
 
@@ -152,16 +152,16 @@ int mec_kbc_init(struct kbc_regs *base, uint32_t flags)
     }
 
     base->KECR = ctrl;
-    base->ACTV |= MEC_BIT(KBC_ACTV_ENABLE_Pos);
-    mec_kbc_girq_en(base, flags);
+    base->ACTV |= MEC_BIT(MEC_KBC_ACTV_ENABLE_Pos);
+    mec_hal_kbc_girq_en(base, flags);
 
     return MEC_RET_OK;
 }
 
-int mec_kbc_activate(struct kbc_regs *base, uint8_t enable, uint8_t flags)
+int mec_hal_kbc_activate(struct mec_kbc_regs *base, uint8_t enable, uint8_t flags)
 {
 #ifdef MEC_KBC_BASE_CHECK
-    if ((uintptr_t)base != (uintptr_t)KBC0_BASE) {
+    if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
 #endif
@@ -172,9 +172,9 @@ int mec_kbc_activate(struct kbc_regs *base, uint8_t enable, uint8_t flags)
 
     if (flags & MEC_KBC_ACTV_KBC) {
         if (enable) {
-            base->ACTV |= MEC_BIT(KBC_ACTV_ENABLE_Pos);
+            base->ACTV |= MEC_BIT(MEC_KBC_ACTV_ENABLE_Pos);
         } else {
-            base->ACTV &= (uint8_t)~MEC_BIT(KBC_ACTV_ENABLE_Pos);
+            base->ACTV &= (uint8_t)~MEC_BIT(MEC_KBC_ACTV_ENABLE_Pos);
         }
     }
 
@@ -196,62 +196,62 @@ static uint32_t kbc_irq_bitmap(uint32_t flags)
     return bm;
 }
 
-int mec_kbc_girq_en(struct kbc_regs *base, uint32_t flags)
+int mec_hal_kbc_girq_en(struct mec_kbc_regs *base, uint32_t flags)
 {
 #ifdef MEC_KBC_BASE_CHECK
-    if ((uintptr_t)base != (uintptr_t)KBC0_BASE) {
+    if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
 #endif
 
     uint32_t en_bitmap = kbc_irq_bitmap(flags);
 
-    mec_girq_bm_en(MEC_KBC_GIRQ, en_bitmap, 1u);
+    mec_hal_girq_bm_en(MEC_KBC_GIRQ, en_bitmap, 1u);
 
     return MEC_RET_OK;
 }
 
-int mec_kbc_girq_dis(struct kbc_regs *base, uint32_t flags)
+int mec_hal_kbc_girq_dis(struct mec_kbc_regs *base, uint32_t flags)
 {
 #ifdef MEC_KBC_BASE_CHECK
-    if ((uintptr_t)base != (uintptr_t)KBC0_BASE) {
+    if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
 #endif
 
     uint32_t dis_bitmap = kbc_irq_bitmap(flags);
 
-    mec_girq_bm_en(MEC_KBC_GIRQ, dis_bitmap, 0);
+    mec_hal_girq_bm_en(MEC_KBC_GIRQ, dis_bitmap, 0);
 
     return MEC_RET_OK;
 }
 
-int mec_kbc_girq_clr(struct kbc_regs *base, uint32_t flags)
+int mec_hal_kbc_girq_clr(struct mec_kbc_regs *base, uint32_t flags)
 {
 #ifdef MEC_KBC_BASE_CHECK
-    if ((uintptr_t)base != (uintptr_t)KBC0_BASE) {
+    if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
 #endif
 
     uint32_t clr_bitmap = kbc_irq_bitmap(flags);
 
-    mec_girq_bm_clr_src(MEC_KBC_GIRQ, clr_bitmap);
+    mec_hal_girq_bm_clr_src(MEC_KBC_GIRQ, clr_bitmap);
 
     return MEC_RET_OK;
 }
 
-uint32_t mec_kbc_girq_result(struct kbc_regs *base)
+uint32_t mec_kbc_girq_result(struct mec_kbc_regs *base)
 {
     uint32_t temp = 0u, result = 0u;
 
 #ifdef MEC_KBC_BASE_CHECK
-    if ((uintptr_t)base != (uintptr_t)KBC0_BASE) {
+    if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return 0;
     }
 #endif
 
-    temp = mec_girq_result_get(MEC_KBC_GIRQ);
+    temp = mec_hal_girq_result_get(MEC_KBC_GIRQ);
     if (temp & MEC_BIT(MEC_KBC_IBF_GIRQ_POS)) {
         result |= MEC_KBC_IBF_IRQ;
     }
@@ -262,40 +262,40 @@ uint32_t mec_kbc_girq_result(struct kbc_regs *base)
     return result;
 }
 
-int mec_kbc_is_enabled(struct kbc_regs *base)
+int mec_hal_kbc_is_enabled(struct mec_kbc_regs *base)
 {
 #ifdef MEC_KBC_BASE_CHECK
-    if ((uintptr_t)base != (uintptr_t)KBC0_BASE) {
+    if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return 0;
     }
 #endif
 
-    if (base->ACTV & MEC_BIT(KBC_ACTV_ENABLE_Pos)) {
+    if (base->ACTV & MEC_BIT(MEC_KBC_ACTV_ENABLE_Pos)) {
         return 1;
     }
 
     return 0;
 }
 
-int mec_kbc_is_irq_gen_enabled(struct kbc_regs *base)
+int mec_hal_kbc_is_irq_gen_enabled(struct mec_kbc_regs *base)
 {
 #ifdef MEC_KBC_BASE_CHECK
-    if ((uintptr_t)base != (uintptr_t)KBC0_BASE) {
+    if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return 0;
     }
 #endif
 
-    if (base->KECR & MEC_BIT(KBC_KECR_OBFEN_Pos)) {
+    if (base->KECR & MEC_BIT(MEC_KBC_KECR_OBFEN_Pos)) {
         return 1;
     }
 
     return 0;
 }
 
-uint8_t mec_kbc_status(struct kbc_regs *base)
+uint8_t mec_hal_kbc_status(struct mec_kbc_regs *base)
 {
 #ifdef MEC_KBC_BASE_CHECK
-    if ((uintptr_t)base != (uintptr_t)KBC0_BASE) {
+    if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return 0;
     }
 #endif
@@ -303,10 +303,10 @@ uint8_t mec_kbc_status(struct kbc_regs *base)
     return base->KESTATUS;
 }
 
-void mec_kbc_status_wr(struct kbc_regs *base, uint8_t val, uint8_t msk)
+void mec_hal_kbc_status_wr(struct mec_kbc_regs *base, uint8_t val, uint8_t msk)
 {
 #ifdef MEC_KBC_BASE_CHECK
-    if ((uintptr_t)base != (uintptr_t)KBC0_BASE) {
+    if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return;
     }
 #endif
@@ -314,10 +314,10 @@ void mec_kbc_status_wr(struct kbc_regs *base, uint8_t val, uint8_t msk)
     base->KESTATUS = (base->KESTATUS & ~msk) | (val & msk);
 }
 
-void mec_kbc_status_set(struct kbc_regs *base, uint8_t msk)
+void mec_hal_kbc_status_set(struct mec_kbc_regs *base, uint8_t msk)
 {
 #ifdef MEC_KBC_BASE_CHECK
-    if ((uintptr_t)base != (uintptr_t)KBC0_BASE) {
+    if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return;
     }
 #endif
@@ -325,10 +325,10 @@ void mec_kbc_status_set(struct kbc_regs *base, uint8_t msk)
     base->KESTATUS |= msk;
 }
 
-void mec_kbc_status_clear(struct kbc_regs *base, uint8_t msk)
+void mec_hal_kbc_status_clear(struct mec_kbc_regs *base, uint8_t msk)
 {
 #ifdef MEC_KBC_BASE_CHECK
-    if ((uintptr_t)base != (uintptr_t)KBC0_BASE) {
+    if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return;
     }
 #endif
@@ -336,10 +336,10 @@ void mec_kbc_status_clear(struct kbc_regs *base, uint8_t msk)
     base->KESTATUS &= (uint8_t)~msk;
 }
 
-void mec_kbc_wr_data(struct kbc_regs *base, uint8_t data, uint8_t data_is_aux)
+void mec_hal_kbc_wr_data(struct mec_kbc_regs *base, uint8_t data, uint8_t data_is_aux)
 {
 #ifdef MEC_KBC_BASE_CHECK
-    if ((uintptr_t)base != (uintptr_t)KBC0_BASE) {
+    if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return;
     }
 #endif
@@ -351,10 +351,10 @@ void mec_kbc_wr_data(struct kbc_regs *base, uint8_t data, uint8_t data_is_aux)
     }
 }
 
-uint8_t mec_kbc_rd_host_data(struct kbc_regs *base, uint8_t is_host_data_reg)
+uint8_t mec_hal_kbc_rd_host_data(struct mec_kbc_regs *base, uint8_t is_host_data_reg)
 {
 #ifdef MEC_KBC_BASE_CHECK
-    if ((uintptr_t)base != (uintptr_t)KBC0_BASE) {
+    if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
 #endif

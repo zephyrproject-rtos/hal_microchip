@@ -38,7 +38,7 @@
 /* ---- Public API ---- */
 
 /* Initialize BDP */
-int mec_bdp_init(struct bdp_regs *regs, uint32_t cfg_flags)
+int mec_hal_bdp_init(struct mec_bdp_regs *regs, uint32_t cfg_flags)
 {
     uint32_t temp = 0;
 
@@ -46,8 +46,8 @@ int mec_bdp_init(struct bdp_regs *regs, uint32_t cfg_flags)
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_girq_ctrl(MEC_BDP_ECIA_INFO, 0); /* disable */
-    mec_pcr_clr_blk_slp_en(MEC_PCR_P80BD0); /* clear sleep enable */
+    mec_hal_girq_ctrl(MEC_BDP_ECIA_INFO, 0); /* disable */
+    mec_hal_pcr_clr_blk_slp_en(MEC_PCR_P80BD0); /* clear sleep enable */
 
     regs->ACTV80 = 0;
     regs->ACTV80A = 0;
@@ -85,7 +85,7 @@ int mec_bdp_init(struct bdp_regs *regs, uint32_t cfg_flags)
     return MEC_RET_OK;
 }
 
-int mec_bdp_activate(struct bdp_regs *regs, uint8_t enable, uint8_t is_alias)
+int mec_hal_bdp_activate(struct mec_bdp_regs *regs, uint8_t enable, uint8_t is_alias)
 {
     if (!regs) {
         return MEC_RET_ERR_INVAL;
@@ -108,29 +108,29 @@ int mec_bdp_activate(struct bdp_regs *regs, uint8_t enable, uint8_t is_alias)
     return MEC_RET_OK;
 }
 
-int mec_bdp_girq_ctrl(struct bdp_regs *regs, uint8_t enable)
+int mec_hal_bdp_girq_ctrl(struct mec_bdp_regs *regs, uint8_t enable)
 {
     if (!regs) {
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_girq_ctrl(MEC_BDP_ECIA_INFO, enable);
+    mec_hal_girq_ctrl(MEC_BDP_ECIA_INFO, enable);
 
     return MEC_RET_OK;
 }
 
-int mec_bdp_girq_status_clr(struct bdp_regs *regs)
+int mec_hal_bdp_girq_status_clr(struct mec_bdp_regs *regs)
 {
     if (!regs) {
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_girq_clr_src(MEC_BDP_ECIA_INFO);
+    mec_hal_girq_clr_src(MEC_BDP_ECIA_INFO);
 
     return MEC_RET_OK;
 }
 
-int mec_bdp_fifo_thresh_set(struct bdp_regs *regs, uint32_t cfg_thrh)
+int mec_hal_bdp_fifo_thresh_set(struct mec_bdp_regs *regs, uint32_t cfg_thrh)
 {
     uint32_t temp;
 
@@ -149,7 +149,7 @@ const uint8_t fifo_cfg_xlat[] = {
     1u, 4u, 8u, 16u, 20u, 24u, 28u, 30u
 };
 
-uint32_t mec_bdp_fifo_thresh_get(struct bdp_regs *regs)
+uint32_t mec_hal_bdp_fifo_thresh_get(struct mec_bdp_regs *regs)
 {
     if (!regs) {
         return 0;
@@ -162,7 +162,7 @@ uint32_t mec_bdp_fifo_thresh_get(struct bdp_regs *regs)
 }
 
 /* The only interrupt is THRES_STAT. */
-void mec_bdp_intr_en(struct bdp_regs *regs, uint8_t enable)
+void mec_hal_bdp_intr_en(struct mec_bdp_regs *regs, uint8_t enable)
 {
     if (enable) {
         regs->IEN |= MEC_BIT(MEC_BDP_INTR_EN_THRES_POS);
@@ -180,12 +180,12 @@ void mec_bdp_intr_en(struct bdp_regs *regs, uint8_t enable)
  *              OR flushing FIFO
  *              OR increasing FIFO threshold
  */
-uint32_t mec_bdp_status(struct bdp_regs *regs)
+uint32_t mec_hal_bdp_status(struct mec_bdp_regs *regs)
 {
     return regs->STATUS;
 }
 
-uint32_t mec_bdp_snapshot(struct bdp_regs *regs)
+uint32_t mec_hal_bdp_snapshot(struct mec_bdp_regs *regs)
 {
     return regs->SNAP;
 }
@@ -224,7 +224,7 @@ uint32_t mec_bdp_snapshot(struct bdp_regs *regs)
  * API to get Host I/O cycles: data and bitmap of byte lanes
  *
  */
-int mec_bdp_get_host_io(struct bdp_regs *regs, struct mec_bdp_io *capio)
+int mec_hal_bdp_get_host_io(struct mec_bdp_regs *regs, struct mec_bdp_io *capio)
 {
     uint32_t iodata[4] = {0};
     uint16_t da = 0u;
@@ -239,11 +239,11 @@ int mec_bdp_get_host_io(struct bdp_regs *regs, struct mec_bdp_io *capio)
 
     da = regs->DATRB;
 
-    while (da & MEC_BIT(BDP_DATRB_NOT_EMPTY_Pos)) {
-        iosize = (da & BDP_DATRB_LEN_Msk) >> BDP_DATRB_LEN_Pos;
-        blane = (da & BDP_DATRB_LANE_Msk) >> BDP_DATRB_LANE_Pos;
+    while (da & MEC_BIT(MEC_BDP_DATRB_NOT_EMPTY_Pos)) {
+        iosize = (da & MEC_BDP_DATRB_LEN_Msk) >> MEC_BDP_DATRB_LEN_Pos;
+        blane = (da & MEC_BDP_DATRB_LANE_Msk) >> MEC_BDP_DATRB_LANE_Pos;
 
-        if (iosize == BDP_DATRB_LEN_IO8) {
+        if (iosize == MEC_BDP_DATRB_LEN_IO8) {
             iodata[blane] = da & 0xffu;
             ioflags |= MEC_BIT(blane);
             if (iowidth == 0) { /* single 8-bit I/O write */
@@ -254,11 +254,11 @@ int mec_bdp_get_host_io(struct bdp_regs *regs, struct mec_bdp_io *capio)
             } else if ((iowidth == 4) && (blane == 3u)) {
                 break;
             }
-        } else if (iosize == BDP_DATRB_LEN_IO16B0) { /* first byte of 16-bit Host I/O write */
+        } else if (iosize == MEC_BDP_DATRB_LEN_IO16B0) { /* first byte of 16-bit Host I/O write */
             iowidth = 2u;
             iodata[blane] = da & 0xffu;
             ioflags |= MEC_BIT(blane);
-        } else if (iosize == BDP_DATRB_LEN_IO32B0) { /* first byte of 32-bit Host I/O write */
+        } else if (iosize == MEC_BDP_DATRB_LEN_IO32B0) { /* first byte of 32-bit Host I/O write */
             iowidth = 4u;
             iodata[blane] = da & 0xffu;
             ioflags |= MEC_BIT(blane);

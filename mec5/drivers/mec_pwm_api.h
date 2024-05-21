@@ -21,7 +21,7 @@ extern "C"
 
 /* PWM Controller */
 
-struct pwm_regs;
+struct mec_pwm_regs;
 
 enum mec5_pwm_config {
     MEC5_PWM_CFG_ENABLE = MEC_BIT(0),
@@ -30,8 +30,8 @@ enum mec5_pwm_config {
 };
 
 /* Return PWM frequency input for hi range and lo range */
-uint32_t mec_pwm_hi_freq_input(void);
-uint32_t mec_pwm_lo_freq_input(void);
+uint32_t mec_hal_pwm_hi_freq_input(void);
+uint32_t mec_hal_pwm_lo_freq_input(void);
 
 /* Initialze a PWM instance
  * period_cycles is the number of PWM input frequency cycles in the desired
@@ -42,25 +42,26 @@ uint32_t mec_pwm_lo_freq_input(void);
  * range, invert output (active output is low instead of high), or reset the
  * PWM using PCR peripheral reset before configuration.
  */
-int mec_pwm_init(struct pwm_regs *regs, uint32_t period_cycles,
-                 uint32_t pulse_cycles, uint32_t flags);
+int mec_hal_pwm_init(struct mec_pwm_regs *regs, uint32_t period_cycles,
+                     uint32_t pulse_cycles, uint32_t flags);
 
-int mec_pwm_reset(struct pwm_regs *regs);
+int mec_hal_pwm_reset(struct mec_pwm_regs *regs);
 
-int mec_pwm_set_polarity(struct pwm_regs *regs, uint8_t polarity_inverted);
+int mec_hal_pwm_set_polarity(struct mec_pwm_regs *regs, uint8_t polarity_inverted);
 
-int mec_pwm_enable(struct pwm_regs *regs, uint8_t enable);
-int mec_pwm_is_enabled(struct pwm_regs *regs);
+int mec_hal_pwm_enable(struct mec_pwm_regs *regs, uint8_t enable);
+int mec_hal_pwm_is_enabled(struct mec_pwm_regs *regs);
 
 /* set output to inactive state based upon invert bit */
-int mec_pwm_off(struct pwm_regs *regs);
+int mec_hal_pwm_off(struct mec_pwm_regs *regs);
 /* set output to active state based upon invert bit */
-int mec_pwm_on(struct pwm_regs *regs);
+int mec_hal_pwm_on(struct mec_pwm_regs *regs);
 
-uint32_t mec_pwm_get_freq_in(struct pwm_regs *regs);
-uint32_t mec_pwm_get_count(struct pwm_regs *regs, uint8_t on_count);
-uint32_t mec_pwm_get_freq_out(struct pwm_regs *regs);
-int mec_pwm_set_freq_out(struct pwm_regs *regs, uint32_t period_cycles, uint32_t pulse_cycles);
+uint32_t mec_hal_pwm_get_freq_in(struct mec_pwm_regs *regs);
+uint32_t mec_hal_pwm_get_count(struct mec_pwm_regs *regs, uint8_t on_count);
+uint32_t mec_hal_pwm_get_freq_out(struct mec_pwm_regs *regs);
+int mec_hal_pwm_set_freq_out(struct mec_pwm_regs *regs, uint32_t period_cycles,
+                             uint32_t pulse_cycles);
 
 #ifdef __cplusplus
 }

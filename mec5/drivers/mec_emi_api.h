@@ -52,13 +52,13 @@ enum mec_emi_mem_region {
     MEC_EMI_MEM_REGION_NUM,
 };
 
-struct emi_regs; /* forward declaration */
+struct mec_emi_regs; /* forward declaration */
 
-int mec_emi_girq_ctrl(struct emi_regs *base, uint8_t enable);
-int mec_emi_girq_clr(struct emi_regs *base);
-uint32_t mec_emi_girq_result(struct emi_regs *base);
+int mec_hal_emi_girq_ctrl(struct mec_emi_regs *base, uint8_t enable);
+int mec_hal_emi_girq_clr(struct mec_emi_regs *base);
+uint32_t mec_hal_emi_girq_result(struct mec_emi_regs *base);
 
-int mec_emi_init(struct emi_regs *regs, uint32_t flags);
+int mec_hal_emi_init(struct mec_emi_regs *regs, uint32_t flags);
 
 #define MEC_EMI_MEMR_CFG_RW_MSK 0xfffcu
 #define MEC_EMI_MEMR_CFG_RDSZ_POS 0
@@ -78,19 +78,19 @@ int mec_emi_init(struct emi_regs *regs, uint32_t flags);
  * rwszs == 0 disables the region
  *
  */
-int mec_emi_mem_region_config(struct emi_regs *regs, uint8_t region,
-                              uint32_t mbase, uint32_t rwszs);
+int mec_hal_emi_mem_region_config(struct mec_emi_regs *regs, uint8_t region,
+                                  uint32_t mbase, uint32_t rwszs);
 
-int mec_emi_mbox_wr(struct emi_regs *regs, uint8_t host_to_ec, uint8_t val);
-uint8_t mec_emi_mbox_rd(struct emi_regs *regs, uint8_t host_to_ec);
+int mec_hal_emi_mbox_wr(struct mec_emi_regs *regs, uint8_t host_to_ec, uint8_t val);
+uint8_t mec_hal_emi_mbox_rd(struct mec_emi_regs *regs, uint8_t host_to_ec);
 
-int mec_emi_swi_set_one(struct emi_regs *regs, uint8_t swi_pos);
-int mec_emi_swi_set(struct emi_regs *regs, uint16_t swi_bit_map);
-int mec_emi_swi_host_clear_enable(struct emi_regs *regs, uint16_t mask, uint16_t enable);
+int mec_hal_emi_swi_set_one(struct mec_emi_regs *regs, uint8_t swi_pos);
+int mec_hal_emi_swi_set(struct mec_emi_regs *regs, uint16_t swi_bit_map);
+int mec_hal_emi_swi_host_clear_enable(struct mec_emi_regs *regs, uint16_t mask, uint16_t enable);
 
-int mec_emi_is_appid(struct emi_regs *regs, uint8_t appid);
-int mec_emi_clear_appid(struct emi_regs *regs, uint8_t appid);
-int mec_emi_clear_all_appid(struct emi_regs *regs);
+int mec_hal_emi_is_appid(struct mec_emi_regs *regs, uint8_t appid);
+int mec_hal_emi_clear_appid(struct mec_emi_regs *regs, uint8_t appid);
+int mec_hal_emi_clear_all_appid(struct mec_emi_regs *regs);
 
 #ifdef __cplusplus
 }

@@ -317,8 +317,8 @@ static void enable_girq_direct_bitmap(uint32_t bitmap)
             const struct mec_girq_route *pgr =
                 &girq_routing_tbl[bpos - MEC5_ECIA_FIRST_GIRQ_NOS];
 
-            if (pgr->nmap && !(ECIA0->BLK_EN_SET & MEC_BIT(bpos))) {
-                ECIA0->GIRQ[0].EN_SET = UINT32_MAX;
+            if (pgr->nmap && !(MEC_ECIA0->BLK_EN_SET & MEC_BIT(bpos))) {
+                MEC_ECIA0->GIRQ[0].EN_SET = UINT32_MAX;
             }
         }
 
@@ -347,7 +347,7 @@ static void set_all_pri(uint8_t dflt_priority)
 
 static inline int is_direct_allowed(void)
 {
-    if (ECS->INTR_CTRL & MEC_BIT(ECS_INTR_CTRL_DIRECT_Pos)) {
+    if (MEC_ECS->INTR_CTRL & MEC_BIT(MEC_ECS_INTR_CTRL_DIRECT_Pos)) {
         return 1;
     }
     return 0;
@@ -382,7 +382,7 @@ static inline int is_direct_allowed(void)
  * Each C2T VWire has an interrupt enable field. We should be able
  * to enable these.
  */
-void mec_ecia_init(uint32_t direct_bitmap, uint8_t dflt_priority, uint32_t flags)
+void mec_hal_ecia_init(uint32_t direct_bitmap, uint8_t dflt_priority, uint32_t flags)
 {
     uint32_t aggr_bitmap = 0, i = 0;
 
@@ -392,15 +392,15 @@ void mec_ecia_init(uint32_t direct_bitmap, uint8_t dflt_priority, uint32_t flags
     /* Disconnect all direct capable GIRQ sources from the NVIC
      * allowing us to clear direct NVIC pending bits
      */
-    ECS->INTR_CTRL &= ~(ECS_INTR_CTRL_DIRECT_Msk);
+    MEC_ECS->INTR_CTRL &= ~(MEC_ECS_INTR_CTRL_DIRECT_Msk);
 
     /* disconnect all GIRQ aggregated block outputs from NVIC */
-    ECIA0->BLK_EN_CLR = UINT32_MAX;
+    MEC_ECIA0->BLK_EN_CLR = UINT32_MAX;
 
     /* clear all ECIA GIRQ individual enables and status(source) bits */
     for (i = 0; i < MEC5_ECIA_NUM_GIRQS; i++) {
-        ECIA0->GIRQ[i].EN_CLR = UINT32_MAX;
-        ECIA0->GIRQ[i].SOURCE = UINT32_MAX;
+        MEC_ECIA0->GIRQ[i].EN_CLR = UINT32_MAX;
+        MEC_ECIA0->GIRQ[i].SOURCE = UINT32_MAX;
     }
 
     /* clear all NVIC enables and pending status */
@@ -416,7 +416,7 @@ void mec_ecia_init(uint32_t direct_bitmap, uint8_t dflt_priority, uint32_t flags
     aggr_bitmap = MEC5_ECIA_ALL_BITMAP & ~(direct_bitmap);
 
     /* Route all aggregated GIRQn outputs to NVIC */
-    ECIA0->BLK_EN_SET = aggr_bitmap;
+    MEC_ECIA0->BLK_EN_SET = aggr_bitmap;
     if (flags & MEC_ECIA_INIT_FLAG_ALL_AGGR_GIRQ) {
         enable_nvic_bitmap(aggr_bitmap, 0);
     }
@@ -424,8 +424,8 @@ void mec_ecia_init(uint32_t direct_bitmap, uint8_t dflt_priority, uint32_t flags
     /* enable any direct connections? */
     if (direct_bitmap) {
         /* Disconnect aggregated GIRQ output for direct mapped */
-        ECIA0->BLK_EN_CLR = direct_bitmap;
-        ECS->INTR_CTRL |= MEC_BIT(ECS_INTR_CTRL_DIRECT_Pos);
+        MEC_ECIA0->BLK_EN_CLR = direct_bitmap;
+        MEC_ECS->INTR_CTRL |= MEC_BIT(MEC_ECS_INTR_CTRL_DIRECT_Pos);
         if (flags & MEC_BIT(MEC_ECIA_INIT_FLAG_ALL_DIRECT_GIRQ)) {
             enable_girq_direct_bitmap(direct_bitmap);
         }
@@ -436,7 +436,7 @@ void mec_ecia_init(uint32_t direct_bitmap, uint8_t dflt_priority, uint32_t flags
 }
 
 /* Enable/disable multiple GIRQ sources */
-int mec_girq_bm_en(uint32_t girq_num, uint32_t bitmap, uint8_t enable)
+int mec_hal_girq_bm_en(uint32_t girq_num, uint32_t bitmap, uint8_t enable)
 {
     if ((girq_num < MEC5_ECIA_FIRST_GIRQ_NOS) || (girq_num > MEC5_ECIA_LAST_GIRQ_NOS)) {
         return MEC_RET_ERR_INVAL;
@@ -449,16 +449,16 @@ int mec_girq_bm_en(uint32_t girq_num, uint32_t bitmap, uint8_t enable)
     uint32_t gidx = girq_num - MEC5_ECIA_FIRST_GIRQ_NOS;
 
     if (enable) {
-        ECIA0->GIRQ[gidx].EN_SET = bitmap;
+        MEC_ECIA0->GIRQ[gidx].EN_SET = bitmap;
     } else {
-        ECIA0->GIRQ[gidx].EN_CLR = bitmap;
+        MEC_ECIA0->GIRQ[gidx].EN_CLR = bitmap;
     }
 
     return MEC_RET_OK;
 }
 
 /* Clear multiple GIRQ source(status) bits */
-int mec_girq_bm_clr_src(uint32_t girq_num, uint32_t bitmap)
+int mec_hal_girq_bm_clr_src(uint32_t girq_num, uint32_t bitmap)
 {
     if ((girq_num < MEC5_ECIA_FIRST_GIRQ_NOS) || (girq_num > MEC5_ECIA_LAST_GIRQ_NOS)) {
         return MEC_RET_ERR_INVAL;
@@ -470,12 +470,12 @@ int mec_girq_bm_clr_src(uint32_t girq_num, uint32_t bitmap)
 
     uint32_t gidx = girq_num - MEC5_ECIA_FIRST_GIRQ_NOS;
 
-    ECIA0->GIRQ[gidx].SOURCE = bitmap;
+    MEC_ECIA0->GIRQ[gidx].SOURCE = bitmap;
 
     return MEC_RET_OK;
 }
 
-uint32_t mec_girq_source_get(uint32_t girq_num)
+uint32_t mec_hal_girq_source_get(uint32_t girq_num)
 {
     if ((girq_num < MEC5_ECIA_FIRST_GIRQ_NOS) || (girq_num > MEC5_ECIA_LAST_GIRQ_NOS)) {
         return 0u;
@@ -483,10 +483,10 @@ uint32_t mec_girq_source_get(uint32_t girq_num)
 
     uint32_t gidx = girq_num - MEC5_ECIA_FIRST_GIRQ_NOS;
 
-    return ECIA0->GIRQ[gidx].SOURCE;
+    return MEC_ECIA0->GIRQ[gidx].SOURCE;
 }
 
-uint32_t mec_girq_result_get(uint32_t girq_num)
+uint32_t mec_hal_girq_result_get(uint32_t girq_num)
 {
     if ((girq_num < MEC5_ECIA_FIRST_GIRQ_NOS) || (girq_num > MEC5_ECIA_LAST_GIRQ_NOS)) {
         return 0u;
@@ -494,26 +494,26 @@ uint32_t mec_girq_result_get(uint32_t girq_num)
 
     uint32_t gidx = girq_num - MEC5_ECIA_FIRST_GIRQ_NOS;
 
-    return ECIA0->GIRQ[gidx].RESULT;
+    return MEC_ECIA0->GIRQ[gidx].RESULT;
 }
 
-uint32_t mec_girq_result_test(uint32_t girq_num, uint32_t bitpos)
+uint32_t mec_hal_girq_result_test(uint32_t girq_num, uint32_t bitpos)
 {
-    uint32_t result = mec_girq_result_get(girq_num);
+    uint32_t result = mec_hal_girq_result_get(girq_num);
 
     return (result & MEC_BIT(bitpos));
 }
 
 /* Set or clear GIRQ enable for a peripheral source. */
-void mec_girq_ctrl(uint32_t devi, int enable)
+void mec_hal_girq_ctrl(uint32_t devi, int enable)
 {
     uint32_t gidx = MEC5_ECIA_INFO_GIRQZ(devi);
     uint32_t gpos = MEC5_ECIA_INFO_GIRQ_POS(devi);
 
     if (enable) { /* write 1 to set register */
-        ECIA0->GIRQ[gidx].EN_SET = MEC_BIT(gpos);
+        MEC_ECIA0->GIRQ[gidx].EN_SET = MEC_BIT(gpos);
     } else { /* write 1 to clear register */
-        ECIA0->GIRQ[gidx].EN_CLR = MEC_BIT(gpos);
+        MEC_ECIA0->GIRQ[gidx].EN_CLR = MEC_BIT(gpos);
     }
 }
 
@@ -521,30 +521,30 @@ void mec_girq_ctrl(uint32_t devi, int enable)
  * Return 0 if source not set else non-zero
  * (single bit should be set in word)
  */
-uint32_t mec_girq_src(uint32_t devi)
+uint32_t mec_hal_girq_src(uint32_t devi)
 {
     uint32_t gidx = MEC5_ECIA_INFO_GIRQZ(devi);
     uint32_t gpos = MEC5_ECIA_INFO_GIRQ_POS(devi);
 
-    return ECIA0->GIRQ[gidx].SOURCE & MEC_BIT(gpos);
+    return MEC_ECIA0->GIRQ[gidx].SOURCE & MEC_BIT(gpos);
 }
 
-uint32_t mec_girq_result(uint32_t devi)
+uint32_t mec_hal_girq_result(uint32_t devi)
 {
     uint32_t gidx = MEC5_ECIA_INFO_GIRQZ(devi);
     uint32_t gpos = MEC5_ECIA_INFO_GIRQ_POS(devi);
 
-    return ECIA0->GIRQ[gidx].RESULT & MEC_BIT(gpos);
+    return MEC_ECIA0->GIRQ[gidx].RESULT & MEC_BIT(gpos);
 }
 
 /* Clear GIRQ source(status) for a peripheral source. */
-void mec_girq_clr_src(uint32_t devi)
+void mec_hal_girq_clr_src(uint32_t devi)
 {
     uint32_t gidx = MEC5_ECIA_INFO_GIRQZ(devi);
     uint32_t gpos = MEC5_ECIA_INFO_GIRQ_POS(devi);
 
     /* register is write 1 to clear bit(s) */
-    ECIA0->GIRQ[gidx].SOURCE = MEC_BIT(gpos);
+    MEC_ECIA0->GIRQ[gidx].SOURCE = MEC_BIT(gpos);
 }
 
 /*
@@ -554,7 +554,7 @@ void mec_girq_clr_src(uint32_t devi)
  * developer calls mec_ecia_init() or duplicates its
  * functionality.
  */
-int mec_ecia_is_direct(uint32_t devi)
+int mec_hal_ecia_is_direct(uint32_t devi)
 {
     /* Is direct mode disabled? */
     if (!is_direct_allowed()) {
@@ -568,7 +568,7 @@ int mec_ecia_is_direct(uint32_t devi)
     }
 
     /* Is aggregated GIRQ routed to NVIC? */
-    if (ECIA0->BLK_EN_SET & MEC_BIT(girq_num)) {
+    if (MEC_ECIA0->BLK_EN_SET & MEC_BIT(girq_num)) {
         return 0; /* Yes, don't use direct */
     }
 
@@ -577,66 +577,66 @@ int mec_ecia_is_direct(uint32_t devi)
 
 /* !!! Touches NVIC register(s). Caller must be Privileged !!! */
 
-void mec_ecia_nvic_enable(uint32_t devi)
+void mec_hal_ecia_nvic_enable(uint32_t devi)
 {
     uint32_t nvic_extn = MEC5_ECIA_INFO_NVIC_AGGR(devi);
 
-    if (mec_ecia_is_direct(devi)) {
+    if (mec_hal_ecia_is_direct(devi)) {
         nvic_extn = MEC5_ECIA_INFO_NVIC_DIRECT(devi);
     }
 
     nvic_extirq_enable(nvic_extn);
 }
 
-void mec_ecia_nvic_disable(uint32_t devi)
+void mec_hal_ecia_nvic_disable(uint32_t devi)
 {
     uint32_t nvic_extn = MEC5_ECIA_INFO_NVIC_AGGR(devi);
 
-    if (mec_ecia_is_direct(devi)) {
+    if (mec_hal_ecia_is_direct(devi)) {
         nvic_extn = MEC5_ECIA_INFO_NVIC_DIRECT(devi);
     }
 
     nvic_extirq_disable(nvic_extn);
 }
 
-void mec_ecia_nvic_clr_pend(uint32_t devi)
+void mec_hal_ecia_nvic_clr_pend(uint32_t devi)
 {
     uint32_t nvic_extn = MEC5_ECIA_INFO_NVIC_AGGR(devi);
 
-    if (mec_ecia_is_direct(devi)) {
+    if (mec_hal_ecia_is_direct(devi)) {
         nvic_extn = MEC5_ECIA_INFO_NVIC_DIRECT(devi);
     }
 
     nvic_extirq_pend_clear(nvic_extn);
 }
 
-uint32_t mec_ecia_nvic_get_pending(uint32_t devi)
+uint32_t mec_hal_ecia_nvic_get_pending(uint32_t devi)
 {
     uint32_t extn = MEC5_ECIA_INFO_NVIC_AGGR(devi);
 
-    if (mec_ecia_is_direct(devi)) {
+    if (mec_hal_ecia_is_direct(devi)) {
         extn = MEC5_ECIA_INFO_NVIC_DIRECT(devi);
     }
 
     return nvic_extirq_pend_get(extn);
 }
 
-uint8_t mec_ecia_nvic_get_pri(uint32_t devi)
+uint8_t mec_hal_ecia_nvic_get_pri(uint32_t devi)
 {
     uint32_t extn = MEC5_ECIA_INFO_NVIC_AGGR(devi);
 
-    if (mec_ecia_is_direct(devi)) {
+    if (mec_hal_ecia_is_direct(devi)) {
         extn = MEC5_ECIA_INFO_NVIC_DIRECT(devi);
     }
 
     return (uint8_t)(nvic_extirq_priority_get(extn));
 }
 
-void mec_ecia_nvic_set_pri(uint32_t devi, uint8_t priority)
+void mec_hal_ecia_nvic_set_pri(uint32_t devi, uint8_t priority)
 {
     uint32_t extn = MEC5_ECIA_INFO_NVIC_AGGR(devi);
 
-    if (mec_ecia_is_direct(devi)) {
+    if (mec_hal_ecia_is_direct(devi)) {
         extn = MEC5_ECIA_INFO_NVIC_DIRECT(devi);
     }
 
