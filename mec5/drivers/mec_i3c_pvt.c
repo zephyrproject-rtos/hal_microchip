@@ -20,7 +20,7 @@
  *
  * @param regs Pointer to controller registers
  */
-uint32_t _i3c_intr_sts_get(struct i3c_host_regs *regs)
+uint32_t _i3c_intr_sts_get(struct mec_i3c_host_regs *regs)
 {
     return regs->INTR_STS;
 }
@@ -30,7 +30,7 @@ uint32_t _i3c_intr_sts_get(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_intr_sts_clear(struct i3c_host_regs *regs, uint32_t mask)
+void _i3c_intr_sts_clear(struct mec_i3c_host_regs *regs, uint32_t mask)
 {
     regs->INTR_STS = mask;
 }
@@ -40,7 +40,7 @@ void _i3c_intr_sts_clear(struct i3c_host_regs *regs, uint32_t mask)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_intr_sts_enable(struct i3c_host_regs *regs, uint32_t mask)
+void _i3c_intr_sts_enable(struct mec_i3c_host_regs *regs, uint32_t mask)
 {
     regs->INTR_EN = mask;
 }
@@ -50,7 +50,7 @@ void _i3c_intr_sts_enable(struct i3c_host_regs *regs, uint32_t mask)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_intr_IBI_enable(struct i3c_host_regs *regs)
+void _i3c_intr_IBI_enable(struct mec_i3c_host_regs *regs)
 {
     regs->INTR_EN |= sbit_IBI_THLD_STS;
 
@@ -62,7 +62,7 @@ void _i3c_intr_IBI_enable(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_intr_IBI_disable(struct i3c_host_regs *regs)
+void _i3c_intr_IBI_disable(struct mec_i3c_host_regs *regs)
 {
     regs->INTR_EN &= ~sbit_IBI_THLD_STS;
 
@@ -74,7 +74,7 @@ void _i3c_intr_IBI_disable(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_intr_thresholds_tx_enable(struct i3c_host_regs *regs)
+void _i3c_intr_thresholds_tx_enable(struct mec_i3c_host_regs *regs)
 {
     regs->INTR_EN |= sbit_TX_THLD_STS;
 
@@ -86,7 +86,7 @@ void _i3c_intr_thresholds_tx_enable(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_intr_thresholds_tx_disable(struct i3c_host_regs *regs)
+void _i3c_intr_thresholds_tx_disable(struct mec_i3c_host_regs *regs)
 {
     regs->INTR_EN &= ~sbit_TX_THLD_STS;
 
@@ -98,7 +98,7 @@ void _i3c_intr_thresholds_tx_disable(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_intr_thresholds_rx_enable(struct i3c_host_regs *regs)
+void _i3c_intr_thresholds_rx_enable(struct mec_i3c_host_regs *regs)
 {
     regs->INTR_EN |= sbit_RX_THLD_STS;
 
@@ -110,7 +110,7 @@ void _i3c_intr_thresholds_rx_enable(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_intr_thresholds_rx_disable(struct i3c_host_regs *regs)
+void _i3c_intr_thresholds_rx_disable(struct mec_i3c_host_regs *regs)
 {
     regs->INTR_EN &= ~sbit_RX_THLD_STS;
 
@@ -122,7 +122,7 @@ void _i3c_intr_thresholds_rx_disable(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_intr_sgnl_enable(struct i3c_host_regs *regs, uint32_t mask)
+void _i3c_intr_sgnl_enable(struct mec_i3c_host_regs *regs, uint32_t mask)
 {
     regs->INTR_SIG_EN = mask;
 }
@@ -132,7 +132,7 @@ void _i3c_intr_sgnl_enable(struct i3c_host_regs *regs, uint32_t mask)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_resp_queue_threshold_set(struct i3c_host_regs *regs, uint8_t threshold)
+void _i3c_resp_queue_threshold_set(struct mec_i3c_host_regs *regs, uint8_t threshold)
 {
     if (threshold < I3C_RESPONSE_BUFFER_DEPTH)
     {
@@ -146,7 +146,7 @@ void _i3c_resp_queue_threshold_set(struct i3c_host_regs *regs, uint8_t threshold
  *
  * @param regs Pointer to controller registers
  */
-uint8_t _i3c_resp_buf_level_get(struct i3c_host_regs *regs)
+uint8_t _i3c_resp_buf_level_get(struct mec_i3c_host_regs *regs)
 {
     volatile uint8_t level = 0;
 
@@ -160,7 +160,7 @@ uint8_t _i3c_resp_buf_level_get(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-uint8_t _i3c_ibi_status_count_get(struct i3c_host_regs *regs)
+uint8_t _i3c_ibi_status_count_get(struct mec_i3c_host_regs *regs)
 {
     volatile uint8_t level = 0;
 
@@ -174,7 +174,7 @@ uint8_t _i3c_ibi_status_count_get(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-uint32_t _i3c_ibi_queue_status_get(struct i3c_host_regs *regs)
+uint32_t _i3c_ibi_queue_status_get(struct mec_i3c_host_regs *regs)
 {
     volatile uint32_t queue_sts = 0;
 
@@ -188,7 +188,7 @@ uint32_t _i3c_ibi_queue_status_get(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-uint8_t _i3c_response_sts_get(struct i3c_host_regs *regs, uint16_t *len, uint8_t *tid)
+uint8_t _i3c_response_sts_get(struct mec_i3c_host_regs *regs, uint16_t *len, uint8_t *tid)
 {
     volatile uint32_t response = 0;
     uint8_t resp_sts;
@@ -208,7 +208,8 @@ uint8_t _i3c_response_sts_get(struct i3c_host_regs *regs, uint16_t *len, uint8_t
  *
  * @param regs Pointer to controller registers
  */
-uint8_t _i3c_tgt_response_sts_get(struct i3c_sec_regs *regs, uint16_t *len, uint8_t *tid, bool *rx_response)
+uint8_t _i3c_tgt_response_sts_get(struct mec_i3c_sec_regs *regs, uint16_t *len, uint8_t *tid,
+                                  bool *rx_response)
 {
     volatile uint32_t response = 0;
     uint8_t resp_sts, rx_rsp_bit;
@@ -234,7 +235,7 @@ uint8_t _i3c_tgt_response_sts_get(struct i3c_sec_regs *regs, uint16_t *len, uint
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_cmd_queue_threshold_set(struct i3c_host_regs *regs, uint32_t val)
+void _i3c_cmd_queue_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
     regs->QUE_THLD_CTRL &= ~(0xFF << QUEUE_THLD_CMD_QUEUE_BITPOS);
     regs->QUE_THLD_CTRL |= (val << QUEUE_THLD_CMD_QUEUE_BITPOS);
@@ -245,7 +246,7 @@ void _i3c_cmd_queue_threshold_set(struct i3c_host_regs *regs, uint32_t val)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_ibi_data_threshold_set(struct i3c_host_regs *regs, uint32_t val)
+void _i3c_ibi_data_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
     regs->QUE_THLD_CTRL &= ~(0xFF << QUEUE_THLD_IBI_DATA_BITPOS);
     regs->QUE_THLD_CTRL |= (val << QUEUE_THLD_IBI_DATA_BITPOS);
@@ -256,7 +257,7 @@ void _i3c_ibi_data_threshold_set(struct i3c_host_regs *regs, uint32_t val)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_ibi_status_threshold_set(struct i3c_host_regs *regs, uint32_t val)
+void _i3c_ibi_status_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
     regs->QUE_THLD_CTRL &= ~(0xFF << QUEUE_THLD_IBI_STATUS_BITPOS);
     regs->QUE_THLD_CTRL |= (val << QUEUE_THLD_IBI_STATUS_BITPOS);
@@ -267,7 +268,7 @@ void _i3c_ibi_status_threshold_set(struct i3c_host_regs *regs, uint32_t val)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_tx_buf_threshold_set(struct i3c_host_regs *regs, uint32_t val)
+void _i3c_tx_buf_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
     regs->DB_THLD_CTRL &= ~(0xFF << DATA_BUF_THLD_TX_FIFO_EMPTY_BITPOS);
     regs->DB_THLD_CTRL |= (val << DATA_BUF_THLD_TX_FIFO_EMPTY_BITPOS);
@@ -278,7 +279,7 @@ void _i3c_tx_buf_threshold_set(struct i3c_host_regs *regs, uint32_t val)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_rx_buf_threshold_set(struct i3c_host_regs *regs, uint32_t val)
+void _i3c_rx_buf_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
     regs->DB_THLD_CTRL &= ~(0xFF << DATA_BUF_THLD_RX_FIFO_BITPOS);
     regs->DB_THLD_CTRL |= (val << DATA_BUF_THLD_RX_FIFO_BITPOS);
@@ -289,7 +290,7 @@ void _i3c_rx_buf_threshold_set(struct i3c_host_regs *regs, uint32_t val)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_tx_start_threshold_set(struct i3c_host_regs *regs, uint32_t val)
+void _i3c_tx_start_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
     regs->DB_THLD_CTRL &= ~(0xFF << DATA_BUF_THLD_TX_FIFO_START_BITPOS);
     regs->DB_THLD_CTRL |= (val << DATA_BUF_THLD_TX_FIFO_START_BITPOS);
@@ -300,7 +301,7 @@ void _i3c_tx_start_threshold_set(struct i3c_host_regs *regs, uint32_t val)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_rx_start_threshold_set(struct i3c_host_regs *regs, uint32_t val)
+void _i3c_rx_start_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
      regs->DB_THLD_CTRL &= ~(0xFF << DATA_BUF_THLD_RX_FIFO_START_BITPOS);
      regs->DB_THLD_CTRL |= (val << DATA_BUF_THLD_RX_FIFO_START_BITPOS);
@@ -311,7 +312,7 @@ void _i3c_rx_start_threshold_set(struct i3c_host_regs *regs, uint32_t val)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_notify_sir_reject(struct i3c_host_regs *regs, bool opt)
+void _i3c_notify_sir_reject(struct mec_i3c_host_regs *regs, bool opt)
 {
     regs->IBI_QUE_CTRL = (opt << IBI_QUEUE_CTRL_SIR_REJ_BITPOS);
 }
@@ -321,7 +322,7 @@ void _i3c_notify_sir_reject(struct i3c_host_regs *regs, bool opt)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_notify_mr_reject(struct i3c_host_regs *regs, bool opt)
+void _i3c_notify_mr_reject(struct mec_i3c_host_regs *regs, bool opt)
 {
     regs->IBI_QUE_CTRL = (opt << IBI_QUEUE_CTRL_MR_REJ_BITPOS);
 }
@@ -331,7 +332,7 @@ void _i3c_notify_mr_reject(struct i3c_host_regs *regs, bool opt)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_notify_hj_reject(struct i3c_host_regs *regs, bool opt)
+void _i3c_notify_hj_reject(struct mec_i3c_host_regs *regs, bool opt)
 {
     regs->IBI_QUE_CTRL = (opt << IBI_QUEUE_CTRL_HJ_REJ_BITPOS);
 }
@@ -342,7 +343,7 @@ void _i3c_notify_hj_reject(struct i3c_host_regs *regs, bool opt)
  * @param regs Pointer to controller registers
  * @param address 7-bit dynamic address
  */
-void _i3c_dynamic_addr_set(struct i3c_host_regs *regs, uint8_t address)
+void _i3c_dynamic_addr_set(struct mec_i3c_host_regs *regs, uint8_t address)
 {
     regs->DEV_ADDR = ((address & 0x7F) << DEVICE_ADDR_DYNAMIC_ADDR_BITPOS) |
                      sbit_DEVICE_ADDR_DYNAMIC_ADDR_VALID;
@@ -354,7 +355,7 @@ void _i3c_dynamic_addr_set(struct i3c_host_regs *regs, uint8_t address)
  * @param regs Pointer to controller registers
  * @param address 7-bit static address
  */
-void _i3c_static_addr_set(struct i3c_host_regs *regs, uint8_t address)
+void _i3c_static_addr_set(struct mec_i3c_host_regs *regs, uint8_t address)
 {
     volatile uint32_t reg_val;
 
@@ -371,7 +372,7 @@ void _i3c_static_addr_set(struct i3c_host_regs *regs, uint8_t address)
  * @param regs Pointer to controller registers
  * @param mode device mode - 0-Controller, 1-Target
  */
-void _i3c_operation_mode_set(struct i3c_host_regs *regs, uint8_t mode)
+void _i3c_operation_mode_set(struct mec_i3c_host_regs *regs, uint8_t mode)
 {
     regs->DEV_EXT_CTRL = mode & 0x1;
 }
@@ -382,7 +383,7 @@ void _i3c_operation_mode_set(struct i3c_host_regs *regs, uint8_t mode)
  * @param regs Pointer to controller registers
  * @param mode device mode - 0-Controller, 1-Target
  */
-void _i3c_enable(struct i3c_host_regs *regs, uint8_t mode, bool enable_dma)
+void _i3c_enable(struct mec_i3c_host_regs *regs, uint8_t mode, bool enable_dma)
 {
     uint32_t val;
 
@@ -409,7 +410,7 @@ void _i3c_enable(struct i3c_host_regs *regs, uint8_t mode, bool enable_dma)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_disable(struct i3c_host_regs *regs)
+void _i3c_disable(struct mec_i3c_host_regs *regs)
 {
     volatile uint32_t val = 0;
 
@@ -426,7 +427,7 @@ void _i3c_disable(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_resume(struct i3c_host_regs *regs)
+void _i3c_resume(struct mec_i3c_host_regs *regs)
 {
     regs->DEV_CTRL |= sbit_RESUME;
 }
@@ -436,7 +437,7 @@ void _i3c_resume(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_xfer_err_sts_clr(struct i3c_host_regs *regs)
+void _i3c_xfer_err_sts_clr(struct mec_i3c_host_regs *regs)
 {
     volatile uint32_t sts = 0;
 
@@ -454,7 +455,7 @@ void _i3c_xfer_err_sts_clr(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_hot_join_disable(struct i3c_host_regs *regs)
+void _i3c_hot_join_disable(struct mec_i3c_host_regs *regs)
 {
     volatile uint32_t val = 0;
 
@@ -474,7 +475,7 @@ void _i3c_hot_join_disable(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to secondary controller registers
  */
-void _i3c_tgt_hot_join_disable(struct i3c_sec_regs *regs)
+void _i3c_tgt_hot_join_disable(struct mec_i3c_sec_regs *regs)
 {
     volatile uint32_t val = 0;
 
@@ -492,7 +493,7 @@ void _i3c_tgt_hot_join_disable(struct i3c_sec_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_hot_join_enable(struct i3c_host_regs *regs)
+void _i3c_hot_join_enable(struct mec_i3c_host_regs *regs)
 {
     volatile uint32_t val = 0;
 
@@ -511,7 +512,7 @@ void _i3c_hot_join_enable(struct i3c_host_regs *regs)
  * @param regs Pointer to controller registers
  * @param core_clk_freq_ns Core clock frequency in nanoseconds
  */
-void _i2c_fm_timing_set(struct i3c_host_regs *regs, uint32_t core_clk_freq_ns)
+void _i2c_fm_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk_freq_ns)
 {
     uint16_t low_count, high_count;
     uint32_t timing_val;
@@ -542,7 +543,7 @@ void _i2c_fm_timing_set(struct i3c_host_regs *regs, uint32_t core_clk_freq_ns)
  * @param regs Pointer to controller registers
  * @param core_clk_freq_ns Core clock frequency in nanoseconds
  */
-void _i3c_bus_free_timing_set(struct i3c_sec_regs *regs, uint32_t core_clk_freq_ns)
+void _i3c_bus_free_timing_set(struct mec_i3c_sec_regs *regs, uint32_t core_clk_freq_ns)
 {
     uint16_t bus_free_timing_count;
 
@@ -561,7 +562,7 @@ void _i3c_bus_free_timing_set(struct i3c_sec_regs *regs, uint32_t core_clk_freq_
  * @param regs Pointer to controller registers
  * @param core_clk_freq_ns Core clock frequency in nanoseconds
  */
-void _i3c_bus_available_timing_set(struct i3c_sec_regs *regs, uint32_t core_clk_freq_ns)
+void _i3c_bus_available_timing_set(struct mec_i3c_sec_regs *regs, uint32_t core_clk_freq_ns)
 {
     uint16_t bus_avail_timing_count;
 
@@ -579,7 +580,7 @@ void _i3c_bus_available_timing_set(struct i3c_sec_regs *regs, uint32_t core_clk_
  * @param regs Pointer to controller registers
  * @param core_clk_freq_ns Core clock frequency in nanoseconds
  */
-void _i3c_bus_idle_timing_set(struct i3c_sec_regs *regs, uint32_t core_clk_freq_ns)
+void _i3c_bus_idle_timing_set(struct mec_i3c_sec_regs *regs, uint32_t core_clk_freq_ns)
 {
     uint16_t idle_count;
 
@@ -597,7 +598,7 @@ void _i3c_bus_idle_timing_set(struct i3c_sec_regs *regs, uint32_t core_clk_freq_
  * @param regs Pointer to controller registers
  * @param core_clk_freq_ns Core clock frequency in nanoseconds
  */
-void _i3c_sda_hld_switch_delay_timing_set(struct i3c_sec_regs *regs,
+void _i3c_sda_hld_switch_delay_timing_set(struct mec_i3c_sec_regs *regs,
                                             uint8_t sda_od_pp_switch_dly,
                                             uint8_t sda_pp_od_switch_dly,
                                             uint8_t sda_tx_hold)
@@ -613,7 +614,7 @@ void _i3c_sda_hld_switch_delay_timing_set(struct i3c_sec_regs *regs,
  * @param regs Pointer to controller registers
  * @param sda_tx_hold SDA TX Hold time control
  */
-void _i3c_sda_hld_timing_set(struct i3c_host_regs *regs,
+void _i3c_sda_hld_timing_set(struct mec_i3c_host_regs *regs,
                                             uint8_t sda_tx_hold)
 {
     uint32_t reg_value = 0;
@@ -628,7 +629,7 @@ void _i3c_sda_hld_timing_set(struct i3c_host_regs *regs,
  * @param regs Pointer to controller registers
  * @param sda_tx_hold SDA TX Hold time control
  */
-void _i3c_read_term_bit_low_count_set(struct i3c_host_regs *regs,
+void _i3c_read_term_bit_low_count_set(struct mec_i3c_host_regs *regs,
                                             uint8_t read_term_low_count)
 {
     uint32_t reg_value = 0;
@@ -643,7 +644,7 @@ void _i3c_read_term_bit_low_count_set(struct i3c_host_regs *regs,
  * @param regs Pointer to controller registers
  * @param core_clk_freq_ns Core clock frequency in nanoseconds
  */
-void _i3c_scl_low_mst_tout_set(struct i3c_sec_regs *regs, uint32_t tout_val)
+void _i3c_scl_low_mst_tout_set(struct mec_i3c_sec_regs *regs, uint32_t tout_val)
 {
     regs->SCL_LMST_TM = tout_val;
 }
@@ -653,7 +654,7 @@ void _i3c_scl_low_mst_tout_set(struct i3c_sec_regs *regs, uint32_t tout_val)
  *
  * @param regs Pointer to controller registers
  */
-void _i2c_target_present_set(struct i3c_host_regs *regs)
+void _i2c_target_present_set(struct mec_i3c_host_regs *regs)
 {
     regs->DEV_CTRL |= sbit_I2C_TGT_PRESENT;
 }
@@ -663,7 +664,7 @@ void _i2c_target_present_set(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i2c_target_present_reset(struct i3c_host_regs *regs)
+void _i2c_target_present_reset(struct mec_i3c_host_regs *regs)
 {
     regs->DEV_CTRL &= ~sbit_I2C_TGT_PRESENT;
 }
@@ -674,7 +675,7 @@ void _i2c_target_present_reset(struct i3c_host_regs *regs)
  * @param regs Pointer to controller registers
  * @param core_clk_freq_ns Core clock frequency in nanoseconds
  */
-void _i2c_fmp_timing_set(struct i3c_host_regs *regs, uint32_t core_clk_freq_ns)
+void _i2c_fmp_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk_freq_ns)
 {
     uint16_t low_count, high_count;
     uint32_t timing_val;
@@ -700,7 +701,8 @@ void _i2c_fmp_timing_set(struct i3c_host_regs *regs, uint32_t core_clk_freq_ns)
  * @param regs Pointer to controller registers
  * @param core_clk_freq_ns Core clock frequency in nanoseconds
  */
-void _i3c_push_pull_timing_set(struct i3c_host_regs *regs, uint32_t core_clk_freq_ns, uint32_t i3c_freq_ns)
+void _i3c_push_pull_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk_freq_ns,
+                               uint32_t i3c_freq_ns)
 {
     uint16_t low_count = 0, high_count = 0, base_count = 0;
     uint32_t timing_val = 0, sdr_ext_lcount = 0;
@@ -749,7 +751,8 @@ void _i3c_push_pull_timing_set(struct i3c_host_regs *regs, uint32_t core_clk_fre
  * @param regs Pointer to controller registers
  * @param core_clk_freq_ns Core clock frequency in nanoseconds
  */
-void _i3c_open_drain_timing_set(struct i3c_host_regs *regs, uint32_t core_clk_freq_ns, uint32_t i3c_freq_ns)
+void _i3c_open_drain_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk_freq_ns,
+                                uint32_t i3c_freq_ns)
 {
     uint16_t low_count = 0, high_count = 0;
     uint32_t timing_val;
@@ -780,7 +783,7 @@ void _i3c_open_drain_timing_set(struct i3c_host_regs *regs, uint32_t core_clk_fr
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_host_dma_tx_burst_length_set(struct i3c_host_regs *regs, uint32_t val)
+void _i3c_host_dma_tx_burst_length_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
     regs->HOST_CFG &= ~(0x03 << HOST_CFG_DMA_TX_BURST_LENGTH_BIT_POS);
     regs->HOST_CFG |= (val << HOST_CFG_DMA_TX_BURST_LENGTH_BIT_POS);
@@ -791,7 +794,7 @@ void _i3c_host_dma_tx_burst_length_set(struct i3c_host_regs *regs, uint32_t val)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_host_dma_rx_burst_length_set(struct i3c_host_regs *regs, uint32_t val)
+void _i3c_host_dma_rx_burst_length_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
     regs->HOST_CFG &= ~(0x03 << HOST_CFG_DMA_RX_BURST_LENGTH_BIT_POS);
     regs->HOST_CFG |= (val << HOST_CFG_DMA_RX_BURST_LENGTH_BIT_POS);
@@ -802,7 +805,7 @@ void _i3c_host_dma_rx_burst_length_set(struct i3c_host_regs *regs, uint32_t val)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_host_port_set(struct i3c_host_regs *regs, uint32_t val)
+void _i3c_host_port_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
     regs->HOST_CFG &= ~(0x0F << HOST_CFG_PORT_SEL_BIT_POS);
     regs->HOST_CFG |= (val << HOST_CFG_PORT_SEL_BIT_POS);
@@ -813,7 +816,7 @@ void _i3c_host_port_set(struct i3c_host_regs *regs, uint32_t val)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_host_stuck_sda_config(struct i3c_host_regs *regs, uint32_t en, uint32_t tout_val)
+void _i3c_host_stuck_sda_config(struct mec_i3c_host_regs *regs, uint32_t en, uint32_t tout_val)
 {
     regs->HOST_CFG &= ~(0x01 << HOST_CFG_STUCK_SDA_EN_BIT_POS);
     regs->HOST_CFG |= (en << HOST_CFG_STUCK_SDA_EN_BIT_POS);
@@ -829,7 +832,7 @@ void _i3c_host_stuck_sda_config(struct i3c_host_regs *regs, uint32_t en, uint32_
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_host_tx_dma_tout_config(struct i3c_host_regs *regs, uint32_t en, uint32_t tout_val)
+void _i3c_host_tx_dma_tout_config(struct mec_i3c_host_regs *regs, uint32_t en, uint32_t tout_val)
 {
     regs->HOST_CFG &= ~(0x01 << HOST_CFG_TX_DMA_TOUT_BITPOS);
     regs->HOST_CFG |= (en << HOST_CFG_TX_DMA_TOUT_BITPOS);
@@ -845,7 +848,7 @@ void _i3c_host_tx_dma_tout_config(struct i3c_host_regs *regs, uint32_t en, uint3
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_host_rx_dma_tout_config(struct i3c_host_regs *regs, uint32_t en, uint32_t tout_val)
+void _i3c_host_rx_dma_tout_config(struct mec_i3c_host_regs *regs, uint32_t en, uint32_t tout_val)
 {
     regs->HOST_CFG &= ~(0x01 << HOST_CFG_TX_DMA_TOUT_BITPOS);
     regs->HOST_CFG |= (en << HOST_CFG_TX_DMA_TOUT_BITPOS);
@@ -861,7 +864,7 @@ void _i3c_host_rx_dma_tout_config(struct i3c_host_regs *regs, uint32_t en, uint3
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_sec_host_dma_tx_burst_length_set(struct i3c_sec_regs *regs, uint32_t val)
+void _i3c_sec_host_dma_tx_burst_length_set(struct mec_i3c_sec_regs *regs, uint32_t val)
 {
     regs->SEC_CFG &= ~(0x03 << SEC_HOST_CFG_DMA_TX_BURST_LENGTH_BIT_POS);
     regs->SEC_CFG |= (val << SEC_HOST_CFG_DMA_TX_BURST_LENGTH_BIT_POS);
@@ -872,7 +875,7 @@ void _i3c_sec_host_dma_tx_burst_length_set(struct i3c_sec_regs *regs, uint32_t v
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_sec_host_dma_rx_burst_length_set(struct i3c_sec_regs *regs, uint32_t val)
+void _i3c_sec_host_dma_rx_burst_length_set(struct mec_i3c_sec_regs *regs, uint32_t val)
 {
     regs->SEC_CFG &= ~(0x03 << SEC_HOST_CFG_DMA_RX_BURST_LENGTH_BIT_POS);
     regs->SEC_CFG |= (val << SEC_HOST_CFG_DMA_RX_BURST_LENGTH_BIT_POS);
@@ -883,7 +886,7 @@ void _i3c_sec_host_dma_rx_burst_length_set(struct i3c_sec_regs *regs, uint32_t v
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_sec_host_port_set(struct i3c_sec_regs *regs, uint32_t val)
+void _i3c_sec_host_port_set(struct mec_i3c_sec_regs *regs, uint32_t val)
 {
     regs->SEC_CFG &= ~(0x0F << SEC_HOST_CFG_PORT_SEL_BIT_POS);
     regs->SEC_CFG |= (val << SEC_HOST_CFG_PORT_SEL_BIT_POS);
@@ -894,13 +897,16 @@ void _i3c_sec_host_port_set(struct i3c_sec_regs *regs, uint32_t val)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_sec_host_stuck_sda_scl_config(struct i3c_sec_regs *regs, uint32_t en, uint32_t sda_tout_val, uint32_t scl_tout_val)
+void _i3c_sec_host_stuck_sda_scl_config(struct mec_i3c_sec_regs *regs, uint32_t en,
+                                        uint32_t sda_tout_val, uint32_t scl_tout_val)
 {
     regs->SEC_CFG &= ~(0x01 << SEC_HOST_CFG_STUCK_SDA_EN_BIT_POS);
     regs->SEC_CFG |= (en << SEC_HOST_CFG_STUCK_SDA_EN_BIT_POS);
     if(en) {
-        regs->STK_SDA_TMOUT = ((sda_tout_val & GENMASK(9 , 0)) << SEC_HOST_CFG_STUCK_SDA_TOUT_BITPOS);
-        regs->STK_SDA_TMOUT = ((scl_tout_val & GENMASK(9 , 0)) << SEC_HOST_CFG_STUCK_SCL_TOUT_BITPOS);
+        regs->STK_SDA_TMOUT =
+            ((sda_tout_val & GENMASK(9 , 0)) << SEC_HOST_CFG_STUCK_SDA_TOUT_BITPOS);
+        regs->STK_SDA_TMOUT =
+            ((scl_tout_val & GENMASK(9 , 0)) << SEC_HOST_CFG_STUCK_SCL_TOUT_BITPOS);
     } else {
         regs->STK_SDA_TMOUT = 0U;
     }
@@ -911,7 +917,7 @@ void _i3c_sec_host_stuck_sda_scl_config(struct i3c_sec_regs *regs, uint32_t en, 
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_sec_host_tx_dma_tout_config(struct i3c_sec_regs *regs, uint32_t en, uint32_t tout_val)
+void _i3c_sec_host_tx_dma_tout_config(struct mec_i3c_sec_regs *regs, uint32_t en, uint32_t tout_val)
 {
     if(en) {
         regs->HOST_DMA_TX_TMOUT = tout_val;
@@ -925,7 +931,7 @@ void _i3c_sec_host_tx_dma_tout_config(struct i3c_sec_regs *regs, uint32_t en, ui
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_sec_host_rx_dma_tout_config(struct i3c_sec_regs *regs, uint32_t en, uint32_t tout_val)
+void _i3c_sec_host_rx_dma_tout_config(struct mec_i3c_sec_regs *regs, uint32_t en, uint32_t tout_val)
 {
     if(en) {
         regs->HOST_DMA_RX_TMOUT = tout_val;
@@ -939,7 +945,7 @@ void _i3c_sec_host_rx_dma_tout_config(struct i3c_sec_regs *regs, uint32_t en, ui
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_sec_host_dma_fsm_enable(struct i3c_sec_regs *regs)
+void _i3c_sec_host_dma_fsm_enable(struct mec_i3c_sec_regs *regs)
 {
     uint32_t bitmask;
     
@@ -956,7 +962,8 @@ void _i3c_sec_host_dma_fsm_enable(struct i3c_sec_regs *regs)
  * @param start_addr return the start address of device address table
  * @param depth return the depth of device address table
  */
-void _i3c_dev_addr_table_ptr_get(struct i3c_host_regs *regs, uint16_t *start_addr, uint16_t *depth)
+void _i3c_dev_addr_table_ptr_get(struct mec_i3c_host_regs *regs, uint16_t *start_addr,
+                                 uint16_t *depth)
 {
     uint32_t val;
 
@@ -973,7 +980,8 @@ void _i3c_dev_addr_table_ptr_get(struct i3c_host_regs *regs, uint16_t *start_add
  * @param start_addr return the start address of device characteristics table
  * @param depth return the depth of device characteristics table
  */
-void _i3c_dev_char_table_ptr_get(struct i3c_host_regs *regs, uint16_t *start_addr, uint16_t *depth)
+void _i3c_dev_char_table_ptr_get(struct mec_i3c_host_regs *regs, uint16_t *start_addr,
+                                 uint16_t *depth)
 {
     uint32_t val;
 
@@ -988,7 +996,7 @@ void _i3c_dev_char_table_ptr_get(struct i3c_host_regs *regs, uint16_t *start_add
  *
  * @param regs Pointer to controller registers
  */
-uint8_t _i3c_dev_operation_mode_get(struct i3c_host_regs *regs)
+uint8_t _i3c_dev_operation_mode_get(struct mec_i3c_host_regs *regs)
 {
     return (uint8_t)(regs->DEV_EXT_CTRL & 0x03U);
 }
@@ -999,7 +1007,7 @@ uint8_t _i3c_dev_operation_mode_get(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-uint8_t _i3c_dev_controller_role_get(struct i3c_host_regs *regs)
+uint8_t _i3c_dev_controller_role_get(struct mec_i3c_host_regs *regs)
 {
     return (uint8_t)(regs->PRES_STATE & 0x04U);
 }
@@ -1010,7 +1018,7 @@ uint8_t _i3c_dev_controller_role_get(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-uint8_t _i3c_dev_role_config_get(struct i3c_host_regs *regs)
+uint8_t _i3c_dev_role_config_get(struct mec_i3c_host_regs *regs)
 {
     return (uint8_t)(regs->HW_CAP & 0x07U);
 }
@@ -1023,7 +1031,8 @@ uint8_t _i3c_dev_role_config_get(struct i3c_host_regs *regs)
  * @param DAT_idx Position in the Device Address table
  * @param val 32-bit value to program
  */
-void _i3c_DAT_write(struct i3c_host_regs *regs, uint16_t DAT_start, uint8_t DAT_idx, uint32_t val)
+void _i3c_DAT_write(struct mec_i3c_host_regs *regs, uint16_t DAT_start, uint8_t DAT_idx,
+                    uint32_t val)
 {
      uint32_t *entry_addr;
 
@@ -1040,7 +1049,7 @@ void _i3c_DAT_write(struct i3c_host_regs *regs, uint16_t DAT_start, uint8_t DAT_
  * @param DAT_idx Position in the Device Address table
  * @return val 32-bit DAT value
  */
-uint32_t _i3c_DAT_read(struct i3c_host_regs *regs, uint16_t DAT_start, uint8_t DAT_idx)
+uint32_t _i3c_DAT_read(struct mec_i3c_host_regs *regs, uint16_t DAT_start, uint8_t DAT_idx)
 {
      uint32_t *entry_addr;
      uint32_t val;
@@ -1060,7 +1069,8 @@ uint32_t _i3c_DAT_read(struct i3c_host_regs *regs, uint16_t DAT_start, uint8_t D
  * @param DAT_idx Position in the Device Characteristics table
  * @param info DCT information read
  */
-void _i3c_DCT_read(struct i3c_host_regs *regs, uint16_t DCT_start, uint8_t DCT_idx, struct i3c_DCT_info *info)
+void _i3c_DCT_read(struct mec_i3c_host_regs *regs, uint16_t DCT_start, uint8_t DCT_idx,
+                   struct mec_i3c_DCT_info *info)
 {
      uint32_t *entry_addr;
      uint64_t prov_id = 0;
@@ -1088,7 +1098,8 @@ void _i3c_DCT_read(struct i3c_host_regs *regs, uint16_t DCT_start, uint8_t DCT_i
  * @param DAT_idx Position in the Device Characteristics table
  * @param info SDCT information read
  */
-void _i3c_SDCT_read(struct i3c_host_regs *regs, uint16_t DCT_start, uint8_t idx, struct i3c_SDCT_info *info)
+void _i3c_SDCT_read(struct mec_i3c_host_regs *regs, uint16_t DCT_start, uint8_t idx,
+                    struct mec_i3c_SDCT_info *info)
 {
      uint32_t *entry_addr;
      uint32_t sdct_val = 0;
@@ -1110,7 +1121,7 @@ void _i3c_SDCT_read(struct i3c_host_regs *regs, uint16_t DCT_start, uint8_t idx,
  * @param buffer  buffer with data
  * @param len Length of data in the buffer
  */
-void _i3c_fifo_write(struct i3c_host_regs *regs, uint8_t *buffer, uint16_t len)
+void _i3c_fifo_write(struct mec_i3c_host_regs *regs, uint8_t *buffer, uint16_t len)
 {
     uint32_t *dword_ptr;
     uint32_t last_dword = 0;
@@ -1140,7 +1151,7 @@ void _i3c_fifo_write(struct i3c_host_regs *regs, uint8_t *buffer, uint16_t len)
  * @param buffer  buffer to copy data
  * @param len Length of data to read
  */
-void _i3c_fifo_read(struct i3c_host_regs *regs, uint8_t *buffer, uint16_t len)
+void _i3c_fifo_read(struct mec_i3c_host_regs *regs, uint8_t *buffer, uint16_t len)
 {
     uint32_t *dword_ptr;
     uint32_t last_dword = 0;
@@ -1170,7 +1181,7 @@ void _i3c_fifo_read(struct i3c_host_regs *regs, uint8_t *buffer, uint16_t len)
  * @param buffer  buffer to copy data
  * @param len Length of data to read
  */
-void _i3c_ibi_data_read(struct i3c_host_regs *regs, uint8_t *buffer, uint16_t len)
+void _i3c_ibi_data_read(struct mec_i3c_host_regs *regs, uint8_t *buffer, uint16_t len)
 {
     uint32_t *dword_ptr;
     uint32_t last_dword = 0;
@@ -1212,7 +1223,7 @@ void _i3c_ibi_data_read(struct i3c_host_regs *regs, uint8_t *buffer, uint16_t le
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_xfers_reset(struct i3c_host_regs *regs)
+void _i3c_xfers_reset(struct mec_i3c_host_regs *regs)
 {
     volatile uint32_t reg_val = 1;
 
@@ -1229,7 +1240,7 @@ void _i3c_xfers_reset(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_tx_fifo_rst(struct i3c_host_regs *regs)
+void _i3c_tx_fifo_rst(struct mec_i3c_host_regs *regs)
 {
     regs->RST_CTRL = RESET_CTRL_TX_FIFO_RST;
 }
@@ -1239,7 +1250,7 @@ void _i3c_tx_fifo_rst(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_rx_fifo_rst(struct i3c_host_regs *regs)
+void _i3c_rx_fifo_rst(struct mec_i3c_host_regs *regs)
 {
     regs->RST_CTRL = RESET_CTRL_RX_FIFO_RST;
 }
@@ -1249,7 +1260,7 @@ void _i3c_rx_fifo_rst(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_cmd_queue_rst(struct i3c_host_regs *regs)
+void _i3c_cmd_queue_rst(struct mec_i3c_host_regs *regs)
 {
     regs->RST_CTRL = RESET_CTRL_CMD_Q_RST;
 }
@@ -1259,7 +1270,7 @@ void _i3c_cmd_queue_rst(struct i3c_host_regs *regs)
  *
  * @param regs Pointer to controller registers
  */
-void _i3c_soft_reset(struct i3c_host_regs *regs)
+void _i3c_soft_reset(struct mec_i3c_host_regs *regs)
 {
     volatile uint32_t reg_val = 1;
 
@@ -1275,7 +1286,7 @@ void _i3c_soft_reset(struct i3c_host_regs *regs)
  * @param regs Pointer to controller registers
  * @param cmd  The Command
   */
-void _i3c_command_write(struct i3c_host_regs *regs, uint32_t cmd)
+void _i3c_command_write(struct mec_i3c_host_regs *regs, uint32_t cmd)
 {
     regs->CMD = cmd;
 }
@@ -1284,7 +1295,7 @@ void _i3c_command_write(struct i3c_host_regs *regs, uint32_t cmd)
  * @brief Retrieve the depth of the TX FIFO
  * in bytes
  */
-uint8_t _i3c_tx_fifo_depth_get(struct i3c_host_regs *regs)
+uint8_t _i3c_tx_fifo_depth_get(struct mec_i3c_host_regs *regs)
 {
     return ((FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & GENMASK(3, 0)) >> Q_CAP_TX_FIFO_DEPTH_BITPOS)) * 4);
 }
@@ -1293,7 +1304,7 @@ uint8_t _i3c_tx_fifo_depth_get(struct i3c_host_regs *regs)
  * @brief Retrieve the depth of the RX FIFO
  * in bytes
  */
-uint8_t _i3c_rx_fifo_depth_get(struct i3c_host_regs *regs)
+uint8_t _i3c_rx_fifo_depth_get(struct mec_i3c_host_regs *regs)
 {
     return ((FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & GENMASK(7, 4)) >> Q_CAP_RX_FIFO_DEPTH_BITPOS)) * 4);
 }
@@ -1302,7 +1313,7 @@ uint8_t _i3c_rx_fifo_depth_get(struct i3c_host_regs *regs)
  * @brief Retrieve the depth of the command FIFO
  * in bytes
  */
-uint8_t _i3c_cmd_fifo_depth_get(struct i3c_host_regs *regs)
+uint8_t _i3c_cmd_fifo_depth_get(struct mec_i3c_host_regs *regs)
 {
     return (FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & GENMASK(11, 8)) >> Q_CAP_CMD_FIFO_DEPTH_BITPOS));
 }
@@ -1311,7 +1322,7 @@ uint8_t _i3c_cmd_fifo_depth_get(struct i3c_host_regs *regs)
  * @brief Retrieve the depth of the response FIFO
  * in bytes
  */
-uint8_t _i3c_resp_fifo_depth_get(struct i3c_host_regs *regs)
+uint8_t _i3c_resp_fifo_depth_get(struct mec_i3c_host_regs *regs)
 {
     return (FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & GENMASK(15, 12)) >> Q_CAP_RESP_FIFO_DEPTH_BITPOS));
 }
@@ -1320,7 +1331,7 @@ uint8_t _i3c_resp_fifo_depth_get(struct i3c_host_regs *regs)
  * @brief Retrieve the depth of the IBI FIFO
  * in bytes
  */
-uint8_t _i3c_ibi_fifo_depth_get(struct i3c_host_regs *regs)
+uint8_t _i3c_ibi_fifo_depth_get(struct mec_i3c_host_regs *regs)
 {
     return (FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & GENMASK(19, 16)) >> Q_CAP_IBI_FIFO_DEPTH_BITPOS));
 }
@@ -1328,7 +1339,7 @@ uint8_t _i3c_ibi_fifo_depth_get(struct i3c_host_regs *regs)
 /**
  * @brief Set the PID of secondary controller (in target mode)
  */
-void _i3c_tgt_pid_set(struct i3c_sec_regs *regs,
+void _i3c_tgt_pid_set(struct mec_i3c_sec_regs *regs,
                         uint16_t tgt_mipi_mfg_id,
                         bool is_random_prov_id,
                         uint16_t tgt_part_id,
@@ -1348,7 +1359,7 @@ void _i3c_tgt_pid_set(struct i3c_sec_regs *regs,
  * @brief Get the Dynamic address valid bit
  * of secondary controller (in target mode)
  */
-bool _i3c_tgt_dyn_addr_valid_get(struct i3c_sec_regs *regs)
+bool _i3c_tgt_dyn_addr_valid_get(struct mec_i3c_sec_regs *regs)
 {
     return (bool)(regs->DEV_ADDR & sbit_DEVICE_ADDR_DYNAMIC_ADDR_VALID);
 }
@@ -1357,7 +1368,7 @@ bool _i3c_tgt_dyn_addr_valid_get(struct i3c_sec_regs *regs)
  * @brief Get the Dynamic address
  * of secondary controller (in target mode)
  */
-uint8_t _i3c_tgt_dyn_addr_get(struct i3c_sec_regs *regs)
+uint8_t _i3c_tgt_dyn_addr_get(struct mec_i3c_sec_regs *regs)
 {
     return (uint8_t)((regs->DEV_ADDR & GENMASK(22, 16)) >> DEVICE_ADDR_DYNAMIC_ADDR_BITPOS);
 }
@@ -1365,7 +1376,7 @@ uint8_t _i3c_tgt_dyn_addr_get(struct i3c_sec_regs *regs)
 /**
  * @brief Set the MRL of secondary controller (in target mode)
  */
-void _i3c_tgt_mrl_set(struct i3c_sec_regs *regs, uint16_t mrl)
+void _i3c_tgt_mrl_set(struct mec_i3c_sec_regs *regs, uint16_t mrl)
 {
     regs->MAX_RW_LEN = (regs->MAX_RW_LEN & ~(GENMASK(31, 16))) | (mrl << MRL_BITPOS);
 }
@@ -1373,7 +1384,7 @@ void _i3c_tgt_mrl_set(struct i3c_sec_regs *regs, uint16_t mrl)
 /**
  * @brief Set the MWL of secondary controller (in target mode)
  */
-void _i3c_tgt_mwl_set(struct i3c_sec_regs *regs, uint16_t mwl)
+void _i3c_tgt_mwl_set(struct mec_i3c_sec_regs *regs, uint16_t mwl)
 {
     regs->MAX_RW_LEN = (regs->MAX_RW_LEN & ~(GENMASK(15, 0))) | (mwl << MWL_BITPOS);
 }
@@ -1381,7 +1392,7 @@ void _i3c_tgt_mwl_set(struct i3c_sec_regs *regs, uint16_t mwl)
 /**
  * @brief Set the MXDS value of secondary controller (in target mode)
  */
-void _i3c_tgt_mxds_set(struct i3c_sec_regs *regs,
+void _i3c_tgt_mxds_set(struct mec_i3c_sec_regs *regs,
                         uint8_t wr_speed,
                         uint8_t rd_speed,
                         uint8_t tsco,
@@ -1396,7 +1407,7 @@ void _i3c_tgt_mxds_set(struct i3c_sec_regs *regs,
 /**
  * @brief Check if SIR is enabled by the controller
  */
-bool _i3c_tgt_SIR_enabled(struct i3c_sec_regs *regs)
+bool _i3c_tgt_SIR_enabled(struct mec_i3c_sec_regs *regs)
 {
     bool ret = false;
     if (regs->TGT_EVT_STS & TGT_EVT_STS_SIR_EN) {
@@ -1409,7 +1420,7 @@ bool _i3c_tgt_SIR_enabled(struct i3c_sec_regs *regs)
 /**
  * @brief Check if SIR is enabled by the controller
  */
-bool _i3c_tgt_MR_enabled(struct i3c_sec_regs *regs)
+bool _i3c_tgt_MR_enabled(struct mec_i3c_sec_regs *regs)
 {
     bool ret = false;
     if (regs->TGT_EVT_STS & TGT_EVT_STS_MIR_EN) {
@@ -1422,7 +1433,8 @@ bool _i3c_tgt_MR_enabled(struct i3c_sec_regs *regs)
 /**
  * @brief Raise IBI Target Interrupt Request (SIR)
  */
-void _i3c_tgt_raise_ibi_SIR(struct i3c_sec_regs *regs, uint8_t *sir_data, uint8_t sir_datalen, uint8_t mdb)
+void _i3c_tgt_raise_ibi_SIR(struct mec_i3c_sec_regs *regs, uint8_t *sir_data, uint8_t sir_datalen,
+                            uint8_t mdb)
 {
     uint32_t sir_data_dword = 0;
 
@@ -1442,7 +1454,7 @@ void _i3c_tgt_raise_ibi_SIR(struct i3c_sec_regs *regs, uint8_t *sir_data, uint8_
 /**
  * @brief Raise IBI Master Request (MR)
  */
-void _i3c_tgt_raise_ibi_MR(struct i3c_sec_regs *regs)
+void _i3c_tgt_raise_ibi_MR(struct mec_i3c_sec_regs *regs)
 {
     regs->TARG_IREQ = TGT_INTR_REQ_MR;
 
@@ -1453,7 +1465,7 @@ void _i3c_tgt_raise_ibi_MR(struct i3c_sec_regs *regs)
 /**
  * @brief Retrieve the IBI response from IBI Response register
  */
-bool _i3c_tgt_ibi_resp_get(struct i3c_sec_regs *regs, uint8_t *sir_rem_datalen)
+bool _i3c_tgt_ibi_resp_get(struct mec_i3c_sec_regs *regs, uint8_t *sir_rem_datalen)
 {
     bool ret = false;
     /* Databook mentions SIR RESP DATA LENGTH as bits 8 t0 23, but we are using only
@@ -1471,7 +1483,7 @@ bool _i3c_tgt_ibi_resp_get(struct i3c_sec_regs *regs, uint8_t *sir_rem_datalen)
 /**
  * @brief Retrieve target max read length
  */
-void _i3c_tgt_MRL_get(struct i3c_sec_regs *regs, uint16_t *max_rd_len)
+void _i3c_tgt_MRL_get(struct mec_i3c_sec_regs *regs, uint16_t *max_rd_len)
 {
     *max_rd_len = regs->MAX_RW_LEN >> 16;
 }
@@ -1479,7 +1491,7 @@ void _i3c_tgt_MRL_get(struct i3c_sec_regs *regs, uint16_t *max_rd_len)
 /**
  * @brief Retrieve target max write length
  */
-void _i3c_tgt_MWL_get(struct i3c_sec_regs *regs, uint16_t *max_wr_len)
+void _i3c_tgt_MWL_get(struct mec_i3c_sec_regs *regs, uint16_t *max_wr_len)
 {
     *max_wr_len = regs->MAX_RW_LEN & 0xFFFF;
 }
@@ -1487,7 +1499,7 @@ void _i3c_tgt_MWL_get(struct i3c_sec_regs *regs, uint16_t *max_wr_len)
 /**
  * @brief Set target max read and write length
  */
-void _i3c_tgt_MRL_MWL_set(struct i3c_sec_regs *regs, uint16_t max_rd_len, uint16_t max_wr_len)
+void _i3c_tgt_MRL_MWL_set(struct mec_i3c_sec_regs *regs, uint16_t max_rd_len, uint16_t max_wr_len)
 {
     regs->MAX_RW_LEN  = (max_rd_len << 16) | max_wr_len;
 }
@@ -1495,7 +1507,7 @@ void _i3c_tgt_MRL_MWL_set(struct i3c_sec_regs *regs, uint16_t max_rd_len, uint16
 /**
  * @brief Retrieve target max write length
  */
-void _i3c_tgt_MWL_set(struct i3c_sec_regs *regs, uint16_t *max_wr_len)
+void _i3c_tgt_MWL_set(struct mec_i3c_sec_regs *regs, uint16_t *max_wr_len)
 {
     *max_wr_len = regs->MAX_RW_LEN & 0xFFFF;
 }
@@ -1503,7 +1515,7 @@ void _i3c_tgt_MWL_set(struct i3c_sec_regs *regs, uint16_t *max_wr_len)
 /**
  * @brief Returns true if controller updated MRL
  */
-bool _i3c_tgt_MRL_updated(struct i3c_sec_regs *regs)
+bool _i3c_tgt_MRL_updated(struct mec_i3c_sec_regs *regs)
 {
     bool ret = false;
 
@@ -1519,7 +1531,7 @@ bool _i3c_tgt_MRL_updated(struct i3c_sec_regs *regs)
 /**
  * @brief Returns true if controller updated MWL
  */
-bool _i3c_tgt_MWL_updated(struct i3c_sec_regs *regs)
+bool _i3c_tgt_MWL_updated(struct mec_i3c_sec_regs *regs)
 {
     bool ret = false;
 
@@ -1535,7 +1547,8 @@ bool _i3c_tgt_MWL_updated(struct i3c_sec_regs *regs)
 /**
  * @brief Set target max read and write speed
  */
-void _i3c_tgt_max_speed_update(struct i3c_sec_regs *regs, uint8_t max_rd_speed, uint8_t max_wr_speed)
+void _i3c_tgt_max_speed_update(struct mec_i3c_sec_regs *regs, uint8_t max_rd_speed,
+                               uint8_t max_wr_speed)
 {
     regs->MAX_DS &= ~(TGT_MAX_WR_DATA_SPEED_MASK << TGT_MAX_WR_DATA_SPEED_POS);
     regs->MAX_DS &= ~(TGT_MAX_RD_DATA_SPEED_MASK << TGT_MAX_RD_DATA_SPEED_POS);
@@ -1547,7 +1560,7 @@ void _i3c_tgt_max_speed_update(struct i3c_sec_regs *regs, uint8_t max_rd_speed, 
 /**
  * @brief Set target max read and write speed
  */
-void _i3c_tgt_clk_to_data_turn_update(struct i3c_sec_regs *regs, uint8_t clk_data_turn_time)
+void _i3c_tgt_clk_to_data_turn_update(struct mec_i3c_sec_regs *regs, uint8_t clk_data_turn_time)
 {
     regs->MAX_DS &= ~(TGT_CLK_TO_DATA_TURN_MASK << TGT_CLK_TO_DATA_TURN_POS);
 

@@ -20,14 +20,14 @@ typedef uint32_t (*rom_ver_td)(void);
 typedef uint8_t (*rom_otp_rd8_td)(uint16_t otp_index, uint8_t *data);
 typedef uint8_t (*rom_otp_wr8_td)(uint16_t otp_index, uint8_t data);
 
-uint32_t mec_rom_version(void)
+uint32_t mec_hal_rom_version(void)
 {
     rom_ver_td fp = (rom_ver_td)(MEC5_ROM_VERSION_ADDR);
 
     return (*fp)();
 }
 
-int mec_rom_otp_read_byte(uint16_t otp_index, uint8_t *data)
+int mec_hal_rom_otp_read_byte(uint16_t otp_index, uint8_t *data)
 {
     rom_otp_rd8_td fp = (rom_otp_rd8_td)(MEC5_ROM_OTP_RD8_ADDR);
     uint8_t rval = 0u;
@@ -44,7 +44,7 @@ int mec_rom_otp_read_byte(uint16_t otp_index, uint8_t *data)
     return MEC_RET_OK;
 }
 
-int mec_rom_otp_write_byte(uint16_t otp_index, uint8_t data)
+int mec_hal_rom_otp_write_byte(uint16_t otp_index, uint8_t data)
 {
     rom_otp_wr8_td fp = (rom_otp_wr8_td)(MEC5_ROM_OTP_WR8_ADDR);
 

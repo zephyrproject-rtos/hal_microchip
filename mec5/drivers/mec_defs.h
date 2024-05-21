@@ -124,6 +124,28 @@
 #define MEC_MMCR32_WR(a, b) *(volatile uint32_t *)(a) = (uint32_t)(b)
 #define MEC_MMCR32_RD(a)    *(volatile uint32_t *)(a)
 
+#ifndef MEC_DIV_ROUND_UP
+#define MEC_DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
+#endif
+
+#ifndef MEC_BITS_PER_LONG
+#define MEC_BITS_PER_LONG (__CHAR_BIT__ * __SIZEOF_LONG__)
+#endif
+
+#ifndef MEC_BITS_PER_LONG_LONG
+#define MEC_BITS_PER_LONG_LONG (__CHAR_BIT__ * __SIZEOF_LONG_LONG__)
+#endif
+
+#ifndef MEC_GENMASK
+#define MEC_GENMASK(h, l) \
+    (((~0UL) - (1UL << (l)) + 1) & (~0UL >> (MEC_BITS_PER_LONG - 1 - (h))))
+#endif
+
+#ifndef MEC_GENMASK64
+#define MEC_GENMASK64(h, l) \
+    (((~0ULL) - (1ULL << (l)) + 1) & (~0ULL >> (MEC_BITS_PER_LONG_LONG - 1 - (h))))
+#endif
+
 struct mec_buf {
     void *data;
     size_t len;

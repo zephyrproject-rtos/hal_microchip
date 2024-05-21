@@ -16,12 +16,12 @@
 
 #define MEC_BBRAM_MAX_SIZE 128u
 
-uint32_t mec_bbram_size(void)
+uint32_t mec_hal_bbram_size(void)
 {
     uint32_t bbram_size = MEC_BBRAM_MAX_SIZE;
 
 #ifndef MEC5_FAM2_ID
-    if (ECS->FEAT_LOCK & MEC_BIT(ECS_FEAT_LOCK_BBRAM_SIZE_Pos)) {
+    if (MEC_ECS->FEAT_LOCK & MEC_BIT(MEC_ECS_FEAT_LOCK_BBRAM_SIZE_Pos)) {
         bbram_size >>= 1u;
     }
 #endif
@@ -29,40 +29,40 @@ uint32_t mec_bbram_size(void)
     return bbram_size;
 }
 
-uintptr_t mec_bbram_base_address(void)
+uintptr_t mec_hal_bbram_base_address(void)
 {
-    return (uintptr_t)(VBATM_BASE);
+    return (uintptr_t)(MEC_VBATM_BASE);
 }
 
-int mec_bbram_rd8(uint16_t byte_ofs, uint8_t *val)
+int mec_hal_bbram_rd8(uint16_t byte_ofs, uint8_t *val)
 {
-    uint32_t bbram_size = mec_bbram_size();
+    uint32_t bbram_size = mec_hal_bbram_size();
 
     if (!val || (byte_ofs >= bbram_size)) {
         return MEC_RET_ERR_INVAL;
     }
 
-    *val = VBATM->VBMEM[byte_ofs];
+    *val = MEC_VBATM->VBMEM[byte_ofs];
 
     return MEC_RET_OK;
 }
 
-int mec_bbram_wr8(uint16_t byte_ofs, uint8_t val)
+int mec_hal_bbram_wr8(uint16_t byte_ofs, uint8_t val)
 {
-    uint32_t bbram_size = mec_bbram_size();
+    uint32_t bbram_size = mec_hal_bbram_size();
 
     if (byte_ofs >= bbram_size) {
         return MEC_RET_ERR_INVAL;
     }
 
-    VBATM->VBMEM[byte_ofs] = val;
+    MEC_VBATM->VBMEM[byte_ofs] = val;
 
     return MEC_RET_OK;
 }
 
-int mec_bbram_rd32(uint16_t byte_ofs, uint32_t *val)
+int mec_hal_bbram_rd32(uint16_t byte_ofs, uint32_t *val)
 {
-    uint32_t bbram_size = mec_bbram_size();
+    uint32_t bbram_size = mec_hal_bbram_size();
     uint32_t r = 0;
 
     if (!val || (byte_ofs >= bbram_size)) {
@@ -70,11 +70,11 @@ int mec_bbram_rd32(uint16_t byte_ofs, uint32_t *val)
     }
 
     if (!(byte_ofs & 0x3u)) {
-        r = MEC_MMCR32(&VBATM->VBMEM[byte_ofs]);
+        r = MEC_MMCR32(&MEC_VBATM->VBMEM[byte_ofs]);
     } else {
         for (uint16_t i = 0; i < 4u; i++) {
             r <<= 8;
-            r |= VBATM->VBMEM[byte_ofs + 3 - i];
+            r |= MEC_VBATM->VBMEM[byte_ofs + 3 - i];
         }
     }
 
@@ -83,19 +83,19 @@ int mec_bbram_rd32(uint16_t byte_ofs, uint32_t *val)
     return MEC_RET_OK;
 }
 
-int mec_bbram_wr32(uint16_t byte_ofs, uint32_t val)
+int mec_hal_bbram_wr32(uint16_t byte_ofs, uint32_t val)
 {
-    uint32_t bbram_size = mec_bbram_size();
+    uint32_t bbram_size = mec_hal_bbram_size();
 
     if (byte_ofs >= bbram_size) {
         return MEC_RET_ERR_INVAL;
     }
 
     if (!(byte_ofs & 0x3u)) {
-        MEC_MMCR32(&VBATM->VBMEM[byte_ofs]) = val;
+        MEC_MMCR32(&MEC_VBATM->VBMEM[byte_ofs]) = val;
     } else {
         for (uint16_t i = 0; i < 4u; i++) {
-            VBATM->VBMEM[byte_ofs + i] = val & 0xffu;
+            MEC_VBATM->VBMEM[byte_ofs + i] = val & 0xffu;
             val >>= 8;
         }
     }
@@ -103,9 +103,9 @@ int mec_bbram_wr32(uint16_t byte_ofs, uint32_t val)
     return MEC_RET_OK;
 }
 
-int mec_bbram_rd(uint16_t byte_ofs, uint8_t *data, size_t datasz, size_t *nread)
+int mec_hal_bbram_rd(uint16_t byte_ofs, uint8_t *data, size_t datasz, size_t *nread)
 {
-    uint32_t bbram_size = mec_bbram_size();
+    uint32_t bbram_size = mec_hal_bbram_size();
 
     if (!data || (byte_ofs >= bbram_size)) {
         return MEC_RET_ERR_INVAL;
@@ -116,7 +116,7 @@ int mec_bbram_rd(uint16_t byte_ofs, uint8_t *data, size_t datasz, size_t *nread)
             break;
         }
 
-        *data++ = VBATM->VBMEM[idx];
+        *data++ = MEC_VBATM->VBMEM[idx];
         if (nread) {
             *nread += 1u;
         }
@@ -125,9 +125,9 @@ int mec_bbram_rd(uint16_t byte_ofs, uint8_t *data, size_t datasz, size_t *nread)
     return 0;
 }
 
-int mec_bbram_wr(uint16_t byte_ofs, uint8_t *data, size_t datasz, size_t *nwritten)
+int mec_hal_bbram_wr(uint16_t byte_ofs, uint8_t *data, size_t datasz, size_t *nwritten)
 {
-    uint32_t bbram_size = mec_bbram_size();
+    uint32_t bbram_size = mec_hal_bbram_size();
 
     if (!data || (byte_ofs >= bbram_size)) {
         return MEC_RET_ERR_INVAL;
@@ -138,7 +138,7 @@ int mec_bbram_wr(uint16_t byte_ofs, uint8_t *data, size_t datasz, size_t *nwritt
             break;
         }
 
-        VBATM->VBMEM[idx] = *data++;
+        MEC_VBATM->VBMEM[idx] = *data++;
         if (nwritten) {
             *nwritten += 1u;
         }

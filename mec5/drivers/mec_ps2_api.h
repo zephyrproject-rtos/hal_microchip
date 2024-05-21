@@ -24,7 +24,7 @@ extern "C"
 
 /* PS/2 Controller with wake capability */
 
-struct ps2_regs; /* forward reference */
+struct mec_ps2_regs; /* forward reference */
 
 enum mec_ps2_ports {
     MEC5_PS2_PORT_A = 0,
@@ -58,21 +58,32 @@ enum mec_ps2_status {
 #define MEC_PS2_FLAGS_STOP_BIT_NONE 0x20u
 #define MEC_PS2_FLAGS_INTR_EN       0x100u
 
-int mec_ps2_init(struct ps2_regs *base, uint8_t port, uint32_t flags);
+int mec_hal_ps2_init(struct mec_ps2_regs *base, uint8_t port, uint32_t flags);
 
-void mec_ps2_girq_ctrl(struct ps2_regs *base, uint8_t enable);
-uint32_t mec_ps2_girq_result(struct ps2_regs *base);
-int mec_ps2_girq_clr(struct ps2_regs *base);
+void mec_hal_ps2_girq_ctrl(struct mec_ps2_regs *base, uint8_t enable);
+uint32_t mec_hal_ps2_girq_result(struct mec_ps2_regs *base);
+int mec_hal_ps2_girq_clr(struct mec_ps2_regs *base);
 
-int mec_ps2_girq_wake_enable(struct ps2_regs *base, uint8_t port, uint8_t enable);
-uint32_t mec_ps2_girq_wake_result(struct ps2_regs *base, uint8_t port);
-void mec_ps2_girq_wake_clr(struct ps2_regs *base, uint8_t port);
+int mec_hal_ps2_girq_wake_enable(struct mec_ps2_regs *base, uint8_t port, uint8_t enable);
+uint32_t mec_hal_ps2_girq_wake_result(struct mec_ps2_regs *base, uint8_t port);
+void mec_hal_ps2_girq_wake_clr(struct mec_ps2_regs *base, uint8_t port);
 
-void mec_ps2_direction(struct ps2_regs *regs, uint8_t dir_tx);
-uint32_t mec_ps2_get_status(struct ps2_regs *regs);
-void mec_ps2_clr_status(struct ps2_regs *regs, uint32_t clrmsk);
-uint8_t mec_ps2_read_data(struct ps2_regs *regs);
-void mec_ps2_send_data(struct ps2_regs *regs, uint8_t data);
+void mec_hal_ps2_direction(struct mec_ps2_regs *regs, uint8_t dir_tx);
+uint32_t mec_hal_ps2_get_status(struct mec_ps2_regs *regs);
+void mec_hal_ps2_clr_status(struct mec_ps2_regs *regs, uint32_t clrmsk);
+uint8_t mec_hal_ps2_read_data(struct mec_ps2_regs *regs);
+void mec_hal_ps2_send_data(struct mec_ps2_regs *regs, uint8_t data);
+
+/* Enable/disable port wake by zero based controller instance number */
+int mec_hal_ps2_inst_wake_enable(uint8_t instance, uint8_t port, uint8_t enable);
+int mec_hal_ps2_inst_wake_status_clr(uint8_t instance, uint8_t port);
+
+/* For all PS/2 controllers in the SoC enable or disable the wake
+ * GIRQ for all ports. If disable also clear the GIRQ latched status.
+ * NOTE: if a port is not enabled by pinctrl the port should not cause
+ * a wake event.
+ */
+void mec_hal_ps2_wake_enables(uint8_t enable);
 
 #ifdef __cplusplus
 }

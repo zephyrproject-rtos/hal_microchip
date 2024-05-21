@@ -19,19 +19,19 @@ extern "C"
 #endif
 
 /* Battery backed memory size in bytes */
-uint32_t mec_bbram_size(void);
+uint32_t mec_hal_bbram_size(void);
 /* Battery backed memory base address */
-uintptr_t mec_bbram_base_address(void);
+uintptr_t mec_hal_bbram_base_address(void);
 
 /* Access battery backed memory */
-int mec_bbram_rd8(uint16_t byte_ofs, uint8_t *val);
-int mec_bbram_wr8(uint16_t byte_ofs, uint8_t val);
+int mec_hal_bbram_rd8(uint16_t byte_ofs, uint8_t *val);
+int mec_hal_bbram_wr8(uint16_t byte_ofs, uint8_t val);
 
-int mec_bbram_rd32(uint16_t byte_ofs, uint32_t *val);
-int mec_bbram_wr32(uint16_t byte_ofs, uint32_t val);
+int mec_hal_bbram_rd32(uint16_t byte_ofs, uint32_t *val);
+int mec_hal_bbram_wr32(uint16_t byte_ofs, uint32_t val);
 
-int mec_bbram_rd(uint16_t byte_ofs, uint8_t *data, size_t datasz, size_t *nread);
-int mec_bbram_wr(uint16_t byte_ofs, uint8_t *data, size_t datasz, size_t *nwritten);
+int mec_hal_bbram_rd(uint16_t byte_ofs, uint8_t *data, size_t datasz, size_t *nread);
+int mec_hal_bbram_wr(uint16_t byte_ofs, uint8_t *data, size_t datasz, size_t *nwritten);
 
 #ifdef __cplusplus
 }

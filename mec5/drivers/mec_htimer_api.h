@@ -36,32 +36,35 @@ enum htimer_status {
 };
 
 struct mec_htimer_context {
-    struct htmr_regs *regs;
+    struct mec_htmr_regs *regs;
     uint32_t devi;
     uint16_t preload;
     uint16_t count;
 };
 
-int mec_htimer_init(struct htmr_regs *regs, struct mec_htimer_context *ctx, uint8_t cfg_flags);
+int mec_hal_htimer_init(struct mec_htmr_regs *regs, struct mec_htimer_context *ctx,
+                        uint8_t cfg_flags);
 
-void mec_htimer_intr_ctrl(struct mec_htimer_context *ctx, uint8_t enable);
+void mec_hal_htimer_intr_ctrl(struct mec_htimer_context *ctx, uint8_t enable);
 
-uint32_t mec_htimer_status(struct mec_htimer_context *ctx);
-void mec_htimer_status_clear(struct mec_htimer_context *ctx, uint32_t status);
+uint32_t mec_hal_htimer_status(struct mec_htimer_context *ctx);
+void mec_hal_htimer_status_clear(struct mec_htimer_context *ctx);
 
-void mec_htimer_halt(struct mec_htimer_context *ctx);
-void mec_htimer_unhalt(struct mec_htimer_context *ctx);
+void mec_hal_htimer_stop(struct mec_htmr_regs *regs);
 
-void mec_htimer_restart(struct mec_htimer_context *ctx, uint16_t new_count);
+void mec_hal_htimer_halt(struct mec_htimer_context *ctx);
+void mec_hal_htimer_unhalt(struct mec_htimer_context *ctx);
+
+void mec_hal_htimer_restart(struct mec_htimer_context *ctx, uint16_t new_count);
 
 /* Get read-only 16-bit counter value */
-static inline uint16_t mec_htimer_count(struct htmr_regs *regs)
+static inline uint16_t mec_hal_htimer_count(struct mec_htmr_regs *regs)
 {
     return regs->COUNT;
 }
 
 /* Get 16-bit preload value */
-static inline uint16_t mec_htimer_preload(struct htmr_regs *regs)
+static inline uint16_t mec_hal_htimer_preload(struct mec_htmr_regs *regs)
 {
     return regs->PRELOAD;
 }
@@ -71,7 +74,7 @@ static inline uint16_t mec_htimer_preload(struct htmr_regs *regs)
  * preload into the count register and begin counting down.
  * Writing 0 stops the counter and copies 0 into the count register.
  */
-static inline void mec_htimer_preload_set(struct htmr_regs *regs, uint16_t preload)
+static inline void mec_hal_htimer_preload_set(struct mec_htmr_regs *regs, uint16_t preload)
 {
     regs->PRELOAD = preload;
 }

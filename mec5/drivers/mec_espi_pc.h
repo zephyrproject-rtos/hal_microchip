@@ -17,9 +17,9 @@ extern "C"
 #endif
 
 /* forward declarations */
-struct espi_io_regs;
-struct espi_mem_regs;
-struct espi_vw_regs;
+struct mec_espi_io_regs;
+struct mec_espi_mem_regs;
+struct mec_espi_vw_regs;
 
 /* ---- eSPI Peripheral Channel ---- */
 
@@ -103,34 +103,34 @@ struct mec_espi_pc_last_cycle {
     uint8_t tag;
 };
 
-void mec_espi_pc_ready_set(struct espi_io_regs *iobase);
+void mec_hal_espi_pc_ready_set(struct mec_espi_io_regs *iobase);
 /* return 1 is ready else 0 */
-int mec_espi_pc_is_ready(struct espi_io_regs *iobase);
+int mec_hal_espi_pc_is_ready(struct mec_espi_io_regs *iobase);
 
 /* return bits indicating eSPI peripheral channel enable has changed and the
  * channel enable's current state.
  */
-uint32_t mec_espi_pc_en_status(struct espi_io_regs *iobase);
-uint32_t mec_espi_pc_bm_status(struct espi_io_regs *iobase);
+uint32_t mec_hal_espi_pc_en_status(struct mec_espi_io_regs *iobase);
+uint32_t mec_hal_espi_pc_bm_status(struct mec_espi_io_regs *iobase);
 
 /* return status bit map interpreted using mec_espi_pc_status_pos bit positions */
-uint32_t mec_espi_pc_status(struct espi_io_regs *iobase);
-void mec_espi_pc_status_clr(struct espi_io_regs *iobase, uint32_t bitmap);
-void mec_espi_pc_status_clr_all(struct espi_io_regs *iobase);
+uint32_t mec_hal_espi_pc_status(struct mec_espi_io_regs *iobase);
+void mec_hal_espi_pc_status_clr(struct mec_espi_io_regs *iobase, uint32_t bitmap);
+void mec_hal_espi_pc_status_clr_all(struct mec_espi_io_regs *iobase);
 
-void mec_espi_pc_intr_en(struct espi_io_regs *iobase, uint32_t bitmap);
-void mec_espi_pc_intr_dis(struct espi_io_regs *iobase, uint32_t bitmap);
+void mec_hal_espi_pc_intr_en(struct mec_espi_io_regs *iobase, uint32_t bitmap);
+void mec_hal_espi_pc_intr_dis(struct mec_espi_io_regs *iobase, uint32_t bitmap);
 
 /* Get 64-bit address sent by Host which caused an error */
-uint64_t mec_espi_pc_error_addr(struct espi_io_regs *iobase);
+uint64_t mec_hal_espi_pc_error_addr(struct mec_espi_io_regs *iobase);
 
-void mec_espi_pc_last_cycle(struct espi_io_regs *iobase,
+void mec_hal_espi_pc_last_cycle(struct mec_espi_io_regs *iobase,
                             struct mec_espi_pc_last_cycle *lc);
 
-void mec_espi_pc_girq_ctrl(uint8_t enable);
-void mec_espi_pc_girq_status_clr(void);
-uint32_t mec_espi_pc_girq_status(void);
-uint32_t mec_espi_pc_girq_result(void);
+void mec_hal_espi_pc_girq_ctrl(uint8_t enable);
+void mec_hal_espi_pc_girq_status_clr(void);
+uint32_t mec_hal_espi_pc_girq_status(void);
+uint32_t mec_hal_espi_pc_girq_result(void);
 
 /* PC LTR */
 enum mec_espi_pc_ltr_intr_pos {
@@ -140,15 +140,15 @@ enum mec_espi_pc_ltr_intr_pos {
     MEC_ESPI_PC_LTR_INTR_TX_BUSY_POS = 8
 };
 
-uint32_t mec_espi_pc_ltr_status(struct espi_io_regs *iobase);
-void mec_espi_pc_ltr_intr_en(struct espi_io_regs *iobase, uint32_t enmask);
-void mec_espi_pc_ltr_ctrl(struct espi_io_regs *iobase, uint8_t tag, uint8_t start);
-void mec_espi_pc_ltr_msg(struct espi_io_regs *iobase, uint16_t nunits, uint8_t time_unit,
-                         uint8_t rsvd_bits, uint8_t max_lat);
-void mec_espi_pc_ltr_girq_ctrl(uint8_t enable);
-void mec_espi_pc_ltr_girq_status_clr(void);
-uint32_t mec_espi_pc_ltr_girq_status(void);
-uint32_t mec_espi_pc_ltr_girq_result(void);
+uint32_t mec_hal_espi_pc_ltr_status(struct mec_espi_io_regs *iobase);
+void mec_hal_espi_pc_ltr_intr_en(struct mec_espi_io_regs *iobase, uint32_t enmask);
+void mec_hal_espi_pc_ltr_ctrl(struct mec_espi_io_regs *iobase, uint8_t tag, uint8_t start);
+void mec_hal_espi_pc_ltr_msg(struct mec_espi_io_regs *iobase, uint16_t nunits, uint8_t time_unit,
+                             uint8_t rsvd_bits, uint8_t max_lat);
+void mec_hal_espi_pc_ltr_girq_ctrl(uint8_t enable);
+void mec_hal_espi_pc_ltr_girq_status_clr(void);
+uint32_t mec_hal_espi_pc_ltr_girq_status(void);
+uint32_t mec_hal_espi_pc_ltr_girq_result(void);
 
 /* ---- Peripheral Channel Logical Device I/O and Memory BARs ---- */
 
@@ -156,21 +156,23 @@ uint32_t mec_espi_pc_ltr_girq_result(void);
  * in reset by the SoC's VCC Power Good signal and the state of the nPLTRST signal.
  * nPLTRST can be a virtual wire or an external signal (legacy systems).
  */
-int mec_espi_iobar_cfg(struct espi_io_regs *base, uint8_t ldn, uint16_t io_base, uint8_t enable);
-int mec_espi_iobar_enable(struct espi_io_regs *base, uint8_t ldn, uint8_t enable);
-int mec_espi_iobar_is_enabled(struct espi_io_regs *base, uint8_t ldn);
-uint32_t mec_espi_iobar_mask(struct espi_io_regs *base, uint8_t ldn);
-int mec_espi_iobar_mask_set(struct espi_io_regs *base, uint8_t ldn, uint8_t mask);
+int mec_hal_espi_iobar_cfg(struct mec_espi_io_regs *base, uint8_t ldn, uint16_t io_base,
+                           uint8_t enable);
+int mec_hal_espi_iobar_enable(struct mec_espi_io_regs *base, uint8_t ldn, uint8_t enable);
+int mec_hal_espi_iobar_is_enabled(struct mec_espi_io_regs *base, uint8_t ldn);
+uint32_t mec_hal_espi_iobar_mask(struct mec_espi_io_regs *base, uint8_t ldn);
+int mec_hal_espi_iobar_mask_set(struct mec_espi_io_regs *base, uint8_t ldn, uint8_t mask);
 
 /* Inhibit both I/O and Memory BAR for a logical device or a bit map of LDNs */
-int mec_espi_bar_inhibit(struct espi_io_regs *base, uint8_t ldn, uint8_t inhibit);
-int mec_espi_bar_inhibit_msk(struct espi_io_regs *base, uint8_t inhibit,
-                             uint32_t msklo, uint32_t mskhi);
+int mec_hal_espi_bar_inhibit(struct mec_espi_io_regs *base, uint8_t ldn, uint8_t inhibit);
+int mec_hal_espi_bar_inhibit_msk(struct mec_espi_io_regs *base, uint8_t inhibit,
+                                 uint32_t msklo, uint32_t mskhi);
 
-int mec_espi_mbar_enable(struct espi_mem_regs *base, uint8_t ldn, uint8_t enable);
-int mec_espi_mbar_is_enabled(struct espi_mem_regs *base, uint8_t ldn);
-int mec_espi_mbar_cfg(struct espi_mem_regs *base, uint8_t ldn, uint32_t mem_base, uint8_t enable);
-int mec_espi_mbar_extended_addr_set(struct espi_mem_regs *base, uint32_t extended_addr);
+int mec_hal_espi_mbar_enable(struct mec_espi_mem_regs *base, uint8_t ldn, uint8_t enable);
+int mec_hal_espi_mbar_is_enabled(struct mec_espi_mem_regs *base, uint8_t ldn);
+int mec_hal_espi_mbar_cfg(struct mec_espi_mem_regs *base, uint8_t ldn, uint32_t mem_base,
+                          uint8_t enable);
+int mec_hal_espi_mbar_extended_addr_set(struct mec_espi_mem_regs *base, uint32_t extended_addr);
 
 enum espi_mec5_sram_bar_id {
     MEC_ESPI_SRAM_BAR_0 = 0,
@@ -212,20 +214,27 @@ struct espi_mec5_sram_bar_cfg {
     uint8_t access;
 };
 
-int mec_espi_sram_bar_cfg(struct espi_mem_regs *base, const struct espi_mec5_sram_bar_cfg *barcfg,
-                          uint8_t sram_bar_id, uint8_t enable);
-int mec_espi_sram_bar_extended_addr_set(struct espi_mem_regs *base, uint32_t extended_addr);
+int mec_hal_espi_sram_bar_cfg(struct mec_espi_mem_regs *base,
+                              const struct espi_mec5_sram_bar_cfg *barcfg,
+                              uint8_t sram_bar_id, uint8_t enable);
+int mec_hal_espi_sram_bar_extended_addr_set(struct mec_espi_mem_regs *base,
+                                            uint32_t extended_addr);
+
+/* Return the number of Serial IRQ's a logical device implements */
+uint8_t mec_hal_espi_ld_sirq_num(struct mec_espi_io_regs *iobase, uint8_t ldn);
 
 /* Get/set Serial IRQ slot(interrupt) number for a logical device.
  * Some logical devices implement more than one SIRQ selected by ldn_sirq_id (zero based)
  */
-uint8_t mec_espi_ld_sirq_get(struct espi_io_regs *iobase, uint8_t ldn, uint8_t ldn_sirq_id);
-void mec_espi_ld_sirq_set(struct espi_io_regs *iobase, uint8_t ldn, uint8_t ldn_sirq_id, uint8_t slot);
+uint8_t mec_hal_espi_ld_sirq_get(struct mec_espi_io_regs *iobase, uint8_t ldn,
+                                 uint8_t ldn_sirq_id);
+void mec_hal_espi_ld_sirq_set(struct mec_espi_io_regs *iobase, uint8_t ldn,
+                              uint8_t ldn_sirq_id, uint8_t slot);
 
 /* Generate EC_IRQ Serial IRQ to the Host using the Serial IRQ slot
  * number previously programmed by mec_espi_ld_sirq_set().
  */
-int mec_espi_gen_ec_sirq(struct espi_io_regs *iobase);
+int mec_hal_espi_gen_ec_sirq(struct mec_espi_io_regs *iobase);
 
 #ifdef __cplusplus
 }

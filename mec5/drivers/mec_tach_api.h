@@ -66,20 +66,20 @@ enum mec5_tach_ien {
 };
 
 /* forward declaration */
-struct tach_regs;
+struct mec_tach_regs;
 
-int mec_tach_init(struct tach_regs *regs, uint32_t limits, uint32_t flags);
-void tach_enable(struct tach_regs *regs, uint8_t enable);
-bool tach_is_enabled(struct tach_regs *regs);
+int mec_hal_tach_init(struct mec_tach_regs *regs, uint32_t limits, uint32_t flags);
+void mec_hal_tach_enable(struct mec_tach_regs *regs, uint8_t enable);
+bool mec_hal_tach_is_enabled(struct mec_tach_regs *regs);
 
-uint32_t mec_tach_clock_freq(void);
-uint32_t mec_tach_counter(struct tach_regs *regs);
-uint32_t mec_tach_status(struct tach_regs *regs);
-void mec_tach_status_clr(struct tach_regs *regs, uint32_t status);
-int mec_tach_intr_enable(struct tach_regs *regs, uint32_t intr_events, uint8_t enable);
+uint32_t mec_hal_tach_clock_freq(void);
+uint32_t mec_hal_tach_counter(struct mec_tach_regs *regs);
+uint32_t mec_hal_tach_status(struct mec_tach_regs *regs);
+void mec_hal_tach_status_clr(struct mec_tach_regs *regs, uint32_t status);
+int mec_hal_tach_intr_enable(struct mec_tach_regs *regs, uint32_t intr_events, uint8_t enable);
 
-void mec_tach_girq_status_clr(struct tach_regs *regs);
-void mec_tach_girq_enable(struct tach_regs *regs, uint8_t enable);
+void mec_hal_tach_girq_status_clr(struct mec_tach_regs *regs);
+void mec_hal_tach_girq_enable(struct mec_tach_regs *regs, uint8_t enable);
 
 #ifdef __cplusplus
 }

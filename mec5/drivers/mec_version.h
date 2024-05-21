@@ -3,17 +3,17 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-#ifndef MEC5_LIB_VERSION_H_
-#define MEC5_LIB_VERSION_H_
+#ifndef MEC5_VERSION_H_
+#define MEC5_VERSION_H_
 
 #include <stdint.h>
 #include <stddef.h>
 
 #define MEC5_VER_MAJOR    0
-#define MEC5_VER_MINOR    1
+#define MEC5_VER_MINOR    2
 #define MEC5_VER_REVISION 0
 
-size_t mec5_lib_version_size(void);
-char const *mec5_lib_version_string(void);
+size_t mec5_hal_version_size(void);
+char const *mec5_hal_version_string(void);
 
-#endif /* MEC5_LIB_VERSION_H_ */
+#endif /* MEC5_VERSION_H_ */

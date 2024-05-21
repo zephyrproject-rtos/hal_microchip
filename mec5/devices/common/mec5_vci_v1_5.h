@@ -28,7 +28,8 @@ typedef struct mec_vci_regs {                   /*!< (@ 0x4000AE00) MEC_VCI Stru
   __IOM uint32_t  VCI_IN_NEGED_STS;             /*!< (@ 0x0000001C) Positive edge detect status for VCI_IN pins                */
   __IOM uint32_t  VCI_IN_VBAT_BUFEN;            /*!< (@ 0x00000020) VCI_IN VBAT powered buffer enables. No effect
                                                                     when VTR_CORE is on                                        */
-} MEC_VCI_Type;                                 /*!< Size = 36 (0x24)                                                          */
+  __IOM uint32_t  VCI_LID_OPEN_DET_EN;          /*!< (@ 0x00000024) VCI_IN2 open lid detection feature enable                  */
+} MEC_VCI_Type;                                 /*!< Size = 40 (0x28)                                                          */
 
 /** @} */ /* End of group Device_Peripheral_peripherals */
 
@@ -180,6 +181,9 @@ typedef struct mec_vci_regs {                   /*!< (@ 0x4000AE00) MEC_VCI Stru
 #define MEC_VCI_VCI_IN_VBAT_BUFEN_VCI_IN5_Msk (0x20UL)              /*!< VCI_IN5 (Bitfield-Mask: 0x01)                         */
 #define MEC_VCI_VCI_IN_VBAT_BUFEN_VCI_IN6_Pos (6UL)                 /*!< VCI_IN6 (Bit 6)                                       */
 #define MEC_VCI_VCI_IN_VBAT_BUFEN_VCI_IN6_Msk (0x40UL)              /*!< VCI_IN6 (Bitfield-Mask: 0x01)                         */
+/* ==================================================  VCI_LID_OPEN_DET_EN  ================================================== */
+#define MEC_VCI_VCI_LID_OPEN_DET_EN_VCI_LID_EN_Pos (0UL)            /*!< VCI_LID_EN (Bit 0)                                    */
+#define MEC_VCI_VCI_LID_OPEN_DET_EN_VCI_LID_EN_Msk (0x1UL)          /*!< VCI_LID_EN (Bitfield-Mask: 0x01)                      */
 
 /** @} */ /* End of group PosMask_peripherals */
 

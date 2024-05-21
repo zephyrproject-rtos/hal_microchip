@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-struct i3c_DCT_info {
+struct mec_i3c_DCT_info {
 
     /* 64 bit provisional id */
     uint64_t pid;
@@ -24,7 +24,7 @@ struct i3c_DCT_info {
     uint8_t dynamic_addr;
 };
 
-struct i3c_SDCT_info {
+struct mec_i3c_SDCT_info {
 
     /* 7-bit dynamic address */
     uint8_t dynamic_addr;
@@ -39,6 +39,9 @@ struct i3c_SDCT_info {
     uint8_t static_addr;
 
 };
+
+/* Enter Dynamic Address Assignment (Broadcast) */
+#define MEC_I3C_CCC_ENTDAA                      0x07U
 
 #define DO_CCC_SHORT_CMD_DATA_SIZE_MAX          3U
 
@@ -568,168 +571,185 @@ enum interrupt_status_reg_bits
 /*------------------------------MXDS_CLK_DATA_TURN----------------------*/
 
 /* forward declarations */
-struct i3c_host_regs;
-struct i3c_sec_regs;
+struct mec_i3c_host_regs;
+struct mec_i3c_sec_regs;
 
-uint32_t _i3c_intr_sts_get(struct i3c_host_regs *regs);
-void _i3c_intr_sts_clear(struct i3c_host_regs *regs, uint32_t mask);
-void _i3c_intr_sts_enable(struct i3c_host_regs *regs, uint32_t mask);
-void _i3c_intr_sgnl_enable(struct i3c_host_regs *regs, uint32_t mask);
-void _i3c_intr_IBI_enable(struct i3c_host_regs *regs);
-void _i3c_intr_IBI_disable(struct i3c_host_regs *regs);
+uint32_t _i3c_intr_sts_get(struct mec_i3c_host_regs *regs);
+void _i3c_intr_sts_clear(struct mec_i3c_host_regs *regs, uint32_t mask);
+void _i3c_intr_sts_enable(struct mec_i3c_host_regs *regs, uint32_t mask);
+void _i3c_intr_sgnl_enable(struct mec_i3c_host_regs *regs, uint32_t mask);
+void _i3c_intr_IBI_enable(struct mec_i3c_host_regs *regs);
+void _i3c_intr_IBI_disable(struct mec_i3c_host_regs *regs);
 
-void _i3c_resp_buf_threshold_set(struct i3c_host_regs *regs, uint8_t threshold);
-void _i3c_cmd_queue_buf_threshold_set(struct i3c_host_regs *regs, uint32_t val);
-void _i3c_tx_fifo_empty_threshold_set(struct i3c_host_regs *regs, uint32_t val);
-void _i3c_rx_buf_threshold_set(struct i3c_host_regs *regs, uint32_t val);
-void _i3c_tx_buf_threshold_set(struct i3c_host_regs *regs, uint32_t val);
-void _i3c_tx_start_threshold_set(struct i3c_host_regs *regs, uint32_t val);
-void _i3c_rx_start_threshold_set(struct i3c_host_regs *regs, uint32_t val);
+void _i3c_resp_buf_threshold_set(struct mec_i3c_host_regs *regs, uint8_t threshold);
+void _i3c_cmd_queue_buf_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val);
+void _i3c_tx_fifo_empty_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val);
+void _i3c_rx_buf_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val);
+void _i3c_tx_buf_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val);
+void _i3c_tx_start_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val);
+void _i3c_rx_start_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val);
 
-void _i3c_notify_sir_reject(struct i3c_host_regs *regs, bool opt);
-void _i3c_notify_mr_reject(struct i3c_host_regs *regs, bool opt);
-void _i3c_notify_hj_reject(struct i3c_host_regs *regs, bool opt);
+void _i3c_notify_sir_reject(struct mec_i3c_host_regs *regs, bool opt);
+void _i3c_notify_mr_reject(struct mec_i3c_host_regs *regs, bool opt);
+void _i3c_notify_hj_reject(struct mec_i3c_host_regs *regs, bool opt);
 
-void _i3c_resp_queue_threshold_set(struct i3c_host_regs *regs, uint8_t threshold);
-void _i3c_cmd_queue_threshold_set(struct i3c_host_regs *regs, uint32_t val);
-void _i3c_ibi_data_threshold_set(struct i3c_host_regs *regs, uint32_t val);
-void _i3c_ibi_status_threshold_set(struct i3c_host_regs *regs, uint32_t val);
-uint32_t _i3c_ibi_queue_status_get(struct i3c_host_regs *regs);
+void _i3c_resp_queue_threshold_set(struct mec_i3c_host_regs *regs, uint8_t threshold);
+void _i3c_cmd_queue_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val);
+void _i3c_ibi_data_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val);
+void _i3c_ibi_status_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val);
+uint32_t _i3c_ibi_queue_status_get(struct mec_i3c_host_regs *regs);
 
-void _i3c_dynamic_addr_set(struct i3c_host_regs *regs, uint8_t address);
-void _i3c_static_addr_set(struct i3c_host_regs *regs, uint8_t address);
+void _i3c_dynamic_addr_set(struct mec_i3c_host_regs *regs, uint8_t address);
+void _i3c_static_addr_set(struct mec_i3c_host_regs *regs, uint8_t address);
 
-void _i3c_operation_mode_set(struct i3c_host_regs *regs, uint8_t mode);
+void _i3c_operation_mode_set(struct mec_i3c_host_regs *regs, uint8_t mode);
 
-void _i3c_hot_join_disable(struct i3c_host_regs *regs);
-void _i3c_hot_join_enable(struct i3c_host_regs *regs);
+void _i3c_hot_join_disable(struct mec_i3c_host_regs *regs);
+void _i3c_hot_join_enable(struct mec_i3c_host_regs *regs);
 
 /* controller mode (cm) or target mode (tm) request reject internal API */
-void _i3c_ibi_cm_req_reject(struct i3c_host_regs *regs);
-void _i3c_ibi_tm_intr_req_reject(struct i3c_host_regs *regs);
+void _i3c_ibi_cm_req_reject(struct mec_i3c_host_regs *regs);
+void _i3c_ibi_tm_intr_req_reject(struct mec_i3c_host_regs *regs);
 
-void _i3c_enable(struct i3c_host_regs *regs, uint8_t mode, bool enable_dma);
-void _i3c_disable(struct i3c_host_regs *regs);
-void _i3c_resume(struct i3c_host_regs *regs);
+void _i3c_enable(struct mec_i3c_host_regs *regs, uint8_t mode, bool enable_dma);
+void _i3c_disable(struct mec_i3c_host_regs *regs);
+void _i3c_resume(struct mec_i3c_host_regs *regs);
 
-void _i3c_push_pull_timing_set(struct i3c_host_regs *regs, uint32_t core_clk_freq_ns, uint32_t i3c_freq_ns);
+void _i3c_push_pull_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk_freq_ns,
+                               uint32_t i3c_freq_ns);
 
-void _i3c_open_drain_timing_set(struct i3c_host_regs *regs, uint32_t core_clk_freq_ns, uint32_t i3c_freq_ns);
+void _i3c_open_drain_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk_freq_ns,
+                                uint32_t i3c_freq_ns);
 
-void _i3c_bus_free_timing_set(struct i3c_sec_regs *regs, uint32_t core_clk_freq_ns);
-void _i3c_bus_available_timing_set(struct i3c_sec_regs *regs, uint32_t core_clk_freq_ns);
-void _i3c_bus_idle_timing_set(struct i3c_sec_regs *regs, uint32_t core_clk_freq_ns);
-void _i3c_read_term_bit_low_count_set(struct i3c_host_regs *regs,
+void _i3c_bus_free_timing_set(struct mec_i3c_sec_regs *regs, uint32_t core_clk_freq_ns);
+void _i3c_bus_available_timing_set(struct mec_i3c_sec_regs *regs, uint32_t core_clk_freq_ns);
+void _i3c_bus_idle_timing_set(struct mec_i3c_sec_regs *regs, uint32_t core_clk_freq_ns);
+void _i3c_read_term_bit_low_count_set(struct mec_i3c_host_regs *regs,
                                             uint8_t read_term_low_count);
-void _i3c_sda_hld_timing_set(struct i3c_host_regs *regs,
+void _i3c_sda_hld_timing_set(struct mec_i3c_host_regs *regs,
                                             uint8_t sda_tx_hold);
-void _i3c_sda_hld_switch_delay_timing_set(struct i3c_sec_regs *regs,
+void _i3c_sda_hld_switch_delay_timing_set(struct mec_i3c_sec_regs *regs,
                                             uint8_t sda_od_pp_switch_dly,
                                             uint8_t sda_pp_od_switch_dly,
                                             uint8_t sda_tx_hold);
-void _i3c_scl_low_mst_tout_set(struct i3c_sec_regs *regs, uint32_t tout_val);
+void _i3c_scl_low_mst_tout_set(struct mec_i3c_sec_regs *regs, uint32_t tout_val);
 
-void _i2c_fm_timing_set(struct i3c_host_regs *regs, uint32_t core_clk_freq_ns);
-void _i2c_fmp_timing_set(struct i3c_host_regs *regs, uint32_t core_clk_freq_ns);
-void _i2c_target_present_set (struct i3c_host_regs *regs);
-void _i2c_target_present_reset (struct i3c_host_regs *regs);
+void _i2c_fm_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk_freq_ns);
+void _i2c_fmp_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk_freq_ns);
+void _i2c_target_present_set (struct mec_i3c_host_regs *regs);
+void _i2c_target_present_reset (struct mec_i3c_host_regs *regs);
 
-void _i3c_host_dma_tx_burst_length_set(struct i3c_host_regs *regs, uint32_t val);
-void _i3c_host_dma_rx_burst_length_set(struct i3c_host_regs *regs, uint32_t val);
-void _i3c_host_port_set(struct i3c_host_regs *regs, uint32_t val);
-void _i3c_host_stuck_sda_config(struct i3c_host_regs *regs, uint32_t val, uint32_t tout_val);
-void _i3c_host_tx_dma_tout_config(struct i3c_host_regs *regs, uint32_t val, uint32_t tout_val);
-void _i3c_host_rx_dma_tout_config(struct i3c_host_regs *regs, uint32_t val, uint32_t tout_val);
+void _i3c_host_dma_tx_burst_length_set(struct mec_i3c_host_regs *regs, uint32_t val);
+void _i3c_host_dma_rx_burst_length_set(struct mec_i3c_host_regs *regs, uint32_t val);
+void _i3c_host_port_set(struct mec_i3c_host_regs *regs, uint32_t val);
+void _i3c_host_stuck_sda_config(struct mec_i3c_host_regs *regs, uint32_t val,
+                                uint32_t tout_val);
+void _i3c_host_tx_dma_tout_config(struct mec_i3c_host_regs *regs, uint32_t val,
+                                  uint32_t tout_val);
+void _i3c_host_rx_dma_tout_config(struct mec_i3c_host_regs *regs, uint32_t val,
+                                  uint32_t tout_val);
 
-void _i3c_sec_host_dma_tx_burst_length_set(struct i3c_sec_regs *regs, uint32_t val);
-void _i3c_sec_host_dma_rx_burst_length_set(struct i3c_sec_regs *regs, uint32_t val);
-void _i3c_sec_host_port_set(struct i3c_sec_regs *regs, uint32_t val);
-void _i3c_sec_host_stuck_sda_scl_config(struct i3c_sec_regs *regs, uint32_t en, uint32_t sda_tout_val, uint32_t scl_tout_val);
-void _i3c_sec_host_tx_dma_tout_config(struct i3c_sec_regs *regs, uint32_t val, uint32_t tout_val);
-void _i3c_sec_host_rx_dma_tout_config(struct i3c_sec_regs *regs, uint32_t val, uint32_t tout_val);
-void _i3c_sec_host_dma_fsm_enable(struct i3c_sec_regs *regs);
+void _i3c_sec_host_dma_tx_burst_length_set(struct mec_i3c_sec_regs *regs, uint32_t val);
+void _i3c_sec_host_dma_rx_burst_length_set(struct mec_i3c_sec_regs *regs, uint32_t val);
+void _i3c_sec_host_port_set(struct mec_i3c_sec_regs *regs, uint32_t val);
+void _i3c_sec_host_stuck_sda_scl_config(struct mec_i3c_sec_regs *regs, uint32_t en,
+                                        uint32_t sda_tout_val, uint32_t scl_tout_val);
+void _i3c_sec_host_tx_dma_tout_config(struct mec_i3c_sec_regs *regs, uint32_t val,
+                                      uint32_t tout_val);
+void _i3c_sec_host_rx_dma_tout_config(struct mec_i3c_sec_regs *regs, uint32_t val,
+                                      uint32_t tout_val);
+void _i3c_sec_host_dma_fsm_enable(struct mec_i3c_sec_regs *regs);
 
-void _i3c_dev_addr_table_ptr_get(struct i3c_host_regs *regs, uint16_t *start_addr, uint16_t *depth);
-void _i3c_dev_char_table_ptr_get(struct i3c_host_regs *regs, uint16_t *start_addr, uint16_t *depth);
+void _i3c_dev_addr_table_ptr_get(struct mec_i3c_host_regs *regs, uint16_t *start_addr,
+                                 uint16_t *depth);
+void _i3c_dev_char_table_ptr_get(struct mec_i3c_host_regs *regs, uint16_t *start_addr,
+                                 uint16_t *depth);
 
-uint8_t _i3c_dev_operation_mode_get(struct i3c_host_regs *regs);
+uint8_t _i3c_dev_operation_mode_get(struct mec_i3c_host_regs *regs);
 
-uint8_t _i3c_dev_controller_role_get(struct i3c_host_regs *regs);
+uint8_t _i3c_dev_controller_role_get(struct mec_i3c_host_regs *regs);
 
-uint8_t _i3c_dev_role_config_get(struct i3c_host_regs *regs);
+uint8_t _i3c_dev_role_config_get(struct mec_i3c_host_regs *regs);
 
-void _i3c_DAT_write(struct i3c_host_regs *regs, uint16_t DAT_start, uint8_t DAT_idx, uint32_t val);
-uint32_t _i3c_DAT_read(struct i3c_host_regs *regs, uint16_t DAT_start, uint8_t DAT_idx);
-void _i3c_DCT_read(struct i3c_host_regs *regs, uint16_t DCT_start, uint8_t DCT_idx, struct i3c_DCT_info *info);
+void _i3c_DAT_write(struct mec_i3c_host_regs *regs, uint16_t DAT_start, uint8_t DAT_idx,
+                    uint32_t val);
+uint32_t _i3c_DAT_read(struct mec_i3c_host_regs *regs, uint16_t DAT_start, uint8_t DAT_idx);
+void _i3c_DCT_read(struct mec_i3c_host_regs *regs, uint16_t DCT_start, uint8_t DCT_idx,
+                   struct mec_i3c_DCT_info *info);
 
-void _i3c_fifo_write(struct i3c_host_regs *regs, uint8_t *buffer, uint16_t len);
-void _i3c_command_write(struct i3c_host_regs *regs, uint32_t cmd);
+void _i3c_fifo_write(struct mec_i3c_host_regs *regs, uint8_t *buffer, uint16_t len);
+void _i3c_command_write(struct mec_i3c_host_regs *regs, uint32_t cmd);
 
-uint8_t _i3c_resp_buf_level_get(struct i3c_host_regs *regs);
-uint8_t _i3c_ibi_status_count_get(struct i3c_host_regs *regs);
+uint8_t _i3c_resp_buf_level_get(struct mec_i3c_host_regs *regs);
+uint8_t _i3c_ibi_status_count_get(struct mec_i3c_host_regs *regs);
 
-uint8_t _i3c_response_sts_get(struct i3c_host_regs *regs, uint16_t *len, uint8_t *tid);
-void _i3c_fifo_read(struct i3c_host_regs *regs, uint8_t *buffer, uint16_t len);
-void _i3c_ibi_data_read(struct i3c_host_regs *regs, uint8_t *buffer, uint16_t len);
+uint8_t _i3c_response_sts_get(struct mec_i3c_host_regs *regs, uint16_t *len, uint8_t *tid);
+void _i3c_fifo_read(struct mec_i3c_host_regs *regs, uint8_t *buffer, uint16_t len);
+void _i3c_ibi_data_read(struct mec_i3c_host_regs *regs, uint8_t *buffer, uint16_t len);
 
-void _i3c_xfers_reset(struct i3c_host_regs *regs);
-void _i3c_soft_reset(struct i3c_host_regs *regs);
+void _i3c_xfers_reset(struct mec_i3c_host_regs *regs);
+void _i3c_soft_reset(struct mec_i3c_host_regs *regs);
 
-void _i3c_xfer_err_sts_clr(struct i3c_host_regs *regs);
+void _i3c_xfer_err_sts_clr(struct mec_i3c_host_regs *regs);
 
-uint8_t _i3c_cmd_fifo_depth_get(struct i3c_host_regs *regs);
-uint8_t _i3c_tx_fifo_depth_get(struct i3c_host_regs *regs);
-uint8_t _i3c_rx_fifo_depth_get(struct i3c_host_regs *regs);
-uint8_t _i3c_resp_fifo_depth_get(struct i3c_host_regs *regs);
-uint8_t _i3c_ibi_fifo_depth_get(struct i3c_host_regs *regs);
+uint8_t _i3c_cmd_fifo_depth_get(struct mec_i3c_host_regs *regs);
+uint8_t _i3c_tx_fifo_depth_get(struct mec_i3c_host_regs *regs);
+uint8_t _i3c_rx_fifo_depth_get(struct mec_i3c_host_regs *regs);
+uint8_t _i3c_resp_fifo_depth_get(struct mec_i3c_host_regs *regs);
+uint8_t _i3c_ibi_fifo_depth_get(struct mec_i3c_host_regs *regs);
 
 
-void _i3c_tx_fifo_rst(struct i3c_host_regs *regs);
-void _i3c_rx_fifo_rst(struct i3c_host_regs *regs);
-void _i3c_cmd_queue_rst(struct i3c_host_regs *regs);
+void _i3c_tx_fifo_rst(struct mec_i3c_host_regs *regs);
+void _i3c_rx_fifo_rst(struct mec_i3c_host_regs *regs);
+void _i3c_cmd_queue_rst(struct mec_i3c_host_regs *regs);
 
-void _i3c_SDCT_read(struct i3c_host_regs *regs, uint16_t DCT_start, uint8_t DCT_idx, struct i3c_SDCT_info *info);
+void _i3c_SDCT_read(struct mec_i3c_host_regs *regs, uint16_t DCT_start, uint8_t DCT_idx,
+                    struct mec_i3c_SDCT_info *info);
 
-void _i3c_intr_thresholds_tx_enable(struct i3c_host_regs *regs);
-void _i3c_intr_thresholds_tx_disable(struct i3c_host_regs *regs);
-void _i3c_intr_thresholds_rx_enable(struct i3c_host_regs *regs);
-void _i3c_intr_thresholds_rx_disable(struct i3c_host_regs *regs);
+void _i3c_intr_thresholds_tx_enable(struct mec_i3c_host_regs *regs);
+void _i3c_intr_thresholds_tx_disable(struct mec_i3c_host_regs *regs);
+void _i3c_intr_thresholds_rx_enable(struct mec_i3c_host_regs *regs);
+void _i3c_intr_thresholds_rx_disable(struct mec_i3c_host_regs *regs);
 
 /* Secondary Controller specific functions */
 
-void _i3c_tgt_pid_set(struct i3c_sec_regs *regs,
+void _i3c_tgt_pid_set(struct mec_i3c_sec_regs *regs,
                         uint16_t tgt_mipi_mfg_id,
                         bool is_random_prov_id,
                         uint16_t tgt_part_id,
                         uint8_t tgt_inst_id,
                         uint16_t tgt_pid_dcr);
-bool _i3c_tgt_dyn_addr_valid_get(struct i3c_sec_regs *regs);
-uint8_t _i3c_tgt_dyn_addr_get(struct i3c_sec_regs *regs);
-void _i3c_tgt_mrl_set(struct i3c_sec_regs *regs, uint16_t mrl);
-void _i3c_tgt_mwl_set(struct i3c_sec_regs *regs, uint16_t mwl);
-void _i3c_tgt_mxds_set(struct i3c_sec_regs *regs,
+bool _i3c_tgt_dyn_addr_valid_get(struct mec_i3c_sec_regs *regs);
+uint8_t _i3c_tgt_dyn_addr_get(struct mec_i3c_sec_regs *regs);
+void _i3c_tgt_mrl_set(struct mec_i3c_sec_regs *regs, uint16_t mrl);
+void _i3c_tgt_mwl_set(struct mec_i3c_sec_regs *regs, uint16_t mwl);
+void _i3c_tgt_mxds_set(struct mec_i3c_sec_regs *regs,
                         uint8_t wr_speed,
                         uint8_t rd_speed,
                         uint8_t tsco,
                         uint32_t rd_trnd_us);
-bool _i3c_tgt_SIR_enabled(struct i3c_sec_regs *regs);
-bool _i3c_tgt_MR_enabled(struct i3c_sec_regs *regs);
-void _i3c_tgt_raise_ibi_SIR(struct i3c_sec_regs *regs, uint8_t *sir_data, uint8_t sir_datalen, uint8_t mdb);
-void _i3c_tgt_raise_ibi_MR(struct i3c_sec_regs *regs);
-bool _i3c_tgt_ibi_resp_get(struct i3c_sec_regs *regs, uint8_t *sir_rem_datalen);
+bool _i3c_tgt_SIR_enabled(struct mec_i3c_sec_regs *regs);
+bool _i3c_tgt_MR_enabled(struct mec_i3c_sec_regs *regs);
+void _i3c_tgt_raise_ibi_SIR(struct mec_i3c_sec_regs *regs, uint8_t *sir_data, uint8_t sir_datalen,
+                            uint8_t mdb);
+void _i3c_tgt_raise_ibi_MR(struct mec_i3c_sec_regs *regs);
+bool _i3c_tgt_ibi_resp_get(struct mec_i3c_sec_regs *regs, uint8_t *sir_rem_datalen);
 
-uint8_t _i3c_tgt_response_sts_get(struct i3c_sec_regs *regs, uint16_t *len, uint8_t *tid, bool *rx_response);
+uint8_t _i3c_tgt_response_sts_get(struct mec_i3c_sec_regs *regs, uint16_t *len, uint8_t *tid,
+                                  bool *rx_response);
 
-void _i3c_tgt_MRL_get(struct i3c_sec_regs *regs, uint16_t *max_rd_len);
-void _i3c_tgt_MWL_get(struct i3c_sec_regs *regs, uint16_t *max_wr_len);
-void _i3c_tgt_MRL_MWL_set(struct i3c_sec_regs *regs, uint16_t max_rd_len, uint16_t max_wr_len);
+void _i3c_tgt_MRL_get(struct mec_i3c_sec_regs *regs, uint16_t *max_rd_len);
+void _i3c_tgt_MWL_get(struct mec_i3c_sec_regs *regs, uint16_t *max_wr_len);
+void _i3c_tgt_MRL_MWL_set(struct mec_i3c_sec_regs *regs, uint16_t max_rd_len,
+                          uint16_t max_wr_len);
 
-bool _i3c_tgt_MRL_updated(struct i3c_sec_regs *regs);
-bool _i3c_tgt_MWL_updated(struct i3c_sec_regs *regs);
-void _i3c_tgt_hot_join_disable(struct i3c_sec_regs *regs);
+bool _i3c_tgt_MRL_updated(struct mec_i3c_sec_regs *regs);
+bool _i3c_tgt_MWL_updated(struct mec_i3c_sec_regs *regs);
+void _i3c_tgt_hot_join_disable(struct mec_i3c_sec_regs *regs);
 
-void _i3c_tgt_max_speed_update(struct i3c_sec_regs *regs, uint8_t max_rd_speed, uint8_t max_wr_speed);
-void _i3c_tgt_clk_to_data_turn_update(struct i3c_sec_regs *regs, uint8_t clk_data_turn_time);
+void _i3c_tgt_max_speed_update(struct mec_i3c_sec_regs *regs, uint8_t max_rd_speed,
+                               uint8_t max_wr_speed);
+void _i3c_tgt_clk_to_data_turn_update(struct mec_i3c_sec_regs *regs, uint8_t clk_data_turn_time);
 
 
 #endif /* _MEC_I3C_PVT_H_ */

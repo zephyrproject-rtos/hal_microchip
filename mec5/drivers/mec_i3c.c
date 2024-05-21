@@ -6,22 +6,22 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "zephyr/sys/util.h"
-#include <device_mec5.h>
 #include "mec_pcfg.h"
+#include "mec_defs.h"
+#include <device_mec5.h>
+
 #include "mec_ecia_api.h"
 #include "mec_pcr_api.h"
 #include "mec_retval.h"
 #include "mec_i3c_pvt.h"
 
 #include "mec_i3c_api.h"
-#include "zephyr/drivers/i3c.h"
 
 static uint8_t tid = 0;
 static uint32_t targets_ibi_enable_sts = 0;
 
-#define MEC_I3C_HOST0_ECIA_INFO MEC5_ECIA_INFO(13, 8, 5, I3C_HOST0_IRQn)
-#define MEC_I3C_SEC_HOST0_ECIA_INFO MEC5_ECIA_INFO(13, 9, 5, I3C_SEC0_IRQn)
+#define MEC_I3C_HOST0_ECIA_INFO MEC5_ECIA_INFO(13, 8, 5, MEC_I3C_HOST0_IRQn)
+#define MEC_I3C_SEC_HOST0_ECIA_INFO MEC5_ECIA_INFO(13, 9, 5, MEC_I3C_SEC0_IRQn)
 
 struct mec_i3c_info {
     uintptr_t base_addr;
@@ -30,8 +30,8 @@ struct mec_i3c_info {
 };
 
 static const struct mec_i3c_info i3c_instances[MEC5_I3C_CTRL_INSTANCES] = {
-     {I3C_SEC0_BASE, MEC_I3C_SEC_HOST0_ECIA_INFO, MEC_PCR_I3C_SEC },
-    {I3C_HOST0_BASE, MEC_I3C_HOST0_ECIA_INFO, MEC_PCR_I3C_HOST },
+    {MEC_I3C_SEC0_BASE, MEC_I3C_SEC_HOST0_ECIA_INFO, MEC_PCR_I3C_SEC },
+    {MEC_I3C_HOST0_BASE, MEC_I3C_HOST0_ECIA_INFO, MEC_PCR_I3C_HOST },
 };
 
 static struct mec_i3c_info const *get_i3c_info(uintptr_t base)
@@ -53,9 +53,9 @@ static struct mec_i3c_info const *get_i3c_info(uintptr_t base)
  *
  * @param regs Pointer to controller registers
  */
-void I3C_Controller_Clk_I2C_Init(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate_mhz)
+void MEC_HAL_I3C_Controller_Clk_I2C_Init(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate_mhz)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     uint32_t core_clk_freq_ns;
 
     const struct mec_i3c_info *info = get_i3c_info(ctx->base);
@@ -64,11 +64,10 @@ void I3C_Controller_Clk_I2C_Init(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate
 
         ctx->devi = info->devi;
 
-        mec_pcr_clr_blk_slp_en(info->pcr_id);
-        mec_pcr_blk_reset(info->pcr_id);
+        mec_hal_pcr_clr_blk_slp_en(info->pcr_id);
+        mec_hal_pcr_blk_reset(info->pcr_id);
 
-
-        core_clk_freq_ns = DIV_ROUND_UP(1000000000, core_clk_rate_mhz);
+        core_clk_freq_ns = MEC_DIV_ROUND_UP(1000000000, core_clk_rate_mhz);
 
         _i2c_fmp_timing_set(regs, core_clk_freq_ns);
 
@@ -85,7 +84,8 @@ void I3C_Controller_Clk_I2C_Init(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate
  * @param core_clk_rate_mhz Core Clock speed
  * @param i3c_freq I3C Frequency
  */
-void I3C_Controller_Clk_Init(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate_mhz, uint32_t i3c_freq)
+void MEC_HAL_I3C_Controller_Clk_Init(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate_mhz,
+                                     uint32_t i3c_freq)
 {
     const struct mec_i3c_info *info = get_i3c_info(ctx->base);
 
@@ -93,10 +93,10 @@ void I3C_Controller_Clk_Init(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate_mhz
 
         ctx->devi = info->devi;
 
-        mec_pcr_clr_blk_slp_en(info->pcr_id);
-        mec_pcr_blk_reset(info->pcr_id);
+        mec_hal_pcr_clr_blk_slp_en(info->pcr_id);
+        mec_hal_pcr_blk_reset(info->pcr_id);
 
-        I3C_Controller_Clk_Cfg(ctx, core_clk_rate_mhz, i3c_freq);
+        MEC_HAL_I3C_Controller_Clk_Cfg(ctx, core_clk_rate_mhz, i3c_freq);
     }
 }
 
@@ -107,14 +107,15 @@ void I3C_Controller_Clk_Init(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate_mhz
  * @param core_clk_rate_mhz Core Clock speed
  * @param i3c_freq I3C Frequency
  */
-void I3C_Controller_Clk_Cfg(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate_mhz, uint32_t i3c_freq)
+void MEC_HAL_I3C_Controller_Clk_Cfg(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate_mhz,
+                                    uint32_t i3c_freq)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     uint32_t core_clk_freq_ns, i3c_freq_ns;
 
-    core_clk_freq_ns = DIV_ROUND_UP(1000000000, core_clk_rate_mhz);
+    core_clk_freq_ns = MEC_DIV_ROUND_UP(1000000000, core_clk_rate_mhz);
 
-    i3c_freq_ns = DIV_ROUND_UP(1000000000, i3c_freq);
+    i3c_freq_ns = MEC_DIV_ROUND_UP(1000000000, i3c_freq);
 
     /* Program the I3C Push Pull Timing Register */
     _i3c_push_pull_timing_set(regs, core_clk_freq_ns, i3c_freq_ns);
@@ -131,9 +132,10 @@ void I3C_Controller_Clk_Cfg(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate_mhz,
  *
  * @param regs Pointer to controller registers
  */
-void I3C_Target_Init(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate_mhz, uint16_t *max_rd_len, uint16_t *max_wr_len)
+void MEC_HAL_I3C_Target_Init(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate_mhz,
+                             uint16_t *max_rd_len, uint16_t *max_wr_len)
 {
-    struct i3c_sec_regs *regs = (struct i3c_sec_regs *)ctx->base;
+    struct mec_i3c_sec_regs *regs = (struct mec_i3c_sec_regs *)ctx->base;
     uint32_t core_clk_freq_ns;
 
     const struct mec_i3c_info *info = get_i3c_info(ctx->base);
@@ -142,10 +144,10 @@ void I3C_Target_Init(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate_mhz, uint16
 
         ctx->devi = info->devi;
 
-        mec_pcr_clr_blk_slp_en(info->pcr_id);
-        mec_pcr_blk_reset(info->pcr_id);
+        mec_hal_pcr_clr_blk_slp_en(info->pcr_id);
+        mec_hal_pcr_blk_reset(info->pcr_id);
 
-        core_clk_freq_ns = DIV_ROUND_UP(1000000000, core_clk_rate_mhz);
+        core_clk_freq_ns = MEC_DIV_ROUND_UP(1000000000, core_clk_rate_mhz);
 
         /* Program the I3C Bus Free Avail Timing Register */
         _i3c_bus_available_timing_set(regs, core_clk_freq_ns);
@@ -179,9 +181,10 @@ void I3C_Target_Init(struct mec_i3c_ctx *ctx, uint32_t core_clk_rate_mhz, uint16
  *
  * @param regs Pointer to controller registers
  */
-void I3C_Target_MRL_MWL_update(struct mec_i3c_ctx *ctx, uint16_t *max_rd_len, uint16_t *max_wr_len)
+void MEC_HAL_I3C_Target_MRL_MWL_update(struct mec_i3c_ctx *ctx, uint16_t *max_rd_len,
+                                       uint16_t *max_wr_len)
 {
-    struct i3c_sec_regs *regs = (struct i3c_sec_regs *)ctx->base;
+    struct mec_i3c_sec_regs *regs = (struct mec_i3c_sec_regs *)ctx->base;
 
     if (_i3c_tgt_MRL_updated(regs)) {
         _i3c_tgt_MRL_get(regs, max_rd_len);
@@ -197,9 +200,10 @@ void I3C_Target_MRL_MWL_update(struct mec_i3c_ctx *ctx, uint16_t *max_rd_len, ui
  *
  * @param regs Pointer to controller registers
  */
-void I3C_Target_MRL_MWL_set(struct mec_i3c_ctx *ctx, uint16_t max_rd_len, uint16_t max_wr_len)
+void MEC_HAL_I3C_Target_MRL_MWL_set(struct mec_i3c_ctx *ctx, uint16_t max_rd_len,
+                                    uint16_t max_wr_len)
 {
-    struct i3c_sec_regs *regs = (struct i3c_sec_regs *)ctx->base;
+    struct mec_i3c_sec_regs *regs = (struct mec_i3c_sec_regs *)ctx->base;
 
     _i3c_tgt_MRL_MWL_set(regs, max_rd_len, max_wr_len);
 }
@@ -209,14 +213,14 @@ void I3C_Target_MRL_MWL_set(struct mec_i3c_ctx *ctx, uint16_t max_rd_len, uint16
  *
  * @param regs Pointer to controller registers
  */
-void I3C_Target_Interrupts_Init(struct mec_i3c_ctx *ctx)
+void MEC_HAL_I3C_Target_Interrupts_Init(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     uint32_t mask = 0xFFFFFFFFU;
     const struct mec_i3c_info *info = get_i3c_info(ctx->base);
 
-    mec_girq_ctrl(info->devi, 0);
-    mec_pcr_clr_blk_slp_en(info->pcr_id);
+    mec_hal_girq_ctrl(info->devi, 0);
+    mec_hal_pcr_clr_blk_slp_en(info->pcr_id);
      /* Clear all interrupt status */
     _i3c_intr_sts_clear(regs, mask);
 
@@ -233,8 +237,8 @@ void I3C_Target_Interrupts_Init(struct mec_i3c_ctx *ctx)
     _i3c_intr_sgnl_enable(regs, mask);
 
     /* Enable GIRQ */
-    mec_girq_clr_src(info->devi);
-    mec_girq_ctrl(info->devi, 1);
+    mec_hal_girq_clr_src(info->devi);
+    mec_hal_girq_ctrl(info->devi, 1);
 }
 
 /**
@@ -242,14 +246,14 @@ void I3C_Target_Interrupts_Init(struct mec_i3c_ctx *ctx)
  *
  * @param regs Pointer to controller registers
  */
-void I3C_Controller_Interrupts_Init(struct mec_i3c_ctx *ctx)
+void MEC_HAL_I3C_Controller_Interrupts_Init(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     uint32_t mask = 0xFFFFFFFFU;
     const struct mec_i3c_info *info = get_i3c_info(ctx->base);
 
-    mec_girq_ctrl(info->devi, 0);
-    mec_pcr_clr_blk_slp_en(info->pcr_id);
+    mec_hal_girq_ctrl(info->devi, 0);
+    mec_hal_pcr_clr_blk_slp_en(info->pcr_id);
 
      /* Clear all interrupt status */
     _i3c_intr_sts_clear(regs, mask);
@@ -266,8 +270,8 @@ void I3C_Controller_Interrupts_Init(struct mec_i3c_ctx *ctx)
     _i3c_intr_sgnl_enable(regs, mask);
 
     /* Enable GIRQ */
-    mec_girq_clr_src(info->devi);
-    mec_girq_ctrl(info->devi, 1);
+    mec_hal_girq_clr_src(info->devi);
+    mec_hal_girq_ctrl(info->devi, 1);
 }
 
 /**
@@ -275,9 +279,9 @@ void I3C_Controller_Interrupts_Init(struct mec_i3c_ctx *ctx)
  *
  * @param regs Pointer to controller registers
  */
-void I3C_Thresholds_Init(struct mec_i3c_ctx *ctx)
+void MEC_HAL_I3C_Thresholds_Init(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
     // Command Buffer Empty Threshold Value.
     _i3c_cmd_queue_threshold_set(regs, 0x00);
@@ -319,9 +323,9 @@ void I3C_Thresholds_Init(struct mec_i3c_ctx *ctx)
  * @param regs Pointer to controller registers
  * @param threshold Threshold value
  */
-void I3C_Thresholds_Response_buf_set(struct mec_i3c_ctx *ctx, uint8_t threshold)
+void MEC_HAL_I3C_Thresholds_Response_buf_set(struct mec_i3c_ctx *ctx, uint8_t threshold)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
     _i3c_resp_queue_threshold_set(regs, threshold);
 }
@@ -331,9 +335,9 @@ void I3C_Thresholds_Response_buf_set(struct mec_i3c_ctx *ctx, uint8_t threshold)
  *
  * @param regs Pointer to controller registers
  */
-void I3C_Host_Config(struct mec_i3c_ctx *ctx)
+void MEC_HAL_I3C_Host_Config(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
     _i3c_host_dma_tx_burst_length_set(regs, HOST_CFG_DMA_TX_BURST_LENGTH_4);
 
@@ -353,9 +357,9 @@ void I3C_Host_Config(struct mec_i3c_ctx *ctx)
  *
  * @param regs Pointer to controller registers
  */
-void I3C_Sec_Host_Config(struct mec_i3c_ctx *ctx)
+void MEC_HAL_I3C_Sec_Host_Config(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_sec_regs *regs = (struct i3c_sec_regs *)ctx->base;
+    struct mec_i3c_sec_regs *regs = (struct mec_i3c_sec_regs *)ctx->base;
 
     _i3c_sec_host_dma_tx_burst_length_set(regs, SEC_HOST_CFG_DMA_TX_BURST_LENGTH_4);
 
@@ -375,9 +379,9 @@ void I3C_Sec_Host_Config(struct mec_i3c_ctx *ctx)
  *
  * @param regs Pointer to controller registers
  */
-void I3C_Soft_Reset(struct mec_i3c_ctx *ctx)
+void MEC_HAL_I3C_Soft_Reset(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
     _i3c_soft_reset(regs);
 }
@@ -389,9 +393,9 @@ void I3C_Soft_Reset(struct mec_i3c_ctx *ctx)
  * @param start_addr Start Address of DAT
  * @param depth Depth of DAT
  */
-void I3C_DAT_info_get(struct mec_i3c_ctx *ctx, uint16_t *start_addr, uint16_t *depth)
+void MEC_HAL_I3C_DAT_info_get(struct mec_i3c_ctx *ctx, uint16_t *start_addr, uint16_t *depth)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
     _i3c_dev_addr_table_ptr_get(regs, start_addr, depth);
 }
@@ -403,9 +407,9 @@ void I3C_DAT_info_get(struct mec_i3c_ctx *ctx, uint16_t *start_addr, uint16_t *d
  * @param start_addr Start Address of DCT
  * @param depth Depth of DCT
  */
-void I3C_DCT_info_get(struct mec_i3c_ctx *ctx, uint16_t *start_addr, uint16_t *depth)
+void MEC_HAL_I3C_DCT_info_get(struct mec_i3c_ctx *ctx, uint16_t *start_addr, uint16_t *depth)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
     _i3c_dev_char_table_ptr_get(regs, start_addr, depth);
 }
@@ -416,11 +420,11 @@ void I3C_DCT_info_get(struct mec_i3c_ctx *ctx, uint16_t *start_addr, uint16_t *d
  *
  * @param regs Pointer to controller registers
  */
-bool I3C_Is_Current_Role_Primary(struct mec_i3c_ctx *ctx)
+bool MEC_HAL_I3C_Is_Current_Role_Primary(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
-    if (_i3c_dev_role_config_get(regs) != I3C_ROLE_CFG_PRIM_CTRLR) {
+    if (_i3c_dev_role_config_get(regs) != MEC_I3C_ROLE_CFG_PRIM_CTRLR) {
         return false;
     }
     return true;
@@ -433,13 +437,13 @@ bool I3C_Is_Current_Role_Primary(struct mec_i3c_ctx *ctx)
  *
  * @param regs Pointer to controller registers
  */
-bool I3C_Is_Current_Role_Master(struct mec_i3c_ctx *ctx)
+bool MEC_HAL_I3C_Is_Current_Role_Master(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
-    if (((_i3c_dev_role_config_get(regs) == I3C_ROLE_CFG_SEC_CTRLR) &&
+    if (((_i3c_dev_role_config_get(regs) == MEC_I3C_ROLE_CFG_SEC_CTRLR) &&
         (_i3c_dev_operation_mode_get(regs) != 0)) ||
-        _i3c_dev_role_config_get(regs) == I3C_ROLE_CFG_TGT) {
+        _i3c_dev_role_config_get(regs) == MEC_I3C_ROLE_CFG_TGT) {
         return false;
     }
     return true;
@@ -451,11 +455,11 @@ bool I3C_Is_Current_Role_Master(struct mec_i3c_ctx *ctx)
  *
  * @param regs Pointer to controller registers
  */
-bool I3C_Is_Current_Role_BusMaster(struct mec_i3c_ctx *ctx)
+bool MEC_HAL_I3C_Is_Current_Role_BusMaster(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
-    if ((_i3c_dev_role_config_get(regs) == I3C_ROLE_CFG_SEC_CTRLR) &&
+    if ((_i3c_dev_role_config_get(regs) == MEC_I3C_ROLE_CFG_SEC_CTRLR) &&
         (_i3c_dev_controller_role_get(regs) != 1U)) {
         return false;
     }
@@ -467,7 +471,7 @@ bool I3C_Is_Current_Role_BusMaster(struct mec_i3c_ctx *ctx)
  *
  * @param regs Pointer to controller registers
  */
-void I3C_queue_depths_get(struct mec_i3c_ctx *ctx,
+void MEC_HAL_I3C_queue_depths_get(struct mec_i3c_ctx *ctx,
                             uint8_t *tx_depth,
                             uint8_t *rx_depth,
                             uint8_t *cmd_depth,
@@ -475,7 +479,7 @@ void I3C_queue_depths_get(struct mec_i3c_ctx *ctx,
                             uint8_t *ibi_depth)
 {
 
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
     *tx_depth = _i3c_tx_fifo_depth_get(regs);
     *rx_depth = _i3c_rx_fifo_depth_get(regs);
@@ -492,9 +496,9 @@ void I3C_queue_depths_get(struct mec_i3c_ctx *ctx,
  *                7-bit static address for target
  * @param config configuration flags
  */
-void I3C_Enable(struct mec_i3c_ctx *ctx, uint8_t address, uint8_t config)
+void MEC_HAL_I3C_Enable(struct mec_i3c_ctx *ctx, uint8_t address, uint8_t config)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     uint8_t mode;
     bool enable_dma = false;
 
@@ -510,7 +514,7 @@ void I3C_Enable(struct mec_i3c_ctx *ctx, uint8_t address, uint8_t config)
     if (sbit_HOTJOIN_DISABLE & config)  {
 
         if (sbit_MODE_TARGET & config) {
-            _i3c_tgt_hot_join_disable((struct i3c_sec_regs *)regs);
+            _i3c_tgt_hot_join_disable((struct mec_i3c_sec_regs *)regs);
 
         } else {
             /* Disable Hot-Join */
@@ -557,9 +561,10 @@ void I3C_Enable(struct mec_i3c_ctx *ctx, uint8_t address, uint8_t config)
  * @param DCT_idx Index for the DAT entry
  * @param address 7-bit dynamic address
  */
-void I3C_DCT_read(struct mec_i3c_ctx *ctx, uint16_t DCT_start, uint16_t DCT_idx, struct i3c_DCT_info *info)
+void MEC_HAL_I3C_DCT_read(struct mec_i3c_ctx *ctx, uint16_t DCT_start, uint16_t DCT_idx,
+                          struct mec_i3c_DCT_info *info)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
     _i3c_DCT_read(regs, DCT_start, DCT_idx, info);
 }
@@ -571,16 +576,17 @@ void I3C_DCT_read(struct mec_i3c_ctx *ctx, uint16_t DCT_start, uint16_t DCT_idx,
  * @param DCT_start Start address of DCT
  * @param targets_count Number of entries in the SDCT
  */
-void I3C_TGT_DEFTGTS_DAT_write(struct mec_i3c_ctx *ctx, uint16_t DCT_start, uint16_t DAT_start, uint8_t targets_count)
+void MEC_HAL_I3C_TGT_DEFTGTS_DAT_write(struct mec_i3c_ctx *ctx, uint16_t DCT_start,
+                                       uint16_t DAT_start, uint8_t targets_count)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
-    struct i3c_SDCT_info sdct_info;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
+    struct mec_i3c_SDCT_info sdct_info;
     uint32_t val = 0;
     int i;
 
     for (i=0; i< targets_count; i++) {
 
-        I3C_SDCT_read(ctx, DCT_start, i, &sdct_info);
+        MEC_HAL_I3C_SDCT_read(ctx, DCT_start, i, &sdct_info);
 
         val = DEV_ADDR_TABLE1_LOC1_DYNAMIC_ADDR(sdct_info.dynamic_addr);
 
@@ -601,9 +607,10 @@ void I3C_TGT_DEFTGTS_DAT_write(struct mec_i3c_ctx *ctx, uint16_t DCT_start, uint
  * @param DCT_idx Index for the DAT entry
  * @param address 7-bit dynamic address
  */
-void I3C_SDCT_read(struct mec_i3c_ctx *ctx, uint16_t DCT_start, uint16_t idx, struct i3c_SDCT_info *info)
+void MEC_HAL_I3C_SDCT_read(struct mec_i3c_ctx *ctx, uint16_t DCT_start, uint16_t idx,
+                           struct mec_i3c_SDCT_info *info)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
     _i3c_SDCT_read(regs, DCT_start, idx, info);
 }
@@ -616,9 +623,10 @@ void I3C_SDCT_read(struct mec_i3c_ctx *ctx, uint16_t DCT_start, uint16_t idx, st
  * @param DAT_idx Index for the DAT entry
  * @param address 7-bit dynamic address
  */
-void I3C_DAT_DynamicAddr_write(struct mec_i3c_ctx *ctx, uint16_t DAT_start, uint16_t DAT_idx, uint8_t address)
+void MEC_HAL_I3C_DAT_DynamicAddr_write(struct mec_i3c_ctx *ctx, uint16_t DAT_start,
+                                       uint16_t DAT_idx, uint8_t address)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     uint32_t val;
 
     val = DEV_ADDR_TABLE1_LOC1_DYNAMIC_ADDR(address);
@@ -634,9 +642,10 @@ void I3C_DAT_DynamicAddr_write(struct mec_i3c_ctx *ctx, uint16_t DAT_start, uint
  * @param DAT_idx Index for the DAT entry
  * @param address 7-bit dynamic address
  */
-void I3C_DAT_DynamicAddrAssign_write(struct mec_i3c_ctx *ctx, uint16_t DAT_start, uint16_t DAT_idx, uint8_t address)
+void MEC_HAL_I3C_DAT_DynamicAddrAssign_write(struct mec_i3c_ctx *ctx, uint16_t DAT_start,
+                                             uint16_t DAT_idx, uint8_t address)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     uint32_t val;
 
     val = DEV_ADDR_TABLE1_LOC1_DYNAMIC_ADDR(address);
@@ -657,16 +666,17 @@ void I3C_DAT_DynamicAddrAssign_write(struct mec_i3c_ctx *ctx, uint16_t DAT_start
  * @param tgts_count Number of devices (from tgt_idx) that needs DAA process
  * @param tid_xfer Tid used for the transfer
   */
-void I3C_DO_DAA(struct mec_i3c_ctx *ctx, uint8_t tgt_idx, uint8_t tgts_count, uint8_t *tid_xfer)
+void MEC_HAL_I3C_DO_DAA(struct mec_i3c_ctx *ctx, uint8_t tgt_idx, uint8_t tgts_count,
+                        uint8_t *tid_xfer)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     uint32_t command = 0;
 
     tid++; if (tid > 0) tid = 0; *tid_xfer = tid;
 
     command = (tid << COMMAND_AA_TID_BITPOS) |
             (tgt_idx << COMMAND_AA_DEV_IDX_BITPOS) |
-            (I3C_CCC_ENTDAA << COMMAND_AA_CMD_BITPOS) |
+            (MEC_I3C_CCC_ENTDAA << COMMAND_AA_CMD_BITPOS) |
             (tgts_count << COMMAND_AA_DEV_CNT_BITPOS) |
             COMMAND_STOP_ON_COMPLETION |
             COMMAND_RESPONSE_ON_COMPLETION |
@@ -688,9 +698,9 @@ void I3C_DO_DAA(struct mec_i3c_ctx *ctx, uint8_t tgt_idx, uint8_t tgts_count, ui
  * @param target Target that need to be sent CCC
  * @param tid_xfer Tid used for the transfer
   */
-void I3C_DO_CCC(struct mec_i3c_ctx *ctx, struct i3c_DO_CCC *tgt, uint8_t *tid_xfer)
+void MEC_HAL_I3C_DO_CCC(struct mec_i3c_ctx *ctx, struct mec_i3c_DO_CCC *tgt, uint8_t *tid_xfer)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     uint32_t command = 0, argument = 0;
 
     argument = COMMAND_ATTR_XFER_ARG;
@@ -756,9 +766,10 @@ void I3C_DO_CCC(struct mec_i3c_ctx *ctx, struct i3c_DO_CCC *tgt, uint8_t *tid_xf
  * @param target Target that need to be sent CCC
  * @param tid_xfer Tid used for the transfer
   */
-void I3C_DO_Xfer_Prep(struct mec_i3c_ctx *ctx, struct i3c_dw_cmd *cmd, uint8_t *tid_xfer)
+void MEC_HAL_I3C_DO_Xfer_Prep(struct mec_i3c_ctx *ctx, struct mec_i3c_dw_cmd *cmd,
+                              uint8_t *tid_xfer)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     uint32_t command = 0, argument = 0;
 
     argument = (cmd->data_len << COMMAND_XFER_ARG_DATA_LEN_BITPOS) |
@@ -793,7 +804,7 @@ void I3C_DO_Xfer_Prep(struct mec_i3c_ctx *ctx, struct i3c_dw_cmd *cmd, uint8_t *
 
         command |= COMMAND_READ_XFER;
 
-         if (XFER_SPEED_HDR_DDR == cmd->xfer_speed) {
+         if (MEC_XFER_SPEED_HDR_DDR == cmd->xfer_speed) {
             command |= (COMMAND_CMD_PRESENT | COMMAND_HDR_DDR_READ_BITPOS);
          }
 
@@ -803,7 +814,7 @@ void I3C_DO_Xfer_Prep(struct mec_i3c_ctx *ctx, struct i3c_dw_cmd *cmd, uint8_t *
         * Note: We are not using Short Data Argument
         */
 
-        if (XFER_SPEED_HDR_DDR == cmd->xfer_speed) {
+        if (MEC_XFER_SPEED_HDR_DDR == cmd->xfer_speed) {
             command |= (COMMAND_CMD_PRESENT | COMMAND_HDR_DDR_WRITE_BITPOS);
         }
 
@@ -814,9 +825,9 @@ void I3C_DO_Xfer_Prep(struct mec_i3c_ctx *ctx, struct i3c_dw_cmd *cmd, uint8_t *
     cmd->arg = argument;
 }
 
-void I3C_DO_Xfer(struct mec_i3c_ctx *ctx, struct i3c_dw_cmd *tgt)
+void MEC_HAL_I3C_DO_Xfer(struct mec_i3c_ctx *ctx, struct mec_i3c_dw_cmd *tgt)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
     /* Write the transfer argument */
     _i3c_command_write(regs, tgt->arg);
@@ -825,9 +836,9 @@ void I3C_DO_Xfer(struct mec_i3c_ctx *ctx, struct i3c_dw_cmd *tgt)
 }
 
 
-void I3C_DO_TGT_Xfer(struct mec_i3c_ctx *ctx, uint8_t *data_buf, uint16_t data_len)
+void MEC_HAL_I3C_DO_TGT_Xfer(struct mec_i3c_ctx *ctx, uint8_t *data_buf, uint16_t data_len)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     uint32_t command = 0;
 
      tid++; if (tid > 0) tid = 0;
@@ -851,9 +862,10 @@ void I3C_DO_TGT_Xfer(struct mec_i3c_ctx *ctx, uint8_t *data_buf, uint16_t data_l
  * @param ibi_sir_info Information required to enable IBI SIR on a target
  * @param ibi_sir_info Flag to indicate if IBI interrupt needs to be enabled
   */
-void I3C_IBI_SIR_Enable(struct mec_i3c_ctx *ctx, struct i3c_IBI_SIR *ibi_sir_info, bool enable_ibi_interrupt)
+void MEC_HAL_I3C_IBI_SIR_Enable(struct mec_i3c_ctx *ctx, struct mec_i3c_IBI_SIR *ibi_sir_info,
+                                bool enable_ibi_interrupt)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     uint32_t dat_value;
 
     /* Following sequence is for Controller only configuration
@@ -891,9 +903,10 @@ void I3C_IBI_SIR_Enable(struct mec_i3c_ctx *ctx, struct i3c_IBI_SIR *ibi_sir_inf
  * @param ibi_sir_info Information required to disable IBI SIR on a target
  * @param disable_ibi_interrupt Flag to indicate if IBI interrupt  can be disabled
   */
-void I3C_IBI_SIR_Disable(struct mec_i3c_ctx *ctx, struct i3c_IBI_SIR *ibi_sir_info, bool disable_ibi_interrupt)
+void MEC_HAL_I3C_IBI_SIR_Disable(struct mec_i3c_ctx *ctx, struct mec_i3c_IBI_SIR *ibi_sir_info,
+                                 bool disable_ibi_interrupt)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     uint32_t dat_value;
 
     /* Get the Dat entry */
@@ -918,9 +931,9 @@ void I3C_IBI_SIR_Disable(struct mec_i3c_ctx *ctx, struct i3c_IBI_SIR *ibi_sir_in
  * @param regs Pointer to controller registers
  * @param pid 48-bit PID value
  */
-void I3C_TGT_PID_set(struct mec_i3c_ctx *ctx, uint64_t pid, bool pid_random)
+void MEC_HAL_I3C_TGT_PID_set(struct mec_i3c_ctx *ctx, uint64_t pid, bool pid_random)
 {
-    struct i3c_sec_regs *regs = (struct i3c_sec_regs *)ctx->base;
+    struct mec_i3c_sec_regs *regs = (struct mec_i3c_sec_regs *)ctx->base;
 
     _i3c_tgt_pid_set(regs, TGT_MIPI_MFG_ID(pid), pid_random,
                             TGT_PART_ID(pid), TGT_INST_ID(pid),
@@ -932,9 +945,9 @@ void I3C_TGT_PID_set(struct mec_i3c_ctx *ctx, uint64_t pid, bool pid_random)
  *
  * @param regs Pointer to controller registers
  */
-bool I3C_TGT_is_dyn_addr_valid(struct mec_i3c_ctx *ctx)
+bool MEC_HAL_I3C_TGT_is_dyn_addr_valid(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_sec_regs *regs = (struct i3c_sec_regs *)ctx->base;
+    struct mec_i3c_sec_regs *regs = (struct mec_i3c_sec_regs *)ctx->base;
 
     return _i3c_tgt_dyn_addr_valid_get(regs);
 }
@@ -944,9 +957,9 @@ bool I3C_TGT_is_dyn_addr_valid(struct mec_i3c_ctx *ctx)
  *
  * @param regs Pointer to controller registers
  */
-uint8_t I3C_TGT_dyn_addr_get(struct mec_i3c_ctx *ctx)
+uint8_t MEC_HAL_I3C_TGT_dyn_addr_get(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_sec_regs *regs = (struct i3c_sec_regs *)ctx->base;
+    struct mec_i3c_sec_regs *regs = (struct mec_i3c_sec_regs *)ctx->base;
 
     return _i3c_tgt_dyn_addr_get(regs);;
 }
@@ -955,17 +968,17 @@ uint8_t I3C_TGT_dyn_addr_get(struct mec_i3c_ctx *ctx)
  * @brief Set the MWL value for target
  *
  * @param regs Pointer to controller registers
- * @param uint8_t wr_speed maximum write speed, refer enum mxds_max_wr_speed
- * @param uint8_t rd_speed maximum read speed, refer enum mxds_max_rd_speed
- * @param uint8_t tsco clock to data turnaround time, refer enum mxds_tsco
+ * @param uint8_t wr_speed maximum write speed, refer enum mec_mxds_max_wr_speed
+ * @param uint8_t rd_speed maximum read speed, refer enum mec_mxds_max_rd_speed
+ * @param uint8_t tsco clock to data turnaround time, refer enum mec_mxds_tsco
  */
-void I3C_TGT_MXDS_set(struct mec_i3c_ctx *ctx,
-                        uint8_t wr_speed,
-                        uint8_t rd_speed,
-                        uint8_t tsco,
-                        uint32_t rd_trnd_us)
+void MEC_HAL_I3C_TGT_MXDS_set(struct mec_i3c_ctx *ctx,
+                              uint8_t wr_speed,
+                              uint8_t rd_speed,
+                              uint8_t tsco,
+                              uint32_t rd_trnd_us)
 {
-    struct i3c_sec_regs *regs = (struct i3c_sec_regs *)ctx->base;
+    struct mec_i3c_sec_regs *regs = (struct mec_i3c_sec_regs *)ctx->base;
 
     _i3c_tgt_mxds_set(regs, wr_speed, rd_speed, tsco, rd_trnd_us);
 }
@@ -976,16 +989,18 @@ void I3C_TGT_MXDS_set(struct mec_i3c_ctx *ctx,
  * @param regs Pointer to controller registers
  * @param ibi_sir_info Information required to enable IBI SIR on a target
   */
-int I3C_TGT_IBI_SIR_Raise(struct mec_i3c_ctx *ctx, struct i3c_raise_IBI_SIR *ibi_sir_request)
+int MEC_HAL_I3C_TGT_IBI_SIR_Raise(struct mec_i3c_ctx *ctx,
+                                  struct mec_i3c_raise_IBI_SIR *ibi_sir_request)
 {
-    struct i3c_sec_regs *regs = (struct i3c_sec_regs *)ctx->base;
+    struct mec_i3c_sec_regs *regs = (struct mec_i3c_sec_regs *)ctx->base;
     uint8_t ret = 0;
 
     /* Ensure Controller has enabled SIR for the target (us) */
     if (_i3c_tgt_SIR_enabled(regs)) {
 
         /* Raise IBI SIR*/
-        _i3c_tgt_raise_ibi_SIR(regs, ibi_sir_request->data_buf, ibi_sir_request->data_len, ibi_sir_request->mdb);
+        _i3c_tgt_raise_ibi_SIR(regs, ibi_sir_request->data_buf, ibi_sir_request->data_len,
+                               ibi_sir_request->mdb);
 
     } else {
         ret = 1;
@@ -999,9 +1014,9 @@ int I3C_TGT_IBI_SIR_Raise(struct mec_i3c_ctx *ctx, struct i3c_raise_IBI_SIR *ibi
  *
  * @param regs Pointer to controller registers
  */
-int I3C_TGT_IBI_MR_Raise(struct mec_i3c_ctx *ctx)
+int MEC_HAL_I3C_TGT_IBI_MR_Raise(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_sec_regs *regs = (struct i3c_sec_regs *)ctx->base;
+    struct mec_i3c_sec_regs *regs = (struct mec_i3c_sec_regs *)ctx->base;
     uint8_t ret = 0;
 
     /* Ensure Controller has enabled MR for the target (us) */
@@ -1022,9 +1037,9 @@ int I3C_TGT_IBI_MR_Raise(struct mec_i3c_ctx *ctx)
  *
  * @param regs Pointer to controller registers
  */
-void I3C_TGT_IBI_SIR_Residual_handle(struct mec_i3c_ctx *ctx)
+void MEC_HAL_I3C_TGT_IBI_SIR_Residual_handle(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     /* Clear SIR residual data by resettig TX Fifo */
     _i3c_tx_fifo_rst(regs);
 
@@ -1037,9 +1052,9 @@ void I3C_TGT_IBI_SIR_Residual_handle(struct mec_i3c_ctx *ctx)
  *
  * @param regs Pointer to controller registers
  */
-void I3C_TGT_Error_Recovery(struct mec_i3c_ctx *ctx, uint8_t err_sts)
+void MEC_HAL_I3C_TGT_Error_Recovery(struct mec_i3c_ctx *ctx, uint8_t err_sts)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
      if ((err_sts == TARGET_RESP_ERR_CRC) ||
         (err_sts == TARGET_RESP_ERR_PARITY) ||
@@ -1063,9 +1078,9 @@ void I3C_TGT_Error_Recovery(struct mec_i3c_ctx *ctx, uint8_t err_sts)
  *
  * @param regs Pointer to controller registers
  */
-void I3C_TGT_RoleSwitch_Resume(struct mec_i3c_ctx *ctx)
+void MEC_HAL_I3C_TGT_RoleSwitch_Resume(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
     /* Reset TX and RX Fifos */
     _i3c_rx_fifo_rst(regs);
@@ -1086,9 +1101,9 @@ void I3C_TGT_RoleSwitch_Resume(struct mec_i3c_ctx *ctx)
  *
  * @param regs Pointer to controller registers
  */
-void I3C_Xfer_Error_Resume(struct mec_i3c_ctx *ctx)
+void MEC_HAL_I3C_Xfer_Error_Resume(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
     /* Hit Resume */
     _i3c_resume(regs);
@@ -1102,9 +1117,9 @@ void I3C_Xfer_Error_Resume(struct mec_i3c_ctx *ctx)
  *
  * @param regs Pointer to controller registers
  */
-void I3C_Xfer_Reset(struct mec_i3c_ctx *ctx)
+void MEC_HAL_I3C_Xfer_Reset(struct mec_i3c_ctx *ctx)
 {
-    struct i3c_host_regs *regs = (struct i3c_host_regs *)ctx->base;
+    struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
     /* Reset the TX/RX Fifos & Cmd/Res Queues */
     _i3c_xfers_reset(regs);
@@ -1114,49 +1129,49 @@ void I3C_Xfer_Reset(struct mec_i3c_ctx *ctx)
 /* Interrupt functions */
 /*--------------------------------------------------------*/
 
-void I3C_GIRQ_Status_Clr(struct mec_i3c_ctx *ctx)
+void MEC_HAL_I3C_GIRQ_Status_Clr(struct mec_i3c_ctx *ctx)
 {
     if (ctx) {
 
-        mec_girq_clr_src(ctx->devi);
+        mec_hal_girq_clr_src(ctx->devi);
     }
 }
 
 /* Enable/disable I23 controller interrupt signal from propagating to NVIC */
-void I3C_GIRQ_CTRL(struct mec_i3c_ctx *ctx, int flags)
+void MEC_HAL_I3C_GIRQ_CTRL(struct mec_i3c_ctx *ctx, int flags)
 {
     if (ctx) {
 
 
         if (flags & MEC_I3C_GIRQ_DIS) {
-            mec_girq_ctrl(ctx->devi, 0);
+            mec_hal_girq_ctrl(ctx->devi, 0);
         }
 
         if (flags & MEC_I3C_GIRQ_CLR_STS) {
-            mec_girq_clr_src(ctx->devi);
+            mec_hal_girq_clr_src(ctx->devi);
         }
 
         if (flags & MEC_I3C_GIRQ_EN) {
-            mec_girq_ctrl(ctx->devi, 1);
+            mec_hal_girq_ctrl(ctx->devi, 1);
         }
     }
 
 }
 
-int I3C_GIRQ_Status(struct mec_i3c_ctx *ctx)
+int MEC_HAL_I3C_GIRQ_Status(struct mec_i3c_ctx *ctx)
 {
     if (!ctx) {
         return 0;
     }
 
-    return (int)mec_girq_src(ctx->devi);
+    return (int)mec_hal_girq_src(ctx->devi);
 }
 
-int I3C_GIRQ_Result(struct mec_i3c_ctx *ctx)
+int MEC_HAL_I3C_GIRQ_Result(struct mec_i3c_ctx *ctx)
 {
     if (!ctx) {
         return 0;
     }
 
-    return (int)mec_girq_result(ctx->devi);
+    return (int)mec_hal_girq_result(ctx->devi);
 }

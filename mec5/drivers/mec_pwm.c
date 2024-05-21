@@ -41,19 +41,19 @@ struct mec5_pwm_info {
 };
 
 static const struct mec5_pwm_info pwm_instances[] = {
-    { PWM0_BASE, MEC_PCR_PWM0, },
-    { PWM1_BASE, MEC_PCR_PWM1, },
-    { PWM2_BASE, MEC_PCR_PWM2, },
-    { PWM3_BASE, MEC_PCR_PWM3, },
-    { PWM4_BASE, MEC_PCR_PWM4, },
-    { PWM5_BASE, MEC_PCR_PWM5, },
-    { PWM6_BASE, MEC_PCR_PWM6, },
-    { PWM7_BASE, MEC_PCR_PWM7, },
-    { PWM8_BASE, MEC_PCR_PWM8, },
+    { MEC_PWM0_BASE, MEC_PCR_PWM0, },
+    { MEC_PWM1_BASE, MEC_PCR_PWM1, },
+    { MEC_PWM2_BASE, MEC_PCR_PWM2, },
+    { MEC_PWM3_BASE, MEC_PCR_PWM3, },
+    { MEC_PWM4_BASE, MEC_PCR_PWM4, },
+    { MEC_PWM5_BASE, MEC_PCR_PWM5, },
+    { MEC_PWM6_BASE, MEC_PCR_PWM6, },
+    { MEC_PWM7_BASE, MEC_PCR_PWM7, },
+    { MEC_PWM8_BASE, MEC_PCR_PWM8, },
 #if MEC5_PWM_INSTANCES == 12
-    { PWM9_BASE, MEC_PCR_PWM9, },
-    { PWM10_BASE, MEC_PCR_PWM10, },
-    { PWM11_BASE, MEC_PCR_PWM11, },
+    { MEC_PWM9_BASE, MEC_PCR_PWM9, },
+    { MEC_PWM10_BASE, MEC_PCR_PWM10, },
+    { MEC_PWM11_BASE, MEC_PCR_PWM11, },
 #endif
 };
 
@@ -70,25 +70,25 @@ static struct mec5_pwm_info const *get_pwm_info(uintptr_t base)
     return NULL;
 }
 
-static void pwm_disable(struct pwm_regs *regs)
+static void pwm_disable(struct mec_pwm_regs *regs)
 {
-    regs->CONFIG &= (uint32_t)~MEC_BIT(PWM_CONFIG_ENABLE_Pos);
+    regs->CONFIG &= (uint32_t)~MEC_BIT(MEC_PWM_CONFIG_ENABLE_Pos);
 }
 
-static void pwm_enable(struct pwm_regs *regs)
+static void pwm_enable(struct mec_pwm_regs *regs)
 {
-    regs->CONFIG |= MEC_BIT(PWM_CONFIG_ENABLE_Pos);
+    regs->CONFIG |= MEC_BIT(MEC_PWM_CONFIG_ENABLE_Pos);
 }
 
 /* set output to inactive state based upon invert bit */
-static void pwm_off(struct pwm_regs *regs)
+static void pwm_off(struct mec_pwm_regs *regs)
 {
         regs->CNT_ON = 0u;
         regs->CNT_OFF = 1u;
 }
 
 /* set output to active state based upon invert bit */
-static void pwm_on(struct pwm_regs *regs)
+static void pwm_on(struct mec_pwm_regs *regs)
 {
         regs->CNT_OFF = 0u;
         regs->CNT_ON = 1u;
@@ -146,7 +146,7 @@ static void pwm_on(struct pwm_regs *regs)
  *          Fpwm = 100e3 / (1 * (31250 + 31250)) = 1.6
  *
  */
-static int prog_pwm_fd(struct pwm_regs *regs, uint32_t period_cycles, uint32_t pulse_cycles)
+static int prog_pwm_fd(struct mec_pwm_regs *regs, uint32_t period_cycles, uint32_t pulse_cycles)
 {
     uint32_t perc, pulc, ps1, cnt_on, cnt_off, cfg, fin, fpwm, flags;
 
@@ -157,7 +157,7 @@ static int prog_pwm_fd(struct pwm_regs *regs, uint32_t period_cycles, uint32_t p
 
     fpwm = fin / perc;
     if (fpwm < 4u) {
-        fin = mec_pcr_slow_clock_freq_get();
+        fin = mec_hal_pcr_slow_clock_freq_get();
         if (!fin) { /* slow clock turned off! */
             return MEC_RET_ERR;
         }
@@ -182,10 +182,10 @@ static int prog_pwm_fd(struct pwm_regs *regs, uint32_t period_cycles, uint32_t p
     ps1--;
     cnt_on--;
     cnt_off--;
-    cfg = regs->CONFIG & (uint32_t)~(PWM_CONFIG_CLKDIV_Msk | PWM_CONFIG_CLK_SRC_SLOW_Msk);
-    cfg |= ((ps1 << PWM_CONFIG_CLKDIV_Pos) & PWM_CONFIG_CLKDIV_Msk);
+    cfg = regs->CONFIG & (uint32_t)~(MEC_PWM_CONFIG_CLKDIV_Msk | MEC_PWM_CONFIG_CLK_SRC_SLOW_Msk);
+    cfg |= ((ps1 << MEC_PWM_CONFIG_CLKDIV_Pos) & MEC_PWM_CONFIG_CLKDIV_Msk);
     if (flags & MEC_BIT(0)) {
-        cfg |= MEC_BIT(PWM_CONFIG_CLK_SRC_SLOW_Pos);
+        cfg |= MEC_BIT(MEC_PWM_CONFIG_CLK_SRC_SLOW_Pos);
     }
     regs->CNT_ON = cnt_on;
     regs->CNT_OFF = cnt_off;
@@ -194,7 +194,7 @@ static int prog_pwm_fd(struct pwm_regs *regs, uint32_t period_cycles, uint32_t p
     return MEC_RET_OK;
 }
 
-static int prog_pwm(struct pwm_regs *regs, uint32_t period_cycles, uint32_t pulse_cycles)
+static int prog_pwm(struct mec_pwm_regs *regs, uint32_t period_cycles, uint32_t pulse_cycles)
 {
     if (!period_cycles && !pulse_cycles) { /* both 0 disable PWM */
         pwm_disable(regs);
@@ -221,7 +221,7 @@ static int prog_pwm(struct pwm_regs *regs, uint32_t period_cycles, uint32_t puls
 /* Return the maximum PWM frequency in cycles per second for the high
  * frequency range. PWM Finput = 48MHz PLL output.
  */
-uint32_t mec_pwm_hi_freq_input(void)
+uint32_t mec_hal_pwm_hi_freq_input(void)
 {
     return (uint32_t)MEC5_PWM_FIN_HIGH;
 }
@@ -231,13 +231,13 @@ uint32_t mec_pwm_hi_freq_input(void)
  * NOTE: slow clock defaults to 100KHz and is used by other peripherals. The
  * slow clock divider in the PCR block is programmable.
  */
-uint32_t mec_pwm_lo_freq_input(void)
+uint32_t mec_hal_pwm_lo_freq_input(void)
 {
-    return mec_pcr_slow_clock_freq_get();
+    return mec_hal_pcr_slow_clock_freq_get();
 }
 
 /* set output to inactive state based upon invert bit */
-int mec_pwm_off(struct pwm_regs *regs)
+int mec_hal_pwm_off(struct mec_pwm_regs *regs)
 {
     if (!regs) {
         return MEC_RET_ERR_INVAL;
@@ -249,7 +249,7 @@ int mec_pwm_off(struct pwm_regs *regs)
 }
 
 /* set output to active state based upon invert bit */
-int mec_pwm_on(struct pwm_regs *regs)
+int mec_hal_pwm_on(struct mec_pwm_regs *regs)
 {
     if (!regs) {
         return MEC_RET_ERR_INVAL;
@@ -277,7 +277,7 @@ int mec_pwm_on(struct pwm_regs *regs)
  *  Count_off = period_cycles - pulse_cycles
  *
  */
-int mec_pwm_init(struct pwm_regs *regs, uint32_t period_cycles,
+int mec_hal_pwm_init(struct mec_pwm_regs *regs, uint32_t period_cycles,
                  uint32_t pulse_cycles, uint32_t flags)
 {
     int ret = 0;
@@ -289,13 +289,13 @@ int mec_pwm_init(struct pwm_regs *regs, uint32_t period_cycles,
 
     regs->CONFIG = 0;
 
-    mec_pcr_clr_blk_slp_en(info->pcr_id);
+    mec_hal_pcr_clr_blk_slp_en(info->pcr_id);
     if (flags & MEC5_PWM_CFG_RESET) {
-        mec_pcr_blk_reset(info->pcr_id);
+        mec_hal_pcr_blk_reset(info->pcr_id);
     }
 
     if (flags & MEC5_PWM_CFG_INVERT) {
-        regs->CONFIG |= MEC_BIT(PWM_CONFIG_INVERT_Pos);
+        regs->CONFIG |= MEC_BIT(MEC_PWM_CONFIG_INVERT_Pos);
     }
 
     ret = prog_pwm(regs, period_cycles, pulse_cycles);
@@ -310,7 +310,7 @@ int mec_pwm_init(struct pwm_regs *regs, uint32_t period_cycles,
     return MEC_RET_OK;
 }
 
-int mec_pwm_reset(struct pwm_regs *regs)
+int mec_hal_pwm_reset(struct mec_pwm_regs *regs)
 {
     const struct mec5_pwm_info *info = get_pwm_info((uintptr_t)regs);
 
@@ -318,58 +318,58 @@ int mec_pwm_reset(struct pwm_regs *regs)
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_pcr_blk_reset(info->pcr_id);
+    mec_hal_pcr_blk_reset(info->pcr_id);
 
     return MEC_RET_OK;
 }
 
-int mec_pwm_set_polarity(struct pwm_regs *regs, uint8_t polarity_inverted)
+int mec_hal_pwm_set_polarity(struct mec_pwm_regs *regs, uint8_t polarity_inverted)
 {
     if (!regs) {
         return MEC_RET_ERR_INVAL;
     }
 
     if (polarity_inverted) {
-        regs->CONFIG |= MEC_BIT(PWM_CONFIG_INVERT_Pos);
+        regs->CONFIG |= MEC_BIT(MEC_PWM_CONFIG_INVERT_Pos);
     } else {
-        regs->CONFIG &= (uint32_t)~MEC_BIT(PWM_CONFIG_INVERT_Pos);
+        regs->CONFIG &= (uint32_t)~MEC_BIT(MEC_PWM_CONFIG_INVERT_Pos);
     }
 
     return MEC_RET_OK;
 }
 
-int mec_pwm_enable(struct pwm_regs *regs, uint8_t enable)
+int mec_hal_pwm_enable(struct mec_pwm_regs *regs, uint8_t enable)
 {
     if (enable) {
-        regs->CONFIG |= MEC_BIT(PWM_CONFIG_ENABLE_Pos);
+        regs->CONFIG |= MEC_BIT(MEC_PWM_CONFIG_ENABLE_Pos);
     } else {
-        regs->CONFIG &= (uint32_t)~MEC_BIT(PWM_CONFIG_ENABLE_Pos);
+        regs->CONFIG &= (uint32_t)~MEC_BIT(MEC_PWM_CONFIG_ENABLE_Pos);
     }
 
     return 0;
 }
 
-int mec_pwm_is_enabled(struct pwm_regs *regs)
+int mec_hal_pwm_is_enabled(struct mec_pwm_regs *regs)
 {
-    if (regs->CONFIG & MEC_BIT(PWM_CONFIG_ENABLE_Pos)) {
+    if (regs->CONFIG & MEC_BIT(MEC_PWM_CONFIG_ENABLE_Pos)) {
         return 1;
     }
 
     return 0;
 }
 
-uint32_t mec_pwm_get_freq_in(struct pwm_regs *regs)
+uint32_t mec_hal_pwm_get_freq_in(struct mec_pwm_regs *regs)
 {
     uint32_t fin = MEC5_PWM_FIN_HIGH;
 
-    if (regs->CONFIG & MEC_BIT(PWM_CONFIG_CLK_SRC_SLOW_Pos)) {
-        fin = mec_pcr_slow_clock_freq_get();
+    if (regs->CONFIG & MEC_BIT(MEC_PWM_CONFIG_CLK_SRC_SLOW_Pos)) {
+        fin = mec_hal_pcr_slow_clock_freq_get();
     }
 
     return fin;
 }
 
-uint32_t mec_pwm_get_count(struct pwm_regs *regs, uint8_t on_count)
+uint32_t mec_hal_pwm_get_count(struct mec_pwm_regs *regs, uint8_t on_count)
 {
     if (on_count) {
         return (uint32_t)regs->CNT_ON;
@@ -378,20 +378,20 @@ uint32_t mec_pwm_get_count(struct pwm_regs *regs, uint8_t on_count)
     }
 }
 
-uint32_t mec_pwm_get_freq_out(struct pwm_regs *regs)
+uint32_t mec_hal_pwm_get_freq_out(struct mec_pwm_regs *regs)
 {
     uint32_t fin = MEC5_PWM_FIN_HIGH;
     uint32_t fpwm = 0, ps = 0, cnt_on = 0, cnt_off = 0;
 
-    if (regs->CONFIG & MEC_BIT(PWM_CONFIG_CLK_SRC_SLOW_Pos)) {
-        fin = mec_pcr_slow_clock_freq_get();
+    if (regs->CONFIG & MEC_BIT(MEC_PWM_CONFIG_CLK_SRC_SLOW_Pos)) {
+        fin = mec_hal_pcr_slow_clock_freq_get();
     }
 
     if (!fin) {
         return 0u;
     }
 
-    ps = ((regs->CONFIG & PWM_CONFIG_CLKDIV_Msk) >> PWM_CONFIG_CLKDIV_Pos) + 1u;
+    ps = ((regs->CONFIG & MEC_PWM_CONFIG_CLKDIV_Msk) >> MEC_PWM_CONFIG_CLKDIV_Pos) + 1u;
     cnt_on = regs->CNT_ON + 1u;
     cnt_off = regs->CNT_OFF + 1u;
 
@@ -401,7 +401,8 @@ uint32_t mec_pwm_get_freq_out(struct pwm_regs *regs)
     return fpwm;
 }
 
-int mec_pwm_set_freq_out(struct pwm_regs *regs, uint32_t period_cycles, uint32_t pulse_cycles)
+int mec_hal_pwm_set_freq_out(struct mec_pwm_regs *regs, uint32_t period_cycles,
+                             uint32_t pulse_cycles)
 {
     return prog_pwm(regs, period_cycles, pulse_cycles);
 }

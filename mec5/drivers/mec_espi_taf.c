@@ -40,8 +40,9 @@
 
 /* Flash channel status errors */
 #define MEC_ESPI_TAF_ERR_ALL \
-  (BIT(TAF_MON_STS_TMOUT_ERR_Pos) | BIT(TAF_MON_STS_OOR_ERR_Pos) | BIT(TAF_MON_STS_ACCV_ERR_Pos) \
-   | BIT(TAF_MON_STS_4KB_ERR_Pos)  | BIT(TAF_MON_STS_ERSZ_ERR_Pos))
+  (BIT(MEC_ESPI_TAF_MON_STS_TMOUT_ERR_Pos) | BIT(MEC_ESPI_TAF_MON_STS_OOR_ERR_Pos) \
+   | BIT(MEC_ESPI_TAF_MON_STS_ACCV_ERR_Pos) | BIT(MEC_ESPI_TAF_MON_STS_4KB_ERR_Pos) \
+   | BIT(MEC_ESPI_TAF_MON_STS_ERSZ_ERR_Pos))
 
 
 #define MEC_TAF_DFLT_FREQ_HZ 24000000u
@@ -55,15 +56,15 @@
 #define MEC_TAF_PR_LIMIT_DFLT     0
 
 #ifdef MEC_ESPI_TAF_CHECK_REG_ADDR
-static inline bool taf_regs_valid(struct espi_taf_regs *regs)
+static inline bool taf_regs_valid(struct mec_espi_taf_regs *regs)
 {
-    if (((uintptr_t)regs != (uintptr_t)ESPI_TAF_BASE)) {
+    if (((uintptr_t)regs != (uintptr_t)MEC_ESPI_TAF_BASE)) {
         return false;
     }
     return true;
 }
 #else
-static inline bool taf_regs_valid(struct espi_taf_regs *regs) { return true; }
+static inline bool taf_regs_valid(struct mec_espi_taf_regs *regs) { return true; }
 #endif
 
 static inline uint32_t iflags_to_bitmap(uint32_t flags)
@@ -79,7 +80,7 @@ static inline uint32_t iflags_to_bitmap(uint32_t flags)
     return bitmap;
 }
 
-static bool pr_is_dirty(struct espi_taf_regs *regs, uint8_t pridx)
+static bool pr_is_dirty(struct mec_espi_taf_regs *regs, uint8_t pridx)
 {
    if (regs->PR_DIRTY & MEC_BIT(pridx)) {
        return true;
@@ -87,48 +88,48 @@ static bool pr_is_dirty(struct espi_taf_regs *regs, uint8_t pridx)
     return false;
 }
 
-static void taf_disable_clear_intr(struct espi_taf_regs *regs)
+static void taf_disable_clear_intr(struct mec_espi_taf_regs *regs)
 {
     uint32_t girq_bm = MEC_BIT(MEC_ESPI_TAF_ECP_GIRQ_POS) | MEC_BIT(MEC_ESPI_TAF_HWMON_GIRQ_POS);
     regs->FC_MISC = 0u;
     regs->ECP_IEN = 0;
     regs->MON_IEN = 0;
 
-    mec_girq_bm_en(MEC_ESPI_TAF_GIRQ, girq_bm, 0);
+    mec_hal_girq_bm_en(MEC_ESPI_TAF_GIRQ, girq_bm, 0);
 
     regs->ECP_STS = UINT32_MAX;
     regs->MON_STS = UINT32_MAX;
     regs->PR_DIRTY = UINT32_MAX;
 
-    mec_girq_bm_clr_src(MEC_ESPI_TAF_GIRQ, girq_bm);
+    mec_hal_girq_bm_clr_src(MEC_ESPI_TAF_GIRQ, girq_bm);
     NVIC_ClearPendingIRQ(MEC_ESPI_TAF_DONE_NVIC);
     NVIC_ClearPendingIRQ(MEC_ESPI_TAF_ERR_NVIC);
 }
 
 /* ---- Public API ---- */
 
-void mec_espi_taf_girq_ctrl(uint8_t enable, uint32_t flags)
+void mec_hal_espi_taf_girq_ctrl(uint8_t enable, uint32_t flags)
 {
     uint32_t bitmap = iflags_to_bitmap(flags);
 
     if (bitmap) {
-        mec_girq_bm_en(MEC_ESPI_TAF_GIRQ, bitmap, enable);
+        mec_hal_girq_bm_en(MEC_ESPI_TAF_GIRQ, bitmap, enable);
     }
 }
 
-void mec_espi_taf_girq_status_clr(uint32_t flags)
+void mec_hal_espi_taf_girq_status_clr(uint32_t flags)
 {
     uint32_t bitmap = iflags_to_bitmap(flags);
 
     if (bitmap) {
-        mec_girq_bm_clr_src(MEC_ESPI_TAF_GIRQ, bitmap);
+        mec_hal_girq_bm_clr_src(MEC_ESPI_TAF_GIRQ, bitmap);
     }
 }
 
-uint32_t mec_espi_taf_girq_status(void)
+uint32_t mec_hal_espi_taf_girq_status(void)
 {
     uint32_t bitmap = 0;
-    uint32_t src = mec_girq_source_get(MEC_ESPI_TAF_GIRQ);
+    uint32_t src = mec_hal_girq_source_get(MEC_ESPI_TAF_GIRQ);
 
     if (src & MEC_BIT(MEC_ESPI_TAF_ECP_GIRQ_POS)) {
         bitmap |= MEC_BIT(MEC_ESPI_TAF_INTR_ECP_DONE_POS);
@@ -140,10 +141,10 @@ uint32_t mec_espi_taf_girq_status(void)
     return bitmap;
 }
 
-uint32_t mec_espi_taf_girq_result(void)
+uint32_t mec_hal_espi_taf_girq_result(void)
 {
     uint32_t bitmap = 0;
-    uint32_t src = mec_girq_result_get(MEC_ESPI_TAF_GIRQ);
+    uint32_t src = mec_hal_girq_result_get(MEC_ESPI_TAF_GIRQ);
 
     if (src & MEC_BIT(MEC_ESPI_TAF_ECP_GIRQ_POS)) {
         bitmap |= MEC_BIT(MEC_ESPI_TAF_INTR_ECP_DONE_POS);
@@ -158,11 +159,11 @@ uint32_t mec_espi_taf_girq_result(void)
 /* returns 0 if eSPI TAF is not activated meaning QSPI controller is accessible else
  * returns non-zero if eSPI TAF is activated and QSPI is not accessible.
  */
-bool mec_espi_taf_is_activated(void)
+bool mec_hal_espi_taf_is_activated(void)
 {
-    struct espi_taf_regs *regs = (struct espi_taf_regs *)(ESPI_TAF_BASE);
+    struct mec_espi_taf_regs *regs = (struct mec_espi_taf_regs *)(MEC_ESPI_TAF_BASE);
 
-    if (regs->FC_MISC & MEC_BIT(TAF_FC_MISC_TAF_EN_Pos)) {
+    if (regs->FC_MISC & MEC_BIT(MEC_ESPI_TAF_FC_MISC_TAF_EN_Pos)) {
         return true;
     }
 
@@ -172,38 +173,44 @@ bool mec_espi_taf_is_activated(void)
 /* Activate eSPI TAF hardware. Once activated the QSPI0 controller used by TAF is no longer
  * accessible.
  */
-void mec_espi_taf_activate(uint8_t enable)
+void mec_hal_espi_taf_activate(uint8_t enable)
 {
-    struct espi_taf_regs *regs = (struct espi_taf_regs *)(ESPI_TAF_BASE);
+    struct mec_espi_taf_regs *regs = (struct mec_espi_taf_regs *)(MEC_ESPI_TAF_BASE);
 
     if (enable) {
-        regs->FC_MISC |= MEC_BIT(TAF_FC_MISC_TAF_EN_Pos);
+        regs->FC_MISC |= MEC_BIT(MEC_ESPI_TAF_FC_MISC_TAF_EN_Pos);
     } else {
-        regs->FC_MISC &= (uint32_t)~MEC_BIT(TAF_FC_MISC_TAF_EN_Pos);
+        regs->FC_MISC &= (uint32_t)~MEC_BIT(MEC_ESPI_TAF_FC_MISC_TAF_EN_Pos);
     }
 }
 
-int mec_espi_taf_init(struct espi_taf_regs *regs, uint32_t initflags)
+int mec_hal_espi_taf_init(struct mec_espi_taf_regs *regs, uint32_t initflags)
 {
-    struct espi_io_regs *ioregs = (struct espi_io_regs *)(ESPI_IO_BASE);
+    struct mec_espi_io_regs *ioregs = (struct mec_espi_io_regs *)(MEC_ESPI_IO_BASE);
+    uint8_t capfc = ioregs->CAPFC;
 
     if (!taf_regs_valid(regs)) {
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_pcr_clr_blk_slp_en(MEC_PCR_ESPI_TAF);
+    mec_hal_pcr_clr_blk_slp_en(MEC_PCR_ESPI_TAF);
     if (initflags & MEC_BIT(MEC_ESPI_TAF_INIT_RESET_POS)) {
-        mec_pcr_blk_reset(MEC_PCR_ESPI_TAF);
+        mec_hal_pcr_blk_reset(MEC_PCR_ESPI_TAF);
     }
 
     taf_disable_clear_intr(regs);
 
-    if (!(ioregs->CAP0 & MEC_BIT(ESPI_IO_CAP0_FC_SUPP_Pos))) {
+    if (!(ioregs->CAP0 & MEC_BIT(MEC_ESPI_IO_CAP0_FC_SUPP_Pos))) {
         return MEC_RET_ERR_HW_NOT_SUPP;
     }
 
-    /* TAF only or TAF plus CAF sharing */
-    ioregs->CAPFC |= MEC_BIT(ESPI_IO_CAPFC_TAF_SHARING_Pos);
+    capfc &= ~(uint8_t)~MEC_ESPI_IO_CAPFC_SHARING_SUPP_Msk;
+    if (initflags & MEC_BIT(MEC_ESPI_TAF_CAF_SHARE_POS)) {
+        capfc |= (MEC_ESPI_IO_CAPFC_SHARING_SUPP_CAF_TAF << MEC_ESPI_IO_CAPFC_SHARING_SUPP_Pos);
+    } else {
+        capfc |= (MEC_ESPI_IO_CAPFC_SHARING_SUPP_TAF << MEC_ESPI_IO_CAPFC_SHARING_SUPP_Pos);
+    }
+    ioregs->CAPFC = capfc;
 
     return MEC_RET_OK;
 }
@@ -222,13 +229,14 @@ int mec_espi_taf_init(struct espi_taf_regs *regs, uint32_t initflags)
  *   qcpha = read from QSPI
  *
  */
-static void taf_qspi_freq_timing(struct qspi_regs *qregs, const struct espi_taf_hw_cfg *thwcfg)
+static void taf_qspi_freq_timing(struct mec_qspi_regs *qregs,
+                                 const struct espi_taf_hw_cfg *thwcfg)
 {
     uint32_t qfreq = MEC_TAF_DFLT_FREQ_HZ;
     uint8_t clk_tap = 0, ctrl_tap = 0;
 
-    if (mec_qspi_is_enabled(qregs)) {
-        qfreq = mec_qspi_get_freq(qregs);
+    if (mec_hal_qspi_is_enabled(qregs)) {
+        qfreq = mec_hal_qspi_get_freq(qregs);
     }
 
     if (thwcfg->flags & MEC_BIT(MEC_ESPI_TAF_HW_CFG_FLAG_FREQ_POS)) {
@@ -236,47 +244,48 @@ static void taf_qspi_freq_timing(struct qspi_regs *qregs, const struct espi_taf_
     }
 
     /* save and restore signalling mode, cs timing and timing taps */
-    mec_qspi_reset_sr(qregs);
-    mec_qspi_set_freq(qregs, qfreq);
+    mec_hal_qspi_reset_sr(qregs);
+    mec_hal_qspi_set_freq(qregs, qfreq);
 
     if (thwcfg->flags & MEC_BIT(MEC_ESPI_TAF_HW_CFG_FLAG_CPHA_POS)) {
-        mec_qspi_sampling_phase_pol(qregs, thwcfg->qspi_cpha);
+        mec_hal_qspi_sampling_phase_pol(qregs, thwcfg->qspi_cpha);
     }
 
     if (thwcfg->flags & MEC_BIT(MEC_ESPI_TAF_HW_CFG_FLAG_CSTM_POS)) {
-        mec_qspi_cs_timing(qregs, thwcfg->qspi_cs_timing);
+        mec_hal_qspi_cs_timing(qregs, thwcfg->qspi_cs_timing);
     }
 
     if (thwcfg->flags & MEC_BIT(MEC_ESPI_TAF_HW_CFG_FLAG_TAPS_POS)) {
         clk_tap = (uint8_t)(thwcfg->qtaps_sel & 0xffu);
         ctrl_tap = (uint8_t)((thwcfg->qtaps_sel >> 8) & 0xffu);
-        mec_qspi_tap_select(qregs, clk_tap, ctrl_tap);
+        mec_hal_qspi_tap_select(qregs, clk_tap, ctrl_tap);
     }
 }
 
-int mec_espi_taf_qspi_init(struct espi_taf_regs *tregs, struct qspi_regs *qregs,
-                           const struct espi_taf_hw_cfg *thwcfg)
+int mec_hal_espi_taf_qspi_init(struct mec_espi_taf_regs *tregs, struct mec_qspi_regs *qregs,
+                               const struct espi_taf_hw_cfg *thwcfg)
 {
     int ret = 0;
     uint32_t flags = 0;
     uint16_t qfdiv = 0;
 
-    if (!taf_regs_valid(tregs) || ((uintptr_t)qregs != (uintptr_t)(QSPI0_BASE)) || !thwcfg) {
+    if (!taf_regs_valid(tregs) || ((uintptr_t)qregs != (uintptr_t)(MEC_QSPI0_BASE))
+        || !thwcfg) {
         return MEC_RET_ERR_INVAL;
     }
 
     taf_qspi_freq_timing(qregs, thwcfg);
 
     /* copy raw QSPI frequency divider field into TAF CS0/CS1 freq divider regs */
-    qfdiv = mec_qspi_freq_div_raw(qregs);
+    qfdiv = mec_hal_qspi_freq_div_raw(qregs);
     qfdiv = qfdiv | (qfdiv << 16);
     tregs->CLKDIV_CS0 = qfdiv;
     tregs->CLKDIV_CS1 = qfdiv;
 
     /* load continous mode enter/exit and status polling descriptors */
-    ret = mec_qspi_load_descrs_at(qregs, thwcfg->generic_descr,
-                                  MEC_ESPI_TAF_GENERIC_DESCR_MAX,
-                                  MCHP_TAF_CM_EXIT_START_DESCR);
+    ret = mec_hal_qspi_load_descrs_at(qregs, thwcfg->generic_descr,
+                                      MEC_ESPI_TAF_GENERIC_DESCR_MAX,
+                                      MCHP_TAF_CM_EXIT_START_DESCR);
     if (ret != MEC_RET_OK) {
         return ret;
     }
@@ -285,15 +294,15 @@ int mec_espi_taf_qspi_init(struct espi_taf_regs *tregs, struct qspi_regs *qregs,
      * access size = 4?
      */
 
-    mec_qspi_intr_ctrl_msk(qregs, 1, MEC_QSPI_IEN_XFR_DONE);
+    mec_hal_qspi_intr_ctrl_msk(qregs, 1, MEC_QSPI_IEN_XFR_DONE);
     flags = MEC_BIT(MEC_QSPI_OPT_ACTV_EN_POS) | MEC_BIT(MEC_QSPI_OPT_TAF_DMA_EN_POS)
             | MEC_BIT(MEC_QSPI_OPT_RX_LDMA_EN_POS) | MEC_BIT(MEC_QSPI_OPT_TX_LDMA_EN_POS);
-    mec_qspi_options(qregs, 1, flags);
+    mec_hal_qspi_options(qregs, 1, flags);
 
     return MEC_RET_OK;
 }
 
-bool mec_espi_taf_pr_is_dirty(struct espi_taf_regs *regs, uint8_t pr_idx)
+bool mec_hal_espi_taf_pr_is_dirty(struct mec_espi_taf_regs *regs, uint8_t pr_idx)
 {
     if (!taf_regs_valid(regs) || (pr_idx >= MEC_ESPI_TAF_PROT_REG_MAX)) {
         return false;
@@ -302,7 +311,7 @@ bool mec_espi_taf_pr_is_dirty(struct espi_taf_regs *regs, uint8_t pr_idx)
     return pr_is_dirty(regs, pr_idx);
 }
 
-int mec_espi_taf_pr_dirty_clr(struct espi_taf_regs *regs, uint8_t pr_idx)
+int mec_hal_espi_taf_pr_dirty_clr(struct mec_espi_taf_regs *regs, uint8_t pr_idx)
 {
     if (!taf_regs_valid(regs) || (pr_idx >= MEC_ESPI_TAF_PROT_REG_MAX)) {
         return MEC_RET_ERR_INVAL;
@@ -314,7 +323,7 @@ int mec_espi_taf_pr_dirty_clr(struct espi_taf_regs *regs, uint8_t pr_idx)
 }
 
 
-int mec_espi_taf_pr_dirty_clr_mask(struct espi_taf_regs *regs, uint32_t mask)
+int mec_hal_espi_taf_pr_dirty_clr_mask(struct mec_espi_taf_regs *regs, uint32_t mask)
 {
     if (!taf_regs_valid(regs)) {
         return MEC_RET_ERR_INVAL;
@@ -325,7 +334,7 @@ int mec_espi_taf_pr_dirty_clr_mask(struct espi_taf_regs *regs, uint32_t mask)
     return MEC_RET_OK;
 }
 
-uint32_t mec_espi_taf_pr_lock_get(struct espi_taf_regs *regs)
+uint32_t mec_hal_espi_taf_pr_lock_get(struct mec_espi_taf_regs *regs)
 {
     if (!taf_regs_valid(regs)) {
         return 0;
@@ -338,7 +347,7 @@ uint32_t mec_espi_taf_pr_lock_get(struct espi_taf_regs *regs)
  * Lock bits are only cleared on RESET_SYS therefore we aren't required
  * to perform a read-modify-write.
  */
-int mec_espi_taf_pr_lock(struct espi_taf_regs *regs, uint32_t lockmap)
+int mec_hal_espi_taf_pr_lock(struct mec_espi_taf_regs *regs, uint32_t lockmap)
 {
     if (!taf_regs_valid(regs)) {
         return MEC_RET_ERR_INVAL;
@@ -358,7 +367,7 @@ int mec_espi_taf_pr_lock(struct espi_taf_regs *regs, uint32_t lockmap)
  * If PR not enabled program with disable defaults.
  *
  */
-int mec_espi_taf_pr_set(struct espi_taf_regs *regs, struct espi_taf_pr *pr)
+int mec_hal_espi_taf_pr_set(struct mec_espi_taf_regs *regs, struct espi_taf_pr *pr)
 {
     if (!taf_regs_valid(regs) || !pr || (pr->pr_num >= MEC_ESPI_TAF_PROT_REG_MAX)) {
         return MEC_RET_ERR_INVAL;
@@ -368,9 +377,9 @@ int mec_espi_taf_pr_set(struct espi_taf_regs *regs, struct espi_taf_pr *pr)
         return MEC_RET_ERR_DATA_ALIGN;
     }
 
-    volatile struct espi_taf_pr_regs *pregs = &regs->PR[pr->pr_num];
+    volatile struct mec_espi_taf_pr_regs *pregs = &regs->PR[pr->pr_num];
 
-    if (pr->flags & MEC_BIT(MCHP_SAF_PR_FLAG_ENABLE)) {
+    if (pr->flags & MEC_BIT(MCHP_TAF_PR_FLAG_ENABLE)) {
         pregs->START =  (pr->start >> MEC_TAF_PR_UNIT_SHIFT) & MEC_TAF_PR_START_LIM_MASK;
         pregs->LIMIT = (((pr->start + pr->size - 1u) >> MEC_TAF_PR_UNIT_SHIFT)
                     & MEC_TAF_PR_START_LIM_MASK);
@@ -379,7 +388,7 @@ int mec_espi_taf_pr_set(struct espi_taf_regs *regs, struct espi_taf_pr *pr)
 
         regs->PR_DIRTY = MEC_BIT(pr->pr_num);
 
-        if (pr->flags & MEC_BIT(MCHP_SAF_PR_FLAG_LOCK)) {
+        if (pr->flags & MEC_BIT(MCHP_TAF_PR_FLAG_LOCK)) {
             regs->PR_LOCK |= MEC_BIT(pr->pr_num);
         }
     } else {

@@ -29,7 +29,7 @@ struct mec_mbox_info {
 };
 
 static const struct mec_mbox_info mbox_instances[MEC5_MAILBOX_INSTANCES] = {
-    { MBOX0_BASE, MEC_MBOX0_ECIA_INFO, MEC_PCR_MBOX0 },
+    { MEC_MBOX0_BASE, MEC_MBOX0_ECIA_INFO, MEC_PCR_MBOX0 },
 };
 
 static struct mec_mbox_info const *find_mbox_info(uint32_t base_addr)
@@ -46,7 +46,7 @@ static struct mec_mbox_info const *find_mbox_info(uint32_t base_addr)
 
 /* ---- Public API ---- */
 
-int mec_mbox_init(struct mbox_regs *base, uint32_t swi_ien_msk, uint32_t flags)
+int mec_hal_mbox_init(struct mec_mbox_regs *base, uint32_t swi_ien_msk, uint32_t flags)
 {
     const struct mec_mbox_info *mbi = find_mbox_info((uint32_t)base);
 
@@ -54,29 +54,29 @@ int mec_mbox_init(struct mbox_regs *base, uint32_t swi_ien_msk, uint32_t flags)
         return MEC_RET_ERR_INVAL;
     }
 
-    struct mbox_regs *const regs = (struct mbox_regs *)mbi->base_addr;
+    struct mec_mbox_regs *const regs = (struct mec_mbox_regs *)mbi->base_addr;
 
-    mec_pcr_clr_blk_slp_en(mbi->pcr_id);
-    mec_girq_ctrl(mbi->devi, 0);
+    mec_hal_pcr_clr_blk_slp_en(mbi->pcr_id);
+    mec_hal_girq_ctrl(mbi->devi, 0);
 
     if (flags & MEC_MBOX_FLAG_RESET) {
-        mec_pcr_blk_reset(mbi->pcr_id);
+        mec_hal_pcr_blk_reset(mbi->pcr_id);
     } else {
         regs->H2EC = 0xffu; /* clear EC MBOX interrupt status */
     }
 
-    mec_girq_clr_src(mbi->devi);
+    mec_hal_girq_clr_src(mbi->devi);
 
     regs->ECSMIM = (uint8_t)(swi_ien_msk & 0xffu);
 
     if (flags & MEC_MBOX_FLAG_INTR_EN) {
-        mec_girq_ctrl(mbi->devi, 1);
+        mec_hal_girq_ctrl(mbi->devi, 1);
     }
 
     return MEC_RET_OK;
 }
 
-int mec_mbox_girq_ctrl(struct mbox_regs *base, uint8_t enable)
+int mec_hal_mbox_girq_ctrl(struct mec_mbox_regs *base, uint8_t enable)
 {
     const struct mec_mbox_info *mbi = find_mbox_info((uint32_t)base);
 
@@ -84,12 +84,12 @@ int mec_mbox_girq_ctrl(struct mbox_regs *base, uint8_t enable)
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_girq_ctrl(mbi->devi, enable);
+    mec_hal_girq_ctrl(mbi->devi, enable);
 
     return MEC_RET_OK;
 }
 
-int mec_mbox_girq_clr(struct mbox_regs *base)
+int mec_hal_mbox_girq_clr(struct mec_mbox_regs *base)
 {
     const struct mec_mbox_info *mbi = find_mbox_info((uint32_t)base);
 
@@ -97,12 +97,12 @@ int mec_mbox_girq_clr(struct mbox_regs *base)
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_girq_clr_src(mbi->devi);
+    mec_hal_girq_clr_src(mbi->devi);
 
     return MEC_RET_OK;
 }
 
-uint32_t mec_mbox_girq_result(struct mbox_regs *base)
+uint32_t mec_hal_mbox_girq_result(struct mec_mbox_regs *base)
 {
     const struct mec_mbox_info *mbi = find_mbox_info((uint32_t)base);
 
@@ -110,10 +110,10 @@ uint32_t mec_mbox_girq_result(struct mbox_regs *base)
         return 0;
     }
 
-    return mec_girq_result(mbi->devi);
+    return mec_hal_girq_result(mbi->devi);
 }
 
-int mec_mbox_sirq_set(struct mbox_regs *base, uint8_t bitmap)
+int mec_hal_mbox_sirq_set(struct mec_mbox_regs *base, uint8_t bitmap)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -126,7 +126,7 @@ int mec_mbox_sirq_set(struct mbox_regs *base, uint8_t bitmap)
     return MEC_RET_OK;
 }
 
-int mec_mbox_sirq_en_mask(struct mbox_regs *base, uint8_t val, uint8_t mask)
+int mec_hal_mbox_sirq_en_mask(struct mec_mbox_regs *base, uint8_t val, uint8_t mask)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -139,7 +139,7 @@ int mec_mbox_sirq_en_mask(struct mbox_regs *base, uint8_t val, uint8_t mask)
     return MEC_RET_OK;
 }
 
-int mec_mbox_get_host_to_ec(struct mbox_regs *base, uint8_t *data)
+int mec_hal_mbox_get_host_to_ec(struct mec_mbox_regs *base, uint8_t *data)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -154,7 +154,7 @@ int mec_mbox_get_host_to_ec(struct mbox_regs *base, uint8_t *data)
     return MEC_RET_OK;
 }
 
-int mec_mbox_set_host_to_ec(struct mbox_regs *base, uint8_t data)
+int mec_hal_mbox_set_host_to_ec(struct mec_mbox_regs *base, uint8_t data)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -165,7 +165,7 @@ int mec_mbox_set_host_to_ec(struct mbox_regs *base, uint8_t data)
     return MEC_RET_OK;
 }
 
-int mec_mbox_get_ec_to_host(struct mbox_regs *base, uint8_t *data)
+int mec_hal_mbox_get_ec_to_host(struct mec_mbox_regs *base, uint8_t *data)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -180,7 +180,7 @@ int mec_mbox_get_ec_to_host(struct mbox_regs *base, uint8_t *data)
     return MEC_RET_OK;
 }
 
-int mec_mbox_set_ec_to_host(struct mbox_regs *base, uint8_t data)
+int mec_hal_mbox_set_ec_to_host(struct mec_mbox_regs *base, uint8_t data)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -191,7 +191,7 @@ int mec_mbox_set_ec_to_host(struct mbox_regs *base, uint8_t data)
     return MEC_RET_OK;
 }
 
-int mec_mbox_get(struct mbox_regs *base, uint8_t mbox, uint8_t *data)
+int mec_hal_mbox_get(struct mec_mbox_regs *base, uint8_t mbox, uint8_t *data)
 {
     if (!base || (mbox > MEC_MBOX_MAX_INDEX) || !data) {
         return MEC_RET_ERR_INVAL;
@@ -204,7 +204,7 @@ int mec_mbox_get(struct mbox_regs *base, uint8_t mbox, uint8_t *data)
     return MEC_RET_OK;
 }
 
-int mec_mbox_put(struct mbox_regs *base, uint8_t mbox, uint8_t data)
+int mec_hal_mbox_put(struct mec_mbox_regs *base, uint8_t mbox, uint8_t data)
 {
     if (!base || (mbox > MEC_MBOX_MAX_INDEX)) {
         return MEC_RET_ERR_INVAL;
@@ -218,7 +218,7 @@ int mec_mbox_put(struct mbox_regs *base, uint8_t mbox, uint8_t data)
 }
 
 /* 32 8-bit mailboxes are grouped as 8 32-bit registers */
-int mec_mbox32_get(struct mbox_regs *base, uint8_t mbox, uint32_t *data)
+int mec_hal_mbox32_get(struct mec_mbox_regs *base, uint8_t mbox, uint32_t *data)
 {
     if (!base || (mbox > (MEC_MBOX_MAX_INDEX / 4)) || !data) {
         return MEC_RET_ERR_INVAL;
@@ -229,7 +229,7 @@ int mec_mbox32_get(struct mbox_regs *base, uint8_t mbox, uint32_t *data)
     return MEC_RET_OK;
 }
 
-int mec_mbox32_put(struct mbox_regs *base, uint8_t mbox, uint32_t data)
+int mec_hal_mbox32_put(struct mec_mbox_regs *base, uint8_t mbox, uint32_t data)
 {
     if (!base || (mbox > (MEC_MBOX_MAX_INDEX / 4))) {
         return MEC_RET_ERR_INVAL;

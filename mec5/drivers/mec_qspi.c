@@ -29,18 +29,18 @@
 #define MEC_QSPI_FORCE_STOP_WAIT_LOOPS 1000
 #define MEC_QSPI_DESCR_NU_MAX          0x7fffu
 
-#define MEC_QSPI_STATUS_ERRORS (MEC_BIT(QSPI_STATUS_TXBERR_Pos) \
-                                | MEC_BIT(QSPI_STATUS_RXBERR_Pos) \
-                                | MEC_BIT(QSPI_STATUS_PROGERR_Pos) \
-                                | MEC_BIT(QSPI_STATUS_LDRXERR_Pos) \
-                                | MEC_BIT(QSPI_STATUS_LDTXERR_Pos))
+#define MEC_QSPI_STATUS_ERRORS (MEC_BIT(MEC_QSPI_STATUS_TXBERR_Pos) \
+                                | MEC_BIT(MEC_QSPI_STATUS_RXBERR_Pos) \
+                                | MEC_BIT(MEC_QSPI_STATUS_PROGERR_Pos) \
+                                | MEC_BIT(MEC_QSPI_STATUS_LDRXERR_Pos) \
+                                | MEC_BIT(MEC_QSPI_STATUS_LDTXERR_Pos))
 
-#define MEC_QSPI_SIG_MODE_POS QSPI_MODE_CPOL_Pos
+#define MEC_QSPI_SIG_MODE_POS MEC_QSPI_MODE_CPOL_Pos
 #define MEC_QSPI_SIG_MODE_MSK \
-    (QSPI_MODE_CPOL_Msk | QSPI_MODE_CPHA_MOSI_Msk | QSPI_MODE_CPHA_MISO_Msk)
+    (MEC_QSPI_MODE_CPOL_Msk | MEC_QSPI_MODE_CPHA_MOSI_Msk | MEC_QSPI_MODE_CPHA_MISO_Msk)
 
-#define MEC5_QSPI_START_DESCR_MSK0 ((uint32_t)QSPI_CTRL_DPTR_Msk >> QSPI_CTRL_DPTR_Pos)
-#define MEC5_QSPI_NEXT_DESCR_MSK0  ((uint32_t)QSPI_DESCR_NEXT_Msk >> QSPI_DESCR_NEXT_Pos)
+#define MEC5_QSPI_START_DESCR_MSK0 ((uint32_t)MEC_QSPI_CTRL_DPTR_Msk >> MEC_QSPI_CTRL_DPTR_Pos)
+#define MEC5_QSPI_NEXT_DESCR_MSK0  ((uint32_t)MEC_QSPI_DESCR_NEXT_Msk >> MEC_QSPI_DESCR_NEXT_Pos)
 
 /* QSPI SPI frequencies less than or equal to this value use
  * normal CPHA and CPOL settings. For frequencies above this
@@ -55,10 +55,10 @@ struct mec_qspi_info {
 };
 
 const struct mec_qspi_info qspi_instances[MEC5_QSPI_INSTANCES] = {
-    {QSPI0_BASE, MEC_QSPI0_ECIA_INFO, MEC_PCR_QSPI0},
+    {MEC_QSPI0_BASE, MEC_QSPI0_ECIA_INFO, MEC_PCR_QSPI0},
 };
 
-static struct mec_qspi_info const *qspi_get_info(struct qspi_regs *base)
+static struct mec_qspi_info const *qspi_get_info(struct mec_qspi_regs *base)
 {
     for (size_t n = 0u; n < MEC5_QSPI_INSTANCES; n++) {
         const struct mec_qspi_info *p = &qspi_instances[n];
@@ -75,13 +75,13 @@ static struct mec_qspi_info const *qspi_get_info(struct qspi_regs *base)
 static uint32_t qspi_max_spi_clock(void)
 {
     /* QMSPI uses the same PLL output clock as the CPU domain */
-    return mec_pcr_cpu_max_freq();
+    return mec_hal_pcr_cpu_max_freq();
 }
 
-static uint32_t qspi_get_freq(struct qspi_regs *base)
+static uint32_t qspi_get_freq(struct mec_qspi_regs *base)
 {
     uint32_t srcfreq = qspi_max_spi_clock();
-    uint32_t fdiv = (base->MODE & QSPI_MODE_CLKDIV_Msk) >> QSPI_MODE_CLKDIV_Pos;
+    uint32_t fdiv = (base->MODE & MEC_QSPI_MODE_CLKDIV_Msk) >> MEC_QSPI_MODE_CLKDIV_Pos;
 
     if (fdiv == 0u) { /* zero is maximum clock divider */
         fdiv = MEC_QSPI_M_FDIV_MAX;
@@ -90,7 +90,7 @@ static uint32_t qspi_get_freq(struct qspi_regs *base)
     return (srcfreq / fdiv);
 }
 
-uint32_t mec_qspi_get_freq(struct qspi_regs *base)
+uint32_t mec_hal_qspi_get_freq(struct mec_qspi_regs *base)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -99,12 +99,12 @@ uint32_t mec_qspi_get_freq(struct qspi_regs *base)
     return qspi_get_freq(base);
 }
 
-uint32_t mec_qspi_freq_div(struct qspi_regs *base)
+uint32_t mec_hal_qspi_freq_div(struct mec_qspi_regs *base)
 {
     uint32_t fdiv = 0;
 
-    if ((uintptr_t)base == (uintptr_t)(QSPI0_BASE)) {
-        fdiv = (base->MODE & QSPI_MODE_CLKDIV_Msk) >> QSPI_MODE_CLKDIV_Pos;
+    if ((uintptr_t)base == (uintptr_t)(MEC_QSPI0_BASE)) {
+        fdiv = (base->MODE & MEC_QSPI_MODE_CLKDIV_Msk) >> MEC_QSPI_MODE_CLKDIV_Pos;
     }
 
     if (fdiv == 0) {
@@ -118,22 +118,22 @@ uint32_t mec_qspi_freq_div(struct qspi_regs *base)
  * 0 = divide by maximum (0x10000)
  * 1 - 0xffff is divide by this value
  */
-uint16_t mec_qspi_freq_div_raw(struct qspi_regs *base)
+uint16_t mec_hal_qspi_freq_div_raw(struct mec_qspi_regs *base)
 {
-    if ((uintptr_t)base != (uintptr_t)(QSPI0_BASE)) {
+    if ((uintptr_t)base != (uintptr_t)(MEC_QSPI0_BASE)) {
         return 0;
     }
 
-    return (uint16_t)((base->MODE & QSPI_MODE_CLKDIV_Msk) >> QSPI_MODE_CLKDIV_Pos);
+    return (uint16_t)((base->MODE & MEC_QSPI_MODE_CLKDIV_Msk) >> MEC_QSPI_MODE_CLKDIV_Pos);
 }
 
-bool mec_qspi_is_enabled(struct qspi_regs *regs)
+bool mec_hal_qspi_is_enabled(struct mec_qspi_regs *regs)
 {
-    if ((uintptr_t)regs != (uintptr_t)QSPI0_BASE) {
+    if ((uintptr_t)regs != (uintptr_t)MEC_QSPI0_BASE) {
         return false;
     }
 
-    return (regs->MODE & MEC_BIT(QSPI_MODE_ACTV_Pos)) ? true : false;
+    return (regs->MODE & MEC_BIT(MEC_QSPI_MODE_ACTV_Pos)) ? true : false;
 }
 
 /* Compute an estimate of time in nanoseconds to clock in/out one byte.
@@ -155,20 +155,20 @@ bool mec_qspi_is_enabled(struct qspi_regs *regs)
  * Tsingle = 1e9 * ((65536 / 48,000,000) * 8) = 10922666.66666
  *
  */
-static uint32_t qspi_byte_time_ns(struct qspi_regs *base)
+static uint32_t qspi_byte_time_ns(struct mec_qspi_regs *base)
 {
-    uint32_t clkdiv = (base->MODE & QSPI_MODE_CLKDIV_Msk) >> QSPI_MODE_CLKDIV_Pos;
-    uint32_t iom = (base->CTRL & QSPI_CTRL_IFM_Msk) >> QSPI_CTRL_IFM_Pos;
+    uint32_t clkdiv = (base->MODE & MEC_QSPI_MODE_CLKDIV_Msk) >> MEC_QSPI_MODE_CLKDIV_Pos;
+    uint32_t iom = (base->CTRL & MEC_QSPI_CTRL_IFM_Msk) >> MEC_QSPI_CTRL_IFM_Pos;
     uint32_t byte_time_ns = 10922667u; /* 8-bits full duplex 48MHz clock source, max clock divider */
 
-    if (mec_pcr_is_turbo_clock()) { /* 96MHz clock source? */
+    if (mec_hal_pcr_is_turbo_clock()) { /* 96MHz clock source? */
         byte_time_ns = 5461333u; /* max clock divider */
     }
 
     /* adjust for IO mode */
-    if (iom == QSPI_CTRL_IFM_QUAD) {
+    if (iom == MEC_QSPI_CTRL_IFM_QUAD) {
         byte_time_ns >>= 2u;
-    } else if (iom == QSPI_CTRL_IFM_DUAL) {
+    } else if (iom == MEC_QSPI_CTRL_IFM_DUAL) {
         byte_time_ns >>= 1u;
     }
 
@@ -183,7 +183,7 @@ static uint32_t qspi_byte_time_ns(struct qspi_regs *base)
     return byte_time_ns;
 }
 
-int mec_qspi_byte_time_ns(struct qspi_regs *base, uint32_t *btime_ns)
+int mec_hal_qspi_byte_time_ns(struct mec_qspi_regs *base, uint32_t *btime_ns)
 {
     if ((!base) || (!btime_ns)) {
         return MEC_RET_ERR_INVAL;
@@ -217,14 +217,15 @@ static uint32_t compute_freq_divisor(uint32_t freq_hz)
     return fdiv;
 }
 
-static void qspi_set_freq(struct qspi_regs *base, uint32_t freqhz)
+static void qspi_set_freq(struct mec_qspi_regs *base, uint32_t freqhz)
 {
     uint32_t fdiv = compute_freq_divisor(freqhz);
 
-    base->MODE = (base->MODE & ~QSPI_MODE_CLKDIV_Msk) | (fdiv << QSPI_MODE_CLKDIV_Pos);
+    base->MODE = ((base->MODE & (uint32_t)~MEC_QSPI_MODE_CLKDIV_Msk)
+                  | (fdiv << MEC_QSPI_MODE_CLKDIV_Pos));
 }
 
-int mec_qspi_set_freq(struct qspi_regs *base, uint32_t freqhz)
+int mec_hal_qspi_set_freq(struct mec_qspi_regs *base, uint32_t freqhz)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -235,7 +236,7 @@ int mec_qspi_set_freq(struct qspi_regs *base, uint32_t freqhz)
     return MEC_RET_OK;
 }
 
-static void qspi_intr_clr_dis(struct qspi_regs *base)
+static void qspi_intr_clr_dis(struct mec_qspi_regs *base)
 {
     const struct mec_qspi_info *info = qspi_get_info(base);
 
@@ -245,36 +246,36 @@ static void qspi_intr_clr_dis(struct qspi_regs *base)
 
     base->INTR_CTRL = 0;
     base->STATUS = UINT32_MAX;
-    mec_girq_ctrl(info->devi, 0);
-    mec_girq_clr_src(info->devi);
+    mec_hal_girq_ctrl(info->devi, 0);
+    mec_hal_girq_clr_src(info->devi);
 }
 
-static void qspi_reset(struct qspi_regs *base)
+static void qspi_reset(struct mec_qspi_regs *base)
 {
     /* Self clearing soft reset bit (write-only) */
-    base->MODE |= MEC_BIT(QSPI_MODE_SRST_Pos);
+    base->MODE |= MEC_BIT(MEC_QSPI_MODE_SRST_Pos);
 
     qspi_intr_clr_dis(base);
 }
 
 /* Clear GIRQ source status. Current SoC's have one QSPI instance */
-void mec_qspi_girq_clr(struct qspi_regs *base)
+void mec_hal_qspi_girq_clr(struct mec_qspi_regs *base)
 {
-    mec_girq_clr_src(MEC_QSPI0_ECIA_INFO);
+    mec_hal_girq_clr_src(MEC_QSPI0_ECIA_INFO);
 }
 
-void mec_qspi_girq_ctrl(struct qspi_regs *base, uint8_t enable)
+void mec_hal_qspi_girq_ctrl(struct mec_qspi_regs *base, uint8_t enable)
 {
-    mec_girq_ctrl(MEC_QSPI0_ECIA_INFO, enable);
+    mec_hal_girq_ctrl(MEC_QSPI0_ECIA_INFO, enable);
 }
 
 /* Returns non-zero if QSPI0 GIRQ result bit is set else 0 */
-uint32_t mec_qspi_girq_is_result(struct qspi_regs *base)
+uint32_t mec_hal_qspi_girq_is_result(struct mec_qspi_regs *base)
 {
-    return mec_girq_result(MEC_QSPI0_ECIA_INFO);
+    return mec_hal_girq_result(MEC_QSPI0_ECIA_INFO);
 }
 
-int mec_qspi_reset(struct qspi_regs *base)
+int mec_hal_qspi_reset(struct mec_qspi_regs *base)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -285,7 +286,7 @@ int mec_qspi_reset(struct qspi_regs *base)
     return MEC_RET_OK;
 }
 
-int mec_qspi_reset_sr(struct qspi_regs *base)
+int mec_hal_qspi_reset_sr(struct mec_qspi_regs *base)
 {
     uint32_t saved[5];
 
@@ -293,17 +294,17 @@ int mec_qspi_reset_sr(struct qspi_regs *base)
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_girq_ctrl(MEC_QSPI0_ECIA_INFO, 0);
+    mec_hal_girq_ctrl(MEC_QSPI0_ECIA_INFO, 0);
 
-    saved[0] = base->MODE & (QSPI_MODE_CPOL_Msk | QSPI_MODE_CPHA_MOSI_Msk
-                             | QSPI_MODE_CPHA_MISO_Msk | QSPI_MODE_CLKDIV_Msk);
+    saved[0] = base->MODE & (MEC_QSPI_MODE_CPOL_Msk | MEC_QSPI_MODE_CPHA_MOSI_Msk
+                             | MEC_QSPI_MODE_CPHA_MISO_Msk | MEC_QSPI_MODE_CLKDIV_Msk);
     saved[1] = base->CSTM;
     saved[2] = base->TAPSS;
     saved[3] = base->TAPSA;
     saved[4] = base->TAPSC;
 
     qspi_reset(base);
-    mec_girq_clr_src(MEC_QSPI0_ECIA_INFO);
+    mec_hal_girq_clr_src(MEC_QSPI0_ECIA_INFO);
 
     base->MODE = saved[0];
     base->CSTM = saved[1];
@@ -318,20 +319,20 @@ int mec_qspi_reset_sr(struct qspi_regs *base)
  * param regs = QSPI instance register base address
  * param freq = frequency use for CS1. Zero indicates use same as CS0.
  */
-void qspi_cs1_freq(struct qspi_regs *base, uint32_t freq)
+static void qspi_cs1_freq(struct mec_qspi_regs *base, uint32_t freq)
 {
     uint32_t fdiv;
 
     if (freq) {
         fdiv = compute_freq_divisor(freq);
-        base->ALT1_MODE = (fdiv << QSPI_MODE_CLKDIV_Pos) & QSPI_MODE_CLKDIV_Msk;
-        base->ALT1_MODE |= MEC_BIT(QSPI_ALT1_MODE_CS1_ALTEN_Pos);
+        base->ALT1_MODE = (fdiv << MEC_QSPI_MODE_CLKDIV_Pos) & MEC_QSPI_MODE_CLKDIV_Msk;
+        base->ALT1_MODE |= MEC_BIT(MEC_QSPI_ALT1_MODE_CS1_ALTEN_Pos);
     } else {
         base->ALT1_MODE = 0u;
     }
 }
 
-int mec_qspi_cs1_freq(struct qspi_regs *base, uint32_t freq)
+int mec_hal_qspi_cs1_freq(struct mec_qspi_regs *base, uint32_t freq)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -342,16 +343,17 @@ int mec_qspi_cs1_freq(struct qspi_regs *base, uint32_t freq)
     return MEC_RET_OK;
 }
 
-static uint32_t qspi_compute_byte_time_ns(struct qspi_regs *base)
+static uint32_t qspi_compute_byte_time_ns(struct mec_qspi_regs *base)
 {
     uint32_t freq = qspi_max_spi_clock();
-    uint32_t fdiv = (base->MODE & QSPI_MODE_CLKDIV_Msk) >> QSPI_MODE_CLKDIV_Pos;
+    uint32_t fdiv = (base->MODE & MEC_QSPI_MODE_CLKDIV_Msk) >> MEC_QSPI_MODE_CLKDIV_Pos;
     uint32_t btime_ns;
 
     /* Not CS0 and alternate frequency divider enabled */
-    if ((base->MODE & QSPI_MODE_CS_Msk) && (base->ALT1_MODE & MEC_BIT(QSPI_ALT1_MODE_CS1_ALTEN_Pos))) {
-        fdiv = ((base->ALT1_MODE & QSPI_ALT1_MODE_CS1_ALT_CLKDIV_Msk)
-                >> QSPI_ALT1_MODE_CS1_ALT_CLKDIV_Pos);
+    if ((base->MODE & MEC_QSPI_MODE_CS_Msk) &&
+        (base->ALT1_MODE & MEC_BIT(MEC_QSPI_ALT1_MODE_CS1_ALTEN_Pos))) {
+        fdiv = ((base->ALT1_MODE & MEC_QSPI_ALT1_MODE_CS1_ALT_CLKDIV_Msk)
+                >> MEC_QSPI_ALT1_MODE_CS1_ALT_CLKDIV_Pos);
     }
 
     if (!fdiv) { /* divider reg field = 0 is maximum divider */
@@ -366,15 +368,15 @@ static uint32_t qspi_compute_byte_time_ns(struct qspi_regs *base)
     return btime_ns;
 }
 
-static void qspi_cs_select(struct qspi_regs *base, enum mec_qspi_cs cs)
+static void qspi_cs_select(struct mec_qspi_regs *base, enum mec_qspi_cs cs)
 {
-    uint32_t mode = base->MODE & ~QSPI_MODE_CS_Msk;
+    uint32_t mode = base->MODE & (uint32_t)~MEC_QSPI_MODE_CS_Msk;
 
-    mode |= (((uint32_t)cs << QSPI_MODE_CS_Pos) & QSPI_MODE_CS_Msk);
+    mode |= (((uint32_t)cs << MEC_QSPI_MODE_CS_Pos) & MEC_QSPI_MODE_CS_Msk);
     base->MODE = mode;
 }
 
-int mec_qspi_cs_select(struct qspi_regs *base, enum mec_qspi_cs cs)
+int mec_hal_qspi_cs_select(struct mec_qspi_regs *base, enum mec_qspi_cs cs)
 {
     if (!base || (cs >= MEC_QSPI_CS_MAX)) {
         return MEC_RET_ERR_INVAL;
@@ -388,7 +390,7 @@ int mec_qspi_cs_select(struct qspi_regs *base, enum mec_qspi_cs cs)
 static const uint8_t qspi_smode[MEC_SPI_SIGNAL_MODE_MAX] = { 0x0, 0x6, 0x1, 0x7, };
 static const uint8_t qspi_smode_hi[MEC_SPI_SIGNAL_MODE_MAX] = { 0x4, 0x2, 0x5, 0x3, };
 
-static void qspi_spi_signal_mode(struct qspi_regs *base, enum mec_qspi_signal_mode spi_mode)
+static void qspi_spi_signal_mode(struct mec_qspi_regs *base, enum mec_qspi_signal_mode spi_mode)
 {
     uint32_t freq = qspi_get_freq(base);
     uint32_t hwsm = 0;
@@ -399,11 +401,11 @@ static void qspi_spi_signal_mode(struct qspi_regs *base, enum mec_qspi_signal_mo
         hwsm = (uint32_t)qspi_smode[spi_mode];
     }
 
-    base->MODE = (base->MODE & ~0x700u) | (hwsm << QSPI_MODE_CPOL_Pos);
+    base->MODE = (base->MODE & ~0x700u) | (hwsm << MEC_QSPI_MODE_CPOL_Pos);
 }
 
 /* Requires frequency programmed first */
-int mec_qspi_spi_signal_mode(struct qspi_regs *base, enum mec_qspi_signal_mode spi_mode)
+int mec_hal_qspi_spi_signal_mode(struct mec_qspi_regs *base, enum mec_qspi_signal_mode spi_mode)
 {
     if ((base == NULL) || (spi_mode >= MEC_SPI_SIGNAL_MODE_MAX)) {
         return MEC_RET_ERR_INVAL;
@@ -414,7 +416,7 @@ int mec_qspi_spi_signal_mode(struct qspi_regs *base, enum mec_qspi_signal_mode s
     return MEC_RET_OK;
 }
 
-int mec_qspi_sampling_phase_pol(struct qspi_regs *base, uint8_t phpol)
+int mec_hal_qspi_sampling_phase_pol(struct mec_qspi_regs *base, uint8_t phpol)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -430,22 +432,22 @@ static uint32_t qspi_ifm(enum mec_qspi_io iom)
     uint32_t ifm;
 
     if (iom == MEC_QSPI_IO_QUAD) {
-        ifm = (uint32_t)QSPI_CTRL_IFM_QUAD;
+        ifm = (uint32_t)MEC_QSPI_CTRL_IFM_QUAD;
     } else if (iom == MEC_QSPI_IO_DUAL) {
-        ifm = (uint32_t)QSPI_CTRL_IFM_DUAL;
+        ifm = (uint32_t)MEC_QSPI_CTRL_IFM_DUAL;
     } else {
-        ifm = (uint32_t)QSPI_CTRL_IFM_FD;
+        ifm = (uint32_t)MEC_QSPI_CTRL_IFM_FD;
     }
 
-    return (ifm << QSPI_CTRL_IFM_Pos);
+    return (ifm << MEC_QSPI_CTRL_IFM_Pos);
 }
 
-static void qspi_io(struct qspi_regs *base, enum mec_qspi_io io)
+static void qspi_io(struct mec_qspi_regs *base, enum mec_qspi_io io)
 {
-    base->CTRL = (base->CTRL & ~QSPI_CTRL_IFM_Msk) | qspi_ifm(io);
+    base->CTRL = (base->CTRL & (uint32_t)~MEC_QSPI_CTRL_IFM_Msk) | qspi_ifm(io);
 }
 
-int mec_qspi_io(struct qspi_regs *base, enum mec_qspi_io io)
+int mec_hal_qspi_io(struct mec_qspi_regs *base, enum mec_qspi_io io)
 {
     if (!base || (io >= MEC_QSPI_IO_MAX)) {
         return MEC_RET_ERR_INVAL;
@@ -468,7 +470,8 @@ const struct qspi_cstm_info cstm_tbl[MEC_QSPI_CSTM_MAX] = {
     {24, 0xffu},
 };
 
-int mec_qspi_cs_timing_adjust(struct qspi_regs *base, enum mec_qspi_cstm field, uint8_t val)
+int mec_hal_qspi_cs_timing_adjust(struct mec_qspi_regs *base, enum mec_qspi_cstm field,
+                                  uint8_t val)
 {
     if ((!base) || (field >= MEC_QSPI_CSTM_MAX)) {
         return MEC_RET_ERR_INVAL;
@@ -482,7 +485,7 @@ int mec_qspi_cs_timing_adjust(struct qspi_regs *base, enum mec_qspi_cstm field, 
     return MEC_RET_OK;
 }
 
-int mec_qspi_cs_timing(struct qspi_regs *base, uint32_t cs_timing)
+int mec_hal_qspi_cs_timing(struct mec_qspi_regs *base, uint32_t cs_timing)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -493,7 +496,7 @@ int mec_qspi_cs_timing(struct qspi_regs *base, uint32_t cs_timing)
     return MEC_RET_OK;
 }
 
-int mec_qspi_tap_select(struct qspi_regs *base, uint8_t sel_sck_tap, uint8_t sel_ctrl_tap)
+int mec_hal_qspi_tap_select(struct mec_qspi_regs *base, uint8_t sel_sck_tap, uint8_t sel_ctrl_tap)
 {
     uint32_t tapss = sel_sck_tap | ((uint32_t)sel_ctrl_tap << 8);
 
@@ -501,19 +504,19 @@ int mec_qspi_tap_select(struct qspi_regs *base, uint8_t sel_sck_tap, uint8_t sel
         return MEC_RET_ERR_INVAL;
     }
 
-    tapss = ((uint32_t)sel_sck_tap << QSPI_TAPSS_TSCK_Pos) & QSPI_TAPSS_TSCK_Msk;
-    tapss |= (((uint32_t)sel_ctrl_tap << QSPI_TAPSS_TCTRL_Pos) & QSPI_TAPSS_TCTRL_Msk);
-    base->TAPSS = (base->TAPSS & (uint32_t)~(QSPI_TAPSS_TSCK_Msk | QSPI_TAPSS_TSCK_Msk)) | tapss;
+    tapss = ((uint32_t)sel_sck_tap << MEC_QSPI_TAPSS_TSCK_Pos) & MEC_QSPI_TAPSS_TSCK_Msk;
+    tapss |= (((uint32_t)sel_ctrl_tap << MEC_QSPI_TAPSS_TCTRL_Pos) & MEC_QSPI_TAPSS_TCTRL_Msk);
+    base->TAPSS = (base->TAPSS & (uint32_t)~(MEC_QSPI_TAPSS_TSCK_Msk | MEC_QSPI_TAPSS_TSCK_Msk)) | tapss;
 
     return MEC_RET_OK;
 }
 
 /* Initialize QMSPI controller using local DMA. */
-int mec_qspi_init(struct qspi_regs *base,
-                  uint32_t freq_hz,
-                  enum mec_qspi_signal_mode spi_signal_mode,
-                  enum mec_qspi_io iom,
-                  enum mec_qspi_cs chip_sel)
+int mec_hal_qspi_init(struct mec_qspi_regs *base,
+                      uint32_t freq_hz,
+                      enum mec_qspi_signal_mode spi_signal_mode,
+                      enum mec_qspi_io iom,
+                      enum mec_qspi_cs chip_sel)
 {
     const struct mec_qspi_info *info = qspi_get_info(base);
 
@@ -521,22 +524,22 @@ int mec_qspi_init(struct qspi_regs *base,
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_pcr_clr_blk_slp_en(info->pcr_id); /* clocks gated ON */
-    mec_qspi_reset_sr(base);
+    mec_hal_pcr_clr_blk_slp_en(info->pcr_id); /* clocks gated ON */
+    mec_hal_qspi_reset_sr(base);
     qspi_set_freq(base, freq_hz);
     qspi_spi_signal_mode(base, spi_signal_mode);
     qspi_io(base, iom);
     qspi_cs_select(base, chip_sel);
 
-    base->MODE |= MEC_BIT(QSPI_MODE_ACTV_Pos);
+    base->MODE |= MEC_BIT(MEC_QSPI_MODE_ACTV_Pos);
 
     /* Enable QSPI interrupt signal to propagate to NVIC */
-    mec_girq_ctrl(info->devi, 1);
+    mec_hal_girq_ctrl(info->devi, 1);
 
     return MEC_RET_OK;
 }
 
-int mec_qspi_options(struct qspi_regs *regs, uint8_t en, uint32_t options)
+int mec_hal_qspi_options(struct mec_qspi_regs *regs, uint8_t en, uint32_t options)
 {
     uint32_t val = 0, msk = 0;
 
@@ -545,27 +548,27 @@ int mec_qspi_options(struct qspi_regs *regs, uint8_t en, uint32_t options)
     }
 
     if (options & MEC_BIT(MEC_QSPI_OPT_ACTV_EN_POS)) {
-        msk |= MEC_BIT(QSPI_MODE_ACTV_Pos);
+        msk |= MEC_BIT(MEC_QSPI_MODE_ACTV_Pos);
         if (en) {
-            val |= MEC_BIT(QSPI_MODE_ACTV_Pos);
+            val |= MEC_BIT(MEC_QSPI_MODE_ACTV_Pos);
         }
     }
     if (options & MEC_BIT(MEC_QSPI_OPT_TAF_DMA_EN_POS)) {
-        msk |= MEC_BIT(QSPI_MODE_TAFDMA_Pos);
+        msk |= MEC_BIT(MEC_QSPI_MODE_TAFDMA_Pos);
         if (en) {
-            val |= MEC_BIT(QSPI_MODE_TAFDMA_Pos);
+            val |= MEC_BIT(MEC_QSPI_MODE_TAFDMA_Pos);
         }
     }
     if (options & MEC_BIT(MEC_QSPI_OPT_RX_LDMA_EN_POS)) {
-        msk |= MEC_BIT(QSPI_MODE_RX_LDMA_Pos);
+        msk |= MEC_BIT(MEC_QSPI_MODE_RX_LDMA_Pos);
         if (en) {
-            val |= MEC_BIT(QSPI_MODE_RX_LDMA_Pos);
+            val |= MEC_BIT(MEC_QSPI_MODE_RX_LDMA_Pos);
         }
     }
     if (options & MEC_BIT(MEC_QSPI_OPT_TX_LDMA_EN_POS)) {
-        msk |= MEC_BIT(QSPI_MODE_TX_LDMA_Pos);
+        msk |= MEC_BIT(MEC_QSPI_MODE_TX_LDMA_Pos);
         if (en) {
-            val |= MEC_BIT(QSPI_MODE_TX_LDMA_Pos);
+            val |= MEC_BIT(MEC_QSPI_MODE_TX_LDMA_Pos);
         }
     }
 
@@ -578,7 +581,7 @@ int mec_qspi_options(struct qspi_regs *regs, uint8_t en, uint32_t options)
  * If QSPI is generating clocks, it will stop at the next byte boundary
  * and de-assert chip select.
  */
-int mec_qspi_force_stop(struct qspi_regs *base)
+int mec_hal_qspi_force_stop(struct mec_qspi_regs *base)
 {
     uint32_t btime_ns;
 
@@ -586,7 +589,7 @@ int mec_qspi_force_stop(struct qspi_regs *base)
         return MEC_RET_ERR_INVAL;
     }
 
-    base->EXE = MEC_BIT(QSPI_EXE_STOP_Pos);
+    base->EXE = MEC_BIT(MEC_QSPI_EXE_STOP_Pos);
 
     /* computation uses up some of the time */
     btime_ns = qspi_compute_byte_time_ns(base);
@@ -594,7 +597,7 @@ int mec_qspi_force_stop(struct qspi_regs *base)
     /* Timeout period, doesn't have to be accurate.
      * EC running at 96MHz (~10 ns) or slower.
      */
-    while (base->STATUS & MEC_BIT(QSPI_STATUS_ACTIVE_Pos)) {
+    while (base->STATUS & MEC_BIT(MEC_QSPI_STATUS_ACTIVE_Pos)) {
         if (!btime_ns) {
             return MEC_RET_ERR_TIMEOUT;
         }
@@ -604,7 +607,7 @@ int mec_qspi_force_stop(struct qspi_regs *base)
     return MEC_RET_OK;
 }
 
-int mec_qspi_done(struct qspi_regs *base)
+int mec_hal_qspi_done(struct mec_qspi_regs *base)
 {
     uint32_t qsts;
 
@@ -618,14 +621,14 @@ int mec_qspi_done(struct qspi_regs *base)
         return MEC_RET_ERR_HW;
     }
 
-    if (qsts & MEC_BIT(QSPI_STATUS_DONE_Pos)) {
+    if (qsts & MEC_BIT(MEC_QSPI_STATUS_DONE_Pos)) {
         return MEC_RET_OK;
     }
 
     return MEC_RET_ERR_BUSY;
 }
 
-uint32_t mec_qspi_hw_status(struct qspi_regs *base)
+uint32_t mec_hal_qspi_hw_status(struct mec_qspi_regs *base)
 {
     if (!base) {
         return 0;
@@ -634,7 +637,7 @@ uint32_t mec_qspi_hw_status(struct qspi_regs *base)
     return base->STATUS;
 }
 
-int mec_qspi_hw_status_clr(struct qspi_regs *base, uint32_t msk)
+int mec_hal_qspi_hw_status_clr(struct mec_qspi_regs *base, uint32_t msk)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -645,22 +648,22 @@ int mec_qspi_hw_status_clr(struct qspi_regs *base, uint32_t msk)
     return MEC_RET_OK;
 }
 
-static void qspi_intr_ctrl(struct qspi_regs *base, int enable)
+static void qspi_intr_ctrl(struct mec_qspi_regs *base, int enable)
 {
     uint32_t qien = 0u;
 
     if (enable) {
-        qien = (MEC_BIT(QSPI_INTR_CTRL_DONE_Pos)
-                | MEC_BIT(QSPI_INTR_CTRL_TXBERR_Pos)
-                | MEC_BIT(QSPI_INTR_CTRL_PROGERR_Pos)
-                | MEC_BIT(QSPI_INTR_CTRL_LDRXERR_Pos)
-                | MEC_BIT(QSPI_INTR_CTRL_LDTXERR_Pos));
+        qien = (MEC_BIT(MEC_QSPI_INTR_CTRL_DONE_Pos)
+                | MEC_BIT(MEC_QSPI_INTR_CTRL_TXBERR_Pos)
+                | MEC_BIT(MEC_QSPI_INTR_CTRL_PROGERR_Pos)
+                | MEC_BIT(MEC_QSPI_INTR_CTRL_LDRXERR_Pos)
+                | MEC_BIT(MEC_QSPI_INTR_CTRL_LDTXERR_Pos));
     }
 
     base->INTR_CTRL = qien;
 }
 
-int mec_qspi_intr_ctrl(struct qspi_regs *base, int enable)
+int mec_hal_qspi_intr_ctrl(struct mec_qspi_regs *base, int enable)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -671,7 +674,7 @@ int mec_qspi_intr_ctrl(struct qspi_regs *base, int enable)
     return MEC_RET_OK;
 }
 
-int mec_qspi_intr_ctrl_msk(struct qspi_regs *base, int enable, uint32_t msk)
+int mec_hal_qspi_intr_ctrl_msk(struct mec_qspi_regs *base, int enable, uint32_t msk)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -686,10 +689,10 @@ int mec_qspi_intr_ctrl_msk(struct qspi_regs *base, int enable, uint32_t msk)
     return MEC_RET_OK;
 }
 
-int mec_qspi_tx_fifo_is_empty(struct qspi_regs *base)
+int mec_hal_qspi_tx_fifo_is_empty(struct mec_qspi_regs *base)
 {
     if (base) {
-        if (base->STATUS & MEC_BIT(QSPI_STATUS_TXBE_Pos)) {
+        if (base->STATUS & MEC_BIT(MEC_QSPI_STATUS_TXBE_Pos)) {
             return 1;
         }
     }
@@ -697,10 +700,10 @@ int mec_qspi_tx_fifo_is_empty(struct qspi_regs *base)
     return 0;
 }
 
-int mec_qspi_tx_fifo_is_full(struct qspi_regs *base)
+int mec_hal_qspi_tx_fifo_is_full(struct mec_qspi_regs *base)
 {
     if (base) {
-        if (base->STATUS & MEC_BIT(QSPI_STATUS_TXBF_Pos)) {
+        if (base->STATUS & MEC_BIT(MEC_QSPI_STATUS_TXBF_Pos)) {
             return 1;
         }
     }
@@ -708,10 +711,10 @@ int mec_qspi_tx_fifo_is_full(struct qspi_regs *base)
     return 0;
 }
 
-int mec_qspi_rx_fifo_is_empty(struct qspi_regs *base)
+int mec_hal_qspi_rx_fifo_is_empty(struct mec_qspi_regs *base)
 {
     if (base) {
-        if (base->STATUS & MEC_BIT(QSPI_STATUS_RXBE_Pos)) {
+        if (base->STATUS & MEC_BIT(MEC_QSPI_STATUS_RXBE_Pos)) {
             return 1;
         }
     }
@@ -719,10 +722,10 @@ int mec_qspi_rx_fifo_is_empty(struct qspi_regs *base)
     return 0;
 }
 
-int mec_qspi_rx_fifo_is_full(struct qspi_regs *base)
+int mec_hal_qspi_rx_fifo_is_full(struct mec_qspi_regs *base)
 {
     if (base) {
-        if (base->STATUS & MEC_BIT(QSPI_STATUS_RXBF_Pos)) {
+        if (base->STATUS & MEC_BIT(MEC_QSPI_STATUS_RXBF_Pos)) {
             return 1;
         }
     }
@@ -730,7 +733,7 @@ int mec_qspi_rx_fifo_is_full(struct qspi_regs *base)
     return 0;
 }
 
-int mec_qspi_start(struct qspi_regs *base, uint32_t ien_mask)
+int mec_hal_qspi_start(struct mec_qspi_regs *base, uint32_t ien_mask)
 {
     if (!base) {
         return MEC_RET_ERR_INVAL;
@@ -738,7 +741,7 @@ int mec_qspi_start(struct qspi_regs *base, uint32_t ien_mask)
 
     base->STATUS = UINT32_MAX;
     base->INTR_CTRL = ien_mask;
-    base->EXE = MEC_BIT(QSPI_EXE_START_Pos);
+    base->EXE = MEC_BIT(MEC_QSPI_EXE_START_Pos);
 
     return MEC_RET_OK;
 }
@@ -746,8 +749,8 @@ int mec_qspi_start(struct qspi_regs *base, uint32_t ien_mask)
 /* Write up to smaller of bufsz or space available in TX FIFO bytes.
  * If pointer nloaded not NULL set to number of bytes written to TX FIFO.
  */
-int mec_qspi_wr_tx_fifo(struct qspi_regs *regs, const uint8_t *buf, uint32_t bufsz,
-                        uint32_t *nwr)
+int mec_hal_qspi_wr_tx_fifo(struct mec_qspi_regs *regs, const uint8_t *buf, uint32_t bufsz,
+                            uint32_t *nwr)
 {
     uint32_t loaded = 0;
     volatile uint8_t *tx_fifo = (volatile uint8_t *)&regs->TX_FIFO;
@@ -757,7 +760,7 @@ int mec_qspi_wr_tx_fifo(struct qspi_regs *regs, const uint8_t *buf, uint32_t buf
     }
 
     while (bufsz--) {
-        if (regs->STATUS & MEC_BIT(QSPI_STATUS_TXBF_Pos)) {
+        if (regs->STATUS & MEC_BIT(MEC_QSPI_STATUS_TXBF_Pos)) {
             break;
         }
         *tx_fifo = *buf++;
@@ -776,7 +779,8 @@ int mec_qspi_wr_tx_fifo(struct qspi_regs *regs, const uint8_t *buf, uint32_t buf
  * Stops reading when RX FIFO becomes empty.
  * Stores number of bytes read in nrd if not NULL.
  */
-int mec_qspi_rd_rx_fifo(struct qspi_regs *regs, uint8_t *buf, uint32_t bufsz, uint32_t *nrd)
+int mec_hal_qspi_rd_rx_fifo(struct mec_qspi_regs *regs, uint8_t *buf, uint32_t bufsz,
+                            uint32_t *nrd)
 {
     volatile uint8_t *rx_fifo = (volatile uint8_t *)&regs->RX_FIFO;
     uint32_t nr = 0;
@@ -787,7 +791,7 @@ int mec_qspi_rd_rx_fifo(struct qspi_regs *regs, uint8_t *buf, uint32_t bufsz, ui
     }
 
     while (bufsz--) {
-        if (regs->STATUS & MEC_BIT(QSPI_STATUS_RXBE_Pos)) {
+        if (regs->STATUS & MEC_BIT(MEC_QSPI_STATUS_RXBE_Pos)) {
             break;
         }
         db = *rx_fifo;
@@ -804,9 +808,9 @@ int mec_qspi_rd_rx_fifo(struct qspi_regs *regs, uint8_t *buf, uint32_t bufsz, ui
     return MEC_RET_OK;
 }
 
-static void qspi_ldma_init(struct qspi_regs *base)
+static void qspi_ldma_init(struct mec_qspi_regs *base)
 {
-    base->MODE &= ~(MEC_BIT(QSPI_MODE_RX_LDMA_Pos) | MEC_BIT(QSPI_MODE_TX_LDMA_Pos));
+    base->MODE &= ~(MEC_BIT(MEC_QSPI_MODE_RX_LDMA_Pos) | MEC_BIT(MEC_QSPI_MODE_TX_LDMA_Pos));
     base->LDMA_RXEN = 0u;
     base->LDMA_TXEN = 0u;
     base->RX_LDMA_CHAN[0].CTRL = 0;
@@ -823,28 +827,28 @@ static void qspi_ldma_init(struct qspi_regs *base)
  * If TX buffer is NULL read the write-only QSPI Execute register as
  * the data source to be written.
  */
-static void qspi_ldma_cfg1(struct qspi_regs *base, const uint8_t *txb,
+static void qspi_ldma_cfg1(struct mec_qspi_regs *base, const uint8_t *txb,
                            uint8_t *rxb, size_t lenb)
 {
-    uint32_t rctrl = MEC_BIT(QSPI_LDMA_CHAN_CTRL_EN_Pos);
-    uint32_t wctrl = MEC_BIT(QSPI_LDMA_CHAN_CTRL_EN_Pos);
-    uint32_t temp = (uint32_t)QSPI_LDMA_CHAN_CTRL_ACCSZ_1B;
+    uint32_t rctrl = MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_EN_Pos);
+    uint32_t wctrl = MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_EN_Pos);
+    uint32_t temp = (uint32_t)MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_1B;
 
     if ((((uintptr_t)rxb | (uintptr_t)lenb) & 0x03u) == 0u) {
-        temp = (uint32_t)QSPI_LDMA_CHAN_CTRL_ACCSZ_4B;
+        temp = (uint32_t)MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_4B;
     }
-    rctrl |= (temp << QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos);
+    rctrl |= (temp << MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos);
 
-    temp = (uint32_t)QSPI_LDMA_CHAN_CTRL_ACCSZ_1B;
+    temp = (uint32_t)MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_1B;
     if ((((uintptr_t)txb | (uintptr_t)lenb) & 0x03u) == 0u) {
-        temp = (uint32_t)QSPI_LDMA_CHAN_CTRL_ACCSZ_4B;
+        temp = (uint32_t)MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_4B;
     }
-    wctrl |= (temp << QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos);
+    wctrl |= (temp << MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos);
 
     base->RX_LDMA_CHAN[0].LEN = lenb;
     if (rxb) {
         base->RX_LDMA_CHAN[0].MEM_START = (uintptr_t)rxb;
-        rctrl |= MEC_BIT(QSPI_LDMA_CHAN_CTRL_INCRA_Pos);
+        rctrl |= MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_INCRA_Pos);
     } else {
         base->RX_LDMA_CHAN[0].MEM_START = (uintptr_t)&base->BCNT_STS;
     }
@@ -853,7 +857,7 @@ static void qspi_ldma_cfg1(struct qspi_regs *base, const uint8_t *txb,
     if (txb) {
         base->TX_LDMA_CHAN[0].LEN = lenb;
         base->TX_LDMA_CHAN[0].MEM_START = (uintptr_t)txb;
-        base->TX_LDMA_CHAN[0].CTRL = wctrl | MEC_BIT(QSPI_LDMA_CHAN_CTRL_INCRA_Pos);
+        base->TX_LDMA_CHAN[0].CTRL = wctrl | MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_INCRA_Pos);
     }
 }
 
@@ -870,13 +874,13 @@ static uint32_t descr_ldma_init(const uint8_t *txb, uint32_t ifm)
     uint32_t d = ifm;
 
     if (txb) {
-        d |= (((uint32_t)QSPI_DESCR_TXEN_EN << QSPI_DESCR_TXEN_Pos)
-             | ((uint32_t)QSPI_DESCR_TXDMA_1B_LDMA_CH0 << QSPI_DESCR_TXDMA_Pos));
+        d |= (((uint32_t)MEC_QSPI_DESCR_TXEN_EN << MEC_QSPI_DESCR_TXEN_Pos)
+             | ((uint32_t)MEC_QSPI_DESCR_TXDMA_1B_LDMA_CH0 << MEC_QSPI_DESCR_TXDMA_Pos));
     }
 
     /* always enable receive LDMA for full duplex */
-    d |= (((uint32_t)QSPI_DESCR_RXEN_EN << QSPI_DESCR_RXEN_Pos)
-          | ((uint32_t)QSPI_DESCR_RXDMA_1B_LDMA_CH0 << QSPI_DESCR_RXDMA_Pos));
+    d |= (((uint32_t)MEC_QSPI_DESCR_RXEN_EN << MEC_QSPI_DESCR_RXEN_Pos)
+          | ((uint32_t)MEC_QSPI_DESCR_RXDMA_1B_LDMA_CH0 << MEC_QSPI_DESCR_RXDMA_Pos));
 
     return d;
 }
@@ -889,30 +893,30 @@ static uint32_t descr_ldma_init(const uint8_t *txb, uint32_t ifm)
  */
 static uint32_t qspi_clocks_to_bits(uint32_t ctrl, uint32_t nclocks)
 {
-    uint32_t ifm = (ctrl & QSPI_CTRL_IFM_Msk) >> QSPI_CTRL_IFM_Pos;
+    uint32_t ifm = (ctrl & MEC_QSPI_CTRL_IFM_Msk) >> MEC_QSPI_CTRL_IFM_Pos;
 
-    if (ifm == QSPI_CTRL_IFM_QUAD) {
+    if (ifm == MEC_QSPI_CTRL_IFM_QUAD) {
         return (nclocks * 4u);
-    } else if (ifm == QSPI_CTRL_IFM_DUAL) {
+    } else if (ifm == MEC_QSPI_CTRL_IFM_DUAL) {
         return (nclocks * 2u);
     } else {
         return nclocks;
     }
 }
 
-static int qspi_gen_ts_clocks(struct qspi_regs *base, uint32_t nclocks, uint32_t flags)
+static int qspi_gen_ts_clocks(struct mec_qspi_regs *base, uint32_t nclocks, uint32_t flags)
 {
     uint32_t descr = qspi_clocks_to_bits(base->CTRL, nclocks);
     int ien = 0;
 
-    descr <<= QSPI_DESCR_QNUNITS_Pos;
-    descr &= QSPI_DESCR_QNUNITS_Msk;
-    descr |= (base->CTRL & QSPI_CTRL_IFM_Msk);
-    descr |= (1u << QSPI_DESCR_NEXT_Pos);
-    descr |= MEC_BIT(QSPI_DESCR_LAST_Pos);
+    descr <<= MEC_QSPI_DESCR_QNUNITS_Pos;
+    descr &= MEC_QSPI_DESCR_QNUNITS_Msk;
+    descr |= (base->CTRL & MEC_QSPI_CTRL_IFM_Msk);
+    descr |= (1u << MEC_QSPI_DESCR_NEXT_Pos);
+    descr |= MEC_BIT(MEC_QSPI_DESCR_LAST_Pos);
 
     if (flags & MEC_BIT(MEC_QSPI_XFR_FLAG_CLOSE_POS)) {
-        descr |= MEC_BIT(QSPI_DESCR_CLOSE_Pos);
+        descr |= MEC_BIT(MEC_QSPI_DESCR_CLOSE_Pos);
     }
     base->DESCR[0] = descr;
 
@@ -924,8 +928,7 @@ static int qspi_gen_ts_clocks(struct qspi_regs *base, uint32_t nclocks, uint32_t
 
     /* start HW */
     if (flags & MEC_QSPI_XFR_FLAG_START_POS) {
-        GPIO->CTRL[032] = 0x00240u; /* drive low */
-        base->EXE = MEC_BIT(QSPI_EXE_START_Pos);
+        base->EXE = MEC_BIT(MEC_QSPI_EXE_START_Pos);
     }
 
     return MEC_RET_OK;
@@ -940,8 +943,8 @@ static int qspi_gen_ts_clocks(struct qspi_regs *base, uint32_t nclocks, uint32_t
  * in bytes of each buffer. flags contains bits to enable interrupts before the
  * transfer starts.
  */
-int mec_qspi_ldma(struct qspi_regs *base, const uint8_t *txb,
-                  uint8_t *rxb, size_t lenb, uint32_t flags)
+int mec_hal_qspi_ldma(struct mec_qspi_regs *base, const uint8_t *txb,
+                      uint8_t *rxb, size_t lenb, uint32_t flags)
 {
     uint32_t nbytes = lenb;
     uint32_t shift = 0, nu = 0, descr = 0, descr_init = 0, didx = 0;
@@ -958,23 +961,23 @@ int mec_qspi_ldma(struct qspi_regs *base, const uint8_t *txb,
     qspi_ldma_init(base);
 
     if (flags & MEC_BIT(MEC_QSPI_XFR_FLAG_CLR_FIFOS_POS)) {
-        base->EXE = MEC_BIT(QSPI_EXE_CLRF_Pos);
+        base->EXE = MEC_BIT(MEC_QSPI_EXE_CLRF_Pos);
     } else if (base->BCNT_STS) { /* data left in TX and/or RX FIFO */
         return MEC_RET_ERR_HW;
     }
 
     base->STATUS = UINT32_MAX;
     /* descriptor mode starting at descriptor 0 */
-    base->CTRL |= MEC_BIT(QSPI_CTRL_DESCR_MODE_Pos);
+    base->CTRL |= MEC_BIT(MEC_QSPI_CTRL_DESCR_MODE_Pos);
 
 #ifdef MEC5_QSPI_LDMA_TX_NULL_LEN_ARE_CLOCKS
     if (!txb && !rxb && lenb) {
         return qspi_gen_ts_clocks(base, lenb, flags);
     } else {
-        descr_init = descr_ldma_init(txb, base->CTRL & QSPI_CTRL_IFM_Msk);
+        descr_init = descr_ldma_init(txb, base->CTRL & MEC_QSPI_CTRL_IFM_Msk);
     }
 #else
-    descr_init = descr_ldma_init(txb, base->CTRL & QSPI_CTRL_IFM_Msk);
+    descr_init = descr_ldma_init(txb, base->CTRL & MEC_QSPI_CTRL_IFM_Msk);
 #endif
 
     while (nbytes && (didx < MEC5_QSPI_NUM_DESCRS)) {
@@ -984,13 +987,13 @@ int mec_qspi_ldma(struct qspi_regs *base, const uint8_t *txb,
         if (nu > MEC_QSPI_DESCR_NU_MAX) {
             shift = 4;
             nu >>= 4;
-            descr |= ((uint32_t)QSPI_DESCR_QUNITS_16B << QSPI_DESCR_QUNITS_Pos);
+            descr |= ((uint32_t)MEC_QSPI_DESCR_QUNITS_16B << MEC_QSPI_DESCR_QUNITS_Pos);
         } else {
-            descr |= ((uint32_t)QSPI_DESCR_QUNITS_1B << QSPI_DESCR_QUNITS_Pos);
+            descr |= ((uint32_t)MEC_QSPI_DESCR_QUNITS_1B << MEC_QSPI_DESCR_QUNITS_Pos);
         }
 
-        descr |= (nu << QSPI_DESCR_QNUNITS_Pos);
-        descr |= (((didx + 1u) << QSPI_DESCR_NEXT_Pos) & QSPI_DESCR_NEXT_Msk);
+        descr |= (nu << MEC_QSPI_DESCR_QNUNITS_Pos);
+        descr |= (((didx + 1u) << MEC_QSPI_DESCR_NEXT_Pos) & MEC_QSPI_DESCR_NEXT_Msk);
         base->DESCR[didx] = descr;
         base->LDMA_RXEN |= MEC_BIT(didx);
         if (txb) {
@@ -1000,9 +1003,9 @@ int mec_qspi_ldma(struct qspi_regs *base, const uint8_t *txb,
         didx++;
     }
 
-    descr = base->DESCR[didx - 1u] | MEC_BIT(QSPI_DESCR_LAST_Pos);
+    descr = base->DESCR[didx - 1u] | MEC_BIT(MEC_QSPI_DESCR_LAST_Pos);
     if (flags & MEC_BIT(MEC_QSPI_XFR_FLAG_CLOSE_POS)) {
-        descr |= MEC_BIT(QSPI_DESCR_CLOSE_Pos);
+        descr |= MEC_BIT(MEC_QSPI_DESCR_CLOSE_Pos);
     }
     base->DESCR[didx - 1u] = descr;
 
@@ -1012,7 +1015,7 @@ int mec_qspi_ldma(struct qspi_regs *base, const uint8_t *txb,
 
     qspi_ldma_cfg1(base, txb, rxb, lenb);
 
-    base->MODE |= (MEC_BIT(QSPI_MODE_RX_LDMA_Pos) | MEC_BIT(QSPI_MODE_TX_LDMA_Pos));
+    base->MODE |= (MEC_BIT(MEC_QSPI_MODE_RX_LDMA_Pos) | MEC_BIT(MEC_QSPI_MODE_TX_LDMA_Pos));
 
     if (flags & MEC_BIT(MEC_QSPI_XFR_FLAG_IEN_POS)) {
         ien = 1;
@@ -1022,8 +1025,7 @@ int mec_qspi_ldma(struct qspi_regs *base, const uint8_t *txb,
 
     /* start HW */
     if (flags & MEC_BIT(MEC_QSPI_XFR_FLAG_START_POS)) {
-        GPIO->CTRL[032] = 0x00240u; /* drive low */
-        base->EXE = MEC_BIT(QSPI_EXE_START_Pos);
+        base->EXE = MEC_BIT(MEC_QSPI_EXE_START_Pos);
     }
 
     return 0;
@@ -1031,7 +1033,7 @@ int mec_qspi_ldma(struct qspi_regs *base, const uint8_t *txb,
 
 /* -------- 2024-02-24 -------- */
 
-void mec_qspi_context_init(struct mec_qspi_context *ctx)
+void mec_hal_qspi_context_init(struct mec_qspi_context *ctx)
 {
     ctx->ndescrs = 0;
     ctx->ntxdma = 0;
@@ -1042,7 +1044,7 @@ void mec_qspi_context_init(struct mec_qspi_context *ctx)
     }
 }
 
-uint8_t mec_qspi_ctx_alloc_ldma_chan(struct mec_qspi_context *ctx, uint8_t is_tx)
+uint8_t mec_hal_qspi_ctx_alloc_ldma_chan(struct mec_qspi_context *ctx, uint8_t is_tx)
 {
     if (!ctx) {
         return 0;
@@ -1061,22 +1063,23 @@ uint8_t mec_qspi_ctx_alloc_ldma_chan(struct mec_qspi_context *ctx, uint8_t is_tx
     return 0;
 }
 
-static uint32_t mec_qspi_nio_pins_to_ifm(uint8_t nio_pins)
+static uint32_t qspi_nio_pins_to_ifm(uint8_t nio_pins)
 {
     uint8_t ifm_val;
 
     if (nio_pins == 4) {
-        ifm_val = QSPI_DESCR_IFM_QUAD;
+        ifm_val = MEC_QSPI_DESCR_IFM_QUAD;
     } else if (nio_pins == 2) {
-        ifm_val = QSPI_DESCR_IFM_DUAL;
+        ifm_val = MEC_QSPI_DESCR_IFM_DUAL;
     } else {
-        ifm_val = QSPI_DESCR_IFM_FD;
+        ifm_val = MEC_QSPI_DESCR_IFM_FD;
     }
 
-    return ((uint32_t)ifm_val << QSPI_DESCR_IFM_Pos);
+    return ((uint32_t)ifm_val << MEC_QSPI_DESCR_IFM_Pos);
 }
 
-int mec_qspi_cfg_gen_ts_clocks(struct mec_qspi_context *ctx, uint32_t nclocks, uint8_t nio_pins)
+int mec_hal_qspi_cfg_gen_ts_clocks(struct mec_qspi_context *ctx, uint32_t nclocks,
+                                   uint8_t nio_pins)
 {
     uint32_t didx = 0, descr = 0;
 
@@ -1093,14 +1096,14 @@ int mec_qspi_cfg_gen_ts_clocks(struct mec_qspi_context *ctx, uint32_t nclocks, u
         return MEC_RET_ERR_NO_RES;
     }
 
-    descr |= mec_qspi_nio_pins_to_ifm(nio_pins);
+    descr |= qspi_nio_pins_to_ifm(nio_pins);
     if (!(nclocks & 0x7u)) { /* multiple of 8 bits? */
-        descr |= (QSPI_DESCR_QUNITS_1B << QSPI_DESCR_QUNITS_Pos);
-        descr |= ((((nclocks >> 3) * nio_pins) << QSPI_DESCR_QNUNITS_Pos)
-                  & QSPI_DESCR_QNUNITS_Msk);
+        descr |= (MEC_QSPI_DESCR_QUNITS_1B << MEC_QSPI_DESCR_QUNITS_Pos);
+        descr |= ((((nclocks >> 3) * nio_pins) << MEC_QSPI_DESCR_QNUNITS_Pos)
+                  & MEC_QSPI_DESCR_QNUNITS_Msk);
     } else {
-        descr |= (QSPI_DESCR_QUNITS_BITS << QSPI_DESCR_QUNITS_Pos);
-        descr |= (((nclocks * nio_pins) << QSPI_DESCR_QNUNITS_Pos) & QSPI_DESCR_QNUNITS_Msk);
+        descr |= (MEC_QSPI_DESCR_QUNITS_BITS << MEC_QSPI_DESCR_QUNITS_Pos);
+        descr |= (((nclocks * nio_pins) << MEC_QSPI_DESCR_QNUNITS_Pos) & MEC_QSPI_DESCR_QNUNITS_Msk);
     }
     ctx->descrs[didx] = descr;
     ctx->ndescrs++;
@@ -1124,10 +1127,10 @@ int mec_qspi_cfg_gen_ts_clocks(struct mec_qspi_context *ctx, uint32_t nclocks, u
  * to the QSPI buffer status count read-only register and LDMA channel
  * increment address is disabled.
  */
-int mec_qspi_ldma_cfg1(struct qspi_regs *regs, uintptr_t buf_addr, uint32_t nbytes,
-                       uint32_t ldflags)
+int mec_hal_qspi_ldma_cfg1(struct mec_qspi_regs *regs, uintptr_t buf_addr, uint32_t nbytes,
+                           uint32_t ldflags)
 {
-    volatile struct qspi_ldma_chan_regs *ldma_regs = NULL;
+    volatile struct mec_qspi_ldma_chan_regs *ldma_regs = NULL;
     uint32_t ctrl = 0;
     uint8_t chanrx = 0, chantx = 0;
 
@@ -1139,7 +1142,7 @@ int mec_qspi_ldma_cfg1(struct qspi_regs *regs, uintptr_t buf_addr, uint32_t nbyt
         return MEC_RET_OK;
     }
 
-    ctrl = ((uint32_t)QSPI_LDMA_CHAN_CTRL_ACCSZ_1B << QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos);
+    ctrl = ((uint32_t)MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_1B << MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos);
     chanrx = (ldflags >> MEC5_QSPI_DCFG1_FLAG_DMA_RX_POS) & MEC5_QSPI_DCFG1_FLAG_DMA_MSK0;
     chantx = (ldflags >> MEC5_QSPI_DCFG1_FLAG_DMA_TX_POS) & MEC5_QSPI_DCFG1_FLAG_DMA_MSK0;
 
@@ -1156,17 +1159,17 @@ int mec_qspi_ldma_cfg1(struct qspi_regs *regs, uintptr_t buf_addr, uint32_t nbyt
     ldma_regs->LEN = nbytes;
 
     if (buf_addr) {
-        ctrl |= MEC_BIT(QSPI_LDMA_CHAN_CTRL_INCRA_Pos);
+        ctrl |= MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_INCRA_Pos);
     } else {
         ldma_regs->MEM_START = (uint32_t)((uintptr_t)&regs->BCNT_STS & UINT32_MAX);
     }
 
     if (!((buf_addr | nbytes) & 0x3u)) {
-        ctrl &= ~QSPI_LDMA_CHAN_CTRL_ACCSZ_Msk;
-        ctrl |= ((uint32_t)QSPI_LDMA_CHAN_CTRL_ACCSZ_4B << QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos);
+        ctrl &= (uint32_t)~MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_Msk;
+        ctrl |= ((uint32_t)MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_4B << MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos);
     }
 
-    ldma_regs->CTRL = ctrl | MEC_BIT(QSPI_LDMA_CHAN_CTRL_EN_Pos);
+    ldma_regs->CTRL = ctrl | MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_EN_Pos);
 
     return 0;
 }
@@ -1180,7 +1183,7 @@ int mec_qspi_ldma_cfg1(struct qspi_regs *regs, uintptr_t buf_addr, uint32_t nbyt
  *   RX enable
  *   RX-LDMA channel select (disable or channel id)
  */
-uint32_t mec_qspi_descrs_cfg1(struct mec_qspi_context *ctx, uint32_t nbytes, uint32_t flags)
+uint32_t mec_hal_qspi_descrs_cfg1(struct mec_qspi_context *ctx, uint32_t nbytes, uint32_t flags)
 {
     uint32_t dbase;
     uint32_t nb;
@@ -1191,19 +1194,19 @@ uint32_t mec_qspi_descrs_cfg1(struct mec_qspi_context *ctx, uint32_t nbytes, uin
         return UINT32_MAX;
     }
 
-    dbase = mec_qspi_nio_pins_to_ifm(flags & MEC5_QSPI_DCFG1_FLAG_IFM_MSK);
+    dbase = qspi_nio_pins_to_ifm(flags & MEC5_QSPI_DCFG1_FLAG_IFM_MSK);
 
     if (flags & MEC5_QSPI_DCFG1_FLAG_DIR_TX) {
-        dbase |= (QSPI_DESCR_TXEN_EN << QSPI_DESCR_TXEN_Pos);
+        dbase |= (MEC_QSPI_DESCR_TXEN_EN << MEC_QSPI_DESCR_TXEN_Pos);
         /* b[5:4] = TX-DMA: 0=disabled, 1-2 specify LDMA channel */
         dbase |= ((flags >> MEC5_QSPI_DCFG1_FLAG_DMA_TX_POS)
-                  & MEC5_QSPI_DCFG1_FLAG_DMA_MSK0) << QSPI_DESCR_TXDMA_Pos;
+                  & MEC5_QSPI_DCFG1_FLAG_DMA_MSK0) << MEC_QSPI_DESCR_TXDMA_Pos;
     }
     if (flags & MEC5_QSPI_DCFG1_FLAG_DIR_RX) {
-        dbase |= MEC_BIT(QSPI_DESCR_RXEN_Pos);
+        dbase |= MEC_BIT(MEC_QSPI_DESCR_RXEN_Pos);
         /* b[8:7] = RX-DMA: 0=disabled, 1-2 specify LDMA channel */
         dbase |= ((flags >> MEC5_QSPI_DCFG1_FLAG_DMA_RX_POS)
-                  & MEC5_QSPI_DCFG1_FLAG_DMA_MSK0) << QSPI_DESCR_RXDMA_Pos;
+                  & MEC5_QSPI_DCFG1_FLAG_DMA_MSK0) << MEC_QSPI_DESCR_RXDMA_Pos;
     }
 
     didx = ctx->ndescrs;
@@ -1222,13 +1225,13 @@ uint32_t mec_qspi_descrs_cfg1(struct mec_qspi_context *ctx, uint32_t nbytes, uin
             if (nu > MEC_QSPI_DESCR_NU_MAX) {
                 nu = MEC_QSPI_DESCR_NU_MAX;
             }
-            ctx->descrs[didx] = (((nu << QSPI_DESCR_QNUNITS_Pos) & QSPI_DESCR_QNUNITS_Msk)
-                                 | (QSPI_DESCR_QUNITS_16B << QSPI_DESCR_QUNITS_Pos)
+            ctx->descrs[didx] = (((nu << MEC_QSPI_DESCR_QNUNITS_Pos) & MEC_QSPI_DESCR_QNUNITS_Msk)
+                                 | (MEC_QSPI_DESCR_QUNITS_16B << MEC_QSPI_DESCR_QUNITS_Pos)
                                  | dbase);
             nb -= (nu << 4);
         } else {
-            ctx->descrs[didx] = (((nb << QSPI_DESCR_QNUNITS_Pos) & QSPI_DESCR_QNUNITS_Msk)
-                                 | (QSPI_DESCR_QUNITS_1B << QSPI_DESCR_QUNITS_Pos)
+            ctx->descrs[didx] = (((nb << MEC_QSPI_DESCR_QNUNITS_Pos) & MEC_QSPI_DESCR_QNUNITS_Msk)
+                                 | (MEC_QSPI_DESCR_QUNITS_1B << MEC_QSPI_DESCR_QUNITS_Pos)
                                  | dbase);
             nb = 0;
         }
@@ -1240,7 +1243,8 @@ uint32_t mec_qspi_descrs_cfg1(struct mec_qspi_context *ctx, uint32_t nbytes, uin
     return nb;
 }
 
-int mec_qspi_load_descrs(struct qspi_regs *regs, struct mec_qspi_context *ctx, uint32_t flags)
+int mec_hal_qspi_load_descrs(struct mec_qspi_regs *regs, struct mec_qspi_context *ctx,
+                             uint32_t flags)
 {
     size_t didx, max_ndescr;
     uint32_t descr, ldchan, mode;
@@ -1262,53 +1266,53 @@ int mec_qspi_load_descrs(struct qspi_regs *regs, struct mec_qspi_context *ctx, u
 
     for (didx = 0; didx < max_ndescr; didx++) {
         descr = ctx->descrs[didx];
-        descr &= ~(QSPI_DESCR_NEXT_Msk);
-        descr |= ((((uint32_t)didx + 1u) << QSPI_DESCR_NEXT_Pos) & QSPI_DESCR_NEXT_Msk);
+        descr &= (uint32_t)~(MEC_QSPI_DESCR_NEXT_Msk);
+        descr |= ((((uint32_t)didx + 1u) << MEC_QSPI_DESCR_NEXT_Pos) & MEC_QSPI_DESCR_NEXT_Msk);
         regs->DESCR[didx] = descr;
 
-        if ((descr & QSPI_DESCR_TXEN_Msk) == (QSPI_DESCR_TXEN_EN << QSPI_DESCR_TXEN_Pos)) {
+        if ((descr & MEC_QSPI_DESCR_TXEN_Msk) == (MEC_QSPI_DESCR_TXEN_EN << MEC_QSPI_DESCR_TXEN_Pos)) {
             /* TX-Data enabled? */
-            ldchan = (descr & QSPI_DESCR_TXDMA_Msk) >> QSPI_DESCR_TXDMA_Pos;
+            ldchan = (descr & MEC_QSPI_DESCR_TXDMA_Msk) >> MEC_QSPI_DESCR_TXDMA_Pos;
             if (ldchan) {
                 regs->LDMA_TXEN |= MEC_BIT(didx);
-                mode |= MEC_BIT(QSPI_MODE_TX_LDMA_Pos);
+                mode |= MEC_BIT(MEC_QSPI_MODE_TX_LDMA_Pos);
             } else {
-                regs->LDMA_TXEN &= ~MEC_BIT(didx);
+                regs->LDMA_TXEN &= (uint32_t)~MEC_BIT(didx);
             }
         }
 
-        if (descr & MEC_BIT(QSPI_DESCR_RXEN_Pos)) {
-            ldchan = (descr & QSPI_DESCR_RXDMA_Msk) >> QSPI_DESCR_RXDMA_Pos;
+        if (descr & MEC_BIT(MEC_QSPI_DESCR_RXEN_Pos)) {
+            ldchan = (descr & MEC_QSPI_DESCR_RXDMA_Msk) >> MEC_QSPI_DESCR_RXDMA_Pos;
             if (ldchan) {
                 regs->LDMA_RXEN |= MEC_BIT(didx);
-                mode |= MEC_BIT(QSPI_MODE_RX_LDMA_Pos);
+                mode |= MEC_BIT(MEC_QSPI_MODE_RX_LDMA_Pos);
             } else {
-                regs->LDMA_RXEN &= ~MEC_BIT(didx);
+                regs->LDMA_RXEN &= (uint32_t)~MEC_BIT(didx);
             }
         }
     }
 
-    regs->MODE = (regs->MODE & ~(MEC_BIT(QSPI_MODE_TX_LDMA_Pos)
-                                 | MEC_BIT(QSPI_MODE_RX_LDMA_Pos))) | mode;
+    regs->MODE = (regs->MODE & ~(MEC_BIT(MEC_QSPI_MODE_TX_LDMA_Pos)
+                                 | MEC_BIT(MEC_QSPI_MODE_RX_LDMA_Pos))) | mode;
 
     didx = max_ndescr - 1u;
     if (flags & MEC_BIT(MEC5_QSPI_LD_FLAGS_LAST_POS)) {
-        regs->DESCR[didx] |= MEC_BIT(QSPI_DESCR_LAST_Pos);
+        regs->DESCR[didx] |= MEC_BIT(MEC_QSPI_DESCR_LAST_Pos);
     }
 
     if (flags & MEC_BIT(MEC5_QSPI_LD_FLAGS_CLOSE_ON_LAST_POS)) {
-        regs->DESCR[didx] |= MEC_BIT(QSPI_DESCR_CLOSE_Pos);
+        regs->DESCR[didx] |= MEC_BIT(MEC_QSPI_DESCR_CLOSE_Pos);
     }
 
     /* Enable descriptor mode with start descriptor = Descr[0] */
-    regs->CTRL = MEC_BIT(QSPI_CTRL_DESCR_MODE_Pos);
+    regs->CTRL = MEC_BIT(MEC_QSPI_CTRL_DESCR_MODE_Pos);
 
     return 0;
 }
 
 /* Load descriptors register only. Does not touch other QSPI registers */
-int mec_qspi_load_descrs_at(struct qspi_regs *regs, const uint32_t *descrs, uint8_t ndescr,
-                            uint8_t start_descr_idx)
+int mec_hal_qspi_load_descrs_at(struct mec_qspi_regs *regs, const uint32_t *descrs, uint8_t ndescr,
+                                uint8_t start_descr_idx)
 {
     uint32_t didx, didx_lim, n;
 
@@ -1316,7 +1320,7 @@ int mec_qspi_load_descrs_at(struct qspi_regs *regs, const uint32_t *descrs, uint
         return MEC_RET_ERR_INVAL;
     }
 
-    if (mec_qspi_done(regs) == MEC_RET_ERR_BUSY) {
+    if (mec_hal_qspi_done(regs) == MEC_RET_ERR_BUSY) {
         return MEC_RET_ERR_BUSY;
     }
 

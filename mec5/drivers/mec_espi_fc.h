@@ -17,9 +17,9 @@ extern "C"
 #endif
 
 /* forward declarations */
-struct espi_io_regs;
-struct espi_mem_regs;
-struct espi_vw_regs;
+struct mec_espi_io_regs;
+struct mec_espi_mem_regs;
+struct mec_espi_vw_regs;
 
 /* ---- Flash Channel (FC) ---- */
 enum mec_espi_fc_op {
@@ -54,38 +54,38 @@ struct mec_espi_fc_xfr {
 
 #define MEC_ESPI_FC_XFR_FLAG_START_IEN_POS 0
 
-void mec_espi_fc_ready_set(struct espi_io_regs *iobase);
-int mec_espi_fc_is_ready(struct espi_io_regs *iobase);
+void mec_hal_espi_fc_ready_set(struct mec_espi_io_regs *iobase);
+int mec_hal_espi_fc_is_ready(struct mec_espi_io_regs *iobase);
 
 /* return bits indicating channel enable state and enable change status */
-uint32_t mec_espi_fc_en_status(struct espi_io_regs *iobase);
+uint32_t mec_hal_espi_fc_en_status(struct mec_espi_io_regs *iobase);
 
-void mec_espi_fc_girq_ctrl(uint8_t enable);
-void mec_espi_fc_girq_status_clr(void);
-uint32_t mec_espi_fc_girq_status(void);
-uint32_t mec_espi_fc_girq_result(void);
+void mec_hal_espi_fc_girq_ctrl(uint8_t enable);
+void mec_hal_espi_fc_girq_status_clr(void);
+uint32_t mec_hal_espi_fc_girq_status(void);
+uint32_t mec_hal_espi_fc_girq_result(void);
 
-uint32_t mec_espi_fc_max_read_req_sz(struct espi_io_regs *iobase);
-uint32_t mec_espi_fc_max_pld_sz(struct espi_io_regs *iobase);
+uint32_t mec_hal_espi_fc_max_read_req_sz(struct mec_espi_io_regs *iobase);
+uint32_t mec_hal_espi_fc_max_pld_sz(struct mec_espi_io_regs *iobase);
 
-int mec_espi_fc_is_busy(struct espi_io_regs *iobase);
-void mec_espi_fc_op_start(struct espi_io_regs *iobase, uint32_t flags);
-void mec_espi_fc_op_abort(struct espi_io_regs *iobase);
-void mec_espi_fc_intr_ctrl(struct espi_io_regs *iobase, uint32_t msk, uint8_t en);
-uint32_t mec_espi_fc_status(struct espi_io_regs *iobase);
-void mec_espi_fc_status_clr(struct espi_io_regs *iobase, uint32_t msk);
-int mec_espi_fc_is_error(uint32_t fc_status);
+int mec_hal_espi_fc_is_busy(struct mec_espi_io_regs *iobase);
+void mec_hal_espi_fc_op_start(struct mec_espi_io_regs *iobase, uint32_t flags);
+void mec_hal_espi_fc_op_abort(struct mec_espi_io_regs *iobase);
+void mec_hal_espi_fc_intr_ctrl(struct mec_espi_io_regs *iobase, uint32_t msk, uint8_t en);
+uint32_t mec_hal_espi_fc_status(struct mec_espi_io_regs *iobase);
+void mec_hal_espi_fc_status_clr(struct mec_espi_io_regs *iobase, uint32_t msk);
+int mec_hal_espi_fc_is_error(uint32_t fc_status);
 
 /* Return the two allowed erase block sizes in b[15:0] and b[31:16] in units
  * of KB. If only one erase size allowed both fields will be identical.
  * A return value of 0 indicates the flash channel has not been properly
  * configured during eSPI link negoitation.
  */
-uint32_t mec_espi_fc_get_erase_sz(struct espi_io_regs *iobase);
-int mec_espi_fc_check_erase_sz(struct espi_io_regs *iobase, uint32_t ersz_bytes);
+uint32_t mec_hal_espi_fc_get_erase_sz(struct mec_espi_io_regs *iobase);
+int mec_hal_espi_fc_check_erase_sz(struct mec_espi_io_regs *iobase, uint32_t ersz_bytes);
 
-int mec_espi_fc_xfr_start(struct espi_io_regs *iobase, struct mec_espi_fc_xfr *pxfr,
-                          uint32_t flags);
+int mec_hal_espi_fc_xfr_start(struct mec_espi_io_regs *iobase, struct mec_espi_fc_xfr *pxfr,
+                              uint32_t flags);
 
 #ifdef __cplusplus
 }

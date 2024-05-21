@@ -18,80 +18,80 @@
 #define MEC_RTMR_NVIC_NUM 111
 #define MEC_RTMR_ECIA_INFO MEC5_ECIA_INFO(MEC_RTMR_GIRQ, MEC_RTMR_GIRQ_POS, 14, 111)
 
-int mec_rtimer_init(struct rtmr_regs *regs, uint32_t rtmr_config, uint32_t preload)
+int mec_hal_rtimer_init(struct mec_rtmr_regs *regs, uint32_t rtmr_config, uint32_t preload)
 {
     uint32_t ctrl = 0;
     int irq_en = 0;
 
-    if ((uintptr_t)regs != (uintptr_t)RTMR0_BASE) {
+    if ((uintptr_t)regs != (uintptr_t)MEC_RTMR0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_pcr_clr_blk_slp_en(MEC_PCR_RTMR);
+    mec_hal_pcr_clr_blk_slp_en(MEC_PCR_RTMR);
 
     regs->CTRL = 0;
     regs->PRELOAD = preload;
 
     if (rtmr_config & MEC_BIT(MEC_RTMR_CFG_EN_POS)) {
-        ctrl |= MEC_BIT(RTMR_CTRL_ENABLE_Pos);
+        ctrl |= MEC_BIT(MEC_RTMR_CTRL_ENABLE_Pos);
     }
 
     if (rtmr_config & MEC_BIT(MEC_RTMR_CFG_AUTO_RELOAD_POS)) {
-        ctrl |= MEC_BIT(RTMR_CTRL_AUTO_RELOAD_Pos);
+        ctrl |= MEC_BIT(MEC_RTMR_CTRL_AUTO_RELOAD_Pos);
     }
 
     if (rtmr_config & MEC_BIT(MEC_RTMR_CFG_START_POS)) {
-        ctrl |= MEC_BIT(RTMR_CTRL_START_Pos);
+        ctrl |= MEC_BIT(MEC_RTMR_CTRL_START_Pos);
     }
 
     if (rtmr_config & MEC_BIT(MEC_RTMR_CFG_DBG_HALT_POS)) {
-        ctrl |= MEC_BIT(RTMR_CTRL_EXT_HALT_Pos);
+        ctrl |= MEC_BIT(MEC_RTMR_CTRL_EXT_HALT_Pos);
     }
 
     if (rtmr_config & MEC_BIT(MEC_RTMR_CFG_IEN_POS)) {
         irq_en = 1;
     }
 
-    mec_girq_clr_src(MEC_RTMR_ECIA_INFO);
-    mec_girq_ctrl(MEC_RTMR_ECIA_INFO, irq_en);
+    mec_hal_girq_clr_src(MEC_RTMR_ECIA_INFO);
+    mec_hal_girq_ctrl(MEC_RTMR_ECIA_INFO, irq_en);
 
     regs->CTRL = ctrl;
 
     return MEC_RET_OK;
 }
 
-uint32_t mec_rtimer_status(struct rtmr_regs *regs)
+uint32_t mec_hal_rtimer_status(struct mec_rtmr_regs *regs)
 {
     (void)regs;
 
-    if (mec_girq_src(MEC_RTMR_ECIA_INFO)) {
+    if (mec_hal_girq_src(MEC_RTMR_ECIA_INFO)) {
         return MEC_BIT(MEC_RTMR_STATUS_TERM_POS);
     }
 
     return 0;
 }
 
-void mec_rtimer_status_clear(struct rtmr_regs *regs, uint32_t status)
+void mec_hal_rtimer_status_clear(struct mec_rtmr_regs *regs, uint32_t status)
 {
     (void)regs;
 
     if (status & MEC_BIT(MEC_RTMR_STATUS_TERM_POS)) {
-        mec_girq_clr_src(MEC_RTMR_ECIA_INFO);
+        mec_hal_girq_clr_src(MEC_RTMR_ECIA_INFO);
     }
 }
 
-void mec_rtimer_status_clear_all(struct rtmr_regs *regs)
+void mec_hal_rtimer_status_clear_all(struct mec_rtmr_regs *regs)
 {
     (void)regs;
 
-    mec_girq_clr_src(MEC_RTMR_ECIA_INFO);
+    mec_hal_girq_clr_src(MEC_RTMR_ECIA_INFO);
 }
 
-void mec_rtimer_intr_ctrl(struct rtmr_regs *regs, uint8_t enable)
+void mec_hal_rtimer_intr_ctrl(struct mec_rtmr_regs *regs, uint8_t enable)
 {
     (void)regs;
 
-    mec_girq_ctrl(MEC_RTMR_ECIA_INFO, (int)enable);
+    mec_hal_girq_ctrl(MEC_RTMR_ECIA_INFO, (int)enable);
 }
 
 /* Reload RTOS timer count.
@@ -105,15 +105,15 @@ void mec_rtimer_intr_ctrl(struct rtmr_regs *regs, uint8_t enable)
  * 6. If new count down is not 0 wait for RTOS timer to start
  *    counting down (up to one 32 KHz period).
  */
-void mec_rtimer_restart(struct rtmr_regs *regs, uint32_t new_count, uint8_t restart)
+void mec_hal_rtimer_restart(struct mec_rtmr_regs *regs, uint32_t new_count, uint8_t restart)
 {
     uint32_t ctrl = regs->CTRL;
 
     regs->CTRL = 0;
-    ctrl &= (uint32_t)~MEC_BIT(RTMR_CTRL_FW_HALT_Pos);
-    ctrl |= MEC_BIT(RTMR_CTRL_ENABLE_Pos);
+    ctrl &= (uint32_t)~MEC_BIT(MEC_RTMR_CTRL_FW_HALT_Pos);
+    ctrl |= MEC_BIT(MEC_RTMR_CTRL_ENABLE_Pos);
     if (restart) {
-        ctrl |= MEC_BIT(RTMR_CTRL_START_Pos);
+        ctrl |= MEC_BIT(MEC_RTMR_CTRL_START_Pos);
     }
 
     regs->PRELOAD = new_count;

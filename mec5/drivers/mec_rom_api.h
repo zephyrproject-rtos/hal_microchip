@@ -21,10 +21,10 @@ extern "C"
 
 /* Boot-ROM API */
 
-uint32_t mec_rom_version(void);
+uint32_t mec_hal_rom_version(void);
 
-int mec_rom_otp_read_byte(uint16_t otp_index, uint8_t *data);
-int mec_rom_otp_write_byte(uint16_t otp_index, uint8_t data);
+int mec_hal_rom_otp_read_byte(uint16_t otp_index, uint8_t *data);
+int mec_hal_rom_otp_write_byte(uint16_t otp_index, uint8_t data);
 
 #ifdef __cplusplus
 }

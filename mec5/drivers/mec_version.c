@@ -8,19 +8,19 @@
 #define MSTR_HELPER(x) #x
 #define MSTR(x)        MSTR_HELPER(x)
 
-#define LIB_NAME "LIBMEC5"
+#define HAL_NAME "MEC5_HAL"
 
-const char mec5_lib_ver[] __attribute__((aligned(4))) =
-    LIB_NAME " v" MSTR(MEC5_VER_MAJOR) "." MSTR(MEC5_VER_MINOR) "." MSTR(MEC5_VER_REVISION) " " __DATE__ __TIME__;
+const char mec5_hal_ver[] __attribute__((aligned(4))) =
+    HAL_NAME " v" MSTR(MEC5_VER_MAJOR) "." MSTR(MEC5_VER_MINOR) "." MSTR(MEC5_VER_REVISION) " " __DATE__ __TIME__;
 
-size_t mec5_lib_version_size(void)
+size_t mec5_hal_version_size(void)
 {
-    return sizeof(mec5_lib_ver);
+    return sizeof(mec5_hal_ver);
 }
 
-char const* mec5_lib_version_string(void)
+char const* mec5_hal_version_string(void)
 {
-    return mec5_lib_ver;
+    return mec5_hal_ver;
 }
 
 /* end mec_version.c */

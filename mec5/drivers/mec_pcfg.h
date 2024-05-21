@@ -28,11 +28,17 @@
 /* Enable checks of base address passed to KBC API's */
 /* #define MEC_KBC_BASE_CHECK */
 
+/* Enable checks of base address passed to Key scan API's */
+/* #define MEC_KSCAN_BASE_CHECK */
+
 /* Enable checks of base address passed to ACPI_EC API's */
 /* #define MEC_ACPI_EC_BASE_CHECK */
 
 /* LED API checks LED ID parameter */
 #define MEC_LED_ENABLE_VALID_CHECK
+
+/* Enable checks of base address passed to PECI API's */
+/* #define MEC_PECI_BASE_CHECK */
 
 /* QSPI LDMA transfer API: treat TX and RX buffer NULL pointers
  * with non-zero length as a request to generate SPI clocks with

@@ -10,6 +10,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "mec_defs.h"
+#include <device_mec5.h>
+
 /* Interfaces to any C modules */
 #ifdef __cplusplus
 extern "C"
@@ -82,7 +85,8 @@ enum mec_pcr_scr_id {
     MEC_PCR_PS2_1,
     MEC_PCR_GSPI0 = 105, /* index 3 bit 9 */
     MEC_PCR_HTMR0,
-    MEC_PCR_RPMPWM0 = 108, /* index 3 bit 12 */
+    MEC_PCR_KSCAN0, /* index 3 bit 11 */
+    MEC_PCR_RPMPWM0, /* index 3 bit 12 */
     MEC_PCR_I2C_SMB1,
     MEC_PCR_I2C_SMB2,
     MEC_PCR_I2C_SMB3,
@@ -126,19 +130,19 @@ enum mec_pcr_scr_id {
     MEC_PCR_MAX_ID = (PCR_SLP_EN_IDX_MAX * 32),
 };
 
-int mec_pcr_is_host_reset(void);
-int mec_pcr_is_vcc_pwrgd(void);
-int mec_pcr_is_turbo_clock(void);
+int mec_hal_pcr_is_host_reset(void);
+int mec_hal_pcr_is_vcc_pwrgd(void);
+int mec_hal_pcr_is_turbo_clock(void);
 
 #define MEC_PCR_VCC_PWRGD_ACTIVE 0x01
 #define MEC_PCR_VCC_PWRGD2_ACTIVE 0x02
-uint32_t mec_pcr_vcc_power_good_state(void);
+uint32_t mec_hal_pcr_vcc_power_good_state(void);
 
-uint32_t mec_pcr_cpu_max_freq(void);
-uint32_t mec_pcr_cpu_clk_speed(void);
-int mec_pcr_cpu_clk_speed_set(uint32_t fhz);
-uint32_t mec_pcr_slow_clock_freq_get(void);
-void mec_pcr_slow_clock_freq_set(uint32_t freqhz);
+uint32_t mec_hal_pcr_cpu_max_freq(void);
+uint32_t mec_hal_pcr_cpu_clk_speed(void);
+int mec_hal_pcr_cpu_clk_speed_set(uint32_t fhz);
+uint32_t mec_hal_pcr_slow_clock_freq_get(void);
+void mec_hal_pcr_slow_clock_freq_set(uint32_t freqhz);
 
 /* Get/set PCR CPU clock divider. Caller should know PLL input frequency. */
 enum mec_pcr_cpu_clk_div {
@@ -149,29 +153,50 @@ enum mec_pcr_cpu_clk_div {
     MEC_PCR_CPU_CLK_DIV_48 = 48,
 };
 
-uint32_t mec_pcr_cpu_clock_divider(void);
-int mec_pcr_cpu_clock_divider_set(enum mec_pcr_cpu_clk_div clk_div);
+uint32_t mec_hal_pcr_cpu_clock_divider(void);
+int mec_hal_pcr_cpu_clock_divider_set(enum mec_pcr_cpu_clk_div clk_div);
 
-int mec_pcr_is_pll_locked(void);
+bool mec_hal_pcr_is_pll_locked(void);
 
-void mec_pcr_set_blk_slp_en(uint16_t scr);
-void mec_pcr_clr_blk_slp_en(uint16_t scr);
-void mec_pcr_blk_slp_en(uint16_t src, uint8_t enable);
-uint8_t mec_pcr_is_blk_slp_en(uint16_t src);
+void mec_hal_pcr_set_blk_slp_en(uint16_t scr);
+void mec_hal_pcr_clr_blk_slp_en(uint16_t scr);
+void mec_hal_pcr_blk_slp_en(uint16_t src, uint8_t enable);
+uint8_t mec_hal_pcr_is_blk_slp_en(uint16_t src);
 
-uint32_t mec_pcr_blk_reset(uint16_t src);
-uint32_t mec_pcr_blk_reset_critical(uint16_t src);
+uint32_t mec_hal_pcr_blk_reset(uint16_t src);
+uint32_t mec_hal_pcr_blk_reset_critical(uint16_t src);
 
-int mec_pcr_slp_en_set(uint8_t regid, uint32_t val);
-int mec_pcr_slp_en_mask(uint8_t regid, uint32_t val, uint32_t mask);
-void mec_pcr_slp_en_set_all(void);
-void mec_pcr_slp_en_por(void);
+int mec_hal_pcr_slp_en_set(uint8_t regid, uint32_t val);
+int mec_hal_pcr_slp_en_mask(uint8_t regid, uint32_t val, uint32_t mask);
+void mec_hal_pcr_slp_en_set_all(void);
+void mec_hal_pcr_slp_en_por(void);
 
-void mec_pcr_reset_system(void) __attribute__((__noreturn__));
+/* Disable sleep */
+static inline void mec_hal_pcr_sleep_disable(void)
+{
+    MEC_PCR->SSC = 0;
+    SCB->SCR &= ~MEC_BIT(2);
+}
+
+/* Trigger lite or heavy sleep */
+static inline void mec_hal_pcr_lite_sleep(void)
+{
+    SCB->SCR &= ~MEC_BIT(2);
+    MEC_PCR->SSC = MEC_BIT(MEC_PCR_SSC_SLPALL_Pos);
+}
+
+static inline void mec_hal_pcr_deep_sleep(void)
+{
+    SCB->SCR |= MEC_BIT(2);
+    MEC_PCR->SSC = MEC_BIT(MEC_PCR_SSC_DEEPSLP_Pos) | MEC_BIT(MEC_PCR_SSC_SLPALL_Pos);
+}
+
+/* SoC reset */
+void mec_hal_pcr_reset_system(void) __attribute__((__noreturn__));
 
 #define MEC_PCR_PLATFORM_RST_IS_ESPI_PLTRST 1
-void mec_pcr_host_reset_select(uint8_t use_espi_platform_reset);
-void mec_pcr_release_reset_vcc(uint8_t release);
+void mec_hal_pcr_host_reset_select(uint8_t use_espi_platform_reset);
+void mec_hal_pcr_release_reset_vcc(uint8_t release);
 
 /* or separate sources */
 enum mec_pll_clk32k_src {
@@ -203,25 +228,21 @@ struct mec_pcr_clkmon_cfg {
     uint8_t valid_min;
 };
 
-int mec_pcr_clk32k_init(enum mec_pll_clk32k_src pll_src,
-                        enum mec_periph_clk32k_src periph_src,
-                        struct mec_pcr_clkmon_cfg *cfg,
-                        uint32_t flags,
-                        uint32_t lock_wait);
+int mec_hal_pcr_clk32k_init(enum mec_pll_clk32k_src pll_src,
+                            enum mec_periph_clk32k_src periph_src,
+                            struct mec_pcr_clkmon_cfg *cfg,
+                            uint32_t flags,
+                            uint32_t lock_wait);
 
-enum mec_pll_clk32k_src mec_pll_get_clk32k_source(void);
-enum mec_periph_clk32k_src mec_vbr_get_periph_clk32_source(void);
-
-int mec_vbm_rd8(uint16_t byte_ofs, uint8_t * val);
-int mec_vbm_wr8(uint16_t byte_ofs, uint8_t val);
-
-int mec_vbm_rd32(uint16_t byte_ofs, uint32_t * val);
-int mec_vbm_wr32(uint16_t byte_ofs, uint32_t val);
+enum mec_pll_clk32k_src mec_hal_pll_get_clk32k_source(void);
+enum mec_periph_clk32k_src mec_hal_vbr_get_periph_clk32_source(void);
 
 #ifdef MEC5_HAS_PERIPH_PRIVILEGE
-uint32_t mec_pcr_blk_privilege_enable(uint8_t pid, uint8_t enable);
-uint32_t mec_pcr_blk_privilege_mask(uint8_t priv_idx, uint32_t en_mask, uint32_t dis_mask);
+uint32_t mec_hal_pcr_blk_privilege_enable(uint8_t pid, uint8_t enable);
+uint32_t mec_hal_pcr_blk_privilege_mask(uint8_t priv_idx, uint32_t en_mask, uint32_t dis_mask);
 #endif
+
+void mec_hal_pcr_save_clk_req_to_vbatm(uint16_t vbatm_byte_ofs);
 
 #ifdef __cplusplus
 }

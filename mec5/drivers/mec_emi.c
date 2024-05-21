@@ -32,9 +32,9 @@ struct mec_emi_info {
 };
 
 static const struct mec_emi_info emi_instances[] = {
-    { EMI0_BASE, MEC_PCR_EMI0, MEC_ESPI_LDN_EMI0, MEC_EMI0_ECIA_INFO },
-    { EMI1_BASE, MEC_PCR_EMI1, MEC_ESPI_LDN_EMI1, MEC_EMI1_ECIA_INFO },
-    { EMI2_BASE, MEC_PCR_EMI2, MEC_ESPI_LDN_EMI2, MEC_EMI2_ECIA_INFO },
+    { MEC_EMI0_BASE, MEC_PCR_EMI0, MEC_ESPI_LDN_EMI0, MEC_EMI0_ECIA_INFO },
+    { MEC_EMI1_BASE, MEC_PCR_EMI1, MEC_ESPI_LDN_EMI1, MEC_EMI1_ECIA_INFO },
+    { MEC_EMI2_BASE, MEC_PCR_EMI2, MEC_ESPI_LDN_EMI2, MEC_EMI2_ECIA_INFO },
 };
 #define NUM_EMI_INSTANCES \
     (sizeof(emi_instances) / sizeof(struct mec_emi_info))
@@ -62,7 +62,7 @@ static struct mec_emi_info const *find_emi_info(uintptr_t base_addr)
 
 /* ---- Public API ---- */
 
-int mec_emi_girq_ctrl(struct emi_regs *base, uint8_t enable)
+int mec_hal_emi_girq_ctrl(struct mec_emi_regs *base, uint8_t enable)
 {
     const struct mec_emi_info *info = find_emi_info((uintptr_t)base);
 
@@ -70,12 +70,12 @@ int mec_emi_girq_ctrl(struct emi_regs *base, uint8_t enable)
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_girq_ctrl(info->devi, enable);
+    mec_hal_girq_ctrl(info->devi, enable);
 
     return MEC_RET_OK;
 }
 
-int mec_emi_girq_clr(struct emi_regs *base)
+int mec_hal_emi_girq_clr(struct mec_emi_regs *base)
 {
     const struct mec_emi_info *info = find_emi_info((uintptr_t)base);
 
@@ -83,12 +83,12 @@ int mec_emi_girq_clr(struct emi_regs *base)
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_girq_clr_src(info->devi);
+    mec_hal_girq_clr_src(info->devi);
 
     return MEC_RET_OK;
 }
 
-uint32_t mec_emi_girq_result(struct emi_regs *base)
+uint32_t mec_hal_emi_girq_result(struct mec_emi_regs *base)
 {
     const struct mec_emi_info *info = find_emi_info((uintptr_t)base);
 
@@ -96,7 +96,7 @@ uint32_t mec_emi_girq_result(struct emi_regs *base)
         return 0;
     }
 
-    return mec_girq_result(info->devi);
+    return mec_hal_girq_result(info->devi);
 }
 
 /* Initialize an EMI controller.
@@ -104,7 +104,7 @@ uint32_t mec_emi_girq_result(struct emi_regs *base)
  * The Host I/O and Memory BAR's in the eSPI I/O component are reset by
  * RESET_VCC and RESET_HOST (PCI_RESET# or PLTRST#).
  */
-int mec_emi_init(struct emi_regs *regs, uint32_t flags)
+int mec_hal_emi_init(struct mec_emi_regs *regs, uint32_t flags)
 {
     const struct mec_emi_info *info = find_emi_info((uintptr_t)regs);
 
@@ -112,14 +112,14 @@ int mec_emi_init(struct emi_regs *regs, uint32_t flags)
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_girq_ctrl(info->devi, 0);
-    mec_pcr_clr_blk_slp_en(info->pcr_id);
+    mec_hal_girq_ctrl(info->devi, 0);
+    mec_hal_pcr_clr_blk_slp_en(info->pcr_id);
 
     if (flags & MEC_EMI_RESET) {
-        mec_pcr_blk_reset(info->pcr_id);
+        mec_hal_pcr_blk_reset(info->pcr_id);
     }
 
-    mec_girq_clr_src(info->devi);
+    mec_hal_girq_clr_src(info->devi);
 
     return MEC_RET_OK;
 }
@@ -150,8 +150,8 @@ int mec_emi_init(struct emi_regs *regs, uint32_t flags)
  *      read/write: 0 <= offset < read_size
  *      write-only: read_size <= offset < write_size
  */
-int mec_emi_mem_region_config(struct emi_regs *regs, uint8_t region,
-                              uint32_t mbase, uint32_t rwszs)
+int mec_hal_emi_mem_region_config(struct mec_emi_regs *regs, uint8_t region,
+                                  uint32_t mbase, uint32_t rwszs)
 {
     const struct mec_emi_info *info = find_emi_info((uintptr_t)regs);
     uint32_t mend, rlim, wlim;
@@ -187,7 +187,7 @@ int mec_emi_mem_region_config(struct emi_regs *regs, uint8_t region,
  * A write to EC-to-Host generates an event to the system Host if configured.
  * Events are Serial IRQ or SMI.
  */
-int mec_emi_mbox_wr(struct emi_regs *regs, uint8_t host_to_ec, uint8_t val)
+int mec_hal_emi_mbox_wr(struct mec_emi_regs *regs, uint8_t host_to_ec, uint8_t val)
 {
     if (!regs) {
         return MEC_RET_ERR_INVAL;
@@ -202,7 +202,7 @@ int mec_emi_mbox_wr(struct emi_regs *regs, uint8_t host_to_ec, uint8_t val)
     return MEC_RET_OK;
 }
 
-uint8_t mec_emi_mbox_rd(struct emi_regs *regs, uint8_t host_to_ec)
+uint8_t mec_hal_emi_mbox_rd(struct mec_emi_regs *regs, uint8_t host_to_ec)
 {
     uint8_t mbox_val;
 
@@ -218,7 +218,7 @@ uint8_t mec_emi_mbox_rd(struct emi_regs *regs, uint8_t host_to_ec)
 /* Set one software interrupt bit [1:15] which is reflected in the
  * Host visible Interrupt Source LSB and MSB registers.
  */
-int mec_emi_swi_set_one(struct emi_regs *regs, uint8_t swi_pos)
+int mec_hal_emi_swi_set_one(struct mec_emi_regs *regs, uint8_t swi_pos)
 {
     if ((!regs) || (swi_pos == 0) || (swi_pos > 15)) {
         return MEC_RET_ERR_INVAL;
@@ -230,7 +230,7 @@ int mec_emi_swi_set_one(struct emi_regs *regs, uint8_t swi_pos)
     return MEC_RET_OK;
 }
 
-int mec_emi_swi_set(struct emi_regs *regs, uint16_t swi_bit_map)
+int mec_hal_emi_swi_set(struct mec_emi_regs *regs, uint16_t swi_bit_map)
 {
     if (!regs) {
         return MEC_RET_ERR_INVAL;
@@ -247,7 +247,7 @@ int mec_emi_swi_set(struct emi_regs *regs, uint16_t swi_bit_map)
  * Allowing the Host to clear SWI interrupt status makes the SWI status bits
  * behave as "edge" status.
  */
-int mec_emi_swi_host_clear_enable(struct emi_regs *regs, uint16_t mask, uint16_t enable)
+int mec_hal_emi_swi_host_clear_enable(struct mec_emi_regs *regs, uint16_t mask, uint16_t enable)
 {
     if (!regs) {
         return MEC_RET_ERR_INVAL;
@@ -290,7 +290,7 @@ int mec_emi_swi_host_clear_enable(struct emi_regs *regs, uint16_t mask, uint16_t
  *
  */
 
-int mec_emi_is_appid(struct emi_regs *regs, uint8_t appid)
+int mec_hal_emi_is_appid(struct mec_emi_regs *regs, uint8_t appid)
 {
     if (!regs) {
         return 0;
@@ -307,7 +307,7 @@ int mec_emi_is_appid(struct emi_regs *regs, uint8_t appid)
 }
 
 /* Clear specified ApplicationID */
-int mec_emi_clear_appid(struct emi_regs *regs, uint8_t appid)
+int mec_hal_emi_clear_appid(struct mec_emi_regs *regs, uint8_t appid)
 {
     if (!regs) {
         return MEC_RET_ERR_INVAL;
@@ -321,7 +321,7 @@ int mec_emi_clear_appid(struct emi_regs *regs, uint8_t appid)
     return MEC_RET_OK;
 }
 
-int mec_emi_clear_all_appid(struct emi_regs *regs)
+int mec_hal_emi_clear_all_appid(struct mec_emi_regs *regs)
 {
     if (!regs) {
         return MEC_RET_ERR_INVAL;

@@ -26,20 +26,20 @@ extern "C"
 #define MEC5_WDT_INIT_GEN_INTR 0x10u
 
 /* forward declaration */
-struct wdt_regs;
+struct mec_wdt_regs;
 
-int mec_wdt_init(struct wdt_regs *regs, uint16_t n32k_ticks, uint32_t flags);
+int mec_hal_wdt_init(struct mec_wdt_regs *regs, uint16_t n32k_ticks, uint32_t flags);
 
-void mec_wdt_intr_ctrl(struct wdt_regs *regs, uint8_t enable);
+void mec_hal_wdt_intr_ctrl(struct mec_wdt_regs *regs, uint8_t enable);
 
 /* Application WDT ISR calls this helper to restart WDT to reset the SoC
  * after n32k_ticks_before_reset number of 32KHz clock ticks.
  */
-void mec_wdt_intr_helper(struct wdt_regs *regs, uint16_t n32k_ticks_before_reset);
+void mec_hal_wdt_intr_helper(struct mec_wdt_regs *regs, uint16_t n32k_ticks_before_reset);
 
-void mec_wdt_restart(struct wdt_regs *regs);
+void mec_hal_wdt_restart(struct mec_wdt_regs *regs);
 
-void mec_wdt_reload(struct wdt_regs *regs, uint16_t n32k_count);
+void mec_hal_wdt_reload(struct mec_wdt_regs *regs, uint16_t n32k_count);
 
 #ifdef __cplusplus
 }

@@ -11,10 +11,10 @@
   */
 
 /**
-  * @brief Host/EC Mailbox communication (MBOX)
+  * @brief Host/EC Mailbox communication (MEC_MBOX0)
   */
 
-typedef struct mbox_regs {                      /*!< (@ 0x400F0000) MBOX Structure                                            */
+typedef struct mec_mbox_regs {                  /*!< (@ 0x400F0000) MEC_MBOX0 Structure                                        */
   __IOM uint8_t   HINDEX;                       /*!< (@ 0x00000000) Mailbox Host Index                                         */
   __IOM uint8_t   HDATA;                        /*!< (@ 0x00000001) Mailbox Host Data                                          */
   __IM  uint16_t  RESERVED;
@@ -32,23 +32,24 @@ typedef struct mbox_regs {                      /*!< (@ 0x400F0000) MBOX Structu
   __IM  uint8_t   RESERVED8;
   __IM  uint16_t  RESERVED9;
   __IOM uint32_t  MBOXD[8];                     /*!< (@ 0x00000110) Mailbox data registers 32-bit access                       */
-} MBOX_Type;                                    /*!< Size = 304 (0x130)                                                        */
+} MEC_MBOX_Type;                                /*!< Size = 304 (0x130)                                                        */
+
 /** @} */ /* End of group Device_Peripheral_peripherals */
 
 /** @addtogroup PosMask_peripherals
   * @{
   */
 /* ========================================================  ECSMIT  ========================================================= */
-#define MBOX_ECSMIT_EC_WR_Pos             (0UL)                     /*!< EC_WR (Bit 0)                                         */
-#define MBOX_ECSMIT_EC_WR_Msk             (0x1UL)                   /*!< EC_WR (Bitfield-Mask: 0x01)                           */
-#define MBOX_ECSMIT_EC_SWI_Pos            (1UL)                     /*!< EC_SWI (Bit 1)                                        */
-#define MBOX_ECSMIT_EC_SWI_Msk            (0xfeUL)                  /*!< EC_SWI (Bitfield-Mask: 0x7f)                          */
+#define MEC_MBOX_ECSMIT_EC_WR_Pos         (0UL)                     /*!< EC_WR (Bit 0)                                         */
+#define MEC_MBOX_ECSMIT_EC_WR_Msk         (0x1UL)                   /*!< EC_WR (Bitfield-Mask: 0x01)                           */
+#define MEC_MBOX_ECSMIT_EC_SWI_Pos        (1UL)                     /*!< EC_SWI (Bit 1)                                        */
+#define MEC_MBOX_ECSMIT_EC_SWI_Msk        (0xfeUL)                  /*!< EC_SWI (Bitfield-Mask: 0x7f)                          */
 /* ========================================================  ECSMIM  ========================================================= */
-#define MBOX_ECSMIM_EC_WR_EN_Pos          (0UL)                     /*!< EC_WR_EN (Bit 0)                                      */
-#define MBOX_ECSMIM_EC_WR_EN_Msk          (0x1UL)                   /*!< EC_WR_EN (Bitfield-Mask: 0x01)                        */
-#define MBOX_ECSMIM_EC_SWI_EN_Pos         (1UL)                     /*!< EC_SWI_EN (Bit 1)                                     */
-#define MBOX_ECSMIM_EC_SWI_EN_Msk         (0xfeUL)                  /*!< EC_SWI_EN (Bitfield-Mask: 0x7f)                       */
-/* =========================================================  MBOXD  ========================================================= */
+#define MEC_MBOX_ECSMIM_EC_WR_EN_Pos      (0UL)                     /*!< EC_WR_EN (Bit 0)                                      */
+#define MEC_MBOX_ECSMIM_EC_WR_EN_Msk      (0x1UL)                   /*!< EC_WR_EN (Bitfield-Mask: 0x01)                        */
+#define MEC_MBOX_ECSMIM_EC_SWI_EN_Pos     (1UL)                     /*!< EC_SWI_EN (Bit 1)                                     */
+#define MEC_MBOX_ECSMIM_EC_SWI_EN_Msk     (0xfeUL)                  /*!< EC_SWI_EN (Bitfield-Mask: 0x7f)                       */
+
 /** @} */ /* End of group PosMask_peripherals */
 
 #endif /* _MEC5_MBOX_V1_H */
