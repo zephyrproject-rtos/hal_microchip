@@ -6,6 +6,13 @@
 
 #include <dt-bindings/pinctrl/microchip_pic32cxsg_pinctrl.h>
 
+/*
+ * WARNING: this variant has package exception.
+ *
+ *   Read datasheet topics related to I/O Multiplexing and Considerations or
+ *   Peripheral Signal Multiplexing on I/O Lines for more information.
+ */
+
 /* pa0_gpio */
 #define PA0_GPIO \
 	PIC32CXSG_PINMUX(a, 0, gpio, gpio)
@@ -1990,6 +1997,94 @@
 #define PB25M_AC_CMP1 \
 	PIC32CXSG_PINMUX(b, 25, m, periph)
 
+/* pb26_gpio */
+#define PB26_GPIO \
+	PIC32CXSG_PINMUX(b, 26, gpio, gpio)
+
+/* pb26a_eic_extint12 */
+#define PB26A_EIC_EXTINT12 \
+	PIC32CXSG_PINMUX(b, 26, a, periph)
+
+/* pb26c_sercom2_pad0 */
+#define PB26C_SERCOM2_PAD0 \
+	PIC32CXSG_PINMUX(b, 26, c, periph)
+
+/* pb26d_sercom4_pad1 */
+#define PB26D_SERCOM4_PAD1 \
+	PIC32CXSG_PINMUX(b, 26, d, periph)
+
+/* pb26f_tcc1_wo2 */
+#define PB26F_TCC1_WO2 \
+	PIC32CXSG_PINMUX(b, 26, f, periph)
+
+/* pb27_gpio */
+#define PB27_GPIO \
+	PIC32CXSG_PINMUX(b, 27, gpio, gpio)
+
+/* pb27a_eic_extint13 */
+#define PB27A_EIC_EXTINT13 \
+	PIC32CXSG_PINMUX(b, 27, a, periph)
+
+/* pb27c_sercom2_pad1 */
+#define PB27C_SERCOM2_PAD1 \
+	PIC32CXSG_PINMUX(b, 27, c, periph)
+
+/* pb27d_sercom4_pad0 */
+#define PB27D_SERCOM4_PAD0 \
+	PIC32CXSG_PINMUX(b, 27, d, periph)
+
+/* pb27f_tcc1_wo3 */
+#define PB27F_TCC1_WO3 \
+	PIC32CXSG_PINMUX(b, 27, f, periph)
+
+/* pb28_gpio */
+#define PB28_GPIO \
+	PIC32CXSG_PINMUX(b, 28, gpio, gpio)
+
+/* pb28a_eic_extint14 */
+#define PB28A_EIC_EXTINT14 \
+	PIC32CXSG_PINMUX(b, 28, a, periph)
+
+/* pb28c_sercom2_pad2 */
+#define PB28C_SERCOM2_PAD2 \
+	PIC32CXSG_PINMUX(b, 28, c, periph)
+
+/* pb28d_sercom4_pad2 */
+#define PB28D_SERCOM4_PAD2 \
+	PIC32CXSG_PINMUX(b, 28, d, periph)
+
+/* pb28f_tcc1_wo4 */
+#define PB28F_TCC1_WO4 \
+	PIC32CXSG_PINMUX(b, 28, f, periph)
+
+/* pb28j_iis_sck1 */
+#define PB28J_IIS_SCK1 \
+	PIC32CXSG_PINMUX(b, 28, j, periph)
+
+/* pb29_gpio */
+#define PB29_GPIO \
+	PIC32CXSG_PINMUX(b, 29, gpio, gpio)
+
+/* pb29a_eic_extint15 */
+#define PB29A_EIC_EXTINT15 \
+	PIC32CXSG_PINMUX(b, 29, a, periph)
+
+/* pb29c_sercom2_pad3 */
+#define PB29C_SERCOM2_PAD3 \
+	PIC32CXSG_PINMUX(b, 29, c, periph)
+
+/* pb29d_sercom4_pad3 */
+#define PB29D_SERCOM4_PAD3 \
+	PIC32CXSG_PINMUX(b, 29, d, periph)
+
+/* pb29f_tcc1_wo5 */
+#define PB29F_TCC1_WO5 \
+	PIC32CXSG_PINMUX(b, 29, f, periph)
+
+/* pb29j_iis_mck1 */
+#define PB29J_IIS_MCK1 \
+	PIC32CXSG_PINMUX(b, 29, j, periph)
+
 /* pb30_gpio */
 #define PB30_GPIO \
 	PIC32CXSG_PINMUX(b, 30, gpio, gpio)
@@ -2089,6 +2184,22 @@
 /* pc3b_adc1_ain5 */
 #define PC3B_ADC1_AIN5 \
 	PIC32CXSG_PINMUX(c, 3, b, periph)
+
+/* pc4_gpio */
+#define PC4_GPIO \
+	PIC32CXSG_PINMUX(c, 4, gpio, gpio)
+
+/* pc4a_eic_extint4 */
+#define PC4A_EIC_EXTINT4 \
+	PIC32CXSG_PINMUX(c, 4, a, periph)
+
+/* pc4c_sercom6_pad0 */
+#define PC4C_SERCOM6_PAD0 \
+	PIC32CXSG_PINMUX(c, 4, c, periph)
+
+/* pc4f_tcc0_wo0 */
+#define PC4F_TCC0_WO0 \
+	PIC32CXSG_PINMUX(c, 4, f, periph)
 
 /* pc5_gpio */
 #define PC5_GPIO \
@@ -2466,6 +2577,54 @@
 #define PC21N_CCL_IN10 \
 	PIC32CXSG_PINMUX(c, 21, n, periph)
 
+/* pc22_gpio */
+#define PC22_GPIO \
+	PIC32CXSG_PINMUX(c, 22, gpio, gpio)
+
+/* pc22a_eic_extint6 */
+#define PC22A_EIC_EXTINT6 \
+	PIC32CXSG_PINMUX(c, 22, a, periph)
+
+/* pc22c_sercom1_pad0 */
+#define PC22C_SERCOM1_PAD0 \
+	PIC32CXSG_PINMUX(c, 22, c, periph)
+
+/* pc22d_sercom3_pad1 */
+#define PC22D_SERCOM3_PAD1 \
+	PIC32CXSG_PINMUX(c, 22, d, periph)
+
+/* pc22f_tcc0_wo6 */
+#define PC22F_TCC0_WO6 \
+	PIC32CXSG_PINMUX(c, 22, f, periph)
+
+/* pc22l_gmac_gmdc */
+#define PC22L_GMAC_GMDC \
+	PIC32CXSG_PINMUX(c, 22, l, periph)
+
+/* pc23_gpio */
+#define PC23_GPIO \
+	PIC32CXSG_PINMUX(c, 23, gpio, gpio)
+
+/* pc23a_eic_extint7 */
+#define PC23A_EIC_EXTINT7 \
+	PIC32CXSG_PINMUX(c, 23, a, periph)
+
+/* pc23c_sercom1_pad1 */
+#define PC23C_SERCOM1_PAD1 \
+	PIC32CXSG_PINMUX(c, 23, c, periph)
+
+/* pc23d_sercom3_pad0 */
+#define PC23D_SERCOM3_PAD0 \
+	PIC32CXSG_PINMUX(c, 23, d, periph)
+
+/* pc23f_tcc0_wo7 */
+#define PC23F_TCC0_WO7 \
+	PIC32CXSG_PINMUX(c, 23, f, periph)
+
+/* pc23l_gmac_gmdio */
+#define PC23L_GMAC_GMDIO \
+	PIC32CXSG_PINMUX(c, 23, l, periph)
+
 /* pc24_gpio */
 #define PC24_GPIO \
 	PIC32CXSG_PINMUX(c, 24, gpio, gpio)
@@ -2561,3 +2720,191 @@
 /* pc28n_ccl_in5 */
 #define PC28N_CCL_IN5 \
 	PIC32CXSG_PINMUX(c, 28, n, periph)
+
+/* pc30_gpio */
+#define PC30_GPIO \
+	PIC32CXSG_PINMUX(c, 30, gpio, gpio)
+
+/* pc30a_eic_extint14 */
+#define PC30A_EIC_EXTINT14 \
+	PIC32CXSG_PINMUX(c, 30, a, periph)
+
+/* pc30b_adc1_ain12 */
+#define PC30B_ADC1_AIN12 \
+	PIC32CXSG_PINMUX(c, 30, b, periph)
+
+/* pc31_gpio */
+#define PC31_GPIO \
+	PIC32CXSG_PINMUX(c, 31, gpio, gpio)
+
+/* pc31a_eic_extint15 */
+#define PC31A_EIC_EXTINT15 \
+	PIC32CXSG_PINMUX(c, 31, a, periph)
+
+/* pc31b_adc1_ain13 */
+#define PC31B_ADC1_AIN13 \
+	PIC32CXSG_PINMUX(c, 31, b, periph)
+
+/* pd0_gpio */
+#define PD0_GPIO \
+	PIC32CXSG_PINMUX(d, 0, gpio, gpio)
+
+/* pd0a_eic_extint0 */
+#define PD0A_EIC_EXTINT0 \
+	PIC32CXSG_PINMUX(d, 0, a, periph)
+
+/* pd0b_adc1_ain14 */
+#define PD0B_ADC1_AIN14 \
+	PIC32CXSG_PINMUX(d, 0, b, periph)
+
+/* pd1_gpio */
+#define PD1_GPIO \
+	PIC32CXSG_PINMUX(d, 1, gpio, gpio)
+
+/* pd1a_eic_extint1 */
+#define PD1A_EIC_EXTINT1 \
+	PIC32CXSG_PINMUX(d, 1, a, periph)
+
+/* pd1b_adc1_ain15 */
+#define PD1B_ADC1_AIN15 \
+	PIC32CXSG_PINMUX(d, 1, b, periph)
+
+/* pd8_gpio */
+#define PD8_GPIO \
+	PIC32CXSG_PINMUX(d, 8, gpio, gpio)
+
+/* pd8a_eic_extint3 */
+#define PD8A_EIC_EXTINT3 \
+	PIC32CXSG_PINMUX(d, 8, a, periph)
+
+/* pd8c_sercom7_pad0 */
+#define PD8C_SERCOM7_PAD0 \
+	PIC32CXSG_PINMUX(d, 8, c, periph)
+
+/* pd8d_sercom6_pad1 */
+#define PD8D_SERCOM6_PAD1 \
+	PIC32CXSG_PINMUX(d, 8, d, periph)
+
+/* pd8f_tcc0_wo1 */
+#define PD8F_TCC0_WO1 \
+	PIC32CXSG_PINMUX(d, 8, f, periph)
+
+/* pd9_gpio */
+#define PD9_GPIO \
+	PIC32CXSG_PINMUX(d, 9, gpio, gpio)
+
+/* pd9a_eic_extint4 */
+#define PD9A_EIC_EXTINT4 \
+	PIC32CXSG_PINMUX(d, 9, a, periph)
+
+/* pd9c_sercom7_pad1 */
+#define PD9C_SERCOM7_PAD1 \
+	PIC32CXSG_PINMUX(d, 9, c, periph)
+
+/* pd9d_sercom6_pad0 */
+#define PD9D_SERCOM6_PAD0 \
+	PIC32CXSG_PINMUX(d, 9, d, periph)
+
+/* pd9f_tcc0_wo2 */
+#define PD9F_TCC0_WO2 \
+	PIC32CXSG_PINMUX(d, 9, f, periph)
+
+/* pd10_gpio */
+#define PD10_GPIO \
+	PIC32CXSG_PINMUX(d, 10, gpio, gpio)
+
+/* pd10a_eic_extint5 */
+#define PD10A_EIC_EXTINT5 \
+	PIC32CXSG_PINMUX(d, 10, a, periph)
+
+/* pd10c_sercom7_pad2 */
+#define PD10C_SERCOM7_PAD2 \
+	PIC32CXSG_PINMUX(d, 10, c, periph)
+
+/* pd10d_sercom6_pad2 */
+#define PD10D_SERCOM6_PAD2 \
+	PIC32CXSG_PINMUX(d, 10, d, periph)
+
+/* pd10f_tcc0_wo3 */
+#define PD10F_TCC0_WO3 \
+	PIC32CXSG_PINMUX(d, 10, f, periph)
+
+/* pd11_gpio */
+#define PD11_GPIO \
+	PIC32CXSG_PINMUX(d, 11, gpio, gpio)
+
+/* pd11a_eic_extint6 */
+#define PD11A_EIC_EXTINT6 \
+	PIC32CXSG_PINMUX(d, 11, a, periph)
+
+/* pd11c_sercom7_pad3 */
+#define PD11C_SERCOM7_PAD3 \
+	PIC32CXSG_PINMUX(d, 11, c, periph)
+
+/* pd11d_sercom6_pad3 */
+#define PD11D_SERCOM6_PAD3 \
+	PIC32CXSG_PINMUX(d, 11, d, periph)
+
+/* pd11f_tcc0_wo4 */
+#define PD11F_TCC0_WO4 \
+	PIC32CXSG_PINMUX(d, 11, f, periph)
+
+/* pd12_gpio */
+#define PD12_GPIO \
+	PIC32CXSG_PINMUX(d, 12, gpio, gpio)
+
+/* pd12a_eic_extint7 */
+#define PD12A_EIC_EXTINT7 \
+	PIC32CXSG_PINMUX(d, 12, a, periph)
+
+/* pd12f_tcc0_wo5 */
+#define PD12F_TCC0_WO5 \
+	PIC32CXSG_PINMUX(d, 12, f, periph)
+
+/* pd20_gpio */
+#define PD20_GPIO \
+	PIC32CXSG_PINMUX(d, 20, gpio, gpio)
+
+/* pd20a_eic_extint10 */
+#define PD20A_EIC_EXTINT10 \
+	PIC32CXSG_PINMUX(d, 20, a, periph)
+
+/* pd20c_sercom1_pad2 */
+#define PD20C_SERCOM1_PAD2 \
+	PIC32CXSG_PINMUX(d, 20, c, periph)
+
+/* pd20d_sercom3_pad2 */
+#define PD20D_SERCOM3_PAD2 \
+	PIC32CXSG_PINMUX(d, 20, d, periph)
+
+/* pd20f_tcc1_wo0 */
+#define PD20F_TCC1_WO0 \
+	PIC32CXSG_PINMUX(d, 20, f, periph)
+
+/* pd20i_sdhc1_cd */
+#define PD20I_SDHC1_CD \
+	PIC32CXSG_PINMUX(d, 20, i, periph)
+
+/* pd21_gpio */
+#define PD21_GPIO \
+	PIC32CXSG_PINMUX(d, 21, gpio, gpio)
+
+/* pd21a_eic_extint11 */
+#define PD21A_EIC_EXTINT11 \
+	PIC32CXSG_PINMUX(d, 21, a, periph)
+
+/* pd21c_sercom1_pad3 */
+#define PD21C_SERCOM1_PAD3 \
+	PIC32CXSG_PINMUX(d, 21, c, periph)
+
+/* pd21d_sercom3_pad3 */
+#define PD21D_SERCOM3_PAD3 \
+	PIC32CXSG_PINMUX(d, 21, d, periph)
+
+/* pd21f_tcc1_wo1 */
+#define PD21F_TCC1_WO1 \
+	PIC32CXSG_PINMUX(d, 21, f, periph)
+
+/* pd21i_sdhc1_wp */
+#define PD21I_SDHC1_WP \
+	PIC32CXSG_PINMUX(d, 21, i, periph)
