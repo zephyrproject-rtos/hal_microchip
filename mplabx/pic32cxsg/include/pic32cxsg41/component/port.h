@@ -26,6 +26,15 @@
 /* ************************************************************************** */
 
 /* -------- PORT_DIR : (PORT Offset: 0x00) (R/W 32) Data Direction -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t DIR:32;           /*!< bit:  0..31  Port Data Direction                */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} PORT_DIR_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define PORT_DIR_RESETVALUE                   _UINT32_(0x00)                                       /*  (PORT_DIR) Data Direction  Reset Value */
 
 #define PORT_DIR_DIR_Pos                      _UINT32_(0)                                          /* (PORT_DIR) Port Data Direction Position */
@@ -35,6 +44,15 @@
 
 
 /* -------- PORT_DIRCLR : (PORT Offset: 0x04) (R/W 32) Data Direction Clear -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t DIRCLR:32;        /*!< bit:  0..31  Port Data Direction Clear          */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} PORT_DIRCLR_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define PORT_DIRCLR_RESETVALUE                _UINT32_(0x00)                                       /*  (PORT_DIRCLR) Data Direction Clear  Reset Value */
 
 #define PORT_DIRCLR_DIRCLR_Pos                _UINT32_(0)                                          /* (PORT_DIRCLR) Port Data Direction Clear Position */
@@ -44,6 +62,15 @@
 
 
 /* -------- PORT_DIRSET : (PORT Offset: 0x08) (R/W 32) Data Direction Set -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t DIRSET:32;        /*!< bit:  0..31  Port Data Direction Set            */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} PORT_DIRSET_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define PORT_DIRSET_RESETVALUE                _UINT32_(0x00)                                       /*  (PORT_DIRSET) Data Direction Set  Reset Value */
 
 #define PORT_DIRSET_DIRSET_Pos                _UINT32_(0)                                          /* (PORT_DIRSET) Port Data Direction Set Position */
@@ -53,6 +80,15 @@
 
 
 /* -------- PORT_DIRTGL : (PORT Offset: 0x0C) (R/W 32) Data Direction Toggle -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t DIRTGL:32;        /*!< bit:  0..31  Port Data Direction Toggle         */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} PORT_DIRTGL_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define PORT_DIRTGL_RESETVALUE                _UINT32_(0x00)                                       /*  (PORT_DIRTGL) Data Direction Toggle  Reset Value */
 
 #define PORT_DIRTGL_DIRTGL_Pos                _UINT32_(0)                                          /* (PORT_DIRTGL) Port Data Direction Toggle Position */
@@ -62,6 +98,15 @@
 
 
 /* -------- PORT_OUT : (PORT Offset: 0x10) (R/W 32) Data Output Value -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t OUT:32;           /*!< bit:  0..31  PORT Data Output Value             */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} PORT_OUT_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define PORT_OUT_RESETVALUE                   _UINT32_(0x00)                                       /*  (PORT_OUT) Data Output Value  Reset Value */
 
 #define PORT_OUT_OUT_Pos                      _UINT32_(0)                                          /* (PORT_OUT) PORT Data Output Value Position */
@@ -71,15 +116,31 @@
 
 
 /* -------- PORT_OUTCLR : (PORT Offset: 0x14) (R/W 32) Data Output Value Clear -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t OUTCLR:32;        /*!< bit:  0..31  PORT Data Output Value Clear       */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} PORT_OUTCLR_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define PORT_OUTCLR_RESETVALUE                _UINT32_(0x00)                                       /*  (PORT_OUTCLR) Data Output Value Clear  Reset Value */
 
 #define PORT_OUTCLR_OUTCLR_Pos                _UINT32_(0)                                          /* (PORT_OUTCLR) PORT Data Output Value Clear Position */
 #define PORT_OUTCLR_OUTCLR_Msk                (_UINT32_(0xFFFFFFFF) << PORT_OUTCLR_OUTCLR_Pos)     /* (PORT_OUTCLR) PORT Data Output Value Clear Mask */
 #define PORT_OUTCLR_OUTCLR(value)             (PORT_OUTCLR_OUTCLR_Msk & (_UINT32_(value) << PORT_OUTCLR_OUTCLR_Pos)) /* Assigment of value for OUTCLR in the PORT_OUTCLR register */
 #define PORT_OUTCLR_Msk                       _UINT32_(0xFFFFFFFF)                                 /* (PORT_OUTCLR) Register Mask  */
-
-
 /* -------- PORT_OUTSET : (PORT Offset: 0x18) (R/W 32) Data Output Value Set -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t OUTSET:32;        /*!< bit:  0..31  PORT Data Output Value Set         */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} PORT_OUTSET_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define PORT_OUTSET_RESETVALUE                _UINT32_(0x00)                                       /*  (PORT_OUTSET) Data Output Value Set  Reset Value */
 
 #define PORT_OUTSET_OUTSET_Pos                _UINT32_(0)                                          /* (PORT_OUTSET) PORT Data Output Value Set Position */
@@ -89,6 +150,15 @@
 
 
 /* -------- PORT_OUTTGL : (PORT Offset: 0x1C) (R/W 32) Data Output Value Toggle -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t OUTTGL:32;        /*!< bit:  0..31  PORT Data Output Value Toggle      */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} PORT_OUTTGL_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define PORT_OUTTGL_RESETVALUE                _UINT32_(0x00)                                       /*  (PORT_OUTTGL) Data Output Value Toggle  Reset Value */
 
 #define PORT_OUTTGL_OUTTGL_Pos                _UINT32_(0)                                          /* (PORT_OUTTGL) PORT Data Output Value Toggle Position */
@@ -98,6 +168,15 @@
 
 
 /* -------- PORT_IN : (PORT Offset: 0x20) ( R/ 32) Data Input Value -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t IN:32;            /*!< bit:  0..31  PORT Data Input Value              */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} PORT_IN_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define PORT_IN_RESETVALUE                    _UINT32_(0x00)                                       /*  (PORT_IN) Data Input Value  Reset Value */
 
 #define PORT_IN_IN_Pos                        _UINT32_(0)                                          /* (PORT_IN) PORT Data Input Value Position */
@@ -107,6 +186,15 @@
 
 
 /* -------- PORT_CTRL : (PORT Offset: 0x24) (R/W 32) Control -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t SAMPLING:32;      /*!< bit:  0..31  Input Sampling Mode                */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} PORT_CTRL_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define PORT_CTRL_RESETVALUE                  _UINT32_(0x00)                                       /*  (PORT_CTRL) Control  Reset Value */
 
 #define PORT_CTRL_SAMPLING_Pos                _UINT32_(0)                                          /* (PORT_CTRL) Input Sampling Mode Position */
@@ -116,6 +204,26 @@
 
 
 /* -------- PORT_WRCONFIG : (PORT Offset: 0x28) ( /W 32) Write Configuration -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t PINMASK:16;       /*!< bit:  0..15  Pin Mask for Multiple Pin Configuration */
+    uint32_t PMUXEN:1;         /*!< bit:     16  Peripheral Multiplexer Enable      */
+    uint32_t INEN:1;           /*!< bit:     17  Input Enable                       */
+    uint32_t PULLEN:1;         /*!< bit:     18  Pull Enable                        */
+    uint32_t :3;               /*!< bit: 19..21  Reserved                           */
+    uint32_t DRVSTR:1;         /*!< bit:     22  Output Driver Strength Selection   */
+    uint32_t :1;               /*!< bit:     23  Reserved                           */
+    uint32_t PMUX:4;           /*!< bit: 24..27  Peripheral Multiplexing            */
+    uint32_t WRPMUX:1;         /*!< bit:     28  Write PMUX                         */
+    uint32_t :1;               /*!< bit:     29  Reserved                           */
+    uint32_t WRPINCFG:1;       /*!< bit:     30  Write PINCFG                       */
+    uint32_t HWSEL:1;          /*!< bit:     31  Half-Word Select                   */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} PORT_WRCONFIG_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define PORT_WRCONFIG_RESETVALUE              _UINT32_(0x00)                                       /*  (PORT_WRCONFIG) Write Configuration  Reset Value */
 
 #define PORT_WRCONFIG_PINMASK_Pos             _UINT32_(0)                                          /* (PORT_WRCONFIG) Pin Mask for Multiple Pin Configuration Position */
@@ -149,6 +257,26 @@
 
 
 /* -------- PORT_EVCTRL : (PORT Offset: 0x2C) (R/W 32) Event Input Control -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t PID0:5;           /*!< bit:  0.. 4  PORT Event Pin Identifier 0        */
+    uint32_t EVACT0:2;         /*!< bit:  5.. 6  PORT Event Action 0                */
+    uint32_t PORTEI0:1;        /*!< bit:      7  PORT Event Input Enable 0          */
+    uint32_t PID1:5;           /*!< bit:  8..12  PORT Event Pin Identifier 1        */
+    uint32_t EVACT1:2;         /*!< bit: 13..14  PORT Event Action 1                */
+    uint32_t PORTEI1:1;        /*!< bit:     15  PORT Event Input Enable 1          */
+    uint32_t PID2:5;           /*!< bit: 16..20  PORT Event Pin Identifier 2        */
+    uint32_t EVACT2:2;         /*!< bit: 21..22  PORT Event Action 2                */
+    uint32_t PORTEI2:1;        /*!< bit:     23  PORT Event Input Enable 2          */
+    uint32_t PID3:5;           /*!< bit: 24..28  PORT Event Pin Identifier 3        */
+    uint32_t EVACT3:2;         /*!< bit: 29..30  PORT Event Action 3                */
+    uint32_t PORTEI3:1;        /*!< bit:     31  PORT Event Input Enable 3          */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} PORT_EVCTRL_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define PORT_EVCTRL_RESETVALUE                _UINT32_(0x00)                                       /*  (PORT_EVCTRL) Event Input Control  Reset Value */
 
 #define PORT_EVCTRL_PID0_Pos                  _UINT32_(0)                                          /* (PORT_EVCTRL) PORT Event Pin Identifier 0 Position */
@@ -199,6 +327,16 @@
 
 
 /* -------- PORT_PMUX : (PORT Offset: 0x30) (R/W 8) Peripheral Multiplexing -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint8_t  PMUXE:4;          /*!< bit:  0.. 3  Peripheral Multiplexing for Even-Numbered Pin */
+    uint8_t  PMUXO:4;          /*!< bit:  4.. 7  Peripheral Multiplexing for Odd-Numbered Pin */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint8_t reg;                 /*!< Type      used for register access              */
+} PORT_PMUX_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define PORT_PMUX_RESETVALUE                  _UINT8_(0x00)                                        /*  (PORT_PMUX) Peripheral Multiplexing  Reset Value */
 
 #define PORT_PMUX_PMUXE_Pos                   _UINT8_(0)                                           /* (PORT_PMUX) Peripheral Multiplexing for Even-Numbered Pin Position */
@@ -267,6 +405,20 @@
 
 
 /* -------- PORT_PINCFG : (PORT Offset: 0x40) (R/W 8) Pin Configuration -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint8_t  PMUXEN:1;         /*!< bit:      0  Peripheral Multiplexer Enable      */
+    uint8_t  INEN:1;           /*!< bit:      1  Input Enable                       */
+    uint8_t  PULLEN:1;         /*!< bit:      2  Pull Enable                        */
+    uint8_t  :3;               /*!< bit:  3.. 5  Reserved                           */
+    uint8_t  DRVSTR:1;         /*!< bit:      6  Output Driver Strength Selection   */
+    uint8_t  :1;               /*!< bit:      7  Reserved                           */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint8_t reg;                 /*!< Type      used for register access              */
+} PORT_PINCFG_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define PORT_PINCFG_RESETVALUE                _UINT8_(0x00)                                        /*  (PORT_PINCFG) Pin Configuration  Reset Value */
 
 #define PORT_PINCFG_PMUXEN_Pos                _UINT8_(0)                                           /* (PORT_PINCFG) Peripheral Multiplexer Enable Position */
@@ -349,6 +501,28 @@
 #define PORT_PINCFG31_REG_OFST         _UINT32_(0x5F)      /* (PORT_PINCFG31) Pin Configuration Offset */
 
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))
+
+#define USE_PORT_REGISTER_STRUCTURES
+#ifdef USE_PORT_REGISTER_STRUCTURES
+typedef struct {
+  __IO PORT_DIR_Type             DIR;         /**< \brief Offset: 0x00 (R/W 32) Data Direction */
+  __IO PORT_DIRCLR_Type          DIRCLR;      /**< \brief Offset: 0x04 (R/W 32) Data Direction Clear */
+  __IO PORT_DIRSET_Type          DIRSET;      /**< \brief Offset: 0x08 (R/W 32) Data Direction Set */
+  __IO PORT_DIRTGL_Type          DIRTGL;      /**< \brief Offset: 0x0C (R/W 32) Data Direction Toggle */
+  __IO PORT_OUT_Type             OUT;         /**< \brief Offset: 0x10 (R/W 32) Data Output Value */
+  __IO PORT_OUTCLR_Type          OUTCLR;      /**< \brief Offset: 0x14 (R/W 32) Data Output Value Clear */
+  __IO PORT_OUTSET_Type          OUTSET;      /**< \brief Offset: 0x18 (R/W 32) Data Output Value Set */
+  __IO PORT_OUTTGL_Type          OUTTGL;      /**< \brief Offset: 0x1C (R/W 32) Data Output Value Toggle */
+  __I  PORT_IN_Type              IN;          /**< \brief Offset: 0x20 (R/  32) Data Input Value */
+  __IO PORT_CTRL_Type            CTRL;        /**< \brief Offset: 0x24 (R/W 32) Control */
+  __O  PORT_WRCONFIG_Type        WRCONFIG;    /**< \brief Offset: 0x28 ( /W 32) Write Configuration */
+  __IO PORT_EVCTRL_Type          EVCTRL;      /**< \brief Offset: 0x2C (R/W 32) Event Input Control */
+  __IO PORT_PMUX_Type            PMUX[16];    /**< \brief Offset: 0x30 (R/W  8) Peripheral Multiplexing */
+  __IO PORT_PINCFG_Type          PINCFG[32];  /**< \brief Offset: 0x40 (R/W  8) Pin Configuration */
+  __I  uint8_t                   Reserved1[0x20];
+} PortGroup;
+#endif		/* REGISTER_STRUCTURES */
+
 /** \brief GROUP register API structure */
 typedef struct
 {

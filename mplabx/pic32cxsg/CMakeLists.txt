@@ -1,4 +1,4 @@
-file - Microchip PIC32CXSG SDK
+# Makefile - Microchip PIC32CXSG SDK
 #
 # Copyright (c) 2024 Microchip
 # SPDX-License-Identifier: Apache-2.0
