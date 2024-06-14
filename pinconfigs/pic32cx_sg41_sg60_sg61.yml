@@ -17,7 +17,7 @@ model: microchip,pic32cxsg
 
 family: cx
 
-map: PIC32CXSG_PINMUX
+map: SAM_PINMUX
 
 series: [cx1025sg41, cx1025sg60, cx1025sg61]
 

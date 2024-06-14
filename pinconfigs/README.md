@@ -26,7 +26,7 @@ mandatory.
 - `family`: Family name like: `ck`, `cm`, `cx`, `cz`
 - `map`: Define the macro that will be used to generate code for an specific
    controller. 
-   Currently `PIC32CXSG_PINMUX` is used for PIC32CXSG.
+   Currently `SAM_PINMUX` is used for PIC32CXSG.
 - `series`: The SoC series set
 - `revisions` (optional): The SoC die revision which exists for sam0 series.
 - `variants`: Each variant has a different set of valid pin combinations because
@@ -201,7 +201,7 @@ model: microchip,pic32cx
 
 family: cx
 
-map: PIC32CXSG_PINMUX
+map: SAM_PINMUX
 
 series: [4eX]
 

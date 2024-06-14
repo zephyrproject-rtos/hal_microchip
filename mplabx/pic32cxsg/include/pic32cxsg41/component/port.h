@@ -502,8 +502,6 @@ typedef union {
 
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))
 
-#define USE_PORT_REGISTER_STRUCTURES
-#ifdef USE_PORT_REGISTER_STRUCTURES
 typedef struct {
   __IO PORT_DIR_Type             DIR;         /**< \brief Offset: 0x00 (R/W 32) Data Direction */
   __IO PORT_DIRCLR_Type          DIRCLR;      /**< \brief Offset: 0x04 (R/W 32) Data Direction Clear */
@@ -521,7 +519,6 @@ typedef struct {
   __IO PORT_PINCFG_Type          PINCFG[32];  /**< \brief Offset: 0x40 (R/W  8) Pin Configuration */
   __I  uint8_t                   Reserved1[0x20];
 } PortGroup;
-#endif		/* REGISTER_STRUCTURES */
 
 /** \brief GROUP register API structure */
 typedef struct

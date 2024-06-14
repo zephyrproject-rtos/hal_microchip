@@ -34,5 +34,22 @@
 #define GCLK_NUM                                 (48)       /* Number of Generic Clock Users */
 #define GCLK_SOURCE_BITS                         (4)        
 #define GCLK_SOURCE_NUM                          (9)        /* Number of Generic Clock Sources */
+#define GCLK_SOURCE_XOSC0           0        // Crystal Oscillator 0
+#define GCLK_SOURCE_XOSC            0        //   Alias to GCLK_SOURCE_XOSC0
+#define GCLK_SOURCE_XOSC1           1        // Crystal Oscillator 1
+#define GCLK_SOURCE_GCLKIN          2        // Input Pin of Corresponding GCLK Generator
+#define GCLK_SOURCE_GCLKGEN1        3        // GCLK Generator 1 output
+#define GCLK_SOURCE_OSCULP32K       4        // Ultra-low-power 32kHz Oscillator
+#define GCLK_SOURCE_XOSC32K         5        // 32kHz Crystal Oscillator
+#define GCLK_SOURCE_DFLL            6        // Digital FLL
+#define GCLK_SOURCE_DFLL48M         6        //   Alias to GCLK_SOURCE_DFLL
+#define GCLK_SOURCE_OSC16M          6        //   Alias to GCLK_SOURCE_DFLL
+#define GCLK_SOURCE_OSC48M          6        //   Alias to GCLK_SOURCE_DFLL
+#define GCLK_SOURCE_DPLL0           7        // Digital PLL 0
+#define GCLK_SOURCE_FDPLL           7        //   Alias to GCLK_SOURCE_DPLL0
+#define GCLK_SOURCE_FDPLL0          7        //   Alias to GCLK_SOURCE_DPLL0
+#define GCLK_SOURCE_DPLL1           8        // Digital PLL 1
+#define GCLK_SOURCE_FDPLL1          8        //   Alias to GCLK_SOURCE_DPLL1
+#define GCLK_GEN_DIV_BITS           { 8, 16, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8 }
 
 #endif /* _PIC32CXSG41_GCLK_INSTANCE_ */
