@@ -130,6 +130,8 @@
 
 #define MEC5_TACH_INSTANCES 4
 
+#define MEC5_BBLED_INSTANCES 4
+
 /* Length in bytes of VBAT memory region */
 #define MEC_VBAT_MEM_SIZE 128u
 
