@@ -2164,7 +2164,7 @@ typedef union {
 typedef union {
   struct {
     uint32_t HDATLL:4;         /*!< bit:  0.. 3  High Line Level                       */
-    uint16_t :28;              /*!< bit:  4..32  reserved                    */
+    uint32_t :28;              /*!< bit:  4..32  reserved                    */
   } bit;                       /*!< Structure used for bit  access                  */
   uint32_t reg;                /*!< Type      used for register access              */
 } SDHC_APSR_Type;

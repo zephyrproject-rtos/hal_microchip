@@ -398,23 +398,20 @@ typedef union { // __I to avoid read-modify-write on write-to-clear register
 
 /* -------- NVMCTRL_STATUS : (NVMCTRL Offset: 0x12) ( R/ 16) Status -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
-typedef union { // __I to avoid read-modify-write on write-to-clear register
+typedef union {
   struct {
-    __I uint16_t DONE:1;           /*!< bit:      0  Command Done                       */
-    __I uint16_t ADDRE:1;          /*!< bit:      1  Address Error                      */
-    __I uint16_t PROGE:1;          /*!< bit:      2  Programming Error                  */
-    __I uint16_t LOCKE:1;          /*!< bit:      3  Lock Error                         */
-    __I uint16_t ECCSE:1;          /*!< bit:      4  ECC Single Error                   */
-    __I uint16_t ECCDE:1;          /*!< bit:      5  ECC Dual Error                     */
-    __I uint16_t NVME:1;           /*!< bit:      6  NVM Error                          */
-    __I uint16_t SUSP:1;           /*!< bit:      7  Suspended Write Or Erase Operation */
-    __I uint16_t SEESFULL:1;       /*!< bit:      8  Active SEES Full                   */
-    __I uint16_t SEESOVF:1;        /*!< bit:      9  Active SEES Overflow               */
-    __I uint16_t SEEWRC:1;         /*!< bit:     10  SEE Write Completed                */
-    __I uint16_t :5;               /*!< bit: 11..15  Reserved                           */
+    uint16_t READY:1;          /*!< bit:      0  Ready to accept a command          */
+    uint16_t PRM:1;            /*!< bit:      1  Power Reduction Mode               */
+    uint16_t LOAD:1;           /*!< bit:      2  NVM Page Buffer Active Loading     */
+    uint16_t SUSP:1;           /*!< bit:      3  NVM Write Or Erase Operation Is Suspended */
+    uint16_t AFIRST:1;         /*!< bit:      4  BANKA First                        */
+    uint16_t BPDIS:1;          /*!< bit:      5  Boot Loader Protection Disable     */
+    uint16_t :2;               /*!< bit:  6.. 7  Reserved                           */
+    uint16_t BOOTPROT:4;       /*!< bit:  8..11  Boot Loader Protection Size        */
+    uint16_t :4;               /*!< bit: 12..15  Reserved                           */
   } bit;                       /*!< Structure used for bit  access                  */
   uint16_t reg;                /*!< Type      used for register access              */
-} NVMCTRL_INTFLAG_Type;
+} NVMCTRL_STATUS_Type;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
 #define NVMCTRL_STATUS_RESETVALUE             _UINT16_(0x00)                                       /*  (NVMCTRL_STATUS) Status  Reset Value */
@@ -641,7 +638,6 @@ typedef union {
 #define NVMCTRL_SEECFG_APRDIS(value)          (NVMCTRL_SEECFG_APRDIS_Msk & (_UINT8_(value) << NVMCTRL_SEECFG_APRDIS_Pos)) /* Assigment of value for APRDIS in the NVMCTRL_SEECFG register */
 #define NVMCTRL_SEECFG_Msk                    _UINT8_(0x03)                                        /* (NVMCTRL_SEECFG) Register Mask  */
 
-
 /* -------- NVMCTRL_SEESTAT : (NVMCTRL Offset: 0x2C) ( R/ 32) SmartEEPROM Status Register -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef union {
@@ -703,24 +699,6 @@ typedef union {
 #define NVMCTRL_SEECFG_REG_OFST        _UINT32_(0x2A)      /* (NVMCTRL_SEECFG) SmartEEPROM Configuration Register Offset */
 #define NVMCTRL_SEESTAT_REG_OFST       _UINT32_(0x2C)      /* (NVMCTRL_SEESTAT) SmartEEPROM Status Register Offset */
 
-#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
-typedef union {
-  struct {
-    uint32_t ASEES:1;          /*!< bit:      0  Active SmartEEPROM Sector          */
-    uint32_t LOAD:1;           /*!< bit:      1  Page Buffer Loaded                 */
-    uint32_t BUSY:1;           /*!< bit:      2  Busy                               */
-    uint32_t LOCK:1;           /*!< bit:      3  SmartEEPROM Write Access Is Locked */
-    uint32_t RLOCK:1;          /*!< bit:      4  SmartEEPROM Write Access To Register Address Space Is Locked */
-    uint32_t :3;               /*!< bit:  5.. 7  Reserved                           */
-    uint32_t SBLK:4;           /*!< bit:  8..11  Blocks Number In a Sector          */
-    uint32_t :4;               /*!< bit: 12..15  Reserved                           */
-    uint32_t PSZ:3;            /*!< bit: 16..18  SmartEEPROM Page Size              */
-    uint32_t :13;              /*!< bit: 19..31  Reserved                           */
-  } bit;                       /*!< Structure used for bit  access                  */
-  uint32_t reg;                /*!< Type      used for register access              */
-} NVMCTRL_SEESTAT_Type;
-#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
-
 /** \brief NVMCTRL APB hardware registers */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct {
@@ -744,7 +722,6 @@ typedef struct {
   __I  NVMCTRL_SEESTAT_Type      SEESTAT;     /**< \brief Offset: 0x2C (R/  32) SmartEEPROM Status Register */
 } Nvmctrl;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
-
 
 
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))

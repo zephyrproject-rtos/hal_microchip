@@ -332,29 +332,22 @@ typedef union {
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef union {
   struct {
-    uint32_t SWRST:1;          /*!< bit:      0  Swrst Busy                         */
-    uint32_t ENABLE:1;         /*!< bit:      1  Enable Busy                        */
-    uint32_t CTRLB:1;          /*!< bit:      2  Ctrlb Busy                         */
-    uint32_t STATUS:1;         /*!< bit:      3  Status Busy                        */
-    uint32_t COUNT:1;          /*!< bit:      4  Count Busy                         */
-    uint32_t PATT:1;           /*!< bit:      5  Pattern Busy                       */
-    uint32_t WAVE:1;           /*!< bit:      6  Wave Busy                          */
-    uint32_t PER:1;            /*!< bit:      7  Period Busy                        */
-    uint32_t CC0:1;            /*!< bit:      8  Compare Channel 0 Busy             */
-    uint32_t CC1:1;            /*!< bit:      9  Compare Channel 1 Busy             */
-    uint32_t CC2:1;            /*!< bit:     10  Compare Channel 2 Busy             */
-    uint32_t CC3:1;            /*!< bit:     11  Compare Channel 3 Busy             */
-    uint32_t CC4:1;            /*!< bit:     12  Compare Channel 4 Busy             */
-    uint32_t CC5:1;            /*!< bit:     13  Compare Channel 5 Busy             */
-    uint32_t :18;              /*!< bit: 14..31  Reserved                           */
+    uint32_t SRC:2;            /*!< bit:  0.. 1  Fault A Source                     */
+    uint32_t :1;               /*!< bit:      2  Reserved                           */
+    uint32_t KEEP:1;           /*!< bit:      3  Fault A Keeper                     */
+    uint32_t QUAL:1;           /*!< bit:      4  Fault A Qualification              */
+    uint32_t BLANK:2;          /*!< bit:  5.. 6  Fault A Blanking Mode              */
+    uint32_t RESTART:1;        /*!< bit:      7  Fault A Restart                    */
+    uint32_t HALT:2;           /*!< bit:  8.. 9  Fault A Halt Mode                  */
+    uint32_t CHSEL:2;          /*!< bit: 10..11  Fault A Capture Channel            */
+    uint32_t CAPTURE:3;        /*!< bit: 12..14  Fault A Capture Action             */
+    uint32_t BLANKPRESC:1;     /*!< bit:     15  Fault A Blanking Prescaler         */
+    uint32_t BLANKVAL:8;       /*!< bit: 16..23  Fault A Blanking Time              */
+    uint32_t FILTERVAL:4;      /*!< bit: 24..27  Fault A Filter Value               */
+    uint32_t :4;               /*!< bit: 28..31  Reserved                           */
   } bit;                       /*!< Structure used for bit  access                  */
-  struct {
-    uint32_t :8;               /*!< bit:  0.. 7  Reserved                           */
-    uint32_t CC:6;             /*!< bit:  8..13  Compare Channel x Busy             */
-    uint32_t :18;              /*!< bit: 14..31  Reserved                           */
-  } vec;                       /*!< Structure used for vec  access                  */
   uint32_t reg;                /*!< Type      used for register access              */
-} TCC_SYNCBUSY_Type;
+} TCC_FCTRLA_Type;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
 #define TCC_FCTRLA_RESETVALUE                 _UINT32_(0x00)                                       /*  (TCC_FCTRLA) Recoverable Fault A Configuration  Reset Value */

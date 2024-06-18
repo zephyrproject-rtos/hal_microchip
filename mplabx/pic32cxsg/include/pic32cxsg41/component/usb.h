@@ -185,7 +185,7 @@ typedef union {
     uint8_t  :6;               /*!< bit:  2.. 7  Reserved                           */
   } bit;                       /*!< Structure used for bit  access                  */
   uint8_t reg;                 /*!< Type      used for register access              */
-} USB_DEVICE_STATUS_BK_Type;
+} USB_HOST_STATUS_BK_Type;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
 #define USB_HOST_STATUS_BK_CRCERR_Pos         _UINT8_(0)                                           /* (USB_HOST_STATUS_BK) CRC Error Status Position */

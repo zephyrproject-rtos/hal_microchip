@@ -188,7 +188,7 @@ typedef union {
     uint8_t  UNDERRUN1:1;      /*!< bit:      1  Underrun 1 Interrupt Enable        */
     uint8_t  EMPTY0:1;         /*!< bit:      2  Data Buffer 0 Empty Interrupt Enable */
     uint8_t  EMPTY1:1;         /*!< bit:      3  Data Buffer 1 Empty Interrupt Enable */
-    uint8_t  Reserved1:1       /*!< bit:      4  Result 0 Ready Interrupt Enable    */
+    uint8_t  Reserved1:1;      /*!< bit:      4  Result 0 Ready Interrupt Enable    */
     uint8_t  Reserved2:1;      /*!< bit:      5  Result 1 Ready Interrupt Enable    */
     uint8_t  Reserved3:1;      /*!< bit:      6  Overrun 0 Interrupt Enable         */
     uint8_t  Reserved4:1;      /*!< bit:      7  Overrun 1 Interrupt Enable         */
