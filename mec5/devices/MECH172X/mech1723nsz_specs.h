@@ -129,6 +129,9 @@
 
 #define MEC5_TACH_INSTANCES 4
 
+/* Length in bytes of VBAT memory region */
+#define MEC_VBAT_MEM_SIZE 128u
+
 #define MEC5_VCI_PINS 4
 #define MEC5_VCI_PINS_MASK 0x1fu
 #define MEC5_VCI_GPIO_PINS_MASK 0x1eu

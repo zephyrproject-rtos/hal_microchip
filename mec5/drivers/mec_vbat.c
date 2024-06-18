@@ -14,11 +14,47 @@
 
 /* -------- VBAT API -------- */
 
-#define MEC_BBRAM_MAX_SIZE 128u
+/* VBAT powered reset and status register */
+uint32_t mec_hal_vbat_pfrs(void)
+{
+    return MEC_VBATR->PFRS;
+}
 
+void mec_hal_vbat_pfrs_clear(uint32_t clrmsk)
+{
+    MEC_VBATR->PFRS = clrmsk;
+}
+
+/* Lower word of 64-bit monotonic counter is read-only.
+ * A read causes it to increment by 1.
+ */
+uint32_t mec_hal_read_monotonic_counter32(void)
+{
+    return MEC_VBATR->MCNTL;
+}
+
+uint64_t mec_hal_read_monotonic_counter64(void)
+{
+    uint64_t counter = MEC_VBATR->MCNTH;
+
+    counter <<= 32;
+    counter |= MEC_VBATR->MCNTL; /* increments on read */
+
+    return counter;
+}
+
+/* Upper word of 64-bit monotonic counter is read/write.
+ * Read/write does not cause it to increment.
+ */
+void mec_hal_set_monotonic_counter_msw(uint32_t msw)
+{
+    MEC_VBATR->MCNTH = msw;
+}
+
+/* ---- VBAT Memory ---- */
 uint32_t mec_hal_bbram_size(void)
 {
-    uint32_t bbram_size = MEC_BBRAM_MAX_SIZE;
+    uint32_t bbram_size = MEC_VBAT_MEM_SIZE;
 
 #ifndef MEC5_FAM2_ID
     if (MEC_ECS->FEAT_LOCK & MEC_BIT(MEC_ECS_FEAT_LOCK_BBRAM_SIZE_Pos)) {
@@ -36,9 +72,7 @@ uintptr_t mec_hal_bbram_base_address(void)
 
 int mec_hal_bbram_rd8(uint16_t byte_ofs, uint8_t *val)
 {
-    uint32_t bbram_size = mec_hal_bbram_size();
-
-    if (!val || (byte_ofs >= bbram_size)) {
+    if (!val || (byte_ofs >= MEC_VBAT_MEM_SIZE)) {
         return MEC_RET_ERR_INVAL;
     }
 
@@ -49,9 +83,7 @@ int mec_hal_bbram_rd8(uint16_t byte_ofs, uint8_t *val)
 
 int mec_hal_bbram_wr8(uint16_t byte_ofs, uint8_t val)
 {
-    uint32_t bbram_size = mec_hal_bbram_size();
-
-    if (byte_ofs >= bbram_size) {
+    if (byte_ofs >= MEC_VBAT_MEM_SIZE) {
         return MEC_RET_ERR_INVAL;
     }
 
@@ -62,10 +94,9 @@ int mec_hal_bbram_wr8(uint16_t byte_ofs, uint8_t val)
 
 int mec_hal_bbram_rd32(uint16_t byte_ofs, uint32_t *val)
 {
-    uint32_t bbram_size = mec_hal_bbram_size();
     uint32_t r = 0;
 
-    if (!val || (byte_ofs >= bbram_size)) {
+    if (!val || (byte_ofs >= MEC_VBAT_MEM_SIZE)) {
         return MEC_RET_ERR_INVAL;
     }
 
@@ -85,9 +116,7 @@ int mec_hal_bbram_rd32(uint16_t byte_ofs, uint32_t *val)
 
 int mec_hal_bbram_wr32(uint16_t byte_ofs, uint32_t val)
 {
-    uint32_t bbram_size = mec_hal_bbram_size();
-
-    if (byte_ofs >= bbram_size) {
+    if (byte_ofs >= MEC_VBAT_MEM_SIZE) {
         return MEC_RET_ERR_INVAL;
     }
 
@@ -105,13 +134,11 @@ int mec_hal_bbram_wr32(uint16_t byte_ofs, uint32_t val)
 
 int mec_hal_bbram_rd(uint16_t byte_ofs, uint8_t *data, size_t datasz, size_t *nread)
 {
-    uint32_t bbram_size = mec_hal_bbram_size();
-
-    if (!data || (byte_ofs >= bbram_size)) {
+    if (!data || (byte_ofs >= MEC_VBAT_MEM_SIZE)) {
         return MEC_RET_ERR_INVAL;
     }
 
-    for (uint16_t idx = byte_ofs; idx < bbram_size; idx++) {
+    for (uint16_t idx = byte_ofs; idx < (uint16_t)MEC_VBAT_MEM_SIZE; idx++) {
         if ((size_t)idx >= datasz) {
             break;
         }
@@ -127,13 +154,11 @@ int mec_hal_bbram_rd(uint16_t byte_ofs, uint8_t *data, size_t datasz, size_t *nr
 
 int mec_hal_bbram_wr(uint16_t byte_ofs, uint8_t *data, size_t datasz, size_t *nwritten)
 {
-    uint32_t bbram_size = mec_hal_bbram_size();
-
-    if (!data || (byte_ofs >= bbram_size)) {
+    if (!data || (byte_ofs >= MEC_VBAT_MEM_SIZE)) {
         return MEC_RET_ERR_INVAL;
     }
 
-    for (uint16_t idx = byte_ofs; idx < bbram_size; idx++) {
+    for (uint16_t idx = byte_ofs; idx < (uint16_t)MEC_VBAT_MEM_SIZE; idx++) {
         if ((size_t)idx >= datasz) {
             break;
         }
