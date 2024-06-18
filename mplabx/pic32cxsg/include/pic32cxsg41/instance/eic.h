@@ -30,6 +30,7 @@
 #define EIC_NUMBER_OF_DPRESCALER_REGS            (2)        /* Number of DPRESCALER pin groups */
 #define EIC_NUMBER_OF_INTERRUPTS                 (16)       /* Number of external interrupts (obsolete) */
 
+/* ========== Register definition for EIC peripheral ========== */
 #if (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 #define REG_EIC_CTRLA              (0x40002800) /**< \brief (EIC) Control A */
 #define REG_EIC_NMICTRL            (0x40002801) /**< \brief (EIC) Non-Maskable Interrupt Control */

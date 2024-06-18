@@ -26,6 +26,17 @@
 /* ************************************************************************** */
 
 /* -------- FREQM_CTRLA : (FREQM Offset: 0x00) (R/W 8) Control A Register -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint8_t  SWRST:1;          /*!< bit:      0  Software Reset                     */
+    uint8_t  ENABLE:1;         /*!< bit:      1  Enable                             */
+    uint8_t  :6;               /*!< bit:  2.. 7  Reserved                           */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint8_t reg;                 /*!< Type      used for register access              */
+} FREQM_CTRLA_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define FREQM_CTRLA_RESETVALUE                _UINT8_(0x00)                                        /*  (FREQM_CTRLA) Control A Register  Reset Value */
 
 #define FREQM_CTRLA_SWRST_Pos                 _UINT8_(0)                                           /* (FREQM_CTRLA) Software Reset Position */
@@ -38,6 +49,16 @@
 
 
 /* -------- FREQM_CTRLB : (FREQM Offset: 0x01) ( /W 8) Control B Register -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint8_t  START:1;          /*!< bit:      0  Start Measurement                  */
+    uint8_t  :7;               /*!< bit:  1.. 7  Reserved                           */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint8_t reg;                 /*!< Type      used for register access              */
+} FREQM_CTRLB_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define FREQM_CTRLB_RESETVALUE                _UINT8_(0x00)                                        /*  (FREQM_CTRLB) Control B Register  Reset Value */
 
 #define FREQM_CTRLB_START_Pos                 _UINT8_(0)                                           /* (FREQM_CTRLB) Start Measurement Position */
@@ -47,6 +68,16 @@
 
 
 /* -------- FREQM_CFGA : (FREQM Offset: 0x02) (R/W 16) Config A register -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint16_t REFNUM:8;         /*!< bit:  0.. 7  Number of Reference Clock Cycles   */
+    uint16_t :8;               /*!< bit:  8..15  Reserved                           */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint16_t reg;                /*!< Type      used for register access              */
+} FREQM_CFGA_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define FREQM_CFGA_RESETVALUE                 _UINT16_(0x00)                                       /*  (FREQM_CFGA) Config A register  Reset Value */
 
 #define FREQM_CFGA_REFNUM_Pos                 _UINT16_(0)                                          /* (FREQM_CFGA) Number of Reference Clock Cycles Position */
@@ -56,6 +87,16 @@
 
 
 /* -------- FREQM_INTENCLR : (FREQM Offset: 0x08) (R/W 8) Interrupt Enable Clear Register -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint8_t  DONE:1;           /*!< bit:      0  Measurement Done Interrupt Enable  */
+    uint8_t  :7;               /*!< bit:  1.. 7  Reserved                           */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint8_t reg;                 /*!< Type      used for register access              */
+} FREQM_INTENCLR_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define FREQM_INTENCLR_RESETVALUE             _UINT8_(0x00)                                        /*  (FREQM_INTENCLR) Interrupt Enable Clear Register  Reset Value */
 
 #define FREQM_INTENCLR_DONE_Pos               _UINT8_(0)                                           /* (FREQM_INTENCLR) Measurement Done Interrupt Enable Position */
@@ -65,6 +106,16 @@
 
 
 /* -------- FREQM_INTENSET : (FREQM Offset: 0x09) (R/W 8) Interrupt Enable Set Register -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint8_t  DONE:1;           /*!< bit:      0  Measurement Done Interrupt Enable  */
+    uint8_t  :7;               /*!< bit:  1.. 7  Reserved                           */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint8_t reg;                 /*!< Type      used for register access              */
+} FREQM_INTENSET_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define FREQM_INTENSET_RESETVALUE             _UINT8_(0x00)                                        /*  (FREQM_INTENSET) Interrupt Enable Set Register  Reset Value */
 
 #define FREQM_INTENSET_DONE_Pos               _UINT8_(0)                                           /* (FREQM_INTENSET) Measurement Done Interrupt Enable Position */
@@ -74,6 +125,16 @@
 
 
 /* -------- FREQM_INTFLAG : (FREQM Offset: 0x0A) (R/W 8) Interrupt Flag Register -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union { // __I to avoid read-modify-write on write-to-clear register
+  struct {
+    __I uint8_t  DONE:1;           /*!< bit:      0  Measurement Done                   */
+    __I uint8_t  :7;               /*!< bit:  1.. 7  Reserved                           */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint8_t reg;                 /*!< Type      used for register access              */
+} FREQM_INTFLAG_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define FREQM_INTFLAG_RESETVALUE              _UINT8_(0x00)                                        /*  (FREQM_INTFLAG) Interrupt Flag Register  Reset Value */
 
 #define FREQM_INTFLAG_DONE_Pos                _UINT8_(0)                                           /* (FREQM_INTFLAG) Measurement Done Position */
@@ -83,6 +144,17 @@
 
 
 /* -------- FREQM_STATUS : (FREQM Offset: 0x0B) (R/W 8) Status Register -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint8_t  BUSY:1;           /*!< bit:      0  FREQM Status                       */
+    uint8_t  OVF:1;            /*!< bit:      1  Sticky Count Value Overflow        */
+    uint8_t  :6;               /*!< bit:  2.. 7  Reserved                           */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint8_t reg;                 /*!< Type      used for register access              */
+} FREQM_STATUS_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define FREQM_STATUS_RESETVALUE               _UINT8_(0x00)                                        /*  (FREQM_STATUS) Status Register  Reset Value */
 
 #define FREQM_STATUS_BUSY_Pos                 _UINT8_(0)                                           /* (FREQM_STATUS) FREQM Status Position */
@@ -95,6 +167,17 @@
 
 
 /* -------- FREQM_SYNCBUSY : (FREQM Offset: 0x0C) ( R/ 32) Synchronization Busy Register -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t SWRST:1;          /*!< bit:      0  Software Reset                     */
+    uint32_t ENABLE:1;         /*!< bit:      1  Enable                             */
+    uint32_t :30;              /*!< bit:  2..31  Reserved                           */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} FREQM_SYNCBUSY_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define FREQM_SYNCBUSY_RESETVALUE             _UINT32_(0x00)                                       /*  (FREQM_SYNCBUSY) Synchronization Busy Register  Reset Value */
 
 #define FREQM_SYNCBUSY_SWRST_Pos              _UINT32_(0)                                          /* (FREQM_SYNCBUSY) Software Reset Position */
@@ -107,6 +190,16 @@
 
 
 /* -------- FREQM_VALUE : (FREQM Offset: 0x10) ( R/ 32) Count Value Register -------- */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef union {
+  struct {
+    uint32_t VALUE:24;         /*!< bit:  0..23  Measurement Value                  */
+    uint32_t :8;               /*!< bit: 24..31  Reserved                           */
+  } bit;                       /*!< Structure used for bit  access                  */
+  uint32_t reg;                /*!< Type      used for register access              */
+} FREQM_VALUE_Type;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #define FREQM_VALUE_RESETVALUE                _UINT32_(0x00)                                       /*  (FREQM_VALUE) Count Value Register  Reset Value */
 
 #define FREQM_VALUE_VALUE_Pos                 _UINT32_(0)                                          /* (FREQM_VALUE) Measurement Value Position */
@@ -125,6 +218,23 @@
 #define FREQM_STATUS_REG_OFST          _UINT32_(0x0B)      /* (FREQM_STATUS) Status Register Offset */
 #define FREQM_SYNCBUSY_REG_OFST        _UINT32_(0x0C)      /* (FREQM_SYNCBUSY) Synchronization Busy Register Offset */
 #define FREQM_VALUE_REG_OFST           _UINT32_(0x10)      /* (FREQM_VALUE) Count Value Register Offset */
+
+/** \brief FREQM hardware registers */
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+typedef struct {
+  __IO FREQM_CTRLA_Type          CTRLA;       /**< \brief Offset: 0x00 (R/W  8) Control A Register */
+  __O  FREQM_CTRLB_Type          CTRLB;       /**< \brief Offset: 0x01 ( /W  8) Control B Register */
+  __IO FREQM_CFGA_Type           CFGA;        /**< \brief Offset: 0x02 (R/W 16) Config A register */
+       RoReg8                    Reserved1[0x4];
+  __IO FREQM_INTENCLR_Type       INTENCLR;    /**< \brief Offset: 0x08 (R/W  8) Interrupt Enable Clear Register */
+  __IO FREQM_INTENSET_Type       INTENSET;    /**< \brief Offset: 0x09 (R/W  8) Interrupt Enable Set Register */
+  __IO FREQM_INTFLAG_Type        INTFLAG;     /**< \brief Offset: 0x0A (R/W  8) Interrupt Flag Register */
+  __IO FREQM_STATUS_Type         STATUS;      /**< \brief Offset: 0x0B (R/W  8) Status Register */
+  __I  FREQM_SYNCBUSY_Type       SYNCBUSY;    /**< \brief Offset: 0x0C (R/  32) Synchronization Busy Register */
+  __I  FREQM_VALUE_Type          VALUE;       /**< \brief Offset: 0x10 (R/  32) Count Value Register */
+} Freqm;
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))
 /** \brief FREQM register API structure */

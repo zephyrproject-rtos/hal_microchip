@@ -324,8 +324,7 @@ typedef union {
 #define MCLK_APBAMASK_TC1_Pos                 _UINT32_(15)                                         /* (MCLK_APBAMASK) TC1 APB Clock Enable Position */
 #define MCLK_APBAMASK_TC1_Msk                 (_UINT32_(0x1) << MCLK_APBAMASK_TC1_Pos)             /* (MCLK_APBAMASK) TC1 APB Clock Enable Mask */
 #define MCLK_APBAMASK_TC1(value)              (MCLK_APBAMASK_TC1_Msk & (_UINT32_(value) << MCLK_APBAMASK_TC1_Pos)) /* Assigment of value for TC1 in the MCLK_APBAMASK register */
-#define MCLK_APBAMASK_Msk                     _UINT32_(0x0000FFFF)                                 /* (MCLK_APBAMASK) Register Mask  */
-
+#define MCLK_APBAMASK_Msk                     _UINT32_(0x0000FFFF)                                /* (MCLK_APBAMASK) Register Mask  */
 #define MCLK_APBAMASK_SERCOM_Pos              _UINT32_(12)                                         /* (MCLK_APBAMASK Position) SERCOMx APB Clock Enable */
 #define MCLK_APBAMASK_SERCOM_Msk              (_UINT32_(0x3) << MCLK_APBAMASK_SERCOM_Pos)          /* (MCLK_APBAMASK Mask) SERCOM */
 #define MCLK_APBAMASK_SERCOM(value)           (MCLK_APBAMASK_SERCOM_Msk & (_UINT32_(value) << MCLK_APBAMASK_SERCOM_Pos)) 
