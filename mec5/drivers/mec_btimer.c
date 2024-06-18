@@ -213,7 +213,7 @@ int mec_hal_btimer_girq_status_clr(struct mec_btmr_regs *regs)
 {
     const struct mec_btimer_info *info = find_btimer_info((uintptr_t)regs);
 
-    if (!regs) {
+    if (!info) {
         return MEC_RET_ERR_INVAL;
     }
 
