@@ -25,21 +25,40 @@ extern "C"
 #define MEC5_WDT_INIT_STALL_JTAG 0x08u
 #define MEC5_WDT_INIT_GEN_INTR 0x10u
 
+#define MEC5_WDT_STATUS_EVENT_IRQ 0x01u
+
 /* forward declaration */
 struct mec_wdt_regs;
 
-int mec_hal_wdt_init(struct mec_wdt_regs *regs, uint16_t n32k_ticks, uint32_t flags);
+int mec_hal_wdt_init(struct mec_wdt_regs *regs, uint16_t nmsec, uint32_t flags);
+
+uint8_t mec_hal_wdt_intr_get_status(struct mec_wdt_regs *regs);
+void mec_hal_wdt_intr_clear_status(struct mec_wdt_regs *regs);
 
 void mec_hal_wdt_intr_ctrl(struct mec_wdt_regs *regs, uint8_t enable);
 
+void mec_hal_wdt_girq_enable(struct mec_wdt_regs *regs, uint8_t enable);
+
 /* Application WDT ISR calls this helper to restart WDT to reset the SoC
- * after n32k_ticks_before_reset number of 32KHz clock ticks.
+ * after counts_before_reset number of 32KHz clock ticks.
  */
-void mec_hal_wdt_intr_helper(struct mec_wdt_regs *regs, uint16_t n32k_ticks_before_reset);
+void mec_hal_wdt_intr_helper(struct mec_wdt_regs *regs, uint16_t counts_before_reset);
 
 void mec_hal_wdt_restart(struct mec_wdt_regs *regs);
 
-void mec_hal_wdt_reload(struct mec_wdt_regs *regs, uint16_t n32k_count);
+void mec_hal_wdt_reload(struct mec_wdt_regs *regs, uint16_t nmsec);
+
+bool mec_hal_wdt_is_enabled(struct mec_wdt_regs *regs);
+
+void mec_hal_wdt_enable(struct mec_wdt_regs *regs);
+void mec_hal_wdt_disable(struct mec_wdt_regs *regs);
+
+void mec_hal_wdt_debug_stall(struct mec_wdt_regs *regs, uint8_t enable);
+
+void mec_hal_wdt_kick(struct mec_wdt_regs *regs);
+
+/* Returns the read-only count (16-bit) register value */
+uint32_t mec_hal_wdt_count(struct mec_wdt_regs *regs);
 
 #ifdef __cplusplus
 }
