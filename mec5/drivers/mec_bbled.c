@@ -10,7 +10,7 @@
 #include <device_mec5.h>
 #include "mec_pcfg.h"
 #include "mec_defs.h"
-#include "mec_btimer_api.h"
+#include "mec_bbled_api.h"
 #include "mec_ecia_api.h"
 #include "mec_pcr_api.h"
 #include "mec_retval.h"
@@ -40,21 +40,21 @@ struct mec_bbled_info {
 };
 
 static const struct mec_bbled_info bbled_instances[MEC5_BBLED_INSTANCES] = {
-    { MEC_LED0_BASE, MEC_PCR_LED0, MEC_BBLED0_ECIA_INFO },
-    { MEC_LED1_BASE, MEC_PCR_LED1, MEC_BBLED1_ECIA_INFO },
-    { MEC_LED2_BASE, MEC_PCR_LED2, MEC_BBLED2_ECIA_INFO },
-    { MEC_LED3_BASE, MEC_PCR_LED3, MEC_BBLED3_ECIA_INFO },
+    { MEC_BBLED0_BASE, MEC_PCR_BBLED0, MEC_BBLED0_ECIA_INFO },
+    { MEC_BBLED1_BASE, MEC_PCR_BBLED1, MEC_BBLED1_ECIA_INFO },
+    { MEC_BBLED2_BASE, MEC_PCR_BBLED2, MEC_BBLED2_ECIA_INFO },
+    { MEC_BBLED3_BASE, MEC_PCR_BBLED3, MEC_BBLED3_ECIA_INFO },
 };
 
 #ifdef MEC_BBLED_FAST_ADDR_LOOKUP
-static inline uint32_t bbled_fast_idx(struct mec_btmr_regs *regs)
+static inline uint32_t bbled_fast_idx(uintptr_t base)
 {
-    return (((uint32_t)regs >> 8) & 0x3u);
+    return (((uint32_t)base >> 8) & 0x3u);
 }
 
 static struct mec_bbled_info const *find_bbled_info(uintptr_t base_addr)
 {
-    return &bbled_instances[btimer_fast_idx((struct mec_led_regs *)base_addr)];
+    return &bbled_instances[bbled_fast_idx(base_addr)];
 }
 #else
 static struct mec_bbled_info const *find_bbled_info(uintptr_t base_addr)
@@ -71,8 +71,8 @@ static struct mec_bbled_info const *find_bbled_info(uintptr_t base_addr)
 
 static int find_bbled_index(uintptr_t base_addr)
 {
-    for (int i = 0; i < (int)MEC5_BASIC_TIMER_INSTANCES; i++) {
-        if (base_addr == btimer_instances[i].base_addr) {
+    for (int i = 0; i < (int)MEC5_BBLED_INSTANCES; i++) {
+        if (base_addr == bbled_instances[i].base_addr) {
             return i;
         }
     }
@@ -80,41 +80,48 @@ static int find_bbled_index(uintptr_t base_addr)
     return -1;
 }
 
-static void bbled_set_pwm_size(struct mec_led_regs *regs, uint32_t bbled_config)
+static uint8_t bbled_get_pwm_size(struct mec_bbled_regs *regs)
 {
-    uint32_t temp = (bbled_cfg & MEC_BBLED_CFG_PWM_SIZE_MSK) >> MEC_BBLED_CFG_PWM_SIZE_POS;
-    uint32_t rval = regs->CTRL & (uint32_t)~MEC_LED_CONFIG_PWM_SZ_Msk;
-
-    rval |= ((temp << MEC_LED_CONFIG_PWM_SZ_Pos) & MEC_LED_CONFIG_PWM_SZ_Msk);
-    regs->CTRL = rval;
+    return (uint8_t)((regs->CONFIG & MEC_BBLED_CONFIG_PWM_SZ_Msk) >> MEC_BBLED_CONFIG_PWM_SZ_Pos);
 }
 
-static void bbled_set_clk_src(struct mec_led_regs *regs, uint8_t use_sys_clk)
+static void bbled_set_pwm_size(struct mec_bbled_regs *regs, uint8_t pwm_width)
+{
+    regs->CONFIG = (regs->CONFIG & (uint32_t)~MEC_BBLED_CONFIG_PWM_SZ_Msk) |
+        (((uint32_t)pwm_width << MEC_BBLED_CONFIG_PWM_SZ_Pos) & MEC_BBLED_CONFIG_PWM_SZ_Msk);
+}
+
+static void bbled_set_clk_src(struct mec_bbled_regs *regs, uint8_t use_sys_clk)
 {
     if (use_sys_clk) {
-        regs->CTRL |= MEC_BIT(MEC_LED_CONFIG_CLKSRC_Pos);
+        regs->CONFIG |= MEC_BIT(MEC_BBLED_CONFIG_CLKSRC_Pos);
     } else {
-        regs->CTRL &= (uint32_t)~MEC_BIT(MEC_LED_CONFIG_CLKSRC_Pos);
+        regs->CONFIG &= (uint32_t)~MEC_BIT(MEC_BBLED_CONFIG_CLKSRC_Pos);
     }
 }
 
-static void bbled_set_wdt_reload(struct mec_led_regs *regs, uint32_t bbcfg)
+static void bbled_set_wdt_reload(struct mec_bbled_regs *regs, uint32_t bbcfg)
 {
     uint32_t temp = (bbcfg & MEC_BBLED_CFG_WDT_RELOAD_MSK) >> MEC_BBLED_CFG_WDT_RELOAD_POS;
 
-    regs->CTRL = ((regs->CTRL & (uint32_t)~MEC_LED_CONFIG_WDTRLD_Msk) |
-                  ((temp << MEC_LED_CONFIG_WDTRLD_Pos) & MEC_LED_CONFIG_WDTRLD_Msk));
+    regs->CONFIG = ((regs->CONFIG & (uint32_t)~MEC_BBLED_CONFIG_WDTRLD_Msk) |
+                  ((temp << MEC_BBLED_CONFIG_WDTRLD_Pos) & MEC_BBLED_CONFIG_WDTRLD_Msk));
 }
 
-static void bbled_set_mode(struct mec_led_regs *regs, uint8_t mode)
+static void bbled_set_mode(struct mec_bbled_regs *regs, uint8_t mode)
 {
-    regs->CTRL = ((regs->CTRL & (uint32_t)~MEC_LED_CONFIG_CTRL_Msk) |
-                  (((uint32_t)mode << MEC_LED_CONFIG_CTRL_Pos) & MEC_LED_CONFIG_CTRL_Msk));
+    regs->CONFIG = ((regs->CONFIG & (uint32_t)~MEC_BBLED_CONFIG_CTRL_Msk) |
+                  (((uint32_t)mode << MEC_BBLED_CONFIG_CTRL_Pos) & MEC_BBLED_CONFIG_CTRL_Msk));
+}
+
+static uint8_t bbled_get_mode(struct mec_bbled_regs *regs)
+{
+    return (uint8_t)((regs->CONFIG & MEC_BBLED_CONFIG_CTRL_Msk) >> MEC_BBLED_CONFIG_CTRL_Pos);
 }
 
 /* ---- Public API ---- */
 
-bool mec_hal_bbled_is_valid(struct led_regs *regs)
+bool mec_hal_bbled_is_valid(struct mec_bbled_regs *regs)
 {
     if (find_bbled_index((uintptr_t)regs) < 0) {
         return false;
@@ -123,39 +130,37 @@ bool mec_hal_bbled_is_valid(struct led_regs *regs)
     return true;
 }
 
-int mec_hal_bbled_synchronize_enable(struct led_regs *regs, uint8_t enable)
+void mec_hal_bbled_synchronize_enable(struct mec_bbled_regs *regs, uint8_t enable)
 {
     if (enable) {
-        regs->CONFIG |= MEC_BIT(MEC_LED_CONFIG_SYNC_Pos);
+        regs->CONFIG |= MEC_BIT(MEC_BBLED_CONFIG_SYNC_Pos);
     } else {
-        regs->CONFIG &= (uint32_t)~MEC_BIT(MEC_LED_CONFIG_SYNC_Pos);
+        regs->CONFIG &= (uint32_t)~MEC_BIT(MEC_BBLED_CONFIG_SYNC_Pos);
     }
 }
 
-bool mec_hal_bbled_is_off(struct led_regs *regs)
+bool mec_hal_bbled_is_off(struct mec_bbled_regs *regs)
 {
-    if (regs->CTRL & MEC_LED_CONFIG_CTRL_Msk) {
-        return false
+    if (regs->CONFIG & MEC_BBLED_CONFIG_CTRL_Msk) {
+        return false;
     }
 
     return true;
 }
 
-void mec_hal_bbled_asym_enable(struct led_regs *regs, uint8_t enable)
+void mec_hal_bbled_asym_enable(struct mec_bbled_regs *regs, uint8_t enable)
 {
     if (enable) {
-        regs->CTRL |= MEC_BIT(MEC_LED_CONFIG_ASYM_Pos);
+        regs->CONFIG |= MEC_BIT(MEC_BBLED_CONFIG_ASYM_Pos);
     } else {
-        regs->CTRL &= (uint32_t)~MEC_BIT(MEC_LED_CONFIG_ASYM_Pos);
+        regs->CONFIG &= (uint32_t)~MEC_BIT(MEC_BBLED_CONFIG_ASYM_Pos);
     }
 }
 
-/* Initialize a BBLED instance */
-int mec_hal_bbled_init(struct led_regs *regs, uint32_t bbled_config)
+/* Initialize a BBLED instance and leave it in OFF mode */
+int mec_hal_bbled_init(struct mec_bbled_regs *regs, uint32_t bbled_config)
 {
     const struct mec_bbled_info *info = find_bbled_info((uintptr_t)regs);
-    uint8_t mode = 0;
-    uint8_t use_sys_clk = 0;
     uint8_t asym_enable = 0;
 
     if (!info) {
@@ -166,24 +171,13 @@ int mec_hal_bbled_init(struct led_regs *regs, uint32_t bbled_config)
     mec_hal_pcr_clr_blk_slp_en(info->pcr_id);
 
     if (bbled_config) {
-        regs->CONFIG |= MEC_BIT(MEC_LED_CONFIG_SRST_Pos);
+        regs->CONFIG |= MEC_BIT(MEC_BBLED_CONFIG_SRST_Pos);
     } else {
-        regs->CONFIG &= (uint32_t)~MEC_LED_CONFIG_CTRL_Msk;
-        regs->CONFIG |= (MEC_LED_CONFIG_CTRL_OFF << MEC_LED_CONFIG_CTRL_Pos);
+        regs->CONFIG &= (uint32_t)~MEC_BBLED_CONFIG_CTRL_Msk;
+        regs->CONFIG |= (MEC_BBLED_CONFIG_CTRL_OFF << MEC_BBLED_CONFIG_CTRL_Pos);
     }
 
     mec_hal_girq_clr_src(info->devi);
-
-    bbled_set_pwm_size(regs, bbled_config);
-
-    mode = (uint8_t)((bbled_config & MEC_BBLED_CFG_MODE_MSK) >> MEC_BBLED_CFG_MODE_POS);
-    if (mode == MEC_BBLED_CFG_MODE_BLINK_VAL) {
-        if (bbled_config & MEC_BBLED_CFG_CLK_SRC_48M) {
-            use_sys_clk = 1u;
-        }
-    }
-
-    bbled_set_clk_src(regs, use_sys_clk);
 
     if (bbled_config & MEC_BIT(MEC_BBLED_CFG_SET_WDT_RLD_POS)) {
         bbled_set_wdt_reload(regs, bbled_config);
@@ -194,92 +188,11 @@ int mec_hal_bbled_init(struct led_regs *regs, uint32_t bbled_config)
     }
 
     mec_hal_bbled_asym_enable(regs, asym_enable);
-    bbled_set_mode(regs, mode);
 
     return 0;
 }
 
-uint32_t mec_hal_bbled_clk_freq(struct led_regs *regs)
-{
-    if (regs->CONFIG & MEC_BIT(MEC_LED_CONFIG_CLKSRC_Pos)) {
-        return (uint32_t)MEC_BBLED_SYS_CLK_FREQ;
-    }
-    return (uint32_t)MEC_BBLED_CLK_FREQ;
-}
-
-uint16_t mec_hal_bbled_limit_min_get(struct led_regs *regs)
-{
-    return regs->LIMITS;
-}
-
-uint16_t mec_hal_bbled_delay_lo_get(struct led_regs *regs)
-{
-    return (uint16_t)((regs->DELAY & MEC_LED_DELAY_LO_Msk) >> MEC_LED_DELAY_LO_Pos);
-}
-
-uint16_t mec_hal_bbled_delay_hi_get(struct led_regs *regs)
-{
-    return (uint16_t)((regs->DELAY & MEC_LED_DELAY_HI_Msk) >> MEC_LED_DELAY_HI_Pos);
-}
-
-void mec_hal_bbled_delay_lo_set(struct led_regs *regs, uint16_t delay_periods)
-{
-    regs->DELAY = ((regs->DELAY (uint32_t)~MEC_LED_DELAY_LO_Msk) |
-                   (((uint32_t)delay_periods << MEC_LED_DELAY_LO_Pos) & MEC_LED_DELAY_LO_Msk));
-}
-
-void mec_hal_bbled_delay_hi_set(struct led_regs *regs, uint16_t delay_periods)
-{
-    regs->DELAY = ((regs->DELAY (uint32_t)~MEC_LED_DELAY_HI_Msk) |
-                   (((uint32_t)delay_periods << MEC_LED_DELAY_HI_Pos) & MEC_LED_DELAY_HI_Msk));
-}
-
-uint32_t mec_hal_bbled_step_sizes_get(struct led_regs *regs)
-{
-    return regs->UPDSS;
-}
-
-void mec_hal_bbled_step_sizes_set(struct led_regs *regs, uint32_t step_sizes)
-{
-    regs->UPDSS = step_sizes;
-}
-
-uint32_t mec_hal_bbled_intervals_sizes_get(struct led_regs *regs)
-{
-    return regs->UPINVL;
-}
-
-void mec_hal_bbled_intervals_set(struct led_regs *regs, uint32_t intervals)
-{
-    regs->UPINVL = intervals;
-}
-
-uint8_t mec_hal_bbled_output_delay_get(struct led_regs *regs)
-{
-    return (regs->OUTDLY & 0xffu);
-}
-
-void mec_hal_bbled_output_delay_get(struct led_regs *regs, uint8_t clk_periods)
-{
-    regs->OUTDLY = clk_periods;
-}
-
-int mec_hal_enable_update(struct mec_led_regs *regs)
-{
-    regs->CTRL |= MEC_BIT(MEC_LED_CONFIG_UPDATE_Pos);
-}
-
-bool mec_hal_enable_is_update(struct mec_led_regs *regs)
-{
-    if (regs->CTRL & MEC_BIT(MEC_LED_CONFIG_UPDATE_Pos)) {
-        return true;
-    }
-
-    return false;
-}
-
-
-int mec_hal_bbled_girq_ctrl(struct mec_led_regs *regs, uint8_t enable)
+int mec_hal_bbled_girq_ctrl(struct mec_bbled_regs *regs, uint8_t enable)
 {
     const struct mec_bbled_info *info = find_bbled_info((uintptr_t)regs);
 
@@ -292,7 +205,7 @@ int mec_hal_bbled_girq_ctrl(struct mec_led_regs *regs, uint8_t enable)
     return MEC_RET_OK;
 }
 
-int mec_hal_bbled_girq_status_clr(struct mec_led_regs *regs)
+int mec_hal_bbled_girq_status_clr(struct mec_bbled_regs *regs)
 {
     const struct mec_bbled_info *info = find_bbled_info((uintptr_t)regs);
 
@@ -301,6 +214,206 @@ int mec_hal_bbled_girq_status_clr(struct mec_led_regs *regs)
     }
 
     mec_hal_girq_clr_src(info->devi);
+
+    return MEC_RET_OK;
+}
+
+void mec_hal_bbled_enable_update(struct mec_bbled_regs *regs)
+{
+    regs->CONFIG |= MEC_BIT(MEC_BBLED_CONFIG_UPDATE_Pos);
+}
+
+bool mec_hal_bbled_enable_is_update(struct mec_bbled_regs *regs)
+{
+    if (regs->CONFIG & MEC_BIT(MEC_BBLED_CONFIG_UPDATE_Pos)) {
+        return true;
+    }
+
+    return false;
+}
+
+uint32_t mec_hal_bbled_clk_freq(struct mec_bbled_regs *regs)
+{
+    if (regs->CONFIG & MEC_BIT(MEC_BBLED_CONFIG_CLKSRC_Pos)) {
+        return (uint32_t)MEC_BBLED_SYS_CLK_FREQ;
+    }
+    return (uint32_t)MEC_BBLED_CLK_FREQ;
+}
+
+int mec_hal_bbled_breathe_pwm_width(struct mec_bbled_regs *regs, uint8_t pwm_width)
+{
+    uint8_t mode = 0;
+
+    if (!regs || (pwm_width > MEC_BBLED_PWM_WIDTH_6)) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    mode = bbled_get_mode(regs);
+    if ((mode == MEC_BBLED_MODE_BREATHE) || (mode == MEC_BBLED_MODE_BLINK)) {
+        return MEC_RET_ERR_BUSY;
+    }
+
+    bbled_set_pwm_size(regs, pwm_width);
+
+    return MEC_RET_OK;
+}
+
+uint8_t mec_hal_bbled_breathe_pwm_width_get(struct mec_bbled_regs *regs)
+{
+    return bbled_get_pwm_size(regs);
+}
+
+int mec_hal_bbled_blink_clk_sel(struct mec_bbled_regs *regs, uint8_t blink_clk_sel)
+{
+    uint8_t use_sys_clk = 0;
+
+    if (!regs) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    if (blink_clk_sel != (uint8_t)MEC_BBLED_BLINK_CLK_SEL_32K) {
+        use_sys_clk = 1;
+    }
+
+    bbled_set_clk_src(regs, use_sys_clk);
+
+    return MEC_RET_OK;
+}
+
+uint8_t mec_hal_bbled_blink_clk_sel_get(struct mec_bbled_regs *regs)
+{
+    uint8_t clksel = (uint8_t)MEC_BBLED_BLINK_CLK_SEL_32K;
+
+    if (regs->CONFIG & MEC_BIT(MEC_BBLED_CONFIG_CLKSRC_Pos)) {
+        clksel = (uint8_t)MEC_BBLED_BLINK_CLK_SEL_SYS;
+    }
+
+    return clksel;
+}
+
+uint32_t mec_hal_bbled_blink_pwm_freq_get(struct mec_bbled_regs *regs)
+{
+    uint32_t fsrc = mec_hal_bbled_clk_freq(regs);
+    uint32_t prescaler = (regs->DELAY & MEC_BBLED_DELAY_LO_Msk) >> MEC_BBLED_DELAY_LO_Pos;
+    uint32_t fpwm = 0;
+
+    prescaler = (prescaler + 1) << 8;
+    if (!prescaler) {
+        return 0;
+    }
+
+    fpwm = fsrc / prescaler;
+    if ((fsrc % prescaler) > (prescaler >> 1)) {
+        fpwm++;
+    }
+
+    return fpwm;
+}
+
+int mec_hal_bbled_mode(struct mec_bbled_regs *regs, uint8_t mode)
+{
+    if (!regs || (mode > MEC_BBLED_MODE_ON)) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    bbled_set_mode(regs, mode);
+
+    return MEC_RET_OK;
+}
+
+uint8_t mec_hal_bbled_mode_get(struct mec_bbled_regs *regs)
+{
+    return bbled_get_mode(regs);
+}
+
+int mec_hal_bbled_breathe_config(struct mec_bbled_regs *regs, struct mec_bbled_breathe_config *br_cfg)
+{
+    uint32_t temp = 0;
+    uint8_t mode = 0;
+
+    if (!regs || !br_cfg) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    mode = bbled_get_mode(regs);
+    if (mode == MEC_BBLED_MODE_BLINK) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    temp = (((uint32_t)br_cfg->min_hold << MEC_BBLED_LIMITS_MIN_Pos) & MEC_BBLED_LIMITS_MIN_Msk);
+    temp |= (((uint32_t)br_cfg->max_hold << MEC_BBLED_LIMITS_MAX_Pos) & MEC_BBLED_LIMITS_MAX_Msk);
+    regs->LIMITS = temp;
+
+    temp = ((uint32_t)br_cfg->lo_delay << MEC_BBLED_DELAY_LO_Pos) & MEC_BBLED_DELAY_LO_Msk;
+    temp |= (((uint32_t)br_cfg->hi_delay << MEC_BBLED_DELAY_HI_Pos) & MEC_BBLED_DELAY_HI_Msk);
+    regs->DELAY = temp;
+
+    regs->UPDSS = br_cfg->upd_steps;
+    regs->UPINVL = br_cfg->upd_intervals;
+
+    return MEC_RET_OK;
+}
+
+int mec_hal_bbled_breathe_config_get(struct mec_bbled_regs *regs,
+                                     struct mec_bbled_breathe_config *br_cfg)
+{
+    uint32_t temp = 0;
+
+    if (!regs || !br_cfg) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    br_cfg->upd_intervals = regs->UPINVL;
+    br_cfg->upd_steps = regs->UPDSS;
+
+    temp = regs->DELAY;
+    br_cfg->lo_delay = (uint16_t)((temp & MEC_BBLED_DELAY_LO_Msk) >> MEC_BBLED_DELAY_LO_Pos);
+    br_cfg->hi_delay = (uint16_t)((temp & MEC_BBLED_DELAY_HI_Msk) >> MEC_BBLED_DELAY_HI_Pos);
+
+    temp = regs->LIMITS;
+    br_cfg->min_hold = (uint8_t)((temp & MEC_BBLED_LIMITS_MIN_Msk) >> MEC_BBLED_LIMITS_MIN_Pos);
+    br_cfg->max_hold = (uint8_t)((temp & MEC_BBLED_LIMITS_MAX_Msk) >> MEC_BBLED_LIMITS_MAX_Pos);
+
+    br_cfg->pwm_width = bbled_get_pwm_size(regs);
+
+    return MEC_RET_OK;
+}
+
+int mec_hal_bbled_blink_config(struct mec_bbled_regs *regs, struct mec_bbled_blink_config *bl_cfg)
+{
+    uint8_t mode = 0;
+
+    if (!regs || !bl_cfg) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    mode = bbled_get_mode(regs);
+    if (mode == MEC_BBLED_MODE_BREATHE) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    regs->LIMITS =
+        ((uint32_t)bl_cfg->duty_cycle << MEC_BBLED_LIMITS_MIN_Pos) & MEC_BBLED_LIMITS_MIN_Msk;
+    regs->DELAY =
+        ((uint32_t)bl_cfg->pwm_clk_prescaler << MEC_BBLED_DELAY_LO_Pos) & MEC_BBLED_DELAY_LO_Msk;
+
+    return MEC_RET_OK;
+}
+
+int mec_hal_bbled_blink_config_get(struct mec_bbled_regs *regs, struct mec_bbled_blink_config *bl_cfg)
+{
+    if (!regs || !bl_cfg) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    bl_cfg->pwm_clk_prescaler =
+        (uint16_t)((regs->DELAY & MEC_BBLED_DELAY_LO_Msk) >> MEC_BBLED_DELAY_LO_Pos);
+    bl_cfg->duty_cycle =
+        (uint8_t)((regs->LIMITS & MEC_BBLED_LIMITS_MIN_Msk) >> MEC_BBLED_LIMITS_MIN_Pos);
+    bl_cfg->flags = MEC_BBLED_BLINK_PWM_FREQ_32K;
+    if (regs->CONFIG & MEC_BIT(MEC_BBLED_CONFIG_CLKSRC_Pos)) {
+        bl_cfg->flags = MEC_BBLED_BLINK_PWM_FREQ_SYS;
+    }
 
     return MEC_RET_OK;
 }
