@@ -136,10 +136,10 @@ typedef enum {
   MEC_RCID0_IRQn            =  80,              /*!< 80 RC-ID 0 interrupt                                                      */
   MEC_RCID1_IRQn            =  81,              /*!< 81 RC-ID 1 interrupt                                                      */
   MEC_RCID2_IRQn            =  82,              /*!< 82 RC-ID 2 interrupt                                                      */
-  MEC_LED0_IRQn             =  83,              /*!< 83 LED0 interrupt                                                         */
-  MEC_LED1_IRQn             =  84,              /*!< 84 LED1 interrupt                                                         */
-  MEC_LED2_IRQn             =  85,              /*!< 85 LED2 interrupt                                                         */
-  MEC_LED3_IRQn             =  86,              /*!< 86 LED3 interrupt                                                         */
+  MEC_BBLED0_IRQn           =  83,              /*!< 83 LED0 interrupt                                                         */
+  MEC_BBLED1_IRQn           =  84,              /*!< 84 LED1 interrupt                                                         */
+  MEC_BBLED2_IRQn           =  85,              /*!< 85 LED2 interrupt                                                         */
+  MEC_BBLED3_IRQn           =  86,              /*!< 86 LED3 interrupt                                                         */
   MEC_PHOT_IRQn             =  87,              /*!< 87 PROCHOT interrupt                                                      */
   MEC_QSPI0_IRQn            =  91,              /*!< 91 QSPI0 controller interrupt                                             */
   MEC_GSPI0_IRQn            =  92,              /*!< 92 GSPI v2 instance 0 interrupt                                           */
@@ -385,10 +385,10 @@ typedef enum {
 #define MEC_VBATM_BASE              0x4000A800UL
 #define MEC_WKTMR0_BASE             0x4000AC80UL
 #define MEC_VCI_BASE                0x4000AE00UL
-#define MEC_LED0_BASE               0x4000B800UL
-#define MEC_LED1_BASE               0x4000B900UL
-#define MEC_LED2_BASE               0x4000BA00UL
-#define MEC_LED3_BASE               0x4000BB00UL
+#define MEC_BBLED0_BASE             0x4000B800UL
+#define MEC_BBLED1_BASE             0x4000B900UL
+#define MEC_BBLED2_BASE             0x4000BA00UL
+#define MEC_BBLED3_BASE             0x4000BB00UL
 #define MEC_BCL0_BASE               0x4000CD00UL
 #define MEC_ECIA0_BASE              0x4000E000UL
 #define MEC_ECS_BASE                0x4000FC00UL
@@ -491,10 +491,10 @@ typedef enum {
 #define MEC_VBATM                   ((MEC_VBATM_Type*)         MEC_VBATM_BASE)
 #define MEC_WKTMR0                  ((MEC_WKTMR_Type*)         MEC_WKTMR0_BASE)
 #define MEC_VCI                     ((MEC_VCI_Type*)           MEC_VCI_BASE)
-#define MEC_LED0                    ((MEC_LED_Type*)           MEC_LED0_BASE)
-#define MEC_LED1                    ((MEC_LED_Type*)           MEC_LED1_BASE)
-#define MEC_LED2                    ((MEC_LED_Type*)           MEC_LED2_BASE)
-#define MEC_LED3                    ((MEC_LED_Type*)           MEC_LED3_BASE)
+#define MEC_BBLED0                  ((MEC_BBLED_Type*)         MEC_BBLED0_BASE)
+#define MEC_BBLED1                  ((MEC_BBLED_Type*)         MEC_BBLED1_BASE)
+#define MEC_BBLED2                  ((MEC_BBLED_Type*)         MEC_BBLED2_BASE)
+#define MEC_BBLED3                  ((MEC_BBLED_Type*)         MEC_BBLED3_BASE)
 #define MEC_BCL0                    ((MEC_BCL_Type*)           MEC_BCL0_BASE)
 #define MEC_ECIA0                   ((MEC_ECIA_Type*)          MEC_ECIA0_BASE)
 #define MEC_ECS                     ((MEC_ECS_Type*)           MEC_ECS_BASE)
