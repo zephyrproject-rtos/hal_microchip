@@ -21,14 +21,6 @@
 #ifndef _PIC32CXSG41_RSTC_INSTANCE_
 #define _PIC32CXSG41_RSTC_INSTANCE_
 
-/* ========== Register definition for RSTC peripheral ========== */
-#if (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
-#define REG_RSTC_RCAUSE            (0x40000C00) /**< \brief (RSTC) Reset Cause */
-#define REG_RSTC_BKUPEXIT          (0x40000C02) /**< \brief (RSTC) Backup Exit Source */
-#else
-#define REG_RSTC_RCAUSE            (*(RoReg8 *)0x40000C00UL) /**< \brief (RSTC) Reset Cause */
-#define REG_RSTC_BKUPEXIT          (*(RoReg8 *)0x40000C02UL) /**< \brief (RSTC) Backup Exit Source */
-#endif /* (defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
 /* ========== Instance Parameter definitions for RSTC peripheral ========== */
 #define RSTC_BACKUP_IMPLEMENTED                  (1)        

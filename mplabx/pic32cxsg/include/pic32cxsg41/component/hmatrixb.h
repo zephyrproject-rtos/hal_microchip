@@ -26,24 +26,12 @@
 /* ************************************************************************** */
 
 /* -------- HMATRIXB_PRAS : (HMATRIXB Offset: 0x00) (R/W 32) Priority A for Slave -------- */
-#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
-typedef union {
-  uint32_t reg;                /*!< Type      used for register access              */
-} HMATRIXB_PRAS_Type;
-#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
-
 #define HMATRIXB_PRAS_RESETVALUE              _UINT32_(0x00)                                       /*  (HMATRIXB_PRAS) Priority A for Slave  Reset Value */
 
 #define HMATRIXB_PRAS_Msk                     _UINT32_(0x00000000)                                 /* (HMATRIXB_PRAS) Register Mask  */
 
 
 /* -------- HMATRIXB_PRBS : (HMATRIXB Offset: 0x04) (R/W 32) Priority B for Slave -------- */
-#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
-typedef union {
-  uint32_t reg;                /*!< Type      used for register access              */
-} HMATRIXB_PRBS_Type;
-#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
-
 #define HMATRIXB_PRBS_RESETVALUE              _UINT32_(0x00)                                       /*  (HMATRIXB_PRBS) Priority B for Slave  Reset Value */
 
 #define HMATRIXB_PRBS_Msk                     _UINT32_(0x00000000)                                 /* (HMATRIXB_PRBS) Register Mask  */
@@ -52,15 +40,6 @@ typedef union {
 /** \brief HMATRIXB register offsets definitions */
 #define HMATRIXB_PRAS_REG_OFST         _UINT32_(0x00)      /* (HMATRIXB_PRAS) Priority A for Slave Offset */
 #define HMATRIXB_PRBS_REG_OFST         _UINT32_(0x04)      /* (HMATRIXB_PRBS) Priority B for Slave Offset */
-
-/** \brief HmatrixbPrs hardware registers */
-#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
-typedef struct {
-  __IO HMATRIXB_PRAS_Type        PRAS;        /**< \brief Offset: 0x000 (R/W 32) Priority A for Slave */
-  __IO HMATRIXB_PRBS_Type        PRBS;        /**< \brief Offset: 0x004 (R/W 32) Priority B for Slave */
-} HmatrixbPrs;
-#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
-
 
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))
 /** \brief PRS register API structure */
@@ -71,14 +50,6 @@ typedef struct
 } hmatrixb_prs_registers_t;
 
 #define HMATRIXB_PRS_NUMBER 16
-
-/** \brief HMATRIXB hardware registers */
-#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
-typedef struct {
-       RoReg8                    Reserved1[0x80];
-       HmatrixbPrs               Prs[HMATRIXB_PRS_NUMBER];     /**< \brief Offset: 0x080 HmatrixbPrs groups */
-} Hmatrixb;
-#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
 /** \brief HMATRIXB register API structure */
 typedef struct
