@@ -6,6 +6,10 @@ Utility to autogenerate pinctrl definitions.
 
 Usage::
     python3 pic32pinctrl.py [-i /path/to/configs] [-o /path/to/include]
+    
+    python pic32pinctrl.py -i ../pinconfig -o ../include
+
+    py pic32pinctrl.py -i ../pinconfig -o ../include
 """
 
 import argparse
