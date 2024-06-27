@@ -143,6 +143,9 @@
 #define MEC5_HAS_ROM_TIMER 1
 #define MEC5_HAS_PERIPH_PRIVILEGE 1
 
+#define MEC5_EEPROM_SIZE_IN_BYTES 8192
+#define MEC5_EEPROM_WRITE_PAGE_SIZE 32u
+
 /* I3C controllers capable of Controller role only */
 #define MEC5_I3C_HOST_CTRL_INSTANCES 1
 #define MEC5_I3C_HOST_CTRL_PORTS 3
