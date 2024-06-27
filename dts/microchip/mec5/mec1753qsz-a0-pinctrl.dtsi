@@ -1112,7 +1112,7 @@
 		pinmux = < MCHP_XEC_PINMUX(0251, MCHP_AF2) >;
 	};
 
-	/omit-if-no-ref/ pspi_sdo_gpio252: pspi_sdo_gpio252 {
+	/omit-if-no-ref/ pspi_sdi_gpio252: pspi_sdi_gpio252 {
 		pinmux = < MCHP_XEC_PINMUX(0252, MCHP_AF2) >;
 	};
 
