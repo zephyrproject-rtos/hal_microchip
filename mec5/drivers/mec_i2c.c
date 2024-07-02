@@ -392,9 +392,9 @@ int mec_hal_i2c_smb_idle_intr_enable(struct mec_i2c_smb_ctx *ctx, uint8_t enable
     struct mec_i2c_smb_regs *base = ctx->base;
 
     if (enable) {
-        base->CONFIG |= MEC_BIT(MEC_I2C_SMB_COMPL_IDLE_Pos);
+        base->CONFIG |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_IDLE_Pos);
     } else {
-        base->CONFIG &= (uint32_t)~MEC_BIT(MEC_I2C_SMB_COMPL_IDLE_Pos);
+        base->CONFIG &= (uint32_t)~MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_IDLE_Pos);
     }
 
     return MEC_RET_OK;
@@ -730,6 +730,10 @@ int mec_hal_i2c_nl_cm_cfg_start(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint1
     mec_i2c_nl_dbg_save[3] = regs->EXTLEN;
 #endif
 
+    /* clear IDLE status just before starting HW
+     * It may be futile because the bus is idle before starting.
+     */
+    regs->COMPL |= MEC_BIT(MEC_I2C_SMB_COMPL_IDLE_Pos);
     regs->CM_CMD = cmd;
 
     return MEC_RET_OK;
