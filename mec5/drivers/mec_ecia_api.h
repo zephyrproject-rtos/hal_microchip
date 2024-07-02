@@ -85,6 +85,8 @@ uint32_t mec_hal_girq_result_get(uint32_t girq);
 
 uint32_t mec_hal_girq_result_test(uint32_t girq, uint32_t bitpos);
 
+int mec_hal_ecia_girq_aggr_enable(uint32_t girq_num, uint8_t enable);
+
 /* Check if a peripheral interrupt source is direct capable.
  * This is not a simple question.
  * This routine only works if Method 1 initialization
