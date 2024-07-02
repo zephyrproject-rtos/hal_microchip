@@ -106,6 +106,8 @@ bool mec_hal_dmac_is_enabled(struct mec_dmac_regs *base);
 
 int mec_hal_dmac_init(struct mec_dmac_regs *base, uint32_t chan_mask);
 
+uint32_t mec_hal_dmac_girq_result(struct mec_dmac_regs *base);
+
 int mec_hal_dma_chan_init(struct mec_dmac_regs *base, enum mec_dmac_channel);
 
 int mec_hal_dma_chan_intr_status(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
@@ -118,6 +120,7 @@ int mec_hal_dma_chan_ia_status_clr_mask(struct mec_dmac_regs *base, uint32_t cha
 int mec_hal_dma_chan_ia_status_clr(struct mec_dmac_regs *base, enum mec_dmac_channel channel);
 int mec_hal_dma_chan_ia_enable(struct mec_dmac_regs *base, enum mec_dmac_channel channel);
 int mec_hal_dma_chan_ia_disable(struct mec_dmac_regs *base, enum mec_dmac_channel channel);
+void mec_hal_dmac_girq_aggr(uint8_t enable);
 
 bool mec_hal_dma_chan_is_busy(struct mec_dmac_regs *base, enum mec_dmac_channel chan);
 

@@ -547,6 +547,23 @@ void mec_hal_girq_clr_src(uint32_t devi)
     MEC_ECIA0->GIRQ[gidx].SOURCE = MEC_BIT(gpos);
 }
 
+int mec_hal_ecia_girq_aggr_enable(uint32_t girq_num, uint8_t enable)
+{
+    uint8_t gid = (uint8_t)(girq_num & 0xffu);
+
+    if ((gid < MEC5_ECIA_FIRST_GIRQ_NOS) || (girq_num > MEC5_ECIA_LAST_GIRQ_NOS)) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    if (enable) {
+        MEC_ECIA0->BLK_EN_SET = MEC_BIT(gid);
+    } else {
+        MEC_ECIA0->BLK_EN_CLR = MEC_BIT(gid);
+    }
+
+    return MEC_RET_OK;
+}
+
 /*
  * This is not a simple question.
  * This routine only works if Method 1 initialization
