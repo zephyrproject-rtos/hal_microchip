@@ -64,6 +64,12 @@ enum mec_i2c_std_freq {
     MEC_I2C_STD_FREQ_MAX
 };
 
+enum mec_i2c_target_mode_addr {
+    MEC_I2C_TARGET_ADDR_0 = 0,
+    MEC_I2C_TARGET_ADDR_1,
+    MEC_I2C_TARGET_ADDR_MAX,
+};
+
 enum mec_i2c_start {
     MEC_I2C_NO_START = 0,
     MEC_I2C_NORM_START,
@@ -121,6 +127,11 @@ int mec_hal_i2c_smb_ctrl_set(struct mec_i2c_smb_ctx *ctx, uint8_t ctrl);
 uint8_t mec_hal_i2c_smb_ctrl_get(struct mec_i2c_smb_ctx *ctx);
 
 int mec_hal_i2c_smb_is_bus_owned(struct mec_i2c_smb_ctx *ctx);
+
+int mec_hal_i2c_smb_get_target_addr(struct mec_i2c_smb_ctx *ctx, uint8_t target_id,
+                                    uint16_t *target_addr);
+int mec_hal_i2c_smb_set_target_addr(struct mec_i2c_smb_ctx *ctx, uint8_t target_id,
+                                    uint16_t target_addr);
 
 int mec_hal_i2c_smb_auto_ack_enable(struct mec_i2c_smb_ctx *ctx, uint8_t ien);
 int mec_hal_i2c_smb_auto_ack_disable(struct mec_i2c_smb_ctx *ctx, uint8_t ien);
@@ -201,6 +212,11 @@ static inline void mec_hal_i2c_nl_tm_proceed(struct mec_i2c_smb_regs *regs)
 {
     regs->TM_CMD |= MEC_BIT(MEC_I2C_SMB_TM_CMD_SPROCEED_Pos);
 }
+
+/* I2C-NL Target Mode */
+#define MEC_I2C_NL_TM_FLAG_DONE_IEN 0x01
+#define MEC_I2C_NL_TM_FLAG_AAT_IEN  0x02
+
 
 void mec_hal_i2c_pm_save_disable(void);
 void mec_hal_i2c_pm_restore(void);
