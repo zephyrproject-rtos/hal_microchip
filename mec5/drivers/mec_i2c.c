@@ -71,6 +71,8 @@
 #define MEC_I2C_SMB_COMPL_STS_RW1C_MSK 0xe1397f00u
 #define MEC_I2C_SMB_COMPL_STS_RO_MSK   0x02020040u
 #define MEC_I2C_SMB_COMPL_EN_RW_MSK    0x3cu
+#define MEC_I2C_SMB_COMPL_TM_STS_RW1C_MSK 0x80390000u
+#define MEC_I2C_SMB_COMPL_TM_STS_ALL_MSK 0x803b0000u
 
 #define MEC_I2C_SMB0_ECIA_INFO MEC5_ECIA_INFO(13, 0, 5, 20)
 #define MEC_I2C_SMB1_ECIA_INFO MEC5_ECIA_INFO(13, 1, 5, 21)
@@ -237,6 +239,67 @@ int mec_hal_i2c_smb_init(struct mec_i2c_smb_ctx *ctx, struct mec_i2c_smb_cfg *co
     mec_hal_girq_clr_src(ctx->devi);
 
     return MEC_RET_OK;
+}
+
+/* Helper to set/get specified own (target mode) I2C 7-bit address.
+ * If curr_addr pointer is non-NULL then we get the current value else
+ * set own address to new_addr.
+ */
+static int mec_hal_i2c_smb_own_addr(struct mec_i2c_smb_ctx *ctx, uint8_t tid,
+                                    uint16_t new_addr, uint16_t *curr_addr)
+{
+    uint32_t msk = 0;
+    uint8_t pos = 0;
+
+    if (!ctx) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    const struct mec_i2c_info *info = get_i2c_smb_info(ctx->base);
+
+    if (!info) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    switch (tid) {
+    case MEC_I2C_TARGET_ADDR_0:
+        msk = MEC_I2C_SMB_OWN_ADDR_OAD0_Msk;
+        pos = MEC_I2C_SMB_OWN_ADDR_OAD0_Pos;
+        break;
+    case MEC_I2C_TARGET_ADDR_1:
+        msk = MEC_I2C_SMB_OWN_ADDR_OAD1_Msk;
+        pos = MEC_I2C_SMB_OWN_ADDR_OAD1_Pos;
+        break;
+    default:
+        return MEC_RET_ERR_INVAL;
+    }
+
+    struct mec_i2c_smb_regs *regs = ctx->base;
+
+    if (curr_addr) {
+        *curr_addr = (uint16_t)((regs->OWN_ADDR & msk) >> pos);
+    } else {
+        regs->OWN_ADDR = ((regs->OWN_ADDR & (uint32_t)~msk)
+                          | (((uint32_t)new_addr << pos) & msk));
+    }
+
+    return MEC_RET_OK;
+}
+
+int mec_hal_i2c_smb_get_target_addr(struct mec_i2c_smb_ctx *ctx, uint8_t target_id,
+                                    uint16_t *target_addr)
+{
+    if (!target_addr) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    return mec_hal_i2c_smb_own_addr(ctx, target_id, 0u, target_addr);
+}
+
+int mec_hal_i2c_smb_set_target_addr(struct mec_i2c_smb_ctx *ctx, uint8_t target_id,
+                                    uint16_t target_addr)
+{
+    return mec_hal_i2c_smb_own_addr(ctx, target_id, target_addr, NULL);
 }
 
 int mec_hal_i2c_smb_girq_status_clr(struct mec_i2c_smb_ctx *ctx)
@@ -762,6 +825,88 @@ uint32_t mec_hal_i2c_nl_cm_event(struct mec_i2c_smb_regs *regs)
     } else {
         return MEC_I2C_NL_CM_EVENT_NONE;
     }
+}
+
+/* ---- Target Mode Network Layer ---- */
+
+/* Configure I2C controller's target command register
+ * b[23:16] = Read count. This reflects the number of bytes we are receiving from
+ * the external I2C Controller. This value is decremented by 1 for each by the
+ * Central DMA channel reads from the TM Receive Buffer register.
+ * Read count represents the buffer size the driver implements. The buffer should
+ * be large enought to receive the message data plus possible Rpt-START address byte.
+ * Read Count MSB is located in b[15:8] of the EXTLEN register.
+ *
+ * b[15:8] = Write count. The number of bytes this target will send to the external
+ * I2C Controller. If this field and TM_PEC are 0 when the External controller requests
+ * data then the current contents of the TM Transmit Buffer are used and the SPROT
+ * status bit is set in the Completion register.
+ *
+ * b[2] = TM_PEC. If this bit is 1 when Write count is decrement to 0 then HW FSM will
+ * copy contents of the PEC register to the I2C.Data register. HW FSM then clears the PEC
+ * register and this bit.
+ *
+ * b[1] = TM_PROCEED
+ * b[0] = TM_RUN
+ *
+ */
+/* Flags used by CM cfg_start
+ * #define MEC_I2C_NL_FLAG_START       0x01
+ * #define MEC_I2C_NL_FLAG_RPT_START   0x02
+ * #define MEC_I2C_NL_FLAG_STOP        0x04
+ * #define MEC_I2C_NL_FLAG_CM_DONE_IEN 0x100u
+ *
+ * New flags for TM config?
+ * TM_CMD has no start, rpt-start, or stop flags.
+ * TM_MODE has
+ * Completion register status bits
+ *   TM_DONE
+ *   Rpt-START on matching target write address
+ *   Rpt-START on matching target read address
+ *   TM_PROTOCOL_WR_CNT_ERROR
+ *   TM_TR(RO) = 0 TM finished rx phase, 1 = finished tx phase
+ *   TM_NAKR TM sent a NAK while it was receiving data
+ *
+ * Configuration register
+ *   TM_DONE interrupt enable
+ *   AAT interrupt enable
+ */
+int mec_hal_i2c_nl_tm_config(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint16_t nrx,
+                             uint32_t flags)
+{
+    uint32_t tm_cmd = 0;
+    uint32_t tm_ien = 0;
+    uint32_t tm_ien_msk = (MEC_BIT(MEC_I2C_SMB_CONFIG_ENSI_Pos)
+                           | MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_AAS_Pos));
+
+    if (!ctx) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    struct mec_i2c_smb_regs *regs = ctx->base;
+
+    regs->CONFIG &= (uint32_t)~tm_ien_msk;
+    regs->COMPL |= (uint32_t)MEC_I2C_SMB_COMPL_TM_STS_ALL_MSK;
+
+    if (flags & MEC_I2C_NL_TM_FLAG_DONE_IEN) {
+        tm_ien |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENSI_Pos);
+    }
+
+    if (flags & MEC_I2C_NL_TM_FLAG_AAT_IEN) {
+        tm_ien |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_AAS_Pos);
+    }
+
+    tm_cmd = (((uint32_t)nrx << MEC_I2C_SMB_TM_CMD_RDCNT_LSB_Pos)
+              | MEC_I2C_SMB_TM_CMD_RDCNT_LSB_Msk);
+    tm_cmd |= (((uint32_t)ntx << MEC_I2C_SMB_TM_CMD_WRCNT_LSB_Pos)
+               | MEC_I2C_SMB_TM_CMD_WRCNT_LSB_Msk);
+
+    tm_cmd |= (MEC_BIT(MEC_I2C_SMB_TM_CMD_SRUN_Pos) | MEC_BIT(MEC_I2C_SMB_TM_CMD_SPROCEED_Pos));
+
+    regs->TM_CMD = tm_cmd;
+    regs->CONFIG |= tm_ien;
+
+    return MEC_RET_OK;
 }
 
 /* ---- Power Management ----
