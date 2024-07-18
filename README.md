@@ -8,7 +8,7 @@ The HAL is organized following the directory structure detailed below.
 The directory is composed by six parts:
 ```
 .
-├── mplabx
+├── pic32
 ├── include
 ├── pinconfigs
 ├── README.md
@@ -16,7 +16,7 @@ The directory is composed by six parts:
 └── zephyr
 ```
 
- - MPLABX SoC specific include libraries.
+ - pic32 SoC specific include libraries.
  - Includes specific for these platforms
    - devicetree bindings
  - [Pin definitions](pinconfigs/README.md)
@@ -45,7 +45,7 @@ For more information about External Modules see
    be submitted using Linux LF format. Usually running a similar command to
    `find * type f -print0 | xargs -0 dos2unix -k` should be enough.
  - Make sure directory structure is respected.
- - The `mplabx/[pic32cxsg]/include/<soc>/README` file should be updated accordingly.
+ - The `pic32/[pic32cxsg]/include/<soc>/README` file should be updated accordingly.
    If for some reason the file not exists it should be created.
  - Directory names should be converted to lowercase.
  - The recommendation is add **all fixups** in the `hal_atmel` instead on the
