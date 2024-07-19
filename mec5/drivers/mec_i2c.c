@@ -373,7 +373,7 @@ int mec_hal_i2c_smb_is_bus_owned(struct mec_i2c_smb_ctx *ctx)
     return 1;
 }
 
-int mec_hal_i2c_smb_ctrl_set(struct mec_i2c_smb_ctx * ctx, uint8_t ctrl)
+int mec_hal_i2c_smb_ctrl_set(struct mec_i2c_smb_ctx *ctx, uint8_t ctrl)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
@@ -395,6 +395,28 @@ uint8_t mec_hal_i2c_smb_ctrl_get(struct mec_i2c_smb_ctx *ctx)
     }
 
     return ctx->i2c_ctrl_cached;
+}
+
+int mec_hal_i2c_cmd_ack_ctrl(struct mec_i2c_smb_ctx *ctx, uint8_t ack_en)
+{
+#ifdef MEC_I2C_BASE_CHECK
+    if (!ctx || !ctx->base) {
+        return MEC_RET_ERR_INVAL;
+    }
+#endif
+    struct mec_i2c_smb_regs *base = ctx->base;
+    uint8_t ctrl = ctx->i2c_ctrl_cached;
+
+    if (ack_en) {
+        ctrl |= MEC_BIT(MEC_I2C_SMB_CTRL_ACK_Pos);
+    } else {
+        ctrl &= (uint8_t)~MEC_BIT(MEC_I2C_SMB_CTRL_ACK_Pos);
+    }
+
+    ctx->i2c_ctrl_cached = ctrl;
+    base->CTRL = ctrl;
+
+    return MEC_RET_OK;
 }
 
 /* Re-arm Target mode receive after an external STOP.  */
@@ -494,13 +516,13 @@ int mec_hal_i2c_smb_intr_ctrl(struct mec_i2c_smb_ctx *ctx, uint32_t mask, uint8_
         cfg |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENSI_Pos);
     }
     if (mask & MEC_BIT(MEC_I2C_NL_IEN_AAT_POS)) {
-        cfg |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_AAS_Pos);
+        cfg |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_AAT_Pos);
     }
 
     if (enable) {
         regs->CONFIG |= cfg;
     } else {
-        regs->CONFIG &= ~cfg;
+        regs->CONFIG &= (uint32_t)~cfg;
     }
 
     return MEC_RET_OK;
@@ -556,6 +578,22 @@ void mec_hal_i2c_smb_wake_status_clr(struct mec_i2c_smb_ctx *ctx)
     base->WAKE_STS = MEC_BIT(MEC_I2C_SMB_WAKE_STS_START_DET_Pos);
 }
 
+int mec_hal_i2c_smb_is_idle_ien(struct mec_i2c_smb_ctx *ctx)
+{
+#ifdef MEC_I2C_BASE_CHECK
+    if (!ctx || !ctx->base) {
+        return 0;
+    }
+#endif
+    struct mec_i2c_smb_regs *regs = ctx->base;
+
+    if (regs->CONFIG & MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_IDLE_Pos)) {
+        return 1;
+    }
+
+    return 0;
+}
+
 int mec_hal_i2c_smb_is_idle_intr(struct mec_i2c_smb_ctx *ctx)
 {
 #ifdef MEC_I2C_BASE_CHECK
@@ -572,6 +610,28 @@ int mec_hal_i2c_smb_is_idle_intr(struct mec_i2c_smb_ctx *ctx)
     }
 
     return 0;
+}
+
+/* Return 1 if AAT interrupt is enabled else 0.
+ * NOTE we can't condition this with AAT read-only status from the
+ * I2C.Status register because that value is dynamic, it can change
+ * due to Network layer causing the status to be cleared.
+ */
+bool mec_hal_i2c_smb_is_aat_ien(struct mec_i2c_smb_ctx *ctx)
+{
+#ifdef MEC_I2C_BASE_CHECK
+    if (!ctx || !ctx->base) {
+        return false;
+    }
+#endif
+    struct mec_i2c_smb_regs *base = ctx->base;
+    uint32_t cfg = base->CONFIG & MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_AAT_Pos);
+
+    if (cfg) {
+        return true;
+    }
+
+    return false;
 }
 
 int mec_hal_i2c_smb_idle_status_clr(struct mec_i2c_smb_ctx *ctx)
@@ -759,10 +819,13 @@ int mec_hal_i2c_nl_cm_cfg_start(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint1
         return MEC_RET_ERR_INVAL;
     }
 
+    ctx->wrcnt = ntx;
+    ctx->rdcnt = nrx;
+
     regs->CONFIG &= (uint32_t)~MEC_BIT(MEC_I2C_SMB_CONFIG_ENMI_Pos);
     regs->CONFIG |= (MEC_BIT(MEC_I2C_SMB_CONFIG_FLUSH_CTXB_Pos)
                      | MEC_BIT(MEC_I2C_SMB_CONFIG_FLUSH_CRXB_Pos));
-    regs->COMPL |= MEC_BIT(MEC_I2C_SMB_COMPL_MDONE_Pos);
+    regs->COMPL |= MEC_BIT(MEC_I2C_SMB_COMPL_CM_DONE_Pos);
 
     regs->EXTLEN = ((ntx >> 8) & 0xffu) | (nrx & 0xff00u);
 
@@ -793,6 +856,9 @@ int mec_hal_i2c_nl_cm_cfg_start(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint1
     mec_i2c_nl_dbg_save[3] = regs->EXTLEN;
 #endif
 
+    /* save CM_CMD in context */
+    ctx->cmdctrl = (uint16_t)(cmd & 0xffffu);
+
     /* clear IDLE status just before starting HW
      * It may be futile because the bus is idle before starting.
      */
@@ -808,23 +874,166 @@ int mec_hal_i2c_nl_cm_cfg_start(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint1
  * are transmitted and (n)ACK'd the FSM clears MPROCEED only.
  * NOTE: any error should clear MRUN and MPROCEED.
  */
-uint32_t mec_hal_i2c_nl_cm_event(struct mec_i2c_smb_regs *regs)
+uint32_t mec_hal_i2c_nl_cm_event(struct mec_i2c_smb_ctx *ctx)
 {
 #ifdef MEC_I2C_BASE_CHECK
-    if (!regs) {
+    if (!ctx || !ctx->base) {
         return MEC_I2C_NL_CM_EVENT_NONE;
     }
 #endif
+    struct mec_i2c_smb_regs *regs = ctx->base;
+    uint32_t cm_cmd = regs->CM_CMD;
+    uint16_t wrcnt = (uint16_t)((regs->EXTLEN & 0xffu) << 8);
+    uint16_t rdcnt = (uint16_t)(regs->EXTLEN & 0xff00u);
 
-    uint32_t cm_cmd = regs->CM_CMD & 0x03u;
+    wrcnt |= (uint16_t)((cm_cmd >> 16) & 0xffu);
+    rdcnt |= (uint16_t)((cm_cmd >> 24) & 0xffu);
 
-    if (cm_cmd == 0) {
+    if (!cm_cmd && (ctx->wrcnt || ctx->rdcnt)) {
         return MEC_I2C_NL_CM_EVENT_ALL_DONE;
-    } else if (cm_cmd == 0x01) {
+    } else if (rdcnt && !wrcnt && ((cm_cmd & 0x03u) == 0x01)) {
         return MEC_I2C_NL_CM_EVENT_W2R;
     } else {
         return MEC_I2C_NL_CM_EVENT_NONE;
     }
+}
+
+int mec_hal_i2c_nl_cmd_clear(struct mec_i2c_smb_ctx *ctx, uint8_t is_tm)
+{
+#ifdef MEC_I2C_BASE_CHECK
+    if (!ctx || !ctx->base) {
+        return MEC_RET_ERR_INVAL;
+    }
+#endif
+    if (is_tm) {
+        ctx->base->TM_CMD = 0;
+    } else {
+        ctx->base->CM_CMD = 0;
+    }
+    ctx->base->EXTLEN = 0;
+
+    return MEC_RET_OK;
+}
+
+int mec_hal_i2c_nl_cm_proceed(struct mec_i2c_smb_ctx *ctx)
+{
+#ifdef MEC_I2C_BASE_CHECK
+    if (!ctx || !ctx->base) {
+        return MEC_RET_ERR_INVAL;
+    }
+#endif
+    ctx->base->CM_CMD |= (MEC_BIT(MEC_I2C_SMB_CM_CMD_MRUN_Pos)
+                          | MEC_BIT(MEC_I2C_SMB_CM_CMD_MPROCEED_Pos));
+    return MEC_RET_OK;
+}
+
+int mec_hal_i2c_nl_tm_proceed(struct mec_i2c_smb_ctx *ctx)
+{
+#ifdef MEC_I2C_BASE_CHECK
+    if (!ctx || !ctx->base) {
+        return MEC_RET_ERR_INVAL;
+    }
+#endif
+    ctx->base->TM_CMD |= (MEC_BIT(MEC_I2C_SMB_TM_CMD_SRUN_Pos)
+                          | MEC_BIT(MEC_I2C_SMB_TM_CMD_SPROCEED_Pos));
+    return MEC_RET_OK;
+}
+
+int mec_hal_i2c_nl_state_get(struct mec_i2c_smb_regs *regs, struct mec_i2c_smb_nl_state *state,
+                             uint8_t is_tm)
+{
+    uint32_t r = 0;
+
+#ifdef MEC_I2C_BASE_CHECK
+    if (!regs) {
+        return MEC_RET_ERR_INVAL;
+    }
+#endif
+    if (!state) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    r = regs->EXTLEN;
+    state->wrcnt = (uint16_t)((r & 0xffu) << 8);
+    state->rdcnt = (uint16_t)(r & 0xff00u);
+
+    if (is_tm) {
+        r = regs->TM_CMD;
+        state->wrcnt |= ((r >> 8) & 0xffu);
+        state->rdcnt |= ((r >> 16) & 0xffu);
+        state->ctrl = r & 0xffu;
+    } else {
+        r = regs->CM_CMD;
+        state->wrcnt |= ((r >> 16) & 0xffu);
+        state->rdcnt |= ((r >> 24) & 0xffu);
+        state->ctrl = r & 0xffffu;
+    }
+
+    return MEC_RET_OK;
+}
+
+uint32_t mec_hal_i2c_nl_cm_xfr_count_get(struct mec_i2c_smb_regs *regs, uint8_t is_read)
+{
+    uint32_t cnt = 0;
+
+#ifdef MEC_I2C_BASE_CHECK
+    if (!regs) {
+        return cnt;
+    }
+#endif
+
+    cnt = regs->EXTLEN;
+    if (is_read) {
+        cnt = (cnt & MEC_I2C_SMB_EXTLEN_RDCNT_MSB_Msk) >> MEC_I2C_SMB_EXTLEN_RDCNT_MSB_Pos;
+        cnt <<= 8;
+        cnt |= ((regs->CM_CMD & MEC_I2C_SMB_CM_CMD_RDCNT_LSB_Msk)
+                >> MEC_I2C_SMB_CM_CMD_RDCNT_LSB_Pos);
+    } else {
+        cnt = (cnt & MEC_I2C_SMB_EXTLEN_WRCNT_MSB_Msk) >> MEC_I2C_SMB_EXTLEN_WRCNT_MSB_Pos;
+        cnt <<= 8;
+        cnt |= ((regs->CM_CMD & MEC_I2C_SMB_CM_CMD_WRCNT_LSB_Msk)
+                >> MEC_I2C_SMB_CM_CMD_WRCNT_LSB_Pos);
+    }
+
+    return cnt;
+}
+
+/* Modify CM write or read byte count.
+ * LSB's of the 16-bit counts are located in the CM_CMD register.
+ * Bit[1:0] of this register should not be written with 0.
+ * We access count LSB's using byte access.
+ * write count LSB is in bits[15:8], read count LSB is in bits[32:26].
+ */
+int mec_hal_i2c_nl_cm_xfr_count_set(struct mec_i2c_smb_regs *regs, uint8_t is_read, uint32_t cnt)
+{
+    uint32_t msk = MEC_I2C_SMB_EXTLEN_WRCNT_MSB_Msk;
+    uint8_t bpos = MEC_I2C_SMB_EXTLEN_WRCNT_MSB_Pos;
+
+#ifdef MEC_I2C_BASE_CHECK
+    if (!regs) {
+        return MEC_RET_ERR_INVAL;
+    }
+#endif
+
+    if (cnt > MEC_I2C_SMB_NL_MAX_XFR_COUNT) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    /* Set MSB first in case LSB is 0 */
+    if (is_read) {
+        msk = MEC_I2C_SMB_EXTLEN_RDCNT_MSB_Msk;
+        bpos = MEC_I2C_SMB_EXTLEN_RDCNT_MSB_Pos;
+    }
+
+    regs->EXTLEN = (regs->EXTLEN & (uint32_t)~msk) | (((cnt & 0xff00u) << bpos) & msk);
+
+    if (is_read) {
+        MEC_MMCR8(&regs->CM_CMD + 3u) = (uint8_t)(cnt & 0xffu);
+    } else {
+        MEC_MMCR8(&regs->CM_CMD + 2u) = (uint8_t)(cnt & 0xffu);
+    }
+
+    return MEC_RET_OK;
 }
 
 /* ---- Target Mode Network Layer ---- */
@@ -877,13 +1086,16 @@ int mec_hal_i2c_nl_tm_config(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint16_t
     uint32_t tm_cmd = 0;
     uint32_t tm_ien = 0;
     uint32_t tm_ien_msk = (MEC_BIT(MEC_I2C_SMB_CONFIG_ENSI_Pos)
-                           | MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_AAS_Pos));
+                           | MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_AAT_Pos));
 
     if (!ctx) {
         return MEC_RET_ERR_INVAL;
     }
 
     struct mec_i2c_smb_regs *regs = ctx->base;
+
+    ctx->wrcnt = ntx;
+    ctx->rdcnt = nrx;
 
     regs->CONFIG &= (uint32_t)~tm_ien_msk;
     regs->COMPL |= (uint32_t)MEC_I2C_SMB_COMPL_TM_STS_ALL_MSK;
@@ -893,21 +1105,109 @@ int mec_hal_i2c_nl_tm_config(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint16_t
     }
 
     if (flags & MEC_I2C_NL_TM_FLAG_AAT_IEN) {
-        tm_ien |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_AAS_Pos);
+        tm_ien |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_AAT_Pos);
     }
 
+#ifdef MEC5_I2C_SMB_HAS_STOP_DETECT_IRQ
+    if (flags & MEC_I2C_NL_TM_FLAG_STOP_IEN) {
+        tm_ien |= MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_NL_STS_Pos);
+    }
+#endif
+
     tm_cmd = (((uint32_t)nrx << MEC_I2C_SMB_TM_CMD_RDCNT_LSB_Pos)
-              | MEC_I2C_SMB_TM_CMD_RDCNT_LSB_Msk);
+              & MEC_I2C_SMB_TM_CMD_RDCNT_LSB_Msk);
     tm_cmd |= (((uint32_t)ntx << MEC_I2C_SMB_TM_CMD_WRCNT_LSB_Pos)
-               | MEC_I2C_SMB_TM_CMD_WRCNT_LSB_Msk);
+               & MEC_I2C_SMB_TM_CMD_WRCNT_LSB_Msk);
 
     tm_cmd |= (MEC_BIT(MEC_I2C_SMB_TM_CMD_SRUN_Pos) | MEC_BIT(MEC_I2C_SMB_TM_CMD_SPROCEED_Pos));
 
+    /* save TM_CMD in context */
+    ctx->cmdctrl = (uint16_t)(tm_cmd & 0xffu);
+
+    /* b[7:0]=wrCnt MSB, b[15:8] = rdCnt MSB */
+    regs->EXTLEN = ((ntx >> 8) & 0xffu) | (nrx & 0xff00u);
     regs->TM_CMD = tm_cmd;
     regs->CONFIG |= tm_ien;
 
     return MEC_RET_OK;
 }
+
+uint32_t mec_hal_i2c_nl_tm_event(struct mec_i2c_smb_ctx *ctx)
+{
+#ifdef MEC_I2C_BASE_CHECK
+    if (!ctx || !ctx->base) {
+        return MEC_I2C_NL_TM_EVENT_NONE;
+    }
+#endif
+    struct mec_i2c_smb_regs *regs = ctx->base;
+    uint32_t tm_cmd = regs->TM_CMD;
+    uint16_t wrcnt = (uint16_t)((regs->EXTLEN & 0xffu) << 8);
+    uint16_t rdcnt = (uint16_t)(regs->EXTLEN & 0xff00u);
+
+    wrcnt |= (uint16_t)((tm_cmd >> 8) & 0xffu);
+    rdcnt |= (uint16_t)((tm_cmd >> 16) & 0xffu);
+
+    if (!tm_cmd && (ctx->wrcnt || ctx->rdcnt)) {
+        return MEC_I2C_NL_TM_EVENT_ALL_DONE;
+    } else if (rdcnt && !wrcnt && ((tm_cmd & 0x03u) == 0x01)) {
+        return MEC_I2C_NL_TM_EVENT_W2R;
+    } else {
+        return MEC_I2C_NL_TM_EVENT_NONE;
+    }
+}
+
+uint32_t mec_hal_i2c_nl_tm_xfr_count_get(struct mec_i2c_smb_ctx *ctx, uint8_t is_rx)
+{
+    uint32_t cnt = 0;
+
+#ifdef MEC_I2C_BASE_CHECK
+    if (!ctx || !ctx->base) {
+        return MEC_I2C_NL_TM_EVENT_NONE;
+    }
+#endif
+    struct mec_i2c_smb_regs *regs = ctx->base;
+
+    cnt = regs->EXTLEN;
+    if (is_rx) { /* External Controller transmits clocks and data. We capture(receive) data */
+        cnt = (cnt & MEC_I2C_SMB_EXTLEN_RDCNT_MSB_Msk) >> MEC_I2C_SMB_EXTLEN_RDCNT_MSB_Pos;
+        cnt <<= 8;
+        cnt |= ((regs->TM_CMD & MEC_I2C_SMB_TM_CMD_RDCNT_LSB_Msk)
+                >> MEC_I2C_SMB_TM_CMD_RDCNT_LSB_Pos);
+    } else { /* External Controller generates clocks and we supply(transmit) data */
+        cnt = (cnt & MEC_I2C_SMB_EXTLEN_WRCNT_MSB_Msk) >> MEC_I2C_SMB_EXTLEN_WRCNT_MSB_Pos;
+        cnt <<= 8;
+        cnt |= ((regs->TM_CMD & MEC_I2C_SMB_TM_CMD_WRCNT_LSB_Msk)
+                >> MEC_I2C_SMB_TM_CMD_WRCNT_LSB_Pos);
+    }
+
+    return cnt;
+}
+
+uint32_t mec_hal_i2c_nl_tm_transfered(struct mec_i2c_smb_ctx *ctx, uint8_t is_rx)
+{
+    uint32_t nxfr = 0, hwcnt = 0;
+
+#ifdef MEC_I2C_BASE_CHECK
+    if (!ctx || !ctx->base) {
+        return MEC_I2C_NL_TM_EVENT_NONE;
+    }
+#endif
+
+    hwcnt = mec_hal_i2c_nl_tm_xfr_count_get(ctx, is_rx);
+
+    if (is_rx) {
+        if (ctx->rdcnt >= hwcnt) {
+            nxfr = ctx->rdcnt - hwcnt;
+        }
+    } else {
+        if (ctx->wrcnt >= hwcnt) {
+            nxfr = ctx->wrcnt - hwcnt;
+        }
+    }
+
+    return nxfr;
+}
+
 
 /* ---- Power Management ----
  * Each controller has a wake enable interrupt on detection of an
