@@ -291,7 +291,7 @@ typedef enum {
 #include <common/mec5_gpio_8f_6port_v1_5.h>
 #include <common/mec5_gspi_v2.h>
 #include <common/mec5_htmr_v1.h>
-#include <common/mec5_i2c_smb_v3_7.h>
+#include <common/mec5_i2c_smb_v3_8.h>
 #include <common/mec5_kbc_v1.h>
 #include <common/mec5_kscan_v1.h>
 #include <common/mec5_mbox_v1.h>
