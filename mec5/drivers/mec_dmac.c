@@ -405,9 +405,8 @@ int mec_hal_dma_chan_start(struct mec_dmac_regs *base, enum mec_dmac_channel cha
     }
 
     regs = &base->CHAN[chan];
+    regs->ACTV = 0;             /* clock gate */
     ctrl = regs->CTRL;
-    regs->ACTV = 0;
-    regs->CTRL = 0;
 
     if (ctrl & MEC_BIT(MEC_DMA_CHAN_CTRL_DHFC_Pos)) {
         start_pos = MEC_DMA_CHAN_CTRL_SWFC_RUN_Pos;
@@ -416,10 +415,8 @@ int mec_hal_dma_chan_start(struct mec_dmac_regs *base, enum mec_dmac_channel cha
     ctrl &= (uint32_t)~(MEC_BIT(MEC_DMA_CHAN_CTRL_HFC_RUN_Pos)
                         | MEC_BIT(MEC_DMA_CHAN_CTRL_SWFC_RUN_Pos));
 
-    regs->ACTV = MEC_BIT(MEC_DMA_CHAN_ACTV_EN_Pos);
-
 #ifdef MEC_DMAC_DEBUG_REGS
-    dbg_mec_dma[chan].actv = regs->ACTV;
+    dbg_mec_dma[chan].actv = MEC_BIT(MEC_DMA_CHAN_ACTV_EN_Pos);
     dbg_mec_dma[chan].mstart = regs->MSTART;
     dbg_mec_dma[chan].mend = regs->MEND;
     dbg_mec_dma[chan].dstart = regs->DSTART;
@@ -430,6 +427,7 @@ int mec_hal_dma_chan_start(struct mec_dmac_regs *base, enum mec_dmac_channel cha
 #endif
 
     regs->CTRL = ctrl | MEC_BIT(start_pos);
+    regs->ACTV = MEC_BIT(MEC_DMA_CHAN_ACTV_EN_Pos);
 
     return MEC_RET_OK;
 }
@@ -465,9 +463,10 @@ int mec_hal_dma_chan_halt(struct mec_dmac_regs *base, enum mec_dmac_channel chan
 int mec_hal_dma_chan_stop(struct mec_dmac_regs *base, enum mec_dmac_channel chan)
 {
     uint32_t wait_cnt = MEC_DMA_CHAN_STOP_WAIT;
+    int ret = 0;
 
     if (!base || (chan >= MEC_DMAC_CHAN_MAX)) {
-        return false;
+        return MEC_RET_ERR_INVAL;
     }
 
     if (base->CHAN[chan].CTRL & MEC_BIT(MEC_DMA_CHAN_CTRL_BUSY_Pos)) {
@@ -475,11 +474,16 @@ int mec_hal_dma_chan_stop(struct mec_dmac_regs *base, enum mec_dmac_channel chan
         /* should stop on next byte boundary */
         while (base->CHAN[chan].CTRL & MEC_BIT(MEC_DMA_CHAN_CTRL_BUSY_Pos)) {
             if (!wait_cnt) {
-                return MEC_RET_ERR_TIMEOUT;
+                ret = MEC_RET_ERR_TIMEOUT;
+                break;
             }
             wait_cnt--;
         }
     }
+
+    base->CHAN[chan].CTRL &= (uint32_t)~(MEC_BIT(MEC_DMA_CHAN_CTRL_HFC_RUN_Pos)
+                                         | MEC_BIT(MEC_DMA_CHAN_CTRL_SWFC_RUN_Pos));
+    base->CHAN[chan].ACTV = 0;
 
     return MEC_RET_OK;
 }
