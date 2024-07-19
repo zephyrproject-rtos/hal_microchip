@@ -170,7 +170,7 @@ int mec_hal_bbled_init(struct mec_bbled_regs *regs, uint32_t bbled_config)
     mec_hal_girq_ctrl(info->devi, 0);
     mec_hal_pcr_clr_blk_slp_en(info->pcr_id);
 
-    if (bbled_config) {
+    if (bbled_config & MEC_BIT(MEC_BBLED_CFG_SOFT_RESET_POS)) {
         regs->CONFIG |= MEC_BIT(MEC_BBLED_CONFIG_SRST_Pos);
     } else {
         regs->CONFIG &= (uint32_t)~MEC_BBLED_CONFIG_CTRL_Msk;
