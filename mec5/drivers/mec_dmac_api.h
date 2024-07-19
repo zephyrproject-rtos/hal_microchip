@@ -98,63 +98,64 @@ struct mec_dma_cfg {
 /* forward declaration */
 struct mec_dmac_regs;
 
-int mec_hal_dmac_reset(struct mec_dmac_regs *base);
+/* ---- channel oriented API ----
+ * MEC5 family has one instance of the central DMA controller.
+ * The number of channels varies by part.
+ * No need for register base address parameter.
+ */
 
-int mec_hal_dmac_enable(struct mec_dmac_regs *base, uint8_t enable);
+/* ---- Reset and Enable Controller ---- */
 
-bool mec_hal_dmac_is_enabled(struct mec_dmac_regs *base);
+int mec_hal_dmac_reset(void);
 
-int mec_hal_dmac_init(struct mec_dmac_regs *base, uint32_t chan_mask);
+int mec_hal_dmac_enable(uint8_t enable);
+bool mec_hal_dmac_is_enabled(void);
 
-uint32_t mec_hal_dmac_girq_result(struct mec_dmac_regs *base);
+int mec_hal_dmac_init(uint32_t chan_mask);
 
-int mec_hal_dma_chan_init(struct mec_dmac_regs *base, enum mec_dmac_channel);
-
-int mec_hal_dma_chan_intr_status(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                                 uint32_t *status);
-int mec_hal_dma_chan_intr_status_clr(struct mec_dmac_regs *base, enum mec_dmac_channel chan);
-int mec_hal_dma_chan_intr_en(struct mec_dmac_regs *base, enum mec_dmac_channel chan, uint8_t ien);
-
-int mec_hal_dma_chan_ia_result(struct mec_dmac_regs *base, uint32_t * result);
-int mec_hal_dma_chan_ia_status_clr_mask(struct mec_dmac_regs *base, uint32_t chanmsk);
-int mec_hal_dma_chan_ia_status_clr(struct mec_dmac_regs *base, enum mec_dmac_channel channel);
-int mec_hal_dma_chan_ia_enable(struct mec_dmac_regs *base, enum mec_dmac_channel channel);
-int mec_hal_dma_chan_ia_disable(struct mec_dmac_regs *base, enum mec_dmac_channel channel);
+uint32_t mec_hal_dmac_girq_result(void);
 void mec_hal_dmac_girq_aggr(uint8_t enable);
 
-bool mec_hal_dma_chan_is_busy(struct mec_dmac_regs *base, enum mec_dmac_channel chan);
+/* ---- channel API ---- */
+int mec_hal_dma_chan_init(enum mec_dmac_channel);
 
-int mec_hal_dma_chan_start(struct mec_dmac_regs *base, enum mec_dmac_channel chan);
+int mec_hal_dma_chan_intr_status(enum mec_dmac_channel chan, uint32_t *status);
+int mec_hal_dma_chan_intr_status_clr(enum mec_dmac_channel chan);
+int mec_hal_dma_chan_intr_en(enum mec_dmac_channel chan, uint8_t ien);
 
-int mec_hal_dma_chan_halt(struct mec_dmac_regs *base, enum mec_dmac_channel chan);
+int mec_hal_dma_chan_ia_status_clr(enum mec_dmac_channel channel);
+int mec_hal_dma_chan_ia_status_clr_mask(uint32_t chanmsk);
+int mec_hal_dma_chan_ia_enable(enum mec_dmac_channel channel);
+int mec_hal_dma_chan_ia_enable_mask(uint32_t chan_mask);
+int mec_hal_dma_chan_ia_disable_mask(uint32_t chan_mask);
+int mec_hal_dma_chan_ia_disable(enum mec_dmac_channel channel);
 
-int mec_hal_dma_chan_stop(struct mec_dmac_regs *base, enum mec_dmac_channel chan);
+bool mec_hal_dma_chan_is_busy(enum mec_dmac_channel chan);
 
-int mec_hal_dma_chan_hwfc_set(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                              enum mec_dmac_hwfc_dev_id hwfc_dev, uintptr_t dev_addr);
+int mec_hal_dma_chan_start(enum mec_dmac_channel chan);
 
-int mec_hal_dma_chan_dir_set(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                             enum mec_dmac_dir dir);
-int mec_hal_dma_chan_dir_get(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                             enum mec_dmac_dir *dir);
+int mec_hal_dma_chan_halt(enum mec_dmac_channel chan);
 
-int mec_hal_dma_chan_mem_set(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                             uintptr_t maddr, size_t nbytes);
+int mec_hal_dma_chan_stop(enum mec_dmac_channel chan);
 
-int mec_hal_dma_chan_mem_units_set(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                                   enum mec_dmac_unit_size unitsz);
+int mec_hal_dma_chan_hwfc_set(enum mec_dmac_channel chan, enum mec_dmac_hwfc_dev_id hwfc_dev,
+                              uintptr_t dev_addr);
 
-int mec_hal_dma_chan_rem_bytes(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                               uint32_t *remsz);
+int mec_hal_dma_chan_dir_set(enum mec_dmac_channel chan, enum mec_dmac_dir dir);
+int mec_hal_dma_chan_dir_get(enum mec_dmac_channel chan, enum mec_dmac_dir *dir);
 
-int mec_hal_dma_chan_cfg_get(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                             struct mec_dma_cfg *cfg);
+int mec_hal_dma_chan_mem_set(enum mec_dmac_channel chan, uintptr_t maddr, size_t nbytes);
 
-int mec_hal_dma_chan_cfg(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                         struct mec_dma_cfg *cfg);
+int mec_hal_dma_chan_mem_units_set(enum mec_dmac_channel chan, enum mec_dmac_unit_size unitsz);
 
-int mec_hal_dma_chan_reload(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                            uintptr_t src, uintptr_t dest, size_t nbytes);
+int mec_hal_dma_chan_rem_bytes(enum mec_dmac_channel chan, uint32_t *remsz);
+
+int mec_hal_dma_chan_reload(enum mec_dmac_channel chan, uintptr_t src, uintptr_t dest,
+                            size_t nbytes);
+
+int mec_hal_dma_chan_cfg(enum mec_dmac_channel chan, struct mec_dma_cfg *cfg);
+
+int mec_hal_dma_chan_cfg_get(enum mec_dmac_channel chan, struct mec_dma_cfg *cfg);
 
 #ifdef __cplusplus
 }

@@ -50,32 +50,23 @@
 #define MEC_DMAC_CHAN19_ECIA_INFO MEC5_ECIA_INFO(14, 19, 6, 197)
 #endif
 
-struct mec_dmac_info {
-    uintptr_t base_addr;
-    uint16_t pcr_id;
-    uint8_t num_channels;
-    uint32_t devi[MEC5_DMAC_NUM_CHANNELS];
-};
+// MEC_DMAC_BASE, MEC_PCR_DMA, MEC5_DMAC_NUM_CHANNELS
+// MEC_PCR_DMA
 
-const struct mec_dmac_info dmac_instances[] = {
-    {MEC_DMAC_BASE, MEC_PCR_DMA, MEC5_DMAC_NUM_CHANNELS,
-     { MEC_DMAC_CHAN0_ECIA_INFO, MEC_DMAC_CHAN1_ECIA_INFO,
-       MEC_DMAC_CHAN2_ECIA_INFO, MEC_DMAC_CHAN3_ECIA_INFO,
-       MEC_DMAC_CHAN4_ECIA_INFO, MEC_DMAC_CHAN5_ECIA_INFO,
-       MEC_DMAC_CHAN6_ECIA_INFO, MEC_DMAC_CHAN7_ECIA_INFO,
-       MEC_DMAC_CHAN8_ECIA_INFO, MEC_DMAC_CHAN9_ECIA_INFO,
-       MEC_DMAC_CHAN10_ECIA_INFO, MEC_DMAC_CHAN11_ECIA_INFO,
-       MEC_DMAC_CHAN12_ECIA_INFO, MEC_DMAC_CHAN13_ECIA_INFO,
-       MEC_DMAC_CHAN14_ECIA_INFO, MEC_DMAC_CHAN15_ECIA_INFO,
+const uint32_t dmac_ecia_info_table[MEC5_DMAC_NUM_CHANNELS] = {
+    MEC_DMAC_CHAN0_ECIA_INFO, MEC_DMAC_CHAN1_ECIA_INFO,
+    MEC_DMAC_CHAN2_ECIA_INFO, MEC_DMAC_CHAN3_ECIA_INFO,
+    MEC_DMAC_CHAN4_ECIA_INFO, MEC_DMAC_CHAN5_ECIA_INFO,
+    MEC_DMAC_CHAN6_ECIA_INFO, MEC_DMAC_CHAN7_ECIA_INFO,
+    MEC_DMAC_CHAN8_ECIA_INFO, MEC_DMAC_CHAN9_ECIA_INFO,
+    MEC_DMAC_CHAN10_ECIA_INFO, MEC_DMAC_CHAN11_ECIA_INFO,
+    MEC_DMAC_CHAN12_ECIA_INFO, MEC_DMAC_CHAN13_ECIA_INFO,
+    MEC_DMAC_CHAN14_ECIA_INFO, MEC_DMAC_CHAN15_ECIA_INFO,
 #if MEC5_DMAC_NUM_CHANNELS == 20
-       MEC_DMAC_CHAN16_ECIA_INFO, MEC_DMAC_CHAN17_ECIA_INFO,
-       MEC_DMAC_CHAN18_ECIA_INFO, MEC_DMAC_CHAN19_ECIA_INFO,
+    MEC_DMAC_CHAN16_ECIA_INFO, MEC_DMAC_CHAN17_ECIA_INFO,
+    MEC_DMAC_CHAN18_ECIA_INFO, MEC_DMAC_CHAN19_ECIA_INFO,
 #endif
-     },
-    }
 };
-#define MEC_DMAC_NUM_INSTANCES                                                \
-    (sizeof(dmac_instances) / sizeof(struct mec_dmac_info))
 
 #ifdef MEC_DMAC_DEBUG_REGS
 struct mec_dma_chan_regs_save {
@@ -92,60 +83,45 @@ struct mec_dma_chan_regs_save {
 struct mec_dma_chan_regs_save dbg_mec_dma[MEC5_DMAC_NUM_CHANNELS];
 #endif
 
-static int dmac_get_instance(struct mec_dmac_regs *base)
+static uint32_t dmac_get_ecia_info(uint32_t channel)
 {
-    for (size_t i = 0; i < MEC_DMAC_NUM_INSTANCES; i++) {
-        if (dmac_instances[i].base_addr == (uintptr_t)base) {
-            return (int)i;
-        }
+    if (channel < MEC5_DMAC_NUM_CHANNELS) {
+        return dmac_ecia_info_table[channel];
     }
 
-    return -1;
+    return UINT32_MAX;
 }
 
-static struct mec_dmac_info const *dmac_get_info(struct mec_dmac_regs *base)
+static void dma_chan_ia_enable(uint32_t channel)
 {
-    int instance = dmac_get_instance(base);
-
-    if (instance >= 0) {
-        return &dmac_instances[instance];
-    }
-
-    return NULL;
-}
-
-static void dma_chan_ia_enable(int instance, uint32_t channel)
-{
-    uint32_t devi = dmac_instances[instance].devi[channel];
+    uint32_t devi = dmac_get_ecia_info(channel);
 
     mec_hal_girq_ctrl(devi, 1u);
 }
 
-static void dma_chan_ia_disable(int instance, uint32_t channel)
+static void dma_chan_ia_disable(uint32_t channel)
 {
-    uint32_t devi = dmac_instances[instance].devi[channel];
+    uint32_t devi = dmac_get_ecia_info(channel);
 
     mec_hal_girq_ctrl(devi, 0);
 }
 
-static void dmac_clr_ia_status(int instance, uint32_t channel)
+static void dmac_clr_ia_status(uint32_t channel)
 {
-    uint32_t devi = dmac_instances[instance].devi[channel];
+    uint32_t devi = dmac_get_ecia_info(channel);
 
     mec_hal_girq_clr_src(devi);
 }
 
-static void dma_clr_ia_all(const struct mec_dmac_info *info)
+static void dma_clr_ia_all(void)
 {
-    for (uint8_t chan = 0; chan < info->num_channels; chan++) {
-        mec_hal_girq_clr_src(info->devi[chan]);
+    for (uint8_t chan = 0; MEC5_DMAC_NUM_CHANNELS; chan++) {
+        mec_hal_girq_clr_src(dmac_ecia_info_table[chan]);
     }
 }
 
-uint32_t mec_hal_dmac_girq_result(struct mec_dmac_regs *base)
+uint32_t mec_hal_dmac_girq_result(void)
 {
-    (void)base;
-
     return mec_hal_girq_result_get(MEC_DMAC_GIRQ);
 }
 
@@ -154,22 +130,18 @@ void mec_hal_dmac_girq_aggr(uint8_t enable)
     mec_hal_ecia_girq_aggr_enable(MEC_DMAC_GIRQ, enable);
 }
 
-int mec_hal_dmac_reset(struct mec_dmac_regs *base)
+int mec_hal_dmac_reset(void)
 {
-    if (!base) {
-        return MEC_RET_ERR_INVAL;
-    }
+    struct mec_dmac_regs *base = MEC_DMAC;
 
     base->MCTRL |= MEC_BIT(MEC_DMAC_MCTRL_MRST_Pos);
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dmac_enable(struct mec_dmac_regs *base, uint8_t enable)
+int mec_hal_dmac_enable(uint8_t enable)
 {
-    if (!base) {
-        return MEC_RET_ERR_INVAL;
-    }
+    struct mec_dmac_regs *base = MEC_DMAC;
 
     if (enable) {
         base->MCTRL |= MEC_BIT(MEC_DMAC_MCTRL_MACTV_Pos);
@@ -180,11 +152,9 @@ int mec_hal_dmac_enable(struct mec_dmac_regs *base, uint8_t enable)
     return MEC_RET_OK;
 }
 
-bool mec_hal_dmac_is_enabled(struct mec_dmac_regs *base)
+bool mec_hal_dmac_is_enabled(void)
 {
-    if ((uintptr_t)base != (uintptr_t)MEC_DMAC_BASE) {
-        return false;
-    }
+    struct mec_dmac_regs *base = MEC_DMAC;
 
     if (base->MCTRL & MEC_BIT(MEC_DMAC_MCTRL_MACTV_Pos)) {
         return true;
@@ -193,42 +163,19 @@ bool mec_hal_dmac_is_enabled(struct mec_dmac_regs *base)
     return false;
 }
 
-int mec_hal_dma_chan_ia_status_clr(struct mec_dmac_regs *base, enum mec_dmac_channel channel)
+int mec_hal_dma_chan_ia_status_clr(enum mec_dmac_channel channel)
 {
-    int instance = dmac_get_instance(base);
-
-    if ((instance < 0) || (channel >= MEC5_DMAC_NUM_CHANNELS)) {
+    if (channel >= MEC5_DMAC_NUM_CHANNELS) {
         return MEC_RET_ERR_INVAL;
     }
 
-    dmac_clr_ia_status(instance, channel);
+    dmac_clr_ia_status(channel);
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_ia_result(struct mec_dmac_regs *base, uint32_t *result)
+int mec_hal_dma_chan_ia_status_clr_mask(uint32_t chanmsk)
 {
-    int instance = dmac_get_instance(base);
-
-    if (instance < 0) {
-        return MEC_RET_ERR_INVAL;
-    }
-
-    if (result) {
-        *result = MEC_ECIA0->GIRQ[MEC_DMAC_GIRQ_IDX].RESULT;
-    }
-
-    return MEC_RET_OK;
-}
-
-int mec_hal_dma_chan_ia_status_clr_mask(struct mec_dmac_regs *base, uint32_t chanmsk)
-{
-    int instance = dmac_get_instance(base);
-
-    if (instance < 0) {
-        return MEC_RET_ERR_INVAL;
-    }
-
     chanmsk &= MEC_DMAC_ALL_CHAN_MASK;
     if (!chanmsk) {
         return MEC_RET_OK;
@@ -239,107 +186,97 @@ int mec_hal_dma_chan_ia_status_clr_mask(struct mec_dmac_regs *base, uint32_t cha
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_ia_enable(struct mec_dmac_regs *base, enum mec_dmac_channel channel)
+int mec_hal_dma_chan_ia_enable(enum mec_dmac_channel channel)
 {
-    int instance = dmac_get_instance(base);
-
-    if ((instance < 0) || (channel >= MEC5_DMAC_NUM_CHANNELS)) {
+    if (channel >= MEC5_DMAC_NUM_CHANNELS) {
         return MEC_RET_ERR_INVAL;
     }
 
-    dma_chan_ia_enable(instance, channel);
+    dma_chan_ia_enable(channel);
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_ia_disable(struct mec_dmac_regs *base, enum mec_dmac_channel channel)
+int mec_hal_dma_chan_ia_disable(enum mec_dmac_channel channel)
 {
-    int instance = dmac_get_instance(base);
-
-    if ((instance < 0) || (channel >= MEC5_DMAC_NUM_CHANNELS)) {
+    if (channel >= MEC5_DMAC_NUM_CHANNELS) {
         return MEC_RET_ERR_INVAL;
     }
 
-    dma_chan_ia_disable(instance, channel);
+    dma_chan_ia_disable(channel);
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_ia_enable_mask(struct mec_dmac_regs *base, uint32_t chan_mask)
+int mec_hal_dma_chan_ia_enable_mask(uint32_t chan_mask)
 {
-    int instance = dmac_get_instance(base);
-
-    if (instance < 0) {
-        return MEC_RET_ERR_INVAL;
+    if (!chan_mask) {
+        return MEC_RET_OK;
     }
 
     for (uint32_t chan = 0; chan < MEC5_DMAC_NUM_CHANNELS; chan++) {
         if (chan_mask & MEC_BIT(chan)) {
-            dma_chan_ia_enable(instance, chan);
+            dma_chan_ia_enable(chan);
         }
     }
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_ia_disable_mask(struct mec_dmac_regs *base, uint32_t chan_mask)
+int mec_hal_dma_chan_ia_disable_mask(uint32_t chan_mask)
 {
-    int instance = dmac_get_instance(base);
-
-    if (instance < 0) {
-        return MEC_RET_ERR_INVAL;
+    if (!chan_mask) {
+        return MEC_RET_OK;
     }
 
     for (uint32_t chan = 0; chan < MEC5_DMAC_NUM_CHANNELS; chan++) {
         if (chan_mask & MEC_BIT(chan)) {
-            dma_chan_ia_disable(instance, chan);
+            dma_chan_ia_disable(chan);
         }
     }
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dmac_init(struct mec_dmac_regs *base, uint32_t chan_mask)
+int mec_hal_dmac_init(uint32_t chan_mask)
 {
-    const struct mec_dmac_info *info = dmac_get_info(base);
-
-    if (!info) {
-        return MEC_RET_ERR_INVAL;
-    }
-
-    mec_hal_pcr_clr_blk_slp_en(info->pcr_id); /* clocks gated ON */
-    mec_hal_dmac_reset(base);
-    dma_clr_ia_all(info);
-    mec_hal_dmac_enable(base, 1u);
-    mec_hal_dma_chan_ia_enable_mask(base, chan_mask);
+    mec_hal_pcr_clr_blk_slp_en(MEC_PCR_DMA); /* clocks gated ON */
+    mec_hal_dmac_reset();
+    dma_clr_ia_all();
+    mec_hal_dmac_enable(1u);
+    mec_hal_dma_chan_ia_enable_mask(chan_mask);
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_init(struct mec_dmac_regs *base, enum mec_dmac_channel chan)
+int mec_hal_dma_chan_init(enum mec_dmac_channel chan)
 {
-    if (!base || (chan >= MEC_DMAC_CHAN_MAX)) {
+    struct mec_dmac_regs *base = MEC_DMAC;
+
+    if (chan >= MEC_DMAC_CHAN_MAX) {
         return MEC_RET_ERR_INVAL;
     }
 
-    base->CHAN[chan].MEND = 0;
-    base->CHAN[chan].MSTART = 0;
+    struct mec_dma_chan_regs *regs = &base->CHAN[chan];
 
-    base->CHAN[chan].ACTV = 0;
-    base->CHAN[chan].CTRL = 0;
-    base->CHAN[chan].DSTART = 0;
-    base->CHAN[chan].IEN = 0;
-    base->CHAN[chan].ISTATUS = MEC_DMA_CHAN_ALL_STATUS;
+    regs->MEND = 0;
+    regs->MSTART = 0;
+
+    regs->ACTV = 0;
+    regs->CTRL = 0;
+    regs->DSTART = 0;
+    regs->IEN = 0;
+    regs->ISTATUS = MEC_DMA_CHAN_ALL_STATUS;
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_intr_status(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                                 uint32_t *status)
+int mec_hal_dma_chan_intr_status(enum mec_dmac_channel chan, uint32_t *status)
 {
+    struct mec_dmac_regs *base = MEC_DMAC;
     uint32_t hwsts = 0u, logical_sts = 0u;
 
-    if (!base || !status || (chan >= MEC_DMAC_CHAN_MAX)) {
+    if (!status || (chan >= MEC_DMAC_CHAN_MAX)) {
         return MEC_RET_ERR_INVAL;
     }
 
@@ -365,9 +302,11 @@ int mec_hal_dma_chan_intr_status(struct mec_dmac_regs *base, enum mec_dmac_chann
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_intr_status_clr(struct mec_dmac_regs *base, enum mec_dmac_channel chan)
+int mec_hal_dma_chan_intr_status_clr(enum mec_dmac_channel chan)
 {
-    if (!base || (chan >= MEC_DMAC_CHAN_MAX)) {
+    struct mec_dmac_regs *base = MEC_DMAC;
+
+    if (chan >= MEC_DMAC_CHAN_MAX) {
         return MEC_RET_ERR_INVAL;
     }
 
@@ -377,11 +316,12 @@ int mec_hal_dma_chan_intr_status_clr(struct mec_dmac_regs *base, enum mec_dmac_c
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_intr_en(struct mec_dmac_regs *base, enum mec_dmac_channel chan, uint8_t ien)
+int mec_hal_dma_chan_intr_en(enum mec_dmac_channel chan, uint8_t ien)
 {
+    struct mec_dmac_regs *base = MEC_DMAC;
     uint32_t ien_val = 0u;
 
-    if (!base || (chan >= MEC_DMAC_CHAN_MAX)) {
+    if (chan >= MEC_DMAC_CHAN_MAX) {
         return MEC_RET_ERR_INVAL;
     }
 
@@ -394,17 +334,18 @@ int mec_hal_dma_chan_intr_en(struct mec_dmac_regs *base, enum mec_dmac_channel c
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_start(struct mec_dmac_regs *base, enum mec_dmac_channel chan)
+int mec_hal_dma_chan_start(enum mec_dmac_channel chan)
 {
-    volatile struct mec_dma_chan_regs *regs = NULL;
     uint32_t ctrl = 0;
+    struct mec_dmac_regs *base = MEC_DMAC;
     uint8_t start_pos = MEC_DMA_CHAN_CTRL_HFC_RUN_Pos;
 
-    if (!base || (chan >= MEC_DMAC_CHAN_MAX)) {
+    if (chan >= MEC_DMAC_CHAN_MAX) {
         return MEC_RET_ERR_INVAL;
     }
 
-    regs = &base->CHAN[chan];
+    struct mec_dma_chan_regs *regs = &base->CHAN[chan];
+
     regs->ACTV = 0;             /* clock gate */
     ctrl = regs->CTRL;
 
@@ -432,9 +373,11 @@ int mec_hal_dma_chan_start(struct mec_dmac_regs *base, enum mec_dmac_channel cha
     return MEC_RET_OK;
 }
 
-bool mec_hal_dma_chan_is_busy(struct mec_dmac_regs *base, enum mec_dmac_channel chan)
+bool mec_hal_dma_chan_is_busy(enum mec_dmac_channel chan)
 {
-    if (!base || (chan >= MEC_DMAC_CHAN_MAX)) {
+    struct mec_dmac_regs *base = MEC_DMAC;
+
+    if (chan >= MEC_DMAC_CHAN_MAX) {
         return false;
     }
 
@@ -445,34 +388,40 @@ bool mec_hal_dma_chan_is_busy(struct mec_dmac_regs *base, enum mec_dmac_channel 
     return false;
 }
 
-int mec_hal_dma_chan_halt(struct mec_dmac_regs *base, enum mec_dmac_channel chan)
+int mec_hal_dma_chan_halt(enum mec_dmac_channel chan)
 {
+    struct mec_dmac_regs *base = MEC_DMAC;
     uint32_t halt = (MEC_BIT(MEC_DMA_CHAN_CTRL_HFC_RUN_Pos)
                      | MEC_BIT(MEC_DMA_CHAN_CTRL_SWFC_RUN_Pos));
 
-    if (!base || (chan >= MEC_DMAC_CHAN_MAX)) {
-        return false;
+    if (chan >= MEC_DMAC_CHAN_MAX) {
+        return MEC_RET_ERR_INVAL;
     }
 
-    base->CHAN[chan].CTRL &= ~halt;
-    base->CHAN[chan].ACTV = 0;
+    struct mec_dma_chan_regs *regs = &base->CHAN[chan];
+
+    regs->CTRL &= ~halt;
+    regs->ACTV = 0;
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_stop(struct mec_dmac_regs *base, enum mec_dmac_channel chan)
+int mec_hal_dma_chan_stop(enum mec_dmac_channel chan)
 {
+    struct mec_dmac_regs *base = MEC_DMAC;
     uint32_t wait_cnt = MEC_DMA_CHAN_STOP_WAIT;
     int ret = 0;
 
-    if (!base || (chan >= MEC_DMAC_CHAN_MAX)) {
+    if (chan >= MEC_DMAC_CHAN_MAX) {
         return MEC_RET_ERR_INVAL;
     }
 
-    if (base->CHAN[chan].CTRL & MEC_BIT(MEC_DMA_CHAN_CTRL_BUSY_Pos)) {
-        base->CHAN[chan].CTRL |= MEC_BIT(MEC_DMA_CHAN_CTRL_ABORT_Pos);
+    struct mec_dma_chan_regs *regs = &base->CHAN[chan];
+
+    if (regs->CTRL & MEC_BIT(MEC_DMA_CHAN_CTRL_BUSY_Pos)) {
+        regs->CTRL |= MEC_BIT(MEC_DMA_CHAN_CTRL_ABORT_Pos);
         /* should stop on next byte boundary */
-        while (base->CHAN[chan].CTRL & MEC_BIT(MEC_DMA_CHAN_CTRL_BUSY_Pos)) {
+        while (regs->CTRL & MEC_BIT(MEC_DMA_CHAN_CTRL_BUSY_Pos)) {
             if (!wait_cnt) {
                 ret = MEC_RET_ERR_TIMEOUT;
                 break;
@@ -481,51 +430,58 @@ int mec_hal_dma_chan_stop(struct mec_dmac_regs *base, enum mec_dmac_channel chan
         }
     }
 
-    base->CHAN[chan].CTRL &= (uint32_t)~(MEC_BIT(MEC_DMA_CHAN_CTRL_HFC_RUN_Pos)
-                                         | MEC_BIT(MEC_DMA_CHAN_CTRL_SWFC_RUN_Pos));
-    base->CHAN[chan].ACTV = 0;
+    regs->CTRL &= (uint32_t)~(MEC_BIT(MEC_DMA_CHAN_CTRL_HFC_RUN_Pos)
+                              | MEC_BIT(MEC_DMA_CHAN_CTRL_SWFC_RUN_Pos));
+    regs->ACTV = 0;
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_hwfc_set(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                              enum mec_dmac_hwfc_dev_id hwfc_dev, uintptr_t dev_addr)
+int mec_hal_dma_chan_hwfc_set(enum mec_dmac_channel chan, enum mec_dmac_hwfc_dev_id hwfc_dev,
+                              uintptr_t dev_addr)
 {
-    uint32_t ctrl;
+    struct mec_dmac_regs *base = MEC_DMAC;
+    uint32_t ctrl = 0;
 
-    if (!base || (chan >= MEC_DMAC_CHAN_MAX) || (hwfc_dev >= MEC_DMAC_DEV_ID_MAX)) {
+    if ((chan >= MEC_DMAC_CHAN_MAX) || (hwfc_dev >= MEC_DMAC_DEV_ID_MAX)) {
         return MEC_RET_ERR_INVAL;
     }
 
-    ctrl = base->CHAN[chan].CTRL & (uint32_t)~(MEC_DMA_CHAN_CTRL_HFC_DEV_Msk);
+    struct mec_dma_chan_regs *regs = &base->CHAN[chan];
+
+    ctrl = regs->CTRL & (uint32_t)~(MEC_DMA_CHAN_CTRL_HFC_DEV_Msk);
     ctrl |= (((uint32_t)hwfc_dev << MEC_DMA_CHAN_CTRL_HFC_DEV_Pos)
              & MEC_DMA_CHAN_CTRL_HFC_DEV_Msk);
-    base->CHAN[chan].CTRL = ctrl;
-    base->CHAN[chan].DSTART = dev_addr;
+    regs->CTRL = ctrl;
+    regs->DSTART = dev_addr;
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_dir_set(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                             enum mec_dmac_dir dir)
+int mec_hal_dma_chan_dir_set(enum mec_dmac_channel chan, enum mec_dmac_dir dir)
 {
-    if (!base || (chan >= MEC_DMAC_CHAN_MAX) || (dir >= MEC_DMAC_DIR_MAX)) {
+    struct mec_dmac_regs *base = MEC_DMAC;
+
+    if ((chan >= MEC_DMAC_CHAN_MAX) || (dir >= MEC_DMAC_DIR_MAX)) {
         return MEC_RET_ERR_INVAL;
     }
 
+    struct mec_dma_chan_regs *regs = &base->CHAN[chan];
+
     if (dir == MEC_DMAC_DIR_MEM_TO_DEV) {
-        base->CHAN[chan].CTRL |= MEC_BIT(MEC_DMA_CHAN_CTRL_MEM2DEV_Pos);
+        regs->CTRL |= MEC_BIT(MEC_DMA_CHAN_CTRL_MEM2DEV_Pos);
     } else {
-        base->CHAN[chan].CTRL &= (uint32_t)~MEC_BIT(MEC_DMA_CHAN_CTRL_MEM2DEV_Pos);
+        regs->CTRL &= (uint32_t)~MEC_BIT(MEC_DMA_CHAN_CTRL_MEM2DEV_Pos);
     }
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_dir_get(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                             enum mec_dmac_dir * dir)
+int mec_hal_dma_chan_dir_get(enum mec_dmac_channel chan, enum mec_dmac_dir * dir)
 {
-    if (!base || !dir || (chan >= MEC_DMAC_CHAN_MAX)) {
+    struct mec_dmac_regs *base = MEC_DMAC;
+
+    if (!dir || (chan >= MEC_DMAC_CHAN_MAX)) {
         return MEC_RET_ERR_INVAL;
     }
 
@@ -537,27 +493,32 @@ int mec_hal_dma_chan_dir_get(struct mec_dmac_regs *base, enum mec_dmac_channel c
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_mem_set(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                             uintptr_t maddr, size_t nbytes)
+int mec_hal_dma_chan_mem_set(enum mec_dmac_channel chan, uintptr_t maddr, size_t nbytes)
 {
-    if (!base || (chan >= MEC_DMAC_CHAN_MAX)) {
+    struct mec_dmac_regs *base = MEC_DMAC;
+
+    if (chan >= MEC_DMAC_CHAN_MAX) {
         return MEC_RET_ERR_INVAL;
     }
 
-    base->CHAN[chan].MSTART = maddr;
-    base->CHAN[chan].MEND = maddr + nbytes;
+    struct mec_dma_chan_regs *regs = &base->CHAN[chan];
+
+    regs->MSTART = maddr;
+    regs->MEND = maddr + nbytes;
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_mem_units_set(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                                   enum mec_dmac_unit_size unitsz)
+int mec_hal_dma_chan_mem_units_set(enum mec_dmac_channel chan, enum mec_dmac_unit_size unitsz)
 {
-    uint32_t ctrl, v;
+    struct mec_dmac_regs *base = MEC_DMAC;
+    uint32_t ctrl = 0, v = 0;
 
-    if (!base || (chan >= MEC_DMAC_CHAN_MAX)) {
+    if (chan >= MEC_DMAC_CHAN_MAX) {
         return MEC_RET_ERR_INVAL;
     }
+
+    struct mec_dma_chan_regs *regs = &base->CHAN[chan];
 
     v = 1u;
     if ((unitsz == 4u) || (unitsz == 2u)) {
@@ -565,25 +526,27 @@ int mec_hal_dma_chan_mem_units_set(struct mec_dmac_regs *base, enum mec_dmac_cha
     }
 
     v <<= MEC_DMA_CHAN_CTRL_UNITSZ_Pos;
-    ctrl = base->CHAN[chan].CTRL & (uint32_t)~MEC_DMA_CHAN_CTRL_UNITSZ_Msk;
+    ctrl = regs->CTRL & (uint32_t)~MEC_DMA_CHAN_CTRL_UNITSZ_Msk;
     ctrl |= v;
-    base->CHAN[chan].CTRL = ctrl;
+    regs->CTRL = ctrl;
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_rem_bytes(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                               uint32_t *remsz)
+int mec_hal_dma_chan_rem_bytes(enum mec_dmac_channel chan, uint32_t *remsz)
 {
-    uint32_t mstart, mend, nrem;
+    struct mec_dmac_regs *base = MEC_DMAC;
+    uint32_t mstart = 0, mend = 0, nrem = 0;
 
-    if (!base || !remsz || (chan >= MEC_DMAC_CHAN_MAX)) {
+    if (!remsz || (chan >= MEC_DMAC_CHAN_MAX)) {
         return MEC_RET_ERR_INVAL;
     }
 
+    struct mec_dma_chan_regs *regs = &base->CHAN[chan];
+
     nrem = 0u;
-    mend = base->CHAN[chan].MEND;
-    mstart = base->CHAN[chan].MSTART;
+    mend = regs->MEND;
+    mstart = regs->MSTART;
     if (mend > mstart) {
         nrem = mend - mstart;
     }
@@ -593,25 +556,29 @@ int mec_hal_dma_chan_rem_bytes(struct mec_dmac_regs *base, enum mec_dmac_channel
     return 0;
 }
 
-int mec_hal_dma_chan_reload(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                            uintptr_t src, uintptr_t dest, size_t nbytes)
+int mec_hal_dma_chan_reload(enum mec_dmac_channel chan, uintptr_t src, uintptr_t dest,
+                            size_t nbytes)
 {
-    if (!base || (chan >= MEC_DMAC_CHAN_MAX)) {
+    struct mec_dmac_regs *base = MEC_DMAC;
+
+    if (chan >= MEC_DMAC_CHAN_MAX) {
         return MEC_RET_ERR_INVAL;
     }
 
-    /* ensure HW is "done" by mstart == mend */
-    base->CHAN[chan].MSTART = base->CHAN[chan].MEND;
-    base->CHAN[chan].MEND = 0; /* keep mend <= mstart */
+    struct mec_dma_chan_regs *regs = &base->CHAN[chan];
 
-    if (base->CHAN[chan].CTRL & MEC_BIT(MEC_DMA_CHAN_CTRL_MEM2DEV_Pos)) {
-        base->CHAN[chan].MSTART = src;
-        base->CHAN[chan].MEND = src + nbytes;
-        base->CHAN[chan].DSTART = dest;
+    /* ensure HW is "done" by mstart == mend */
+    regs->MSTART = base->CHAN[chan].MEND;
+    regs->MEND = 0; /* keep mend <= mstart */
+
+    if (regs->CTRL & MEC_BIT(MEC_DMA_CHAN_CTRL_MEM2DEV_Pos)) {
+        regs->MSTART = src;
+        regs->MEND = src + nbytes;
+        regs->DSTART = dest;
     } else { /* device to memory */
-        base->CHAN[chan].MSTART = dest;
-        base->CHAN[chan].MEND = dest + nbytes;
-        base->CHAN[chan].DSTART = src;
+        regs->MSTART = dest;
+        regs->MEND = dest + nbytes;
+        regs->DSTART = src;
     }
 
     return MEC_RET_OK;
@@ -638,28 +605,30 @@ int mec_hal_dma_chan_reload(struct mec_dmac_regs *base, enum mec_dmac_channel ch
  *  Memory End address regs = destination address + transfer size in bytes
  *  Device Start address reg = source address (device register address)
  */
-int mec_hal_dma_chan_cfg(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                         struct mec_dma_cfg *cfg)
+int mec_hal_dma_chan_cfg(enum mec_dmac_channel chan, struct mec_dma_cfg *cfg)
 {
+    struct mec_dmac_regs *base = MEC_DMAC;
     uint32_t ctrl = 0u; /* dir = Dev2Mem, IncrMem=0, IncrDev=0 */
     uint32_t usz = 1u;
 
-    if (!base || !cfg || (chan >= MEC_DMAC_CHAN_MAX)) {
+    if (!cfg || (chan >= MEC_DMAC_CHAN_MAX)) {
         return MEC_RET_ERR_INVAL;
     }
 
-    mec_hal_dma_chan_init(base, chan);
+    mec_hal_dma_chan_init(chan);
 
     if ((cfg->unitsz == 4u) || (cfg->unitsz == 2u)) {
         usz = cfg->unitsz;
     }
 
+    struct mec_dma_chan_regs *regs = &base->CHAN[chan];
+
     ctrl = usz << MEC_DMA_CHAN_CTRL_UNITSZ_Pos;
     if (cfg->dir == MEC_DMAC_DIR_MEM_TO_DEV) {
         ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_MEM2DEV_Pos);
-        base->CHAN[chan].MSTART = cfg->src_addr;
-        base->CHAN[chan].MEND = cfg->src_addr + cfg->nbytes;
-        base->CHAN[chan].DSTART = cfg->dst_addr;
+        regs->MSTART = cfg->src_addr;
+        regs->MEND = cfg->src_addr + cfg->nbytes;
+        regs->DSTART = cfg->dst_addr;
         if (cfg->flags & MEC_DMA_CFG_FLAG_INCR_SRC_ADDR) {
             ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_INCRM_Pos);
         }
@@ -667,12 +636,11 @@ int mec_hal_dma_chan_cfg(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
             ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_INCRD_Pos);
         }
     } else { /* device(source address) to memory(destination address) */
-        base->CHAN[chan].MSTART = cfg->dst_addr;
-        base->CHAN[chan].MEND = cfg->dst_addr + cfg->nbytes;
-        base->CHAN[chan].DSTART = cfg->src_addr;
+        regs->MSTART = cfg->dst_addr;
+        regs->MEND = cfg->dst_addr + cfg->nbytes;
+        regs->DSTART = cfg->src_addr;
         if (cfg->flags & MEC_DMA_CFG_FLAG_INCR_SRC_ADDR) {
             ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_INCRD_Pos);
-
         }
         if (cfg->flags & MEC_DMA_CFG_FLAG_INCR_DST_ADDR) {
             ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_INCRM_Pos);
@@ -686,24 +654,26 @@ int mec_hal_dma_chan_cfg(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
         ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_DHFC_Pos);
     }
 
-    base->CHAN[chan].CTRL = ctrl;
-    base->CHAN[chan].ACTV |= MEC_BIT(MEC_DMA_CHAN_ACTV_EN_Pos);
+    regs->CTRL = ctrl;
+    regs->ACTV |= MEC_BIT(MEC_DMA_CHAN_ACTV_EN_Pos);
 
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_cfg_get(struct mec_dmac_regs *base, enum mec_dmac_channel chan,
-                             struct mec_dma_cfg *cfg)
+int mec_hal_dma_chan_cfg_get(enum mec_dmac_channel chan, struct mec_dma_cfg *cfg)
 {
+    struct mec_dmac_regs *base = MEC_DMAC;
     uint32_t ctrl = 0u, dstart = 0u, mstart = 0u, mend = 0u;
 
-    if (!base || !cfg || (chan >= MEC_DMAC_CHAN_MAX)) {
+    if (!cfg || (chan >= MEC_DMAC_CHAN_MAX)) {
         return MEC_RET_ERR_INVAL;
     }
 
+    struct mec_dma_chan_regs *regs = &base->CHAN[chan];
+
     cfg->flags = 0u;
 
-    ctrl = base->CHAN[chan].CTRL;
+    ctrl = regs->CTRL;
     if (ctrl & MEC_BIT(MEC_DMA_CHAN_CTRL_DHFC_Pos)) {
         cfg->hwfc_dev = MEC_DMAC_DEV_ID_NONE;
     } else {
@@ -729,9 +699,9 @@ int mec_hal_dma_chan_cfg_get(struct mec_dmac_regs *base, enum mec_dmac_channel c
     }
 
     cfg->nbytes = 0u;
-    mstart = base->CHAN[chan].MSTART;
-    mend = base->CHAN[chan].MEND;
-    dstart = base->CHAN[chan].DSTART;
+    mstart = regs->MSTART;
+    mend = regs->MEND;
+    dstart = regs->DSTART;
     if (mend > mstart) {
         cfg->nbytes = mend - mstart;
     }
