@@ -44,7 +44,7 @@ typedef struct mec_dmac_regs {                  /*!< (@ 0x40002400) MEC_DMAC Str
   __IM  uint32_t  DM_DPKT;                      /*!< (@ 0x00000004) DMA Main Data Packet(RO)                                   */
   __IM  uint32_t  DM_FSM;                       /*!< (@ 0x00000008) DMA Main FSM(RO)                                           */
   __IM  uint32_t  RESERVED[13];
-  __IOM MEC_DMA_CHAN_Type CHAN[20];             /*!< (@ 0x00000040) DMA Channel                                                */
+  MEC_DMA_CHAN_Type CHAN[20];                   /*!< (@ 0x00000040) DMA Channel                                                */
 } MEC_DMAC_Type;                                /*!< Size = 1344 (0x540)                                                       */
 
 /** @} */ /* End of group Device_Peripheral_peripherals */
