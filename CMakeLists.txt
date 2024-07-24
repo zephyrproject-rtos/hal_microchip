@@ -1,5 +1,5 @@
 add_subdirectory_ifdef(CONFIG_HAS_MEC_HAL mec)
 add_subdirectory_ifdef(CONFIG_HAS_MPFS_HAL mpfs)
 add_subdirectory_ifdef(CONFIG_HAS_MEC5_HAL mec5)
-zephyr_include_directories_ifdef(CONFIG_MPLABX include)
-add_subdirectory(mplabx)
+zephyr_include_directories_ifdef(CONFIG_PIC32C include)
+add_subdirectory(pic32c)
