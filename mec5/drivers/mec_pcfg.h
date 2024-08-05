@@ -46,10 +46,8 @@
  */
 #define MEC5_QSPI_LDMA_TX_NULL_LEN_ARE_CLOCKS
 
-/* Enable TFDP trace code */
-/* #define MEC_TRACE_ENABLE */
-/* #define MEC_TRACE_INLINE */
-/* #define MEC_TRACE_MASK_IRQ */
+/* Enable checks of BC-Link base adress passed to BC-Link API's */
+/* #define MEC_BCL_BASE_CHECK */
 
 #define MEC_TFDP_DELAY()
 

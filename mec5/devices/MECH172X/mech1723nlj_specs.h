@@ -141,4 +141,7 @@
 
 #define MEC5_EEPROM_SIZE_IN_BYTES 2048u
 
+/* BC-Link */
+#define MEC5_BCL_INSTANCES 1
+
 #endif /* __MEC1723NLJ_SPECS_H__ */

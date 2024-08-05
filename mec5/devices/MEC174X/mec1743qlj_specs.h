@@ -147,4 +147,7 @@
 #define MEC5_EEPROM_SIZE_IN_BYTES 8192
 #define MEC5_EEPROM_WRITE_PAGE_SIZE 32u
 
+/* BC-Link */
+#define MEC5_BCL_INSTANCES 1
+
 #endif /* __MEC5_SPECS_H__ */
