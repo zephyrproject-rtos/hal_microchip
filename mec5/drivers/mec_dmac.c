@@ -115,7 +115,7 @@ static void dmac_clr_ia_status(uint32_t channel)
 
 static void dma_clr_ia_all(void)
 {
-    for (uint8_t chan = 0; MEC5_DMAC_NUM_CHANNELS; chan++) {
+    for (uint8_t chan = 0; chan < MEC5_DMAC_NUM_CHANNELS; chan++) {
         mec_hal_girq_clr_src(dmac_ecia_info_table[chan]);
     }
 }
