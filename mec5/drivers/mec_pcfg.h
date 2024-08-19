@@ -49,7 +49,8 @@
 /* Enable checks of BC-Link base adress passed to BC-Link API's */
 /* #define MEC_BCL_BASE_CHECK */
 
-#define MEC_TFDP_DELAY()
+/* Enable checks of week timer base adress passed to API's */
+/* #define MEC_WKTMR_BASE_CHECK */
 
 #endif /* #ifndef _MEC_PCFG_H */
 /* end mec_pcfg.h */
