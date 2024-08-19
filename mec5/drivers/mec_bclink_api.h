@@ -67,7 +67,7 @@ int mec_hal_bcl_intr_ctrl(struct mec_bcl_regs *regs, uint8_t msk, uint8_t enable
 int mec_hal_bcl_get_target_address(struct mec_bcl_regs *regs, uint8_t *target_address);
 int mec_hal_bcl_set_target_address(struct mec_bcl_regs *regs, uint8_t target_address);
 
-int mec_hal_bcl_start(struct mec_bcl_regs *regs, uint8_t target_reg, uint8_t *data,
+int mec_hal_bcl_start(struct mec_bcl_regs *regs, uint8_t target_reg, uint8_t wrdata,
                       uint32_t flags);
 
 int mec_hal_bcl_get_data(struct mec_bcl_regs *regs, uint8_t *data);

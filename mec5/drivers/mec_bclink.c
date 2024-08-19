@@ -70,7 +70,7 @@ int mec_hal_bcl_init(struct mec_bcl_regs *base, uint32_t flags)
     mec_hal_girq_bm_clr_src(MEC_BCL_GIRQ, girq_bitmap);
 
     /* take BC-Link controller out of reset */
-    base->STATUS = (uint32_t)~MEC_BIT(MEC_BCL_STATUS_SRST_Pos);
+    base->STATUS &= (uint32_t)~MEC_BIT(MEC_BCL_STATUS_SRST_Pos);
 
     return MEC_RET_OK;
 }
@@ -290,7 +290,7 @@ int mec_hal_bcl_set_data(struct mec_bcl_regs *regs, uint8_t data)
     return MEC_RET_OK;
 }
 
-int mec_hal_bcl_start(struct mec_bcl_regs *regs, uint8_t target_reg, uint8_t *data, uint32_t flags)
+int mec_hal_bcl_start(struct mec_bcl_regs *regs, uint8_t target_reg, uint8_t wrdata, uint32_t flags)
 {
     uint32_t girq_bitmap = MEC_BIT(MEC_BCL_BCLR_GIRQ_POS) | MEC_BIT(MEC_BCL_BERR_GIRQ_POS);
     volatile uint32_t temp = 0;
@@ -300,10 +300,6 @@ int mec_hal_bcl_start(struct mec_bcl_regs *regs, uint8_t target_reg, uint8_t *da
         return MEC_RET_ERR_INVAL;
     }
 #endif
-
-    if (!data) {
-        return MEC_RET_ERR_INVAL;
-    }
 
     if (regs->STATUS & MEC_BIT(MEC_BCL_STATUS_BUSY_Pos)) {
         return MEC_RET_ERR_BUSY;
@@ -322,7 +318,7 @@ int mec_hal_bcl_start(struct mec_bcl_regs *regs, uint8_t target_reg, uint8_t *da
     if (flags & MEC_BCL_START_FLAG_READ) {
         temp = regs->DATA; /* first read of data register triggers transmit of read packet */
     } else {
-        regs->DATA = *data; /* write data register triggers transmit of write packet */
+        regs->DATA = wrdata; /* write data register triggers transmit of write packet */
     }
 
     /* HW is busy, try clearing the GIRQ latched busy-clear status */
