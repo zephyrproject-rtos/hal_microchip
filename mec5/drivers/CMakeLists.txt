@@ -37,6 +37,7 @@ zephyr_library_sources(mec_vbat.c)
 zephyr_library_sources(mec_vci.c)
 zephyr_library_sources(mec_version.c)
 zephyr_library_sources(mec_wdt.c)
+zephyr_library_sources(mec_wktimer.c)
 
 if(CONFIG_SOC_SERIES_MEC175X)
   zephyr_library_sources(mec_i3c.c)
