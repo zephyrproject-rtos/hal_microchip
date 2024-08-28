@@ -111,10 +111,10 @@ typedef struct mec_i2c_smb_regs {               /*!< (@ 0x40004000) MEC_I2C_SMB0
 #define MEC_I2C_SMB_OWN_ADDR_OAD1_Msk     (0x7f00UL)                /*!< OAD1 (Bitfield-Mask: 0x7f)                            */
 /* =========================================================  DATA  ========================================================== */
 /* ========================================================  CM_CMD  ========================================================= */
-#define MEC_I2C_SMB_CM_CMD_MRUN_Pos       (0UL)                     /*!< MRUN (Bit 0)                                          */
-#define MEC_I2C_SMB_CM_CMD_MRUN_Msk       (0x1UL)                   /*!< MRUN (Bitfield-Mask: 0x01)                            */
-#define MEC_I2C_SMB_CM_CMD_MPROCEED_Pos   (1UL)                     /*!< MPROCEED (Bit 1)                                      */
-#define MEC_I2C_SMB_CM_CMD_MPROCEED_Msk   (0x2UL)                   /*!< MPROCEED (Bitfield-Mask: 0x01)                        */
+#define MEC_I2C_SMB_CM_CMD_RUN_Pos        (0UL)                     /*!< RUN (Bit 0)                                          */
+#define MEC_I2C_SMB_CM_CMD_RUN_Msk        (0x1UL)                   /*!< RUN (Bitfield-Mask: 0x01)                            */
+#define MEC_I2C_SMB_CM_CMD_PROCEED_Pos    (1UL)                     /*!< PROCEED (Bit 1)                                      */
+#define MEC_I2C_SMB_CM_CMD_PROCEED_Msk    (0x2UL)                   /*!< PROCEED (Bitfield-Mask: 0x01)                        */
 #define MEC_I2C_SMB_CM_CMD_START0_Pos     (8UL)                     /*!< START0 (Bit 8)                                        */
 #define MEC_I2C_SMB_CM_CMD_START0_Msk     (0x100UL)                 /*!< START0 (Bitfield-Mask: 0x01)                          */
 #define MEC_I2C_SMB_CM_CMD_STARTN_Pos     (9UL)                     /*!< STARTN (Bit 9)                                        */
@@ -132,23 +132,27 @@ typedef struct mec_i2c_smb_regs {               /*!< (@ 0x40004000) MEC_I2C_SMB0
 #define MEC_I2C_SMB_CM_CMD_RDCNT_LSB_Pos  (24UL)                    /*!< RDCNT_LSB (Bit 24)                                    */
 #define MEC_I2C_SMB_CM_CMD_RDCNT_LSB_Msk  (0xff000000UL)            /*!< RDCNT_LSB (Bitfield-Mask: 0xff)                       */
 /* ========================================================  TM_CMD  ========================================================= */
-#define MEC_I2C_SMB_TM_CMD_SRUN_Pos       (0UL)                     /*!< SRUN (Bit 0)                                          */
-#define MEC_I2C_SMB_TM_CMD_SRUN_Msk       (0x1UL)                   /*!< SRUN (Bitfield-Mask: 0x01)                            */
-#define MEC_I2C_SMB_TM_CMD_SPROCEED_Pos   (1UL)                     /*!< SPROCEED (Bit 1)                                      */
-#define MEC_I2C_SMB_TM_CMD_SPROCEED_Msk   (0x2UL)                   /*!< SPROCEED (Bitfield-Mask: 0x01)                        */
+#define MEC_I2C_SMB_TM_CMD_RUN_Pos        (0UL)                     /*!< RUN (Bit 0)                                          */
+#define MEC_I2C_SMB_TM_CMD_RUN_Msk        (0x1UL)                   /*!< RUN (Bitfield-Mask: 0x01)                            */
+#define MEC_I2C_SMB_TM_CMD_PROCEED_Pos    (1UL)                     /*!< PROCEED (Bit 1)                                      */
+#define MEC_I2C_SMB_TM_CMD_PROCEED_Msk    (0x2UL)                   /*!< PROCEED (Bitfield-Mask: 0x01)                        */
 #define MEC_I2C_SMB_TM_CMD_TX_PEC_Pos     (2UL)                     /*!< TX_PEC (Bit 2)                                        */
 #define MEC_I2C_SMB_TM_CMD_TX_PEC_Msk     (0x4UL)                   /*!< TX_PEC (Bitfield-Mask: 0x01)                          */
-#define MEC_I2C_SMB_TM_CMD_WRCNT_LSB_Pos  (8UL)                    /*!< WRCNT_LSB (Bit 16)                                    */
-#define MEC_I2C_SMB_TM_CMD_WRCNT_LSB_Msk  (0xff00UL)              /*!< WRCNT_LSB (Bitfield-Mask: 0xff)                       */
+#define MEC_I2C_SMB_TM_CMD_WRCNT_LSB_Pos  (8UL)                     /*!< WRCNT_LSB (Bit 16)                                    */
+#define MEC_I2C_SMB_TM_CMD_WRCNT_LSB_Msk  (0xff00UL)                /*!< WRCNT_LSB (Bitfield-Mask: 0xff)                       */
 #define MEC_I2C_SMB_TM_CMD_RDCNT_LSB_Pos  (16UL)                    /*!< RDCNT_LSB (Bit 24)                                    */
-#define MEC_I2C_SMB_TM_CMD_RDCNT_LSB_Msk  (0xff0000UL)            /*!< RDCNT_LSB (Bitfield-Mask: 0xff)                       */
+#define MEC_I2C_SMB_TM_CMD_RDCNT_LSB_Msk  (0xff0000UL)              /*!< RDCNT_LSB (Bitfield-Mask: 0xff)                       */
 /* ==========================================================  PEC  ========================================================== */
 /* =========================================================  RSHT  ========================================================== */
 /* ========================================================  EXTLEN  ========================================================= */
-#define MEC_I2C_SMB_EXTLEN_WRCNT_MSB_Pos  (0UL)                     /*!< WRCNT_MSB (Bit 0)                                     */
-#define MEC_I2C_SMB_EXTLEN_WRCNT_MSB_Msk  (0xffUL)                  /*!< WRCNT_MSB (Bitfield-Mask: 0xff)                       */
-#define MEC_I2C_SMB_EXTLEN_RDCNT_MSB_Pos  (8UL)                     /*!< RDCNT_MSB (Bit 8)                                     */
-#define MEC_I2C_SMB_EXTLEN_RDCNT_MSB_Msk  (0xff00UL)                /*!< RDCNT_MSB (Bitfield-Mask: 0xff)                       */
+#define MEC_I2C_SMB_ELEN_CM_WRCNT_MSB_Pos  (0UL)                    /*!< CM_WRCNT_MSB (Bit 0)                                  */
+#define MEC_I2C_SMB_ELEN_CM_WRCNT_MSB_Msk  (0xffUL)                 /*!< CM_WRCNT_MSB (Bitfield-Mask: 0xff)                    */
+#define MEC_I2C_SMB_ELEN_CM_RDCNT_MSB_Pos  (8UL)                    /*!< CM_RDCNT_MSB (Bit 8)                                  */
+#define MEC_I2C_SMB_ELEN_CM_RDCNT_MSB_Msk  (0xff00UL)               /*!< CM_RDCNT_MSB (Bitfield-Mask: 0xff)                    */
+#define MEC_I2C_SMB_ELEN_TM_WRCNT_MSB_Pos  (16UL)                   /*!< TM_WRCNT_MSB (Bit 16)                                  */
+#define MEC_I2C_SMB_ELEN_TM_WRCNT_MSB_Msk  (0xff0000UL)             /*!< TM_WRCNT_MSB (Bitfield-Mask: 0xff)                    */
+#define MEC_I2C_SMB_ELEN_TM_RDCNT_MSB_Pos  (24UL)                   /*!< TM_RDCNT_MSB (Bit 24)                                  */
+#define MEC_I2C_SMB_ELEN_TM_RDCNT_MSB_Msk  (0xff000000UL)           /*!< TM_RDCNT_MSB (Bitfield-Mask: 0xff)                    */
 /* =========================================================  COMPL  ========================================================= */
 #define MEC_I2C_SMB_COMPL_DTEN_Pos        (2UL)                     /*!< DTEN (Bit 2)                                          */
 #define MEC_I2C_SMB_COMPL_DTEN_Msk        (0x4UL)                   /*!< DTEN (Bitfield-Mask: 0x01)                            */
