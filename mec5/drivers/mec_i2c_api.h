@@ -18,7 +18,10 @@ extern "C"
 {
 #endif
 
+#define MEC_I2C_SMB_BAUD_CLK_FREQ_HZ 16000000u
+
 #define MEC_I2C_SMB_CFG_CUST_FREQ 0x01u
+#define MEC_I2C_SMB_CFG_PRESERVE_TARGET_ADDRS 0x02u
 
 /* I2C Network layer HW limited to 16-bit byte counts for TX and RX */
 #define MEC_I2C_SMB_NL_MAX_XFR_COUNT 0xffffu
@@ -26,11 +29,11 @@ extern "C"
 enum mec_i2c_status {
     MEC_I2C_STS_LL_NBB_POS = 0,
     MEC_I2C_STS_LL_LAB_POS,
-    MEC_I2C_STS_LL_AAT_POS,
+    MEC_I2C_STS_LL_AAT_POS, /* addressed as target: match one of OWN_ADDR */
     MEC_I2C_STS_LL_LRB_AD0_POS,
     MEC_I2C_STS_LL_BER_POS,
     MEC_I2C_STS_LL_STO_POS,
-    MEC_I2C_STS_LL_SAD_POS,
+    MEC_I2C_STS_LL_SAD_POS, /* SMBus address decoded */
     MEC_I2C_STS_LL_NIPEND_POS,
     MEC_I2C_STS_DEV_TMOUT_POS = 8, /* device timeout */
     MEC_I2C_STS_CM_CUM_TMOUT_POS, /* controller mode cumulative timeout */
@@ -135,6 +138,8 @@ int mec_hal_i2c_smb_reset(struct mec_i2c_smb_ctx *ctx);
 int mec_hal_i2c_smb_init(struct mec_i2c_smb_ctx *ctx, struct mec_i2c_smb_cfg *config,
                          struct mec_i2c_freq_cfg *custom_freq_cfg);
 
+int mec_hal_i2c_smb_bus_freq_get(struct mec_i2c_smb_ctx *ctx, uint32_t *bus_freq_hz);
+
 int mec_hal_i2c_smb_ctrl_set(struct mec_i2c_smb_ctx *ctx, uint8_t ctrl);
 uint8_t mec_hal_i2c_smb_ctrl_get(struct mec_i2c_smb_ctx *ctx);
 
@@ -146,6 +151,7 @@ int mec_hal_i2c_smb_get_target_addr(struct mec_i2c_smb_ctx *ctx, uint8_t target_
                                     uint16_t *target_addr);
 int mec_hal_i2c_smb_set_target_addr(struct mec_i2c_smb_ctx *ctx, uint8_t target_id,
                                     uint16_t target_addr);
+int mec_hal_i2c_smb_clr_target_addr(struct mec_i2c_smb_ctx *ctx, uint16_t target_addr);
 
 int mec_hal_i2c_smb_auto_ack_enable(struct mec_i2c_smb_ctx *ctx, uint8_t ien);
 int mec_hal_i2c_smb_auto_ack_disable(struct mec_i2c_smb_ctx *ctx, uint8_t ien);
@@ -205,6 +211,7 @@ struct mec_i2c_smb_nl_state {
 #define MEC_I2C_NL_FLAG_RPT_START   0x02
 #define MEC_I2C_NL_FLAG_STOP        0x04
 #define MEC_I2C_NL_FLAG_CM_DONE_IEN 0x100u
+#define MEC_I2C_NL_FLAG_IDLE_IEN    0x200u
 
 int mec_hal_i2c_nl_cm_cfg_start(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint16_t nrx,
                                 uint32_t flags);
@@ -215,6 +222,8 @@ int mec_hal_i2c_nl_cm_cfg_start(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint1
 int mec_hal_i2c_nl_cmd_clear(struct mec_i2c_smb_ctx *ctx, uint8_t is_tm);
 int mec_hal_i2c_nl_cm_proceed(struct mec_i2c_smb_ctx *ctx);
 int mec_hal_i2c_nl_tm_proceed(struct mec_i2c_smb_ctx *ctx);
+
+uint32_t mec_hal_i2c_nl_cmd_get(struct mec_i2c_smb_ctx *ctx, uint8_t is_tm);
 
 int mec_hal_i2c_nl_state_get(struct mec_i2c_smb_regs *regs, struct mec_i2c_smb_nl_state *state,
                              uint8_t is_tm);
@@ -258,6 +267,7 @@ static inline uint8_t mec_hal_i2c_nl_shad_data_get(struct mec_i2c_smb_regs *regs
 #ifdef MEC5_I2C_SMB_HAS_STOP_DETECT_IRQ
 #define MEC_I2C_NL_TM_FLAG_STOP_IEN  0x04
 #endif
+#define MEC_I2C_NL_TM_FLAG_RUN 0x08
 
 int mec_hal_i2c_nl_tm_config(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint16_t nrx,
                              uint32_t flags);
@@ -268,6 +278,7 @@ uint32_t mec_hal_i2c_nl_tm_event(struct mec_i2c_smb_ctx *ctx);
 #define MEC_I2C_NL_TM_DIR_RX 1 /* We clock in data from external Controller */
 
 uint32_t mec_hal_i2c_nl_tm_xfr_count_get(struct mec_i2c_smb_ctx *ctx, uint8_t is_rx);
+int mec_hal_i2c_nl_tm_xfr_count_set(struct mec_i2c_smb_regs *regs, uint8_t is_read, uint32_t cnt);
 uint32_t mec_hal_i2c_nl_tm_transfered(struct mec_i2c_smb_ctx *ctx, uint8_t is_rx);
 
 /* ---- Power Management ---- */
