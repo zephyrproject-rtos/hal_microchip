@@ -78,9 +78,32 @@ struct mec_wktmr_regs;
 int mec_hal_wktimer_init(struct mec_wktmr_regs *regs, struct mec_wktmr_config *cfg);
 
 /* BGPO pins */
-int mec_hal_bgpo_reset_event(struct mec_wktmr_regs *regs, uint16_t pin_msk, uint16_t pin_resets);
-int mec_hal_bgpo_enable(struct mec_wktmr_regs *regs, uint16_t pin_msk, uint16_t bgpo_select);
-int mec_hal_bgpo_state(struct mec_wktmr_regs *regs, uint16_t pin_msk, uint16_t bgpo_state);
+enum mec_wktmr_bgpo_prop {
+    MEC_WKTMR_BGPO_STATE = 0,
+    MEC_WKTMR_BGPO_ENABLE,
+    MEC_WKTMR_BGPO_RESET_EVENT,
+};
+
+/* Control Week Timer BGPO pins.
+ * API has three functions: Enable pin in BGPO hardware, select pins reset power rail,
+ * and set pins output state.
+ * NOTE: BGPO pins multiplexed with GPIO's require GPIO mux set to BGPO function.
+ *
+ * Output state property: Output state is not changed until pin is enabled.
+ * pin_bm is a bit map of pin states to modify.
+ * val_bm is a bit map of pin states (0=low, 1=high)
+ *
+ * Enable BGPO control of a pin
+ * pin_bm is a bit map of pins to enable in BGPO logic
+ * val_bm is a bit map of pins to enable BGPO connection to VBAT power rail.
+ * (0=not enabled, 1=enable and connect to VBAT power rail).
+ *
+ * Select reset event for BGPO pins. BGPO pins will be reset on the selected event.
+ * pin_bm is a bit map of pin reset events to modify
+ * val_bm is a bit map of pin reset events. Bit value = 0(RESET_SYS), 1(RESET_VBAT)
+ */
+int mec_hal_bgpo_set(struct mec_wktmr_regs *regs, enum mec_wktmr_bgpo_prop prop,
+                     uint16_t pin_bitmap, uint16_t val_bitmap);
 
 #ifdef __cplusplus
 }

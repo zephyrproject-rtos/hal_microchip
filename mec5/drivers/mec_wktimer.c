@@ -169,11 +169,13 @@ int mec_hal_wktimer_init(struct mec_wktmr_regs *regs, struct mec_wktmr_config *c
     return MEC_RET_OK;
 }
 
-/* Enable BGPO control of a pin
- * pin_msk is bit map of pin states to modify
- * bgpo_state is bit map of pin states (0=low, 1=high)
+/* Control Week Timer BGPO pins.
+ * API has three functions: Enable pin in BGPO hardware, select pins reset power rail,
+ * and set pins output state.
+ * NOTE: BGPO pins multiplexed with GPIO's require GPIO mux set to BGPO function.
  */
-int mec_hal_bgpo_state(struct mec_wktmr_regs *regs, uint16_t pin_msk, uint16_t bgpo_state)
+int mec_hal_bgpo_set(struct mec_wktmr_regs *regs, enum mec_wktmr_bgpo_prop prop,
+                     uint16_t pin_bm, uint16_t val_bm)
 {
 #ifdef MEC_WKTMR_BASE_CHECK
     if ((uintptr_t)regs != (uintptr_t)(MEC_WKTMR0_BASE)) {
@@ -181,54 +183,23 @@ int mec_hal_bgpo_state(struct mec_wktmr_regs *regs, uint16_t pin_msk, uint16_t b
     }
 #endif
 
-    if (!pin_msk) {
+    if (!pin_bm) {
         return MEC_RET_OK;
     }
 
-    regs->BGPO_DATA = (regs->BGPO_PWR & (uint32_t)~pin_msk) | (bgpo_state & pin_msk);
-
-    return MEC_RET_OK;
-}
-
-/* Enable BGPO control of a pin
- * pin_msk is bit map of pins to enable in BGPO logic
- * bgpo_select is bit map of pins to enable BGPO connection to VBAT power rail.
- * NOTE: Caller must program pin's GPIO Control MUX field to BGPO function.
- */
-int mec_hal_bgpo_enable(struct mec_wktmr_regs *regs, uint16_t pin_msk, uint16_t bgpo_select)
-{
-#ifdef MEC_WKTMR_BASE_CHECK
-    if ((uintptr_t)regs != (uintptr_t)(MEC_WKTMR0_BASE)) {
+    switch (prop) {
+    case MEC_WKTMR_BGPO_STATE:
+        regs->BGPO_DATA = (regs->BGPO_PWR & (uint32_t)~pin_bm) | (val_bm & pin_bm);
+        break;
+    case MEC_WKTMR_BGPO_ENABLE:
+        regs->BGPO_PWR = (regs->BGPO_PWR & (uint32_t)~pin_bm) | (val_bm & pin_bm);
+        break;
+    case MEC_WKTMR_BGPO_RESET_EVENT:
+        regs->BGPO_RESET = (regs->BGPO_RESET & (uint32_t)~pin_bm) | (val_bm & pin_bm);
+        break;
+    default:
         return MEC_RET_ERR_INVAL;
     }
-#endif
-
-    if (!pin_msk) {
-        return MEC_RET_OK;
-    }
-
-    regs->BGPO_PWR = (regs->BGPO_PWR & (uint32_t)~pin_msk) | (bgpo_select & pin_msk);
-
-    return MEC_RET_OK;
-}
-
-/* Select reset event for BGPO pins. BGPO pins will be reset on the selected event.
- * pin_msk is bit map of pin reset events to modify
- * pin_resets is bit map of pin reset events. Bit value = 0(RESET_SYS), 1(RESET_VBAT)
- */
-int mec_hal_bgpo_reset_event(struct mec_wktmr_regs *regs, uint16_t pin_msk, uint16_t pin_resets)
-{
-#ifdef MEC_WKTMR_BASE_CHECK
-    if ((uintptr_t)regs != (uintptr_t)(MEC_WKTMR0_BASE)) {
-        return MEC_RET_ERR_INVAL;
-    }
-#endif
-
-    if (!pin_msk) {
-        return MEC_RET_OK;
-    }
-
-    regs->BGPO_RESET = (regs->BGPO_RESET & (uint32_t)~pin_msk) | (pin_resets & pin_msk);
 
     return MEC_RET_OK;
 }
