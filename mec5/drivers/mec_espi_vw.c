@@ -45,7 +45,7 @@ static const uint8_t vw_ct_ien_xlat_tbl[] = {
 #define MEC_VW_CT_IXLAT_TBL_ENTRIES \
     (sizeof(vw_ct_ien_xlat_tbl) / sizeof(uint8_t))
 
-static uint32_t xlat_isel(uint8_t logical_isel)
+static uint32_t xlat_isel(uint32_t logical_isel)
 {
     uint32_t isel = 0x4u; /* default to disabled */
 
