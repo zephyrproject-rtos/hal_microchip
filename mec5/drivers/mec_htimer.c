@@ -108,7 +108,7 @@ void mec_hal_htimer_halt(struct mec_htimer_context *ctx)
 {
     struct mec_htmr_regs *regs = ctx->regs;
 
-    ctx->count = regs->COUNT;
+    ctx->count = (uint16_t)(regs->COUNT & 0xffffu);
     regs->PRELOAD = 0;
 }
 

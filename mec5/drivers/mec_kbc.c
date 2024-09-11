@@ -202,6 +202,8 @@ int mec_hal_kbc_girq_en(struct mec_kbc_regs *base, uint32_t flags)
     if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
+#else
+    (void)base;
 #endif
 
     uint32_t en_bitmap = kbc_irq_bitmap(flags);
@@ -217,6 +219,8 @@ int mec_hal_kbc_girq_dis(struct mec_kbc_regs *base, uint32_t flags)
     if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
+#else
+    (void)base;
 #endif
 
     uint32_t dis_bitmap = kbc_irq_bitmap(flags);
@@ -232,6 +236,8 @@ int mec_hal_kbc_girq_clr(struct mec_kbc_regs *base, uint32_t flags)
     if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
+#else
+    (void)base;
 #endif
 
     uint32_t clr_bitmap = kbc_irq_bitmap(flags);
@@ -249,6 +255,8 @@ uint32_t mec_kbc_girq_result(struct mec_kbc_regs *base)
     if ((uintptr_t)base != (uintptr_t)MEC_KBC0_BASE) {
         return 0;
     }
+#else
+    (void)base;
 #endif
 
     temp = mec_hal_girq_result_get(MEC_KBC_GIRQ);

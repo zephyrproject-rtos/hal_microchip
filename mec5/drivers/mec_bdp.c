@@ -167,7 +167,7 @@ void mec_hal_bdp_intr_en(struct mec_bdp_regs *regs, uint8_t enable)
     if (enable) {
         regs->IEN |= MEC_BIT(MEC_BDP_INTR_EN_THRES_POS);
     } else {
-        regs->IEN &= (uint32_t)~MEC_BIT(MEC_BDP_INTR_EN_THRES_POS);
+        regs->IEN &= (uint8_t)~MEC_BIT(MEC_BDP_INTR_EN_THRES_POS);
     }
 }
 
@@ -227,7 +227,7 @@ uint32_t mec_hal_bdp_snapshot(struct mec_bdp_regs *regs)
 int mec_hal_bdp_get_host_io(struct mec_bdp_regs *regs, struct mec_bdp_io *capio)
 {
     uint32_t iodata[4] = {0};
-    uint16_t da = 0u;
+    uint32_t da = 0u;
     uint8_t iosize = 0u, blane = 0u, ioflags = 0u, iowidth = 0u;
 
     if (!regs || !capio) {
@@ -240,8 +240,8 @@ int mec_hal_bdp_get_host_io(struct mec_bdp_regs *regs, struct mec_bdp_io *capio)
     da = regs->DATRB;
 
     while (da & MEC_BIT(MEC_BDP_DATRB_NOT_EMPTY_Pos)) {
-        iosize = (da & MEC_BDP_DATRB_LEN_Msk) >> MEC_BDP_DATRB_LEN_Pos;
-        blane = (da & MEC_BDP_DATRB_LANE_Msk) >> MEC_BDP_DATRB_LANE_Pos;
+        iosize = (uint8_t)((da & MEC_BDP_DATRB_LEN_Msk) >> MEC_BDP_DATRB_LEN_Pos);
+        blane = (uint8_t)((da & MEC_BDP_DATRB_LANE_Msk) >> MEC_BDP_DATRB_LANE_Pos);
 
         if (iosize == MEC_BDP_DATRB_LEN_IO8) {
             iodata[blane] = da & 0xffu;
@@ -263,7 +263,7 @@ int mec_hal_bdp_get_host_io(struct mec_bdp_regs *regs, struct mec_bdp_io *capio)
             iodata[blane] = da & 0xffu;
             ioflags |= MEC_BIT(blane);
         } else { /* invalid and discard */
-            ioflags &= ~MEC_BIT(blane);
+            ioflags &= (uint8_t)~MEC_BIT(blane);
             break;
         }
 

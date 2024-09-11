@@ -288,7 +288,7 @@ int mec_hal_eeprom_xfr_start(struct mec_eeprom_ctrl_regs *regs, uint8_t op,
         }
         /* reads can cross page boundaries */
         if (nbytes < MEC_HAL_EEPROM_MAX_XFR_LEN) {
-            xfrsz = nbytes;
+            xfrsz = (uint8_t)nbytes;
         }
         rexe = ((uint32_t)offset << MEC_EEPROM_CTRL_EXE_TADDR_Pos)
                 & MEC_EEPROM_CTRL_EXE_TADDR_Msk;
@@ -298,7 +298,7 @@ int mec_hal_eeprom_xfr_start(struct mec_eeprom_ctrl_regs *regs, uint8_t op,
             return MEC_RET_ERR_INVAL;
         }
         /* writes cannot cross 32-byte page boundaries */
-        xfrsz = nbytes;
+        xfrsz = (uint8_t)nbytes;
         rexe = offset & (MEC5_EEPROM_SIZE_IN_BYTES - 1u);
         temp = MEC5_EEPROM_WRITE_PAGE_SIZE - (rexe % MEC5_EEPROM_WRITE_PAGE_SIZE);
         if ((uint32_t)xfrsz > temp) {

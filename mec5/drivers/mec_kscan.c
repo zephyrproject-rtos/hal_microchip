@@ -143,6 +143,8 @@ int mec_hal_kscan_girq_en(struct mec_kscan_regs *regs)
     if ((uintptr_t)regs != (uintptr_t)MEC_KSCAN0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
+#else
+    (void)regs;
 #endif
 
     mec_hal_girq_ctrl(MEC_KSCAN_ECIA_INFO, 1);
@@ -156,6 +158,8 @@ int mec_hal_kscan_girq_dis(struct mec_kscan_regs *regs)
     if ((uintptr_t)regs != (uintptr_t)MEC_KSCAN0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
+#else
+    (void)regs;
 #endif
 
     mec_hal_girq_ctrl(MEC_KSCAN_ECIA_INFO, 0);
@@ -169,6 +173,8 @@ int mec_hal_kscan_girq_clr(struct mec_kscan_regs *regs)
     if ((uintptr_t)regs != (uintptr_t)MEC_KSCAN0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
+#else
+    (void)regs;
 #endif
 
     mec_hal_girq_clr_src(MEC_KSCAN_ECIA_INFO);
@@ -182,6 +188,8 @@ uint32_t mec_hal_kscan_girq_result(struct mec_kscan_regs *regs)
     if ((uintptr_t)regs != (uintptr_t)MEC_KSCAN0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
+#else
+    (void)regs;
 #endif
 
     return mec_hal_girq_result(MEC_KSCAN_ECIA_INFO);
