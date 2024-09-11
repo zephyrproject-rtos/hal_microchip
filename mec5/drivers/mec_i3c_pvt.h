@@ -8,6 +8,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "mec_defs.h"
 
 struct mec_i3c_DCT_info {
 
@@ -497,7 +498,7 @@ enum tgt_evt_sts_reg_bits
 #define MXDS_TSCO_12_NS                                  4U
 #define MXDS_TSCO_BITPOS                                 16U
 
-#define MXDS_MAX_RD_TURN_MASK(x)                        (x & GENMASK(23, 0))
+#define MXDS_MAX_RD_TURN_MASK(x)                        (x & MEC_GENMASK(23, 0))
 /*------------------------------MXDS----------------------------*/
 
 /*------------------------------MRL AND MWL----------------------------*/

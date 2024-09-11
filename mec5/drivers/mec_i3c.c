@@ -566,7 +566,7 @@ void MEC_HAL_I3C_DCT_read(struct mec_i3c_ctx *ctx, uint16_t DCT_start, uint16_t 
 {
     struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
-    _i3c_DCT_read(regs, DCT_start, DCT_idx, info);
+    _i3c_DCT_read(regs, DCT_start, (uint8_t)DCT_idx, info);
 }
 
 /**
@@ -582,7 +582,7 @@ void MEC_HAL_I3C_TGT_DEFTGTS_DAT_write(struct mec_i3c_ctx *ctx, uint16_t DCT_sta
     struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
     struct mec_i3c_SDCT_info sdct_info;
     uint32_t val = 0;
-    int i;
+    uint8_t i;
 
     for (i=0; i< targets_count; i++) {
 
@@ -612,7 +612,7 @@ void MEC_HAL_I3C_SDCT_read(struct mec_i3c_ctx *ctx, uint16_t DCT_start, uint16_t
 {
     struct mec_i3c_host_regs *regs = (struct mec_i3c_host_regs *)ctx->base;
 
-    _i3c_SDCT_read(regs, DCT_start, idx, info);
+    _i3c_SDCT_read(regs, DCT_start, (uint8_t)idx, info);
 }
 
 /**
@@ -631,7 +631,7 @@ void MEC_HAL_I3C_DAT_DynamicAddr_write(struct mec_i3c_ctx *ctx, uint16_t DAT_sta
 
     val = DEV_ADDR_TABLE1_LOC1_DYNAMIC_ADDR(address);
 
-    _i3c_DAT_write(regs, DAT_start, DAT_idx, val);
+    _i3c_DAT_write(regs, DAT_start, (uint8_t)DAT_idx, val);
 }
 
 /**
@@ -655,7 +655,7 @@ void MEC_HAL_I3C_DAT_DynamicAddrAssign_write(struct mec_i3c_ctx *ctx, uint16_t D
         val |= DEV_ADDR_TABLE1_LOC1_PARITY;
     }
 
-    _i3c_DAT_write(regs, DAT_start, DAT_idx, val);
+    _i3c_DAT_write(regs, DAT_start, (uint8_t)DAT_idx, val);
 }
 
 /**
@@ -917,7 +917,7 @@ void MEC_HAL_I3C_IBI_SIR_Disable(struct mec_i3c_ctx *ctx, struct mec_i3c_IBI_SIR
 
     _i3c_DAT_write(regs, ibi_sir_info->DAT_start, ibi_sir_info->tgt_dat_idx, dat_value);
 
-    targets_ibi_enable_sts &= ~(1 << ibi_sir_info->tgt_dat_idx);
+    targets_ibi_enable_sts &= (uint32_t)~(1 << ibi_sir_info->tgt_dat_idx);
 
     if ((0 == targets_ibi_enable_sts) && (disable_ibi_interrupt)){
 
