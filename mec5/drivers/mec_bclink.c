@@ -193,6 +193,8 @@ int mec_hal_bcl_clear_not_busy(struct mec_bcl_regs *regs)
     if ((uintptr_t)regs != (uintptr_t)MEC_BCL0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
+#else
+    (void)regs;
 #endif
 
     mec_hal_girq_bm_clr_src(MEC_BCL_GIRQ, MEC_BIT(MEC_BCL_BCLR_GIRQ_POS));
@@ -212,14 +214,14 @@ int mec_hal_bcl_intr_ctrl(struct mec_bcl_regs *regs, uint8_t msk, uint8_t enable
 
     if (msk & MEC_BIT(MEC_BCL_BCLR_IRQ_POS)) {
         regmsk |= MEC_BIT(MEC_BCL_STATUS_BCLR_IEN_Pos);
-        if (ien) {
+        if (enable) {
             ien |= MEC_BIT(MEC_BCL_STATUS_BCLR_IEN_Pos);
         }
     }
 
     if (msk & MEC_BIT(MEC_BCL_BERR_IRQ_POS)) {
         regmsk |= MEC_BIT(MEC_BCL_STATUS_BERR_IEN_Pos);
-        if (ien) {
+        if (enable) {
             ien |= MEC_BIT(MEC_BCL_STATUS_BERR_IEN_Pos);
         }
     }
@@ -271,7 +273,7 @@ int mec_hal_bcl_get_data(struct mec_bcl_regs *regs, uint8_t *data)
 #endif
 
     if (data) {
-        *data = regs->DATA;
+        *data = (uint8_t)regs->DATA;
     }
 
     return MEC_RET_OK;
@@ -293,7 +295,6 @@ int mec_hal_bcl_set_data(struct mec_bcl_regs *regs, uint8_t data)
 int mec_hal_bcl_start(struct mec_bcl_regs *regs, uint8_t target_reg, uint8_t wrdata, uint32_t flags)
 {
     uint32_t girq_bitmap = MEC_BIT(MEC_BCL_BCLR_GIRQ_POS) | MEC_BIT(MEC_BCL_BERR_GIRQ_POS);
-    volatile uint32_t temp = 0;
 
 #ifdef MEC_BCL_BASE_CHECK
     if ((uintptr_t)regs != (uintptr_t)MEC_BCL0_BASE) {
@@ -316,7 +317,7 @@ int mec_hal_bcl_start(struct mec_bcl_regs *regs, uint8_t target_reg, uint8_t wrd
     regs->DESTA = target_reg;
 
     if (flags & MEC_BCL_START_FLAG_READ) {
-        temp = regs->DATA; /* first read of data register triggers transmit of read packet */
+        regs->DATA; /* first read of data register triggers transmit of read packet */
     } else {
         regs->DATA = wrdata; /* write data register triggers transmit of write packet */
     }
