@@ -204,7 +204,7 @@ int mec_hal_espi_taf_init(struct mec_espi_taf_regs *regs, uint32_t initflags)
         return MEC_RET_ERR_HW_NOT_SUPP;
     }
 
-    capfc &= ~(uint8_t)~MEC_ESPI_IO_CAPFC_SHARING_SUPP_Msk;
+    capfc &= (uint8_t)~MEC_ESPI_IO_CAPFC_SHARING_SUPP_Msk;
     if (initflags & MEC_BIT(MEC_ESPI_TAF_CAF_SHARE_POS)) {
         capfc |= (MEC_ESPI_IO_CAPFC_SHARING_SUPP_CAF_TAF << MEC_ESPI_IO_CAPFC_SHARING_SUPP_Pos);
     } else {
@@ -267,7 +267,7 @@ int mec_hal_espi_taf_qspi_init(struct mec_espi_taf_regs *tregs, struct mec_qspi_
 {
     int ret = 0;
     uint32_t flags = 0;
-    uint16_t qfdiv = 0;
+    uint32_t qfdiv = 0;
 
     if (!taf_regs_valid(tregs) || ((uintptr_t)qregs != (uintptr_t)(MEC_QSPI0_BASE))
         || !thwcfg) {
