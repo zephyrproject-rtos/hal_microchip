@@ -261,17 +261,23 @@ static void qspi_reset(struct mec_qspi_regs *base)
 /* Clear GIRQ source status. Current SoC's have one QSPI instance */
 void mec_hal_qspi_girq_clr(struct mec_qspi_regs *base)
 {
+    (void)base;
+
     mec_hal_girq_clr_src(MEC_QSPI0_ECIA_INFO);
 }
 
 void mec_hal_qspi_girq_ctrl(struct mec_qspi_regs *base, uint8_t enable)
 {
+    (void)base;
+
     mec_hal_girq_ctrl(MEC_QSPI0_ECIA_INFO, enable);
 }
 
 /* Returns non-zero if QSPI0 GIRQ result bit is set else 0 */
 uint32_t mec_hal_qspi_girq_is_result(struct mec_qspi_regs *base)
 {
+    (void)base;
+
     return mec_hal_girq_result(MEC_QSPI0_ECIA_INFO);
 }
 

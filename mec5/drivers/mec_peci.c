@@ -285,6 +285,8 @@ int mec_hal_peci_girq_en(struct mec_peci_regs *regs)
     if ((uintptr_t)regs != (uintptr_t)MEC_PECI0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
+#else
+    (void)regs;
 #endif
 
     mec_hal_girq_ctrl(MEC_PECI_ECIA_INFO, 1);
@@ -298,6 +300,8 @@ int mec_hal_peci_girq_dis(struct mec_peci_regs *regs)
     if ((uintptr_t)regs != (uintptr_t)MEC_PECI0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
+#else
+    (void)regs;
 #endif
 
     mec_hal_girq_ctrl(MEC_PECI_ECIA_INFO, 0);
@@ -311,6 +315,8 @@ int mec_hal_peci_girq_clr(struct mec_peci_regs *regs)
     if ((uintptr_t)regs != (uintptr_t)MEC_PECI0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
+#else
+    (void)regs;
 #endif
 
     mec_hal_girq_clr_src(MEC_PECI_ECIA_INFO);
@@ -324,6 +330,8 @@ uint32_t mec_hal_peci_girq_result(struct mec_peci_regs *regs)
     if ((uintptr_t)regs != (uintptr_t)MEC_PECI0_BASE) {
         return MEC_RET_ERR_INVAL;
     }
+#else
+    (void)regs;
 #endif
 
     return mec_hal_girq_result(MEC_PECI_ECIA_INFO);

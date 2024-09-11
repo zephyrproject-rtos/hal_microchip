@@ -58,13 +58,13 @@ void mec_hal_htimer_unhalt(struct mec_htimer_context *ctx);
 void mec_hal_htimer_restart(struct mec_htimer_context *ctx, uint16_t new_count);
 
 /* Get read-only 16-bit counter value */
-static inline uint16_t mec_hal_htimer_count(struct mec_htmr_regs *regs)
+static inline uint32_t mec_hal_htimer_count(struct mec_htmr_regs *regs)
 {
     return regs->COUNT;
 }
 
 /* Get 16-bit preload value */
-static inline uint16_t mec_hal_htimer_preload(struct mec_htmr_regs *regs)
+static inline uint32_t mec_hal_htimer_preload(struct mec_htmr_regs *regs)
 {
     return regs->PRELOAD;
 }

@@ -38,7 +38,7 @@ static void set_supported_channels(struct mec_espi_io_regs *iobase, uint32_t cap
         temp |= MEC_BIT(MEC_ESPI_IO_CAP0_FC_SUPP_Pos);
     }
 
-    iobase->CAP0 = (iobase->CAP0 & ~mask) | temp;
+    iobase->CAP0 = (uint8_t)((iobase->CAP0 & ~mask) | temp);
 }
 
 static void set_supported_max_freq(struct mec_espi_io_regs *iobase, uint32_t capabilities)
@@ -49,7 +49,7 @@ static void set_supported_max_freq(struct mec_espi_io_regs *iobase, uint32_t cap
     temp >>= MEC_ESPI_CFG_MAX_SUPP_FREQ_POS;
     temp = (temp << MEC_ESPI_IO_CAP1_MAX_FREQ_SUPP_Pos) & MEC_ESPI_IO_CAP1_MAX_FREQ_SUPP_Msk;
 
-    iobase->CAP1 = (iobase->CAP1 & ~mask) | temp;
+    iobase->CAP1 = (uint8_t)((iobase->CAP1 & ~mask) | temp);
 }
 
 /* eSPI capabilties 1 register has maximum supported frequency field.
@@ -611,7 +611,7 @@ static void set_espi_pc_cap(struct mec_espi_io_regs *iobase, uint32_t cfg)
     uint32_t cap = (((cfg & MEC_ESPI_CAP_PC_MAX_PLD_SIZE_MSK) >> MEC_ESPI_CAP_PC_MAX_PLD_SIZE_POS)
                     << MEC_ESPI_IO_CAPPC_PC_MAX_PLD_Pos);
 
-    iobase->CAPPC = (iobase->CAPPC & (uint8_t)~msk) | (cap & msk);
+    iobase->CAPPC = (uint8_t)((iobase->CAPPC & (uint8_t)~msk) | (cap & msk));
 }
 
 static uint32_t get_espi_pc_cap(struct mec_espi_io_regs *iobase)
@@ -629,7 +629,7 @@ static void set_espi_vw_cap(struct mec_espi_io_regs *iobase, uint32_t cfg)
         (((cfg & MEC_ESPI_CAP_VW_MAX_VW_GRP_CNT_MSK) >> MEC_ESPI_CAP_VW_MAX_VW_GRP_CNT_POS)
          << MEC_ESPI_IO_CAPVW_MAX_VW_CNT_Pos);
 
-    iobase->CAPVW = (iobase->CAPVW & (uint8_t)~msk) | (cap & msk);
+    iobase->CAPVW = (uint8_t)((iobase->CAPVW & (uint8_t)~msk) | (cap & msk));
 }
 
 static uint32_t get_espi_vw_cap(struct mec_espi_io_regs *iobase)
@@ -647,7 +647,7 @@ static void set_espi_oob_cap(struct mec_espi_io_regs *iobase, uint32_t cfg)
         (((cfg & MEC_ESPI_CAP_OOB_MAX_PLD_SIZE_MSK) >> MEC_ESPI_CAP_OOB_MAX_PLD_SIZE_POS)
          << MEC_ESPI_IO_CAPOOB_MAX_PLD_SIZE_Pos);
 
-    iobase->CAPOOB = (iobase->CAPOOB & (uint8_t)~msk) | (cap | msk);
+    iobase->CAPOOB = (uint8_t)((iobase->CAPOOB & (uint8_t)~msk) | (cap | msk));
 }
 
 static uint32_t get_espi_oob_cap(struct mec_espi_io_regs *iobase)
@@ -674,7 +674,7 @@ static void set_espi_fc_cap(struct mec_espi_io_regs *iobase, uint32_t cfg)
 
     cap |= fc_sharing_hw(cfg);
 
-    iobase->CAPFC = (iobase->CAPFC & (uint8_t)~msk) | (cap & msk);
+    iobase->CAPFC = (uint8_t)((iobase->CAPFC & (uint8_t)~msk) | (cap & msk));
 }
 
 static uint32_t get_espi_fc_cap(struct mec_espi_io_regs *iobase)

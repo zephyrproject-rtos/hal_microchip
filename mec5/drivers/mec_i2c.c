@@ -1020,14 +1020,14 @@ int mec_hal_i2c_nl_state_get(struct mec_i2c_smb_regs *regs, struct mec_i2c_smb_n
     if (is_tm) {
         elen >>= 16; /* TM wrCnt_MSB shifted to b[7:0] and TM rdCnt_MSB to b[15:0] */
         r = regs->TM_CMD;
-        state->wrcnt = ((r >> 8) & 0xffu);
-        state->rdcnt = ((r >> 16) & 0xffu);
-        state->ctrl = r & 0xffu;
+        state->wrcnt = (uint16_t)((r >> 8) & 0xffu);
+        state->rdcnt = (uint16_t)((r >> 16) & 0xffu);
+        state->ctrl = (uint16_t)(r & 0xffu);
     } else {
         r = regs->CM_CMD;
-        state->wrcnt = ((r >> 16) & 0xffu);
-        state->rdcnt = ((r >> 24) & 0xffu);
-        state->ctrl = r & 0xffffu;
+        state->wrcnt = (uint16_t)((r >> 16) & 0xffu);
+        state->rdcnt = (uint16_t)((r >> 24) & 0xffu);
+        state->ctrl = (uint16_t)(r & 0xffffu);
     }
 
     state->wrcnt |= (uint16_t)((elen & 0xffu) << 8);

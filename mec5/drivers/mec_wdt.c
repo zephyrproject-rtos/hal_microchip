@@ -119,6 +119,8 @@ void mec_hal_wdt_intr_clear_status(struct mec_wdt_regs *regs)
 
 void mec_hal_wdt_girq_enable(struct mec_wdt_regs *regs, uint8_t enable)
 {
+    (void)regs;
+
     mec_hal_girq_ctrl(MEC5_WDT0_ECIA_INFO, (int)enable);
 }
 
