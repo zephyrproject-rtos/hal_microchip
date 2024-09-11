@@ -5,8 +5,8 @@
  */
 #include <string.h>
 
-#include "zephyr/sys/util.h"
 #include <device_mec5.h>
+#include "mec_defs.h"
 #include "mec_pcfg.h"
 #include "mec_ecia_api.h"
 #include "mec_pcr_api.h"
@@ -64,9 +64,9 @@ void _i3c_intr_IBI_enable(struct mec_i3c_host_regs *regs)
  */
 void _i3c_intr_IBI_disable(struct mec_i3c_host_regs *regs)
 {
-    regs->INTR_EN &= ~sbit_IBI_THLD_STS;
+    regs->INTR_EN &= (uint32_t)~sbit_IBI_THLD_STS;
 
-    regs->INTR_SIG_EN &= ~sbit_IBI_THLD_STS;
+    regs->INTR_SIG_EN &= (uint32_t)~sbit_IBI_THLD_STS;
 }
 
 /**
@@ -88,9 +88,9 @@ void _i3c_intr_thresholds_tx_enable(struct mec_i3c_host_regs *regs)
  */
 void _i3c_intr_thresholds_tx_disable(struct mec_i3c_host_regs *regs)
 {
-    regs->INTR_EN &= ~sbit_TX_THLD_STS;
+    regs->INTR_EN &= (uint32_t)~sbit_TX_THLD_STS;
 
-    regs->INTR_SIG_EN &= ~sbit_TX_THLD_STS;
+    regs->INTR_SIG_EN &= (uint32_t)~sbit_TX_THLD_STS;
 }
 
 /**
@@ -112,9 +112,9 @@ void _i3c_intr_thresholds_rx_enable(struct mec_i3c_host_regs *regs)
  */
 void _i3c_intr_thresholds_rx_disable(struct mec_i3c_host_regs *regs)
 {
-    regs->INTR_EN &= ~sbit_RX_THLD_STS;
+    regs->INTR_EN &= (uint32_t)~sbit_RX_THLD_STS;
 
-    regs->INTR_SIG_EN &= ~sbit_RX_THLD_STS;
+    regs->INTR_SIG_EN &= (uint32_t)~sbit_RX_THLD_STS;
 }
 
 /**
@@ -136,7 +136,7 @@ void _i3c_resp_queue_threshold_set(struct mec_i3c_host_regs *regs, uint8_t thres
 {
     if (threshold < I3C_RESPONSE_BUFFER_DEPTH)
     {
-        regs->QUE_THLD_CTRL &= ~(0xFF << QUEUE_THLD_RESP_QUEUE_BITPOS);
+        regs->QUE_THLD_CTRL &= (uint32_t)~(0xFFu << QUEUE_THLD_RESP_QUEUE_BITPOS);
         regs->QUE_THLD_CTRL |= (threshold << QUEUE_THLD_RESP_QUEUE_BITPOS);
     }
 }
@@ -195,7 +195,7 @@ uint8_t _i3c_response_sts_get(struct mec_i3c_host_regs *regs, uint16_t *len, uin
 
     response = regs->RESP;
 
-    *len = response & 0xFFFF;
+    *len = response & 0xFFFFu;
     *tid = (response & RESPONSE_TID_BITMASK) >> RESPONSE_TID_BITPOS;
 
     resp_sts = (response & RESPONSE_ERR_STS_BITMASK) >> RESPONSE_ERR_STS_BITPOS;
@@ -216,7 +216,7 @@ uint8_t _i3c_tgt_response_sts_get(struct mec_i3c_sec_regs *regs, uint16_t *len, 
 
     response = regs->RESP;
 
-    *len = response & 0xFFFF;
+    *len = response & 0xFFFFu;
     *tid = (response & RESPONSE_TID_TGT_BITMASK) >> RESPONSE_TID_BITPOS;
 
     resp_sts = (response & RESPONSE_ERR_STS_BITMASK) >> RESPONSE_ERR_STS_BITPOS;
@@ -237,7 +237,7 @@ uint8_t _i3c_tgt_response_sts_get(struct mec_i3c_sec_regs *regs, uint16_t *len, 
  */
 void _i3c_cmd_queue_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
-    regs->QUE_THLD_CTRL &= ~(0xFF << QUEUE_THLD_CMD_QUEUE_BITPOS);
+    regs->QUE_THLD_CTRL &= (uint32_t)~(0xFFu << QUEUE_THLD_CMD_QUEUE_BITPOS);
     regs->QUE_THLD_CTRL |= (val << QUEUE_THLD_CMD_QUEUE_BITPOS);
 }
 
@@ -248,7 +248,7 @@ void _i3c_cmd_queue_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
  */
 void _i3c_ibi_data_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
-    regs->QUE_THLD_CTRL &= ~(0xFF << QUEUE_THLD_IBI_DATA_BITPOS);
+    regs->QUE_THLD_CTRL &= (uint32_t)~(0xFFu << QUEUE_THLD_IBI_DATA_BITPOS);
     regs->QUE_THLD_CTRL |= (val << QUEUE_THLD_IBI_DATA_BITPOS);
 }
 
@@ -259,7 +259,7 @@ void _i3c_ibi_data_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
  */
 void _i3c_ibi_status_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
-    regs->QUE_THLD_CTRL &= ~(0xFF << QUEUE_THLD_IBI_STATUS_BITPOS);
+    regs->QUE_THLD_CTRL &= (uint32_t)~(0xFFu << QUEUE_THLD_IBI_STATUS_BITPOS);
     regs->QUE_THLD_CTRL |= (val << QUEUE_THLD_IBI_STATUS_BITPOS);
 }
 
@@ -270,7 +270,7 @@ void _i3c_ibi_status_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
  */
 void _i3c_tx_buf_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
-    regs->DB_THLD_CTRL &= ~(0xFF << DATA_BUF_THLD_TX_FIFO_EMPTY_BITPOS);
+    regs->DB_THLD_CTRL &= (uint32_t)~(0xFFu << DATA_BUF_THLD_TX_FIFO_EMPTY_BITPOS);
     regs->DB_THLD_CTRL |= (val << DATA_BUF_THLD_TX_FIFO_EMPTY_BITPOS);
 }
 
@@ -281,7 +281,7 @@ void _i3c_tx_buf_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
  */
 void _i3c_rx_buf_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
-    regs->DB_THLD_CTRL &= ~(0xFF << DATA_BUF_THLD_RX_FIFO_BITPOS);
+    regs->DB_THLD_CTRL &= (uint32_t)~(0xFFu << DATA_BUF_THLD_RX_FIFO_BITPOS);
     regs->DB_THLD_CTRL |= (val << DATA_BUF_THLD_RX_FIFO_BITPOS);
 }
 
@@ -292,7 +292,7 @@ void _i3c_rx_buf_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
  */
 void _i3c_tx_start_threshold_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
-    regs->DB_THLD_CTRL &= ~(0xFF << DATA_BUF_THLD_TX_FIFO_START_BITPOS);
+    regs->DB_THLD_CTRL &= (uint32_t)~(0xFFu << DATA_BUF_THLD_TX_FIFO_START_BITPOS);
     regs->DB_THLD_CTRL |= (val << DATA_BUF_THLD_TX_FIFO_START_BITPOS);
 }
 
@@ -482,7 +482,7 @@ void _i3c_tgt_hot_join_disable(struct mec_i3c_sec_regs *regs)
     /* Read the target event status register */
     val = regs->TGT_EVT_STS;
 
-    val &= ~sbit_HJ_ENABLE;
+    val &= (uint32_t)~sbit_HJ_ENABLE;
 
     regs->DEV_CTRL = val;
 }
@@ -517,12 +517,12 @@ void _i2c_fm_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk_freq_n
     uint16_t low_count, high_count;
     uint32_t timing_val;
 
-    high_count = DIV_ROUND_UP(I2C_FM_SCL_MIN_HIGH_PERIOD_NS, core_clk_freq_ns);
+    high_count = (uint16_t)MEC_DIV_ROUND_UP(I2C_FM_SCL_MIN_HIGH_PERIOD_NS, core_clk_freq_ns);
     if(high_count < I3C_SCL_TIMING_COUNT_MIN) {
         high_count = I3C_SCL_TIMING_COUNT_MIN;
     }
 
-    low_count = DIV_ROUND_UP(I2C_FM_SCL_MIN_LOW_PERIOD_NS, core_clk_freq_ns);
+    low_count = (uint16_t)MEC_DIV_ROUND_UP(I2C_FM_SCL_MIN_LOW_PERIOD_NS, core_clk_freq_ns);
     if(low_count < I3C_SCL_TIMING_COUNT_MIN) {
         low_count = I3C_SCL_TIMING_COUNT_MIN;
     }
@@ -545,15 +545,15 @@ void _i2c_fm_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk_freq_n
  */
 void _i3c_bus_free_timing_set(struct mec_i3c_sec_regs *regs, uint32_t core_clk_freq_ns)
 {
-    uint16_t bus_free_timing_count;
+    uint32_t bus_free_timing_count;
 
     /* To review */
-    bus_free_timing_count = DIV_ROUND_UP(TGT_BUS_FREE_DURATION_ns, core_clk_freq_ns);
+    bus_free_timing_count = (uint32_t)MEC_DIV_ROUND_UP(TGT_BUS_FREE_DURATION_ns, core_clk_freq_ns);
     if(bus_free_timing_count < I3C_SCL_TIMING_COUNT_MIN) {
         bus_free_timing_count = I3C_SCL_TIMING_COUNT_MIN;
     }
 
-    regs->BUS_FREE_TM |= bus_free_timing_count;
+    regs->BUS_FREE_TM |= (bus_free_timing_count & 0xffffu);
 }
 
 /**
@@ -564,9 +564,9 @@ void _i3c_bus_free_timing_set(struct mec_i3c_sec_regs *regs, uint32_t core_clk_f
  */
 void _i3c_bus_available_timing_set(struct mec_i3c_sec_regs *regs, uint32_t core_clk_freq_ns)
 {
-    uint16_t bus_avail_timing_count;
+    uint32_t bus_avail_timing_count;
 
-    bus_avail_timing_count = DIV_ROUND_UP(TGT_BUS_AVAIL_COND_ns, core_clk_freq_ns);
+    bus_avail_timing_count = (uint32_t)MEC_DIV_ROUND_UP(TGT_BUS_AVAIL_COND_ns, core_clk_freq_ns);
     if(bus_avail_timing_count < I3C_SCL_TIMING_COUNT_MIN) {
         bus_avail_timing_count = I3C_SCL_TIMING_COUNT_MIN;
     }
@@ -582,9 +582,9 @@ void _i3c_bus_available_timing_set(struct mec_i3c_sec_regs *regs, uint32_t core_
  */
 void _i3c_bus_idle_timing_set(struct mec_i3c_sec_regs *regs, uint32_t core_clk_freq_ns)
 {
-    uint16_t idle_count;
+    uint32_t idle_count;
 
-    idle_count = DIV_ROUND_UP(TGT_BUS_IDLE_COND_ns, core_clk_freq_ns);
+    idle_count = (uint32_t)MEC_DIV_ROUND_UP(TGT_BUS_IDLE_COND_ns, core_clk_freq_ns);
     if(idle_count < I3C_SCL_TIMING_COUNT_MIN) {
         idle_count = I3C_SCL_TIMING_COUNT_MIN;
     }
@@ -677,15 +677,15 @@ void _i2c_target_present_reset(struct mec_i3c_host_regs *regs)
  */
 void _i2c_fmp_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk_freq_ns)
 {
-    uint16_t low_count, high_count;
+    uint32_t low_count, high_count;
     uint32_t timing_val;
 
-    high_count = DIV_ROUND_UP(I2C_FMP_SCL_MIN_HIGH_PERIOD_NS, core_clk_freq_ns);
+    high_count = (uint32_t)MEC_DIV_ROUND_UP(I2C_FMP_SCL_MIN_HIGH_PERIOD_NS, core_clk_freq_ns);
     if(high_count < I3C_SCL_TIMING_COUNT_MIN) {
         high_count = I3C_SCL_TIMING_COUNT_MIN;
     }
 
-    low_count = DIV_ROUND_UP(I2C_FMP_SCL_MIN_LOW_PERIOD_NS, core_clk_freq_ns);
+    low_count = (uint32_t)MEC_DIV_ROUND_UP(I2C_FMP_SCL_MIN_LOW_PERIOD_NS, core_clk_freq_ns);
     if(low_count < I3C_SCL_TIMING_COUNT_MIN) {
         low_count = I3C_SCL_TIMING_COUNT_MIN;
     }
@@ -704,16 +704,16 @@ void _i2c_fmp_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk_freq_
 void _i3c_push_pull_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk_freq_ns,
                                uint32_t i3c_freq_ns)
 {
-    uint16_t low_count = 0, high_count = 0, base_count = 0;
+    uint32_t low_count = 0, high_count = 0, base_count = 0;
     uint32_t timing_val = 0, sdr_ext_lcount = 0;
 
-    base_count = DIV_ROUND_UP(I3C_PUSH_PULL_SCL_MIN_HIGH_PERIOD_NS, core_clk_freq_ns);
+    base_count = (uint32_t)MEC_DIV_ROUND_UP(I3C_PUSH_PULL_SCL_MIN_HIGH_PERIOD_NS, core_clk_freq_ns);
 
     if(base_count < I3C_SCL_TIMING_COUNT_MIN) {
         base_count = I3C_SCL_TIMING_COUNT_MIN;
     }
 
-    high_count = DIV_ROUND_UP(base_count * i3c_freq_ns, I3C_SCL_12_5MHZ_PERIOD_NS);
+    high_count = (uint32_t)MEC_DIV_ROUND_UP(base_count * i3c_freq_ns, I3C_SCL_12_5MHZ_PERIOD_NS);
 
     if(high_count < I3C_SCL_TIMING_COUNT_MIN) {
         high_count = I3C_SCL_TIMING_COUNT_MIN;
@@ -733,13 +733,13 @@ void _i3c_push_pull_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk
         regs->BUS_FREE_TM = low_count;
     }
 
-    sdr_ext_lcount = DIV_ROUND_UP(I3C_BUS_SDR4_SCL_PERIOD_NS, core_clk_freq_ns) - high_count;
+    sdr_ext_lcount = MEC_DIV_ROUND_UP(I3C_BUS_SDR4_SCL_PERIOD_NS, core_clk_freq_ns) - high_count;
     sdr_ext_lcount = sdr_ext_lcount << 8;
-    sdr_ext_lcount |= DIV_ROUND_UP(I3C_BUS_SDR3_SCL_PERIOD_NS, core_clk_freq_ns) - high_count;
+    sdr_ext_lcount |= MEC_DIV_ROUND_UP(I3C_BUS_SDR3_SCL_PERIOD_NS, core_clk_freq_ns) - high_count;
     sdr_ext_lcount = sdr_ext_lcount << 8;
-    sdr_ext_lcount |= DIV_ROUND_UP(I3C_BUS_SDR2_SCL_PERIOD_NS, core_clk_freq_ns) - high_count;
+    sdr_ext_lcount |= MEC_DIV_ROUND_UP(I3C_BUS_SDR2_SCL_PERIOD_NS, core_clk_freq_ns) - high_count;
     sdr_ext_lcount = sdr_ext_lcount << 8;
-    sdr_ext_lcount |= DIV_ROUND_UP(I3C_BUS_SDR1_SCL_PERIOD_NS, core_clk_freq_ns) - high_count;
+    sdr_ext_lcount |= MEC_DIV_ROUND_UP(I3C_BUS_SDR1_SCL_PERIOD_NS, core_clk_freq_ns) - high_count;
     sdr_ext_lcount = sdr_ext_lcount << 8;
 
     regs->SCL_ELC_TM = sdr_ext_lcount;
@@ -754,20 +754,20 @@ void _i3c_push_pull_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk
 void _i3c_open_drain_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_clk_freq_ns,
                                 uint32_t i3c_freq_ns)
 {
-    uint16_t low_count = 0, high_count = 0;
+    uint32_t low_count = 0, high_count = 0;
     uint32_t timing_val;
 
-    high_count = DIV_ROUND_UP(I3C_OPEN_DRAIN_SCL_MIN_HIGH_PERIOD_NS, core_clk_freq_ns);
+    high_count = (uint32_t)MEC_DIV_ROUND_UP(I3C_OPEN_DRAIN_SCL_MIN_HIGH_PERIOD_NS, core_clk_freq_ns);
 
-    high_count = DIV_ROUND_UP(high_count * i3c_freq_ns, I3C_SCL_12_5MHZ_PERIOD_NS);
+    high_count = (uint32_t)MEC_DIV_ROUND_UP(high_count * i3c_freq_ns, I3C_SCL_12_5MHZ_PERIOD_NS);
 
     if(high_count < I3C_SCL_TIMING_COUNT_MIN) {
         high_count = I3C_SCL_TIMING_COUNT_MIN;
     }
 
-    low_count = DIV_ROUND_UP(I3C_OPEN_DRAIN_SCL_MIN_LOW_PERIOD_NS, core_clk_freq_ns);
+    low_count = (uint32_t)MEC_DIV_ROUND_UP(I3C_OPEN_DRAIN_SCL_MIN_LOW_PERIOD_NS, core_clk_freq_ns);
 
-    low_count = DIV_ROUND_UP(low_count * i3c_freq_ns, I3C_SCL_12_5MHZ_PERIOD_NS);
+    low_count = (uint32_t)MEC_DIV_ROUND_UP(low_count * i3c_freq_ns, I3C_SCL_12_5MHZ_PERIOD_NS);
 
     if(low_count < I3C_SCL_TIMING_COUNT_MIN) {
         low_count = I3C_SCL_TIMING_COUNT_MIN;
@@ -785,7 +785,7 @@ void _i3c_open_drain_timing_set(struct mec_i3c_host_regs *regs, uint32_t core_cl
  */
 void _i3c_host_dma_tx_burst_length_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
-    regs->HOST_CFG &= ~(0x03 << HOST_CFG_DMA_TX_BURST_LENGTH_BIT_POS);
+    regs->HOST_CFG &= (uint32_t)~(0x03u << HOST_CFG_DMA_TX_BURST_LENGTH_BIT_POS);
     regs->HOST_CFG |= (val << HOST_CFG_DMA_TX_BURST_LENGTH_BIT_POS);
 }
 
@@ -796,7 +796,7 @@ void _i3c_host_dma_tx_burst_length_set(struct mec_i3c_host_regs *regs, uint32_t 
  */
 void _i3c_host_dma_rx_burst_length_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
-    regs->HOST_CFG &= ~(0x03 << HOST_CFG_DMA_RX_BURST_LENGTH_BIT_POS);
+    regs->HOST_CFG &= (uint32_t)~(0x03u << HOST_CFG_DMA_RX_BURST_LENGTH_BIT_POS);
     regs->HOST_CFG |= (val << HOST_CFG_DMA_RX_BURST_LENGTH_BIT_POS);
 }
 
@@ -807,7 +807,7 @@ void _i3c_host_dma_rx_burst_length_set(struct mec_i3c_host_regs *regs, uint32_t 
  */
 void _i3c_host_port_set(struct mec_i3c_host_regs *regs, uint32_t val)
 {
-    regs->HOST_CFG &= ~(0x0F << HOST_CFG_PORT_SEL_BIT_POS);
+    regs->HOST_CFG &= (uint32_t)~(0x0Fu << HOST_CFG_PORT_SEL_BIT_POS);
     regs->HOST_CFG |= (val << HOST_CFG_PORT_SEL_BIT_POS);
 }
 
@@ -818,7 +818,7 @@ void _i3c_host_port_set(struct mec_i3c_host_regs *regs, uint32_t val)
  */
 void _i3c_host_stuck_sda_config(struct mec_i3c_host_regs *regs, uint32_t en, uint32_t tout_val)
 {
-    regs->HOST_CFG &= ~(0x01 << HOST_CFG_STUCK_SDA_EN_BIT_POS);
+    regs->HOST_CFG &= (uint32_t)~(0x01u << HOST_CFG_STUCK_SDA_EN_BIT_POS);
     regs->HOST_CFG |= (en << HOST_CFG_STUCK_SDA_EN_BIT_POS);
     if(en) {
         regs->STK_SDA_TMOUT = tout_val;
@@ -834,7 +834,7 @@ void _i3c_host_stuck_sda_config(struct mec_i3c_host_regs *regs, uint32_t en, uin
  */
 void _i3c_host_tx_dma_tout_config(struct mec_i3c_host_regs *regs, uint32_t en, uint32_t tout_val)
 {
-    regs->HOST_CFG &= ~(0x01 << HOST_CFG_TX_DMA_TOUT_BITPOS);
+    regs->HOST_CFG &= (uint32_t)~(0x01u << HOST_CFG_TX_DMA_TOUT_BITPOS);
     regs->HOST_CFG |= (en << HOST_CFG_TX_DMA_TOUT_BITPOS);
     if(en) {
         regs->HOST_DMA_TX_TMOUT = tout_val;
@@ -850,7 +850,7 @@ void _i3c_host_tx_dma_tout_config(struct mec_i3c_host_regs *regs, uint32_t en, u
  */
 void _i3c_host_rx_dma_tout_config(struct mec_i3c_host_regs *regs, uint32_t en, uint32_t tout_val)
 {
-    regs->HOST_CFG &= ~(0x01 << HOST_CFG_TX_DMA_TOUT_BITPOS);
+    regs->HOST_CFG &= (uint32_t)~(0x01u << HOST_CFG_TX_DMA_TOUT_BITPOS);
     regs->HOST_CFG |= (en << HOST_CFG_TX_DMA_TOUT_BITPOS);
     if(en) {
         regs->HOST_DMA_RX_TMOUT = tout_val;
@@ -866,7 +866,7 @@ void _i3c_host_rx_dma_tout_config(struct mec_i3c_host_regs *regs, uint32_t en, u
  */
 void _i3c_sec_host_dma_tx_burst_length_set(struct mec_i3c_sec_regs *regs, uint32_t val)
 {
-    regs->SEC_CFG &= ~(0x03 << SEC_HOST_CFG_DMA_TX_BURST_LENGTH_BIT_POS);
+    regs->SEC_CFG &= (uint32_t)~(0x03u << SEC_HOST_CFG_DMA_TX_BURST_LENGTH_BIT_POS);
     regs->SEC_CFG |= (val << SEC_HOST_CFG_DMA_TX_BURST_LENGTH_BIT_POS);
 }
 
@@ -877,7 +877,7 @@ void _i3c_sec_host_dma_tx_burst_length_set(struct mec_i3c_sec_regs *regs, uint32
  */
 void _i3c_sec_host_dma_rx_burst_length_set(struct mec_i3c_sec_regs *regs, uint32_t val)
 {
-    regs->SEC_CFG &= ~(0x03 << SEC_HOST_CFG_DMA_RX_BURST_LENGTH_BIT_POS);
+    regs->SEC_CFG &= (uint32_t)~(0x03u << SEC_HOST_CFG_DMA_RX_BURST_LENGTH_BIT_POS);
     regs->SEC_CFG |= (val << SEC_HOST_CFG_DMA_RX_BURST_LENGTH_BIT_POS);
 }
 
@@ -888,7 +888,7 @@ void _i3c_sec_host_dma_rx_burst_length_set(struct mec_i3c_sec_regs *regs, uint32
  */
 void _i3c_sec_host_port_set(struct mec_i3c_sec_regs *regs, uint32_t val)
 {
-    regs->SEC_CFG &= ~(0x0F << SEC_HOST_CFG_PORT_SEL_BIT_POS);
+    regs->SEC_CFG &= (uint32_t)~(0x0Fu << SEC_HOST_CFG_PORT_SEL_BIT_POS);
     regs->SEC_CFG |= (val << SEC_HOST_CFG_PORT_SEL_BIT_POS);
 }
 
@@ -900,13 +900,13 @@ void _i3c_sec_host_port_set(struct mec_i3c_sec_regs *regs, uint32_t val)
 void _i3c_sec_host_stuck_sda_scl_config(struct mec_i3c_sec_regs *regs, uint32_t en,
                                         uint32_t sda_tout_val, uint32_t scl_tout_val)
 {
-    regs->SEC_CFG &= ~(0x01 << SEC_HOST_CFG_STUCK_SDA_EN_BIT_POS);
+    regs->SEC_CFG &= (uint32_t)~(0x01u << SEC_HOST_CFG_STUCK_SDA_EN_BIT_POS);
     regs->SEC_CFG |= (en << SEC_HOST_CFG_STUCK_SDA_EN_BIT_POS);
     if(en) {
         regs->STK_SDA_TMOUT =
-            ((sda_tout_val & GENMASK(9 , 0)) << SEC_HOST_CFG_STUCK_SDA_TOUT_BITPOS);
+            ((sda_tout_val & (uint32_t)MEC_GENMASK(9 , 0)) << SEC_HOST_CFG_STUCK_SDA_TOUT_BITPOS);
         regs->STK_SDA_TMOUT =
-            ((scl_tout_val & GENMASK(9 , 0)) << SEC_HOST_CFG_STUCK_SCL_TOUT_BITPOS);
+            ((scl_tout_val & (uint32_t)MEC_GENMASK(9 , 0)) << SEC_HOST_CFG_STUCK_SCL_TOUT_BITPOS);
     } else {
         regs->STK_SDA_TMOUT = 0U;
     }
@@ -969,8 +969,8 @@ void _i3c_dev_addr_table_ptr_get(struct mec_i3c_host_regs *regs, uint16_t *start
 
     val = regs->DAT_PTR;
 
-    *start_addr = val & 0xFFFF;
-    *depth = (val >> 16) & 0xFFFF;
+    *start_addr = val & 0xFFFFu;
+    *depth = (uint16_t)((val >> 16) & 0xFFFFu);
 }
 
 /**
@@ -987,8 +987,8 @@ void _i3c_dev_char_table_ptr_get(struct mec_i3c_host_regs *regs, uint16_t *start
 
     val = regs->DCT_PTR;
 
-    *start_addr = val & 0xFFF; /* Bits 0 to 11 */
-    *depth = (val >> 12) & 0x7F; /* Bits 12 to 18 */
+    *start_addr = val & 0xFFFu; /* Bits 0 to 11 */
+    *depth = (val >> 12) & 0x7Fu; /* Bits 12 to 18 */
 }
 
 /**
@@ -1036,7 +1036,7 @@ void _i3c_DAT_write(struct mec_i3c_host_regs *regs, uint16_t DAT_start, uint8_t 
 {
      uint32_t *entry_addr;
 
-     entry_addr = (uint32_t *)((uint32_t)regs + (DAT_start +  (DAT_idx*4)));
+     entry_addr = (uint32_t *)((uint32_t)regs + ((uint32_t)DAT_start + ((uint32_t)DAT_idx * 4u)));
 
      *entry_addr = val;
 }
@@ -1054,7 +1054,7 @@ uint32_t _i3c_DAT_read(struct mec_i3c_host_regs *regs, uint16_t DAT_start, uint8
      uint32_t *entry_addr;
      uint32_t val;
 
-     entry_addr = (uint32_t *)((uint32_t)regs + (DAT_start +  (DAT_idx*4)));
+     entry_addr = (uint32_t *)((uint32_t)regs + ((uint32_t)DAT_start + ((uint32_t)DAT_idx * 4u)));
 
      val = *entry_addr;
 
@@ -1075,7 +1075,8 @@ void _i3c_DCT_read(struct mec_i3c_host_regs *regs, uint16_t DCT_start, uint8_t D
      uint32_t *entry_addr;
      uint64_t prov_id = 0;
 
-     entry_addr = (uint32_t *)((uint32_t)regs + (DCT_start +  (DCT_idx*4*4)));
+     entry_addr =
+        (uint32_t *)((uint32_t)regs + ((uint32_t)DCT_start + ((uint32_t)DCT_idx * 4u * 4u)));
 
      prov_id = *entry_addr;
 
@@ -1104,14 +1105,14 @@ void _i3c_SDCT_read(struct mec_i3c_host_regs *regs, uint16_t DCT_start, uint8_t 
      uint32_t *entry_addr;
      uint32_t sdct_val = 0;
 
-     entry_addr = (uint32_t *)((uint32_t)regs + (DCT_start +  (idx*4)));
+     entry_addr = (uint32_t *)((uint32_t)regs + ((uint32_t)DCT_start + ((uint32_t)idx * 4u)));
 
      sdct_val = *entry_addr;
 
-     info->dynamic_addr = sdct_val & 0xFF;
-     info->dcr = (sdct_val >> 8) & 0xFF;
-     info->bcr = (sdct_val >> 16) & 0xFF;
-     info->static_addr = (sdct_val >> 24) & 0xFF;
+     info->dynamic_addr = sdct_val & 0xFFu;
+     info->dcr = (sdct_val >> 8) & 0xFFu;
+     info->bcr = (sdct_val >> 16) & 0xFFu;
+     info->static_addr = (uint8_t)((sdct_val >> 24) & 0xFFu);
 }
 
 /**
@@ -1197,7 +1198,7 @@ void _i3c_ibi_data_read(struct mec_i3c_host_regs *regs, uint8_t *buffer, uint16_
 
         if (drain_flag) {
             for (i = 0; i < len / 4; i++) {
-                drain_dword = regs->IBI_QUE_STS;
+                drain_dword |= regs->IBI_QUE_STS;
             }
         } else {
             dword_ptr = (uint32_t *)buffer;
@@ -1297,7 +1298,7 @@ void _i3c_command_write(struct mec_i3c_host_regs *regs, uint32_t cmd)
  */
 uint8_t _i3c_tx_fifo_depth_get(struct mec_i3c_host_regs *regs)
 {
-    return ((FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & GENMASK(3, 0)) >> Q_CAP_TX_FIFO_DEPTH_BITPOS)) * 4);
+    return (uint8_t)((FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & MEC_GENMASK(3, 0)) >> Q_CAP_TX_FIFO_DEPTH_BITPOS)) * 4u);
 }
 
 /**
@@ -1306,7 +1307,7 @@ uint8_t _i3c_tx_fifo_depth_get(struct mec_i3c_host_regs *regs)
  */
 uint8_t _i3c_rx_fifo_depth_get(struct mec_i3c_host_regs *regs)
 {
-    return ((FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & GENMASK(7, 4)) >> Q_CAP_RX_FIFO_DEPTH_BITPOS)) * 4);
+    return (uint8_t)((FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & MEC_GENMASK(7, 4)) >> Q_CAP_RX_FIFO_DEPTH_BITPOS)) * 4u);
 }
 
 /**
@@ -1315,7 +1316,7 @@ uint8_t _i3c_rx_fifo_depth_get(struct mec_i3c_host_regs *regs)
  */
 uint8_t _i3c_cmd_fifo_depth_get(struct mec_i3c_host_regs *regs)
 {
-    return (FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & GENMASK(11, 8)) >> Q_CAP_CMD_FIFO_DEPTH_BITPOS));
+    return (uint8_t)(FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & MEC_GENMASK(11, 8)) >> Q_CAP_CMD_FIFO_DEPTH_BITPOS));
 }
 
 /**
@@ -1324,7 +1325,7 @@ uint8_t _i3c_cmd_fifo_depth_get(struct mec_i3c_host_regs *regs)
  */
 uint8_t _i3c_resp_fifo_depth_get(struct mec_i3c_host_regs *regs)
 {
-    return (FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & GENMASK(15, 12)) >> Q_CAP_RESP_FIFO_DEPTH_BITPOS));
+    return (uint8_t)(FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & MEC_GENMASK(15, 12)) >> Q_CAP_RESP_FIFO_DEPTH_BITPOS));
 }
 
 /**
@@ -1333,7 +1334,7 @@ uint8_t _i3c_resp_fifo_depth_get(struct mec_i3c_host_regs *regs)
  */
 uint8_t _i3c_ibi_fifo_depth_get(struct mec_i3c_host_regs *regs)
 {
-    return (FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & GENMASK(19, 16)) >> Q_CAP_IBI_FIFO_DEPTH_BITPOS));
+    return (uint8_t)(FIFO_DEPTH_MIN_DWORD << ((regs->QUE_SIZE_CAP & MEC_GENMASK(19, 16)) >> Q_CAP_IBI_FIFO_DEPTH_BITPOS));
 }
 
 /**
@@ -1370,7 +1371,7 @@ bool _i3c_tgt_dyn_addr_valid_get(struct mec_i3c_sec_regs *regs)
  */
 uint8_t _i3c_tgt_dyn_addr_get(struct mec_i3c_sec_regs *regs)
 {
-    return (uint8_t)((regs->DEV_ADDR & GENMASK(22, 16)) >> DEVICE_ADDR_DYNAMIC_ADDR_BITPOS);
+    return (uint8_t)((regs->DEV_ADDR & MEC_GENMASK(22, 16)) >> DEVICE_ADDR_DYNAMIC_ADDR_BITPOS);
 }
 
 /**
@@ -1378,7 +1379,7 @@ uint8_t _i3c_tgt_dyn_addr_get(struct mec_i3c_sec_regs *regs)
  */
 void _i3c_tgt_mrl_set(struct mec_i3c_sec_regs *regs, uint16_t mrl)
 {
-    regs->MAX_RW_LEN = (regs->MAX_RW_LEN & ~(GENMASK(31, 16))) | (mrl << MRL_BITPOS);
+    regs->MAX_RW_LEN = (regs->MAX_RW_LEN & ~(MEC_GENMASK(31, 16))) | (mrl << MRL_BITPOS);
 }
 
 /**
@@ -1386,7 +1387,7 @@ void _i3c_tgt_mrl_set(struct mec_i3c_sec_regs *regs, uint16_t mrl)
  */
 void _i3c_tgt_mwl_set(struct mec_i3c_sec_regs *regs, uint16_t mwl)
 {
-    regs->MAX_RW_LEN = (regs->MAX_RW_LEN & ~(GENMASK(15, 0))) | (mwl << MWL_BITPOS);
+    regs->MAX_RW_LEN = (regs->MAX_RW_LEN & ~(MEC_GENMASK(15, 0))) | (mwl << MWL_BITPOS);
 }
 
 /**
@@ -1485,7 +1486,7 @@ bool _i3c_tgt_ibi_resp_get(struct mec_i3c_sec_regs *regs, uint8_t *sir_rem_datal
  */
 void _i3c_tgt_MRL_get(struct mec_i3c_sec_regs *regs, uint16_t *max_rd_len)
 {
-    *max_rd_len = regs->MAX_RW_LEN >> 16;
+    *max_rd_len = (uint16_t)(regs->MAX_RW_LEN >> 16);
 }
 
 /**
@@ -1493,7 +1494,7 @@ void _i3c_tgt_MRL_get(struct mec_i3c_sec_regs *regs, uint16_t *max_rd_len)
  */
 void _i3c_tgt_MWL_get(struct mec_i3c_sec_regs *regs, uint16_t *max_wr_len)
 {
-    *max_wr_len = regs->MAX_RW_LEN & 0xFFFF;
+    *max_wr_len = (uint16_t)(regs->MAX_RW_LEN & 0xFFFF);
 }
 
 /**
@@ -1501,7 +1502,7 @@ void _i3c_tgt_MWL_get(struct mec_i3c_sec_regs *regs, uint16_t *max_wr_len)
  */
 void _i3c_tgt_MRL_MWL_set(struct mec_i3c_sec_regs *regs, uint16_t max_rd_len, uint16_t max_wr_len)
 {
-    regs->MAX_RW_LEN  = (max_rd_len << 16) | max_wr_len;
+    regs->MAX_RW_LEN  = ((uint32_t)max_rd_len << 16) | max_wr_len;
 }
 
 /**
@@ -1509,7 +1510,7 @@ void _i3c_tgt_MRL_MWL_set(struct mec_i3c_sec_regs *regs, uint16_t max_rd_len, ui
  */
 void _i3c_tgt_MWL_set(struct mec_i3c_sec_regs *regs, uint16_t *max_wr_len)
 {
-    *max_wr_len = regs->MAX_RW_LEN & 0xFFFF;
+    *max_wr_len = (uint16_t)(regs->MAX_RW_LEN & 0xFFFFu);
 }
 
 /**
@@ -1550,8 +1551,8 @@ bool _i3c_tgt_MWL_updated(struct mec_i3c_sec_regs *regs)
 void _i3c_tgt_max_speed_update(struct mec_i3c_sec_regs *regs, uint8_t max_rd_speed,
                                uint8_t max_wr_speed)
 {
-    regs->MAX_DS &= ~(TGT_MAX_WR_DATA_SPEED_MASK << TGT_MAX_WR_DATA_SPEED_POS);
-    regs->MAX_DS &= ~(TGT_MAX_RD_DATA_SPEED_MASK << TGT_MAX_RD_DATA_SPEED_POS);
+    regs->MAX_DS &= (uint32_t)~(TGT_MAX_WR_DATA_SPEED_MASK << TGT_MAX_WR_DATA_SPEED_POS);
+    regs->MAX_DS &= (uint32_t)~(TGT_MAX_RD_DATA_SPEED_MASK << TGT_MAX_RD_DATA_SPEED_POS);
 
     regs->MAX_DS |= (max_wr_speed << TGT_MAX_WR_DATA_SPEED_POS);
     regs->MAX_DS |= (max_rd_speed << TGT_MAX_RD_DATA_SPEED_POS);
@@ -1562,7 +1563,7 @@ void _i3c_tgt_max_speed_update(struct mec_i3c_sec_regs *regs, uint8_t max_rd_spe
  */
 void _i3c_tgt_clk_to_data_turn_update(struct mec_i3c_sec_regs *regs, uint8_t clk_data_turn_time)
 {
-    regs->MAX_DS &= ~(TGT_CLK_TO_DATA_TURN_MASK << TGT_CLK_TO_DATA_TURN_POS);
+    regs->MAX_DS &= (uint32_t)~(TGT_CLK_TO_DATA_TURN_MASK << TGT_CLK_TO_DATA_TURN_POS);
 
-    regs->MAX_DS |= (clk_data_turn_time << TGT_CLK_TO_DATA_TURN_POS);
+    regs->MAX_DS |= ((uint32_t)clk_data_turn_time << TGT_CLK_TO_DATA_TURN_POS);
 }
