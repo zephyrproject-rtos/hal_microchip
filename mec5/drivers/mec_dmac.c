@@ -410,7 +410,7 @@ int mec_hal_dma_chan_stop(enum mec_dmac_channel chan)
 {
     struct mec_dmac_regs *base = MEC_DMAC;
     uint32_t wait_cnt = MEC_DMA_CHAN_STOP_WAIT;
-    int ret = 0;
+    int ret = MEC_RET_OK;
 
     if (chan >= MEC_DMAC_CHAN_MAX) {
         return MEC_RET_ERR_INVAL;
@@ -434,7 +434,7 @@ int mec_hal_dma_chan_stop(enum mec_dmac_channel chan)
                               | MEC_BIT(MEC_DMA_CHAN_CTRL_SWFC_RUN_Pos));
     regs->ACTV = 0;
 
-    return MEC_RET_OK;
+    return ret;
 }
 
 int mec_hal_dma_chan_hwfc_set(enum mec_dmac_channel chan, enum mec_dmac_hwfc_dev_id hwfc_dev,
