@@ -50,7 +50,7 @@ extern "C"
 
 /*
  * Globally disables maskable interrupts in CPU.
- * Configure MEC172x ECIA.
+ * Configure MEC5 ECIA.
  * Disables and clears all external NVIC enables.
  * Sets all external NVIC priorities to dflt_priority.
  * Leaves interrupts globally masked off.
