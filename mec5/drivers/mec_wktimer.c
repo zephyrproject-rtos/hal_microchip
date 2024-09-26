@@ -68,62 +68,12 @@
     MEC5_ECIA_INFO(MEC_WKTMR_GIRQ, MEC_WKTMR_SYS_PWR_PRES_GIRQ_POS, \
                    MEC_WKTMR_AGGR_NVIC_NUM, MEC_WKTMR_SYS_PWR_PRES_NVIC_NUM)
 
-
-#if 0
-
-enum mec_wktmr_cfg_flags {
-    MEC_WKTMR_CFG_ENABLE_POS = 0,
-    MEC_WKTMR_CFG_VCI_PWR_UP_EV_EN_POS,
-    MEC_WKTMR_CFG_SYS_PWR_PRES_EN_POS,
-    MEC_WKTMR_CFG_SUBWK_RELOAD_POS,
-
-};
-
-enum mec_wktmr_sub_sec_freq {
-    MEC_WKTMR_SUBSEC_DIS = 0,
-    MEC_WKTMR_SUBSEC_2HZ,
-    MEC_WKTMR_SUBSEC_4HZ,
-    MEC_WKTMR_SUBSEC_8HZ,
-    MEC_WKTMR_SUBSEC_16HZ,
-    MEC_WKTMR_SUBSEC_32HZ,
-    MEC_WKTMR_SUBSEC_64HZ,
-    MEC_WKTMR_SUBSEC_128HZ,
-    MEC_WKTMR_SUBSEC_256HZ,
-    MEC_WKTMR_SUBSEC_1024HZ,
-    MEC_WKTMR_SUBSEC_2048HZ,
-    MEC_WKTMR_SUBSEC_4096HZ,
-    MEC_WKTMR_SUBSEC_8192HZ,
-    MEC_WKTMR_SUBSEC_16384HZ,
-    MEC_WKTMR_SUBSEC_32768HZ,
-    MEC_WKTMR_SUBSEC_MAX,
-};
-
-enum mec_wktmr_subwk_clk_source {
-    MEC_WKTMR_SUBWK_SRC_DIS = 0,
-    MEC_WKTMR_SUBWK_SRC_SUB_SEC, /* sub-second frequency */
-    MEC_WKTMR_SUBWK_SRC_SEC_1, /* week counter always counts at 1Hz (one second) */
-    MEC_WKTMR_SUBWK_SRC_SEC_8,  /* bit[3] every 8 seconds */
-    MEC_WKTMR_SUBWK_SRC_SEC_32,  /* bit[5] every 32 seconds */
-    MEC_WKTMR_SUBWK_SRC_SEC_256,  /* bit[7] every 256 seconds */
-    MEC_WKTMR_SUBWK_SRC_SEC_1024,  /* bit[9] every 1024 seconds */
-    MEC_WKTMR_SUBWK_SRC_MAX,
-};
-
-struct mec_wktmr_config {
-    uint32_t one_sec_count;
-    uint32_t one_sec_alarm_count;
-    uint16_t sub_week_reload;
-    uint8_t sub_week_clk_src;
-    uint8_t sub_sec_freq;
-    uint8_t cfg_flags;
-};
-#endif
-
-/* TODO config
+/* configuration:
  * 4-bit field for sub-week rate (interrupt when count down reaches 0)
  * 9-bit field for sub-week counter value
  * 28-bit field for initial value of 1Hz week counter
  * 28-bit field for compare value (week alarm interrupt)
+ * NOTE: not all feature implemented since these timers are interlinked.
  */
 
 int mec_hal_wktimer_init(struct mec_wktmr_regs *regs, struct mec_wktmr_config *cfg)
