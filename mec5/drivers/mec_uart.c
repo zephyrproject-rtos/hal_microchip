@@ -470,6 +470,17 @@ int mec_hal_uart_init(struct mec_uart_regs *regs, uint32_t baud_rate,
     return MEC_RET_OK;
 }
 
+int mec_hal_uart_activate(struct mec_uart_regs *regs, uint8_t enable)
+{
+    if (!regs) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    uart_activate(regs, enable);
+
+    return MEC_RET_OK;
+}
+
 int mec_hal_uart_baud_rate_set(struct mec_uart_regs *base, uint32_t baud, uint32_t extclk_hz)
 {
     const struct mec_uart_info *info = get_uart_info(base);

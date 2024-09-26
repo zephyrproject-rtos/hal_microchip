@@ -138,6 +138,8 @@ struct mec_uart_regs;
 int mec_hal_uart_init(struct mec_uart_regs *base, uint32_t baud_rate,
                       uint32_t config, uint32_t extclk_hz);
 
+int mec_hal_uart_activate(struct mec_uart_regs *regs, uint8_t enable);
+
 int mec_hal_uart_power_on(struct mec_uart_regs *regs, uint32_t cfg_flags);
 
 int mec_hal_uart_clock_freq_get(struct mec_uart_regs *base, uint32_t *clock_freq);
