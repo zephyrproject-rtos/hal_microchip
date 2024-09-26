@@ -12,16 +12,16 @@
 #include "mec_pcr_api.h"
 #include "mec_ps2_api.h"
 
-#if MEC5_P2S_INSTANCES
+#if MEC5_PS2_INSTANCES
 
-#define MEC_P2S_CTRL_BITMAP MEC_GENMASK(MEC5_P2S_INSTANCES, 0)
+#define MEC_PS2_CTRL_BITMAP MEC_GENMASK(MEC5_PS2_INSTANCES, 0)
 
 #define MEC_PS2_GIRQ 18
 #define MEC_PS2_0_GIRQ_POS 10
 #define MEC_PS2_1_GIRQ_POS 11
 
 #define MEC_PS2_0_ECIA_INFO MEC5_ECIA_INFO(18, 10, 10, 100)
-#define MEC_PS2_1_ECIA_INFO MEC5_ECIA_INFO(18, 10, 11, 101)
+#define MEC_PS2_1_ECIA_INFO MEC5_ECIA_INFO(18, 11, 10, 101)
 
 /* PS/2 port wake event: start bit detection
  * NOTE: PS/2 ports are separate pins and the controller can only be
@@ -48,7 +48,7 @@ struct mec_ps2_info {
     uint32_t port_b_wake_devi;
 };
 
-static const struct mec_ps2_info ps2_instances[MEC5_P2S_INSTANCES] = {
+static const struct mec_ps2_info ps2_instances[MEC5_PS2_INSTANCES] = {
     { MEC_PS2CTL0_BASE, (uint16_t)MEC_PCR_PS2_0, 0x3u, 0, MEC_PS2_0_ECIA_INFO,
       MEC_PS2_WAKE_0A_ECIA_INFO, MEC_PS2_WAKE_0B_ECIA_INFO },
 #if MEC5_PS2_INSTANCES > 1
@@ -59,7 +59,7 @@ static const struct mec_ps2_info ps2_instances[MEC5_P2S_INSTANCES] = {
 
 static struct mec_ps2_info const *find_ps2_info(uintptr_t base_addr)
 {
-    for (size_t i = 0; i < MEC5_P2S_INSTANCES; i++) {
+    for (size_t i = 0; i < MEC5_PS2_INSTANCES; i++) {
         if (base_addr == ps2_instances[i].base_addr) {
             return &ps2_instances[i];
         }
@@ -100,17 +100,13 @@ static bool ps2_is_enabled(struct mec_ps2_regs *regs)
 
 /* ---- Public API ---- */
 
-int mec_hal_ps2_init(struct mec_ps2_regs *regs, uint8_t port, uint32_t flags)
+int mec_hal_ps2_init(struct mec_ps2_regs *regs, uint32_t flags)
 {
     const struct mec_ps2_info *psi = find_ps2_info((uint32_t)regs);
     uint32_t temp = 0u;
     uint8_t ctrl = 0u;
 
     if (!psi) {
-        return MEC_RET_ERR_INVAL;
-    }
-
-    if (!(psi->port_map & MEC_BIT(port))) {
         return MEC_RET_ERR_INVAL;
     }
 
@@ -123,14 +119,6 @@ int mec_hal_ps2_init(struct mec_ps2_regs *regs, uint8_t port, uint32_t flags)
 
     mec_hal_girq_ctrl(psi->devi, 0);
     mec_hal_girq_clr_src(psi->devi);
-    if (port == MEC5_PS2_PORT_A) {
-        mec_hal_girq_ctrl(psi->port_a_wake_devi, 0);
-        mec_hal_girq_clr_src(psi->port_a_wake_devi);
-    } else {
-        mec_hal_girq_ctrl(psi->port_b_wake_devi, 0);
-        mec_hal_girq_clr_src(psi->port_b_wake_devi);
-    }
-
     ps2_clear_all_status(regs);
 
     temp = ((flags & MEC_PS2_FLAGS_PARITY_MSK) >> MEC_PS2_FLAGS_PARITY_POS);
@@ -152,6 +140,19 @@ int mec_hal_ps2_init(struct mec_ps2_regs *regs, uint8_t port, uint32_t flags)
     return MEC_RET_OK;
 }
 
+int mec_hal_ps2_control(struct mec_ps2_regs *regs, uint8_t operand, uint8_t opmask)
+{
+    const struct mec_ps2_info *psi = find_ps2_info((uint32_t)regs);
+
+    if (!psi) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    regs->CTRL = (regs->CTRL & (uint8_t)~(opmask & 0x03u)) | (operand & 0x03u);
+
+    return MEC_RET_OK;
+}
+
 bool mec_hal_ps2_is_enabled(struct mec_ps2_regs *regs)
 {
     const struct mec_ps2_info *psi = find_ps2_info((uint32_t)regs);
@@ -163,19 +164,17 @@ bool mec_hal_ps2_is_enabled(struct mec_ps2_regs *regs)
     return ps2_is_enabled(regs);
 }
 
-void mec_hal_ps2_girq_ctrl(struct mec_ps2_regs *base, uint8_t enable)
+int mec_hal_ps2_girq_ctrl(struct mec_ps2_regs *base, uint8_t enable)
 {
     const struct mec_ps2_info *psi = find_ps2_info((uint32_t)base);
 
     if (!psi) {
-        return;
+        return MEC_RET_ERR_INVAL;
     }
 
-    if (enable) {
-        mec_hal_girq_ctrl(psi->port_b_wake_devi, 1);
-    } else {
-        mec_hal_girq_ctrl(psi->port_b_wake_devi, 0);
-    }
+    mec_hal_girq_ctrl(psi->devi, enable);
+
+    return MEC_RET_OK;
 }
 
 int mec_hal_ps2_girq_clr(struct mec_ps2_regs *base)
@@ -207,7 +206,11 @@ int mec_hal_ps2_girq_wake_enable(struct mec_ps2_regs *base, uint8_t port, uint8_
     const struct mec_ps2_info *psi = find_ps2_info((uint32_t)base);
     uint32_t devi = 0;
 
-    if (!psi) {
+    if (!psi || (port >= MEC5_PS2_PORT_MAX)) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    if ((uint32_t)psi->port_map & MEC_BIT(port)) {
         return MEC_RET_ERR_INVAL;
     }
 
@@ -284,7 +287,7 @@ void mec_hal_ps2_send_data(struct mec_ps2_regs *regs, uint8_t data)
 
 int mec_hal_ps2_inst_wake_enable(uint8_t instance, uint8_t port, uint8_t enable)
 {
-    if (instance >= MEC5_P2S_INSTANCES) {
+    if (instance >= MEC5_PS2_INSTANCES) {
         return MEC_RET_ERR_INVAL;
     }
 
@@ -296,7 +299,7 @@ int mec_hal_ps2_inst_wake_enable(uint8_t instance, uint8_t port, uint8_t enable)
 
 int mec_hal_ps2_inst_wake_status_clr(uint8_t instance, uint8_t port)
 {
-    if (instance >= MEC5_P2S_INSTANCES) {
+    if (instance >= MEC5_PS2_INSTANCES) {
         return MEC_RET_ERR_INVAL;
     }
 
@@ -316,7 +319,7 @@ int mec_hal_ps2_inst_wake_status_clr(uint8_t instance, uint8_t port)
  */
 void mec_hal_ps2_wake_enables(uint8_t enable)
 {
-    for (uint8_t i = 0; i < MEC5_P2S_INSTANCES; i++) {
+    for (uint8_t i = 0; i < MEC5_PS2_INSTANCES; i++) {
         const struct mec_ps2_info *info = &ps2_instances[i];
         struct mec_ps2_regs *const regs = (struct mec_ps2_regs *)info->base_addr;
 
@@ -336,6 +339,6 @@ void mec_hal_ps2_wake_enables(uint8_t enable)
         }
     }
 }
-#endif /* MEC5_P2S_INSTANCES */
+#endif /* MEC5_PS2_INSTANCES */
 
 /* end mec_ps2.c */
