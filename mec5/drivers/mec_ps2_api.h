@@ -14,7 +14,7 @@
 #include "mec_dmac_api.h"
 #include "mec_retval.h"
 
-#if MEC5_P2S_INSTANCES
+#if MEC5_PS2_INSTANCES
 
 /* Interfaces to any C modules */
 #ifdef __cplusplus
@@ -43,6 +43,7 @@ enum mec_ps2_status {
     MEC_PS2_STS_TX_START_TMOUT = MEC_BIT(7),
 };
 
+#define MEC_PS2_STATUS_ALL 0xffu
 
 #define MEC_PS2_FLAGS_ENABLE        0x01u
 #define MEC_PS2_FLAGS_RESET         0x02u
@@ -58,9 +59,21 @@ enum mec_ps2_status {
 #define MEC_PS2_FLAGS_STOP_BIT_NONE 0x20u
 #define MEC_PS2_FLAGS_INTR_EN       0x100u
 
-int mec_hal_ps2_init(struct mec_ps2_regs *base, uint8_t port, uint32_t flags);
+int mec_hal_ps2_init(struct mec_ps2_regs *base, uint32_t flags);
 
-void mec_hal_ps2_girq_ctrl(struct mec_ps2_regs *base, uint8_t enable);
+#define MEC_PS2_CTRL_OP_DIR_RX 0
+#define MEC_PS2_CTRL_OP_DIR_TX 1
+#define MEC_PS2_CTRL_OP_DISABLE 0
+#define MEC_PS2_CTRL_OP_ENABLE 2
+
+#define MEC_PS2_CTRL_OP_MSK_DIR 0x01u
+#define MEC_PS2_CTRL_OP_MSK_EN 0x02u
+
+int mec_hal_ps2_control(struct mec_ps2_regs *regs, uint8_t operand, uint8_t opmask);
+
+bool mec_hal_ps2_is_enabled(struct mec_ps2_regs *regs);
+
+int mec_hal_ps2_girq_ctrl(struct mec_ps2_regs *base, uint8_t enable);
 uint32_t mec_hal_ps2_girq_result(struct mec_ps2_regs *base);
 int mec_hal_ps2_girq_clr(struct mec_ps2_regs *base);
 
@@ -68,7 +81,6 @@ int mec_hal_ps2_girq_wake_enable(struct mec_ps2_regs *base, uint8_t port, uint8_
 uint32_t mec_hal_ps2_girq_wake_result(struct mec_ps2_regs *base, uint8_t port);
 void mec_hal_ps2_girq_wake_clr(struct mec_ps2_regs *base, uint8_t port);
 
-void mec_hal_ps2_direction(struct mec_ps2_regs *regs, uint8_t dir_tx);
 uint32_t mec_hal_ps2_get_status(struct mec_ps2_regs *regs);
 void mec_hal_ps2_clr_status(struct mec_ps2_regs *regs, uint32_t clrmsk);
 uint8_t mec_hal_ps2_read_data(struct mec_ps2_regs *regs);
@@ -89,5 +101,5 @@ void mec_hal_ps2_wake_enables(uint8_t enable);
 }
 #endif
 
-#endif /* MEC5_P2S_INSTANCES */
+#endif /* MEC5_PS2_INSTANCES */
 #endif /* #ifndef _MEC_PS2_API_H */
