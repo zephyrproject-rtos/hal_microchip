@@ -63,14 +63,18 @@ int mec_hal_kscan_init(struct mec_kscan_regs *regs, uint32_t flags, uint8_t ksi_
         mec_hal_pcr_blk_reset(MEC_PCR_KSCAN0);
     } else {
         kscan_default(regs);
-        kscan_girq_dis_clr();
     }
+
+    kscan_girq_dis_clr();
 
     if (flags & MEC_KSCAN_KSO_PREDRIVE_EN) {
         regs->EXT_CTRL |= MEC_BIT(MEC_KSCAN_EXT_CTRL_PREDRIVE_Pos);
     }
 
-    if (flags & MEC_KSCAN_KSO_DRV_LO) {
+    /* When a KSO is selected individually via the KSO_SELECT field
+     * it can be driven low (default) or high if this flag is selected.
+     */
+    if (flags & MEC_KSCAN_KSO_SELECT_DRV_HI) {
         regs->KSO_SEL |= MEC_BIT(MEC_KSCAN_KSO_SEL_KSO_INVERT_Pos);
     }
 
