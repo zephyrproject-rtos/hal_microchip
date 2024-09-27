@@ -30,7 +30,7 @@ enum mec_kscan_cfg_flags {
     MEC_KSCAN_CFG_ENABLE = MEC_BIT(0),
     MEC_KSCAN_CFG_RESET = MEC_BIT(1),
     MEC_KSCAN_KSO_PREDRIVE_EN = MEC_BIT(2),
-    MEC_KSCAN_KSO_DRV_LO = MEC_BIT(3),
+    MEC_KSCAN_KSO_SELECT_DRV_HI = MEC_BIT(3),
     MEC_KSCAN_INTR_EN = MEC_BIT(4),
 };
 
@@ -67,6 +67,8 @@ enum mec_kscan_in {
     MEC_KSCAN_IN7 = MEC_BIT(7),
 };
 
+#define MEC_KSCAN_KSI_INTR_ALL 0xffu
+
 int mec_hal_kscan_init(struct mec_kscan_regs *regs, uint32_t flags, uint8_t ksi_in_intr_mask);
 
 int mec_hal_kscan_enable(struct mec_kscan_regs *regs, uint8_t enable);
@@ -81,9 +83,20 @@ uint32_t mec_hal_kscan_girq_result(struct mec_kscan_regs *regs);
 
 void mec_hal_kscan_wake_enable(uint8_t enable);
 
-static inline void mec_hal_kscan_kso_all_high(struct mec_kscan_regs *regs)
+/* Enable key scan and enable driving all KSO pins high
+ * Preserve KSO_INVERT bit
+ * Preserve KSO_SELECT field
+ */
+static inline void mec_hal_kscan_kso_drive_all(struct mec_kscan_regs *regs)
 {
-    regs->KSO_SEL |= MEC_BIT(MEC_KSCAN_KSO_SEL_KSO_ALL_Pos);
+    regs->KSO_SEL = (regs->KSO_SEL & (uint8_t)~MEC_BIT(MEC_KSCAN_KSO_SEL_KSCAN_DIS_Pos))
+                    | MEC_BIT(MEC_KSCAN_KSO_SEL_KSO_ALL_Pos);
+}
+
+static inline void mec_hal_kscan_kso_disable_keyscan(struct mec_kscan_regs *regs)
+{
+    regs->KSO_SEL = (regs->KSO_SEL & (uint8_t)~MEC_BIT(MEC_KSCAN_KSO_SEL_KSO_ALL_Pos))
+                    | MEC_BIT(MEC_KSCAN_KSO_SEL_KSCAN_DIS_Pos);
 }
 
 static inline void mec_hal_kscan_kso_invert(struct mec_kscan_regs *regs, uint8_t invert)
@@ -95,10 +108,14 @@ static inline void mec_hal_kscan_kso_invert(struct mec_kscan_regs *regs, uint8_t
     }
 }
 
-static inline void mec_hal_kscan_kso_select(struct mec_kscan_regs *regs, uint8_t kso_sel)
+/* Select KSO line and drive to value with key scan enabled */
+static inline
+void mec_hal_kscan_kso_select(struct mec_kscan_regs *regs, uint8_t kso_sel, uint8_t val)
 {
-    regs->KSO_SEL = ((regs->KSO_SEL & (uint8_t)~MEC_KSCAN_KSO_SEL_OSEL_Msk)
-                     | ((kso_sel << MEC_KSCAN_KSO_SEL_OSEL_Pos) & MEC_KSCAN_KSO_SEL_OSEL_Msk));
+    uint8_t ksoinv = (val) ? MEC_BIT(MEC_KSCAN_KSO_SEL_KSO_INVERT_Pos) : 0;
+
+    regs->KSO_SEL = (((kso_sel << MEC_KSCAN_KSO_SEL_OSEL_Pos) & MEC_KSCAN_KSO_SEL_OSEL_Msk)
+                     | ksoinv);
 }
 
 static inline uint8_t mec_hal_kscan_ksi_state(struct mec_kscan_regs *regs)
