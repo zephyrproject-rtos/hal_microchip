@@ -52,5 +52,7 @@
 /* Enable checks of week timer base adress passed to API's */
 /* #define MEC_WKTMR_BASE_CHECK */
 
+#define MEC5_ROM_API_NDRNG_ENABLED
+
 #endif /* #ifndef _MEC_PCFG_H */
 /* end mec_pcfg.h */
