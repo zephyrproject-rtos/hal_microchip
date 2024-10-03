@@ -426,6 +426,7 @@ int mec_hal_uart_init(struct mec_uart_regs *regs, uint32_t baud_rate,
         return MEC_RET_ERR_INVAL;
     }
 
+    mec_hal_girq_ctrl(info->devi, 0);
     mec_hal_pcr_clr_blk_slp_en(info->pcr_id);
     mec_hal_pcr_blk_reset(info->pcr_id);
 
@@ -465,7 +466,9 @@ int mec_hal_uart_init(struct mec_uart_regs *regs, uint32_t baud_rate,
     /* interrupt enables */
     uart_intr_out_enable(regs, 1);
     mec_hal_girq_clr_src(info->devi);
-    mec_hal_girq_ctrl(info->devi, 1);
+    if (config & MEC_BIT(MEC5_UART_CFG_GIRQ_EN_POS)) {
+        mec_hal_girq_ctrl(info->devi, 1);
+    }
 
     return MEC_RET_OK;
 }
@@ -479,6 +482,54 @@ int mec_hal_uart_activate(struct mec_uart_regs *regs, uint8_t enable)
     uart_activate(regs, enable);
 
     return MEC_RET_OK;
+}
+
+int mec_hal_uart_girq_ctrl(struct mec_uart_regs *regs, uint8_t enable)
+{
+    const struct mec_uart_info *info = get_uart_info(regs);
+
+    if (!info) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    mec_hal_girq_ctrl(info->devi, enable);
+
+    return MEC_RET_OK;
+}
+
+int mec_hal_uart_girq_clear(struct mec_uart_regs *regs)
+{
+    const struct mec_uart_info *info = get_uart_info(regs);
+
+    if (!info) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    mec_hal_girq_clr_src(info->devi);
+
+    return MEC_RET_OK;
+}
+
+bool mec_hal_uart_is_girq_status(struct mec_uart_regs *regs)
+{
+    const struct mec_uart_info *info = get_uart_info(regs);
+
+    if (info && mec_hal_girq_src(info->devi)) {
+        return true;
+    }
+
+    return false;
+}
+
+bool mec_hal_uart_is_girq_result(struct mec_uart_regs *regs)
+{
+    const struct mec_uart_info *info = get_uart_info(regs);
+
+    if (info && mec_hal_girq_result(info->devi)) {
+        return true;
+    }
+
+    return false;
 }
 
 int mec_hal_uart_baud_rate_set(struct mec_uart_regs *base, uint32_t baud, uint32_t extclk_hz)
@@ -623,17 +674,16 @@ int mec_hal_uart_is_tx_fifo_empty(struct mec_uart_regs *base)
     return 0;
 }
 
-/* Return 1 if TX FIFO/holding and shift register are empty */
+/* Return 1 if TX shift register is empty which implies FIFO is empty */
 int mec_hal_uart_is_tx_empty(struct mec_uart_regs *base)
 {
     const struct mec_uart_info *info = get_uart_info(base);
-    uint8_t msk = (MEC_BIT(MEC_UART_LSR_THRE_Pos) | MEC_BIT(MEC_UART_LSR_THSE_Pos));
 
     if (!info) {
         return 0;
     }
 
-    if ((base->LSR & msk) == msk) {
+    if (base->LSR & MEC_BIT(MEC_UART_LSR_THSE_Pos)) {
         return 1;
     }
 
@@ -703,7 +753,8 @@ int mec_hal_uart_tx_byte(struct mec_uart_regs *base, uint8_t data)
     }
 #endif
 
-    if (base->LSR & MEC_BIT(MEC_UART_LSR_THRE_Pos)) { /* if empty */
+    /* if holding register is empty, we can write data to it */
+    if (base->LSR & MEC_BIT(MEC_UART_LSR_THRE_Pos)) {
         base->TXB = data;
         return MEC_RET_OK;
     }

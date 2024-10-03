@@ -122,6 +122,7 @@ struct mec_uart_cfg {
 #define MEC5_UART_CFG_PARITY_EVEN 0x300u
 #define MEC5_UART_CFG_PARITY_MARK 0xa00u
 #define MEC5_UART_CFG_PARITY_SPACE 0xe00u
+#define MEC5_UART_CFG_GIRQ_EN_POS 16
 
 #define MEC5_UART_MIN_BAUD 50u
 #define MEC5_UART_MAX_BAUD 3000000u
@@ -141,6 +142,11 @@ int mec_hal_uart_init(struct mec_uart_regs *base, uint32_t baud_rate,
 int mec_hal_uart_activate(struct mec_uart_regs *regs, uint8_t enable);
 
 int mec_hal_uart_power_on(struct mec_uart_regs *regs, uint32_t cfg_flags);
+
+int mec_hal_uart_girq_ctrl(struct mec_uart_regs *regs, uint8_t enable);
+int mec_hal_uart_girq_clear(struct mec_uart_regs *regs);
+bool mec_hal_uart_is_girq_status(struct mec_uart_regs *regs);
+bool mec_hal_uart_is_girq_result(struct mec_uart_regs *regs);
 
 int mec_hal_uart_clock_freq_get(struct mec_uart_regs *base, uint32_t *clock_freq);
 
