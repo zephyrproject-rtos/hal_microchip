@@ -64,7 +64,7 @@
 #endif /* SKIP_INTEGER_LITERALS */
 
 /* ************************************************************************** */
-/* CMSIS DEFINITIONS FOR PIC32CX1025SG41064                                 */
+/*                  CMSIS DEFINITIONS FOR PIC32CX1025SG41064                  */
 /* ************************************************************************** */
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))
 /* Interrupt Number Definition */
@@ -82,7 +82,7 @@ typedef enum IRQn
   PendSV_IRQn               =  -2, /* -2  Pendable request for system service */
   SysTick_IRQn              =  -1, /* -1  System Tick Timer                   */
 
-/******  PIC32CX1025SG41064 specific Interrupt Numbers ***********************************/
+/* ************* PIC32CX1025SG41064 specific Interrupt Numbers ************** */
   PM_IRQn                   =   0, /* 0   Power Manager (PM)                  */
   MCLK_IRQn                 =   1, /* 1   Main Clock (MCLK)                   */
   OSCCTRL_XOSC0_IRQn        =   2, /* 2   Oscillators Control (OSCCTRL)       */
@@ -194,8 +194,6 @@ typedef enum IRQn
   DAC_OTHER_IRQn            = 123, /* 123 Digital-to-Analog Converter (DAC)   */
   DAC_EMPTY_0_IRQn          = 124, /* 124 Digital-to-Analog Converter (DAC)   */
   DAC_EMPTY_1_IRQn          = 125, /* 125 Digital-to-Analog Converter (DAC)   */
-  DAC_RESRDY_0_IRQn         = 126, /* 126 Digital-to-Analog Converter (DAC)   */
-  DAC_RESRDY_1_IRQn         = 127, /* 127 Digital-to-Analog Converter (DAC)   */
   I2S_IRQn                  = 128, /* 128 Inter-IC Sound Interface (I2S)      */
   PCC_IRQn                  = 129, /* 129 Parallel Capture Controller (PCC)   */
   AES_IRQn                  = 130, /* 130 Advanced Encryption Standard (AES)  */
@@ -358,8 +356,8 @@ typedef struct _DeviceVectors
   void* pfnDAC_OTHER_Handler;                    /* 123 Digital-to-Analog Converter (DAC) */
   void* pfnDAC_EMPTY_0_Handler;                  /* 124 Digital-to-Analog Converter (DAC) */
   void* pfnDAC_EMPTY_1_Handler;                  /* 125 Digital-to-Analog Converter (DAC) */
-  void* pfnDAC_RESRDY_0_Handler;                 /* 126 Digital-to-Analog Converter (DAC) */
-  void* pfnDAC_RESRDY_1_Handler;                 /* 127 Digital-to-Analog Converter (DAC) */
+  void* pvReserved126;
+  void* pvReserved127;
   void* pfnI2S_Handler;                          /* 128 Inter-IC Sound Interface (I2S) */
   void* pfnPCC_Handler;                          /* 129 Parallel Capture Controller (PCC) */
   void* pfnAES_Handler;                          /* 130 Advanced Encryption Standard (AES) */
@@ -500,8 +498,6 @@ void AC_Handler                    ( void );
 void DAC_OTHER_Handler             ( void );
 void DAC_EMPTY_0_Handler           ( void );
 void DAC_EMPTY_1_Handler           ( void );
-void DAC_RESRDY_0_Handler          ( void );
-void DAC_RESRDY_1_Handler          ( void );
 void I2S_Handler                   ( void );
 void PCC_Handler                   ( void );
 void AES_Handler                   ( void );
@@ -532,7 +528,7 @@ void SDHC0_Handler                 ( void );
 #endif /* USE_CMSIS_INIT */
 
 /* ************************************************************************** */
-/*   SOFTWARE PERIPHERAL API DEFINITION FOR PIC32CX1025SG41064                */
+/*         SOFTWARE PERIPHERAL API DEFINITIONS FOR PIC32CX1025SG41064         */
 /* ************************************************************************** */
 #include "component/ac.h"
 #include "component/adc.h"
@@ -575,7 +571,7 @@ void SDHC0_Handler                 ( void );
 #include "component/wdt.h"
 
 /* ************************************************************************** */
-/*   INSTANCE DEFINITIONS FOR PIC32CX1025SG41064 */
+/*                INSTANCE DEFINITIONS FOR PIC32CX1025SG41064                 */
 /* ************************************************************************** */
 #include "instance/ac.h"
 #include "instance/adc0.h"
@@ -632,7 +628,7 @@ void SDHC0_Handler                 ( void );
 #include "instance/wdt.h"
 
 /* ************************************************************************** */
-/*  PERIPHERAL ID DEFINITIONS FOR PIC32CX1025SG41064                          */
+/*              PERIPHERAL ID DEFINITIONS FOR PIC32CX1025SG41064              */
 /* ************************************************************************** */
 #define ID_PAC           (  0) /* Instance index for PAC (PAC) */
 #define ID_PM            (  1) /* Instance index for PM (PM) */
@@ -690,7 +686,7 @@ void SDHC0_Handler                 ( void );
 #define ID_PERIPH_MAX    (107) /* Number of peripheral IDs */
 
 /* ************************************************************************** */
-/*   REGISTER STRUCTURE ADDRESS DEFINITIONS FOR PIC32CX1025SG41064            */
+/*       REGISTER STRUCTURE ADDRESS DEFINITIONS FOR PIC32CX1025SG41064        */
 /* ************************************************************************** */
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))
 #define AC_REGS                          ((ac_registers_t*)0x42002000)                 /* AC Registers Address         */
@@ -713,7 +709,6 @@ void SDHC0_Handler                 ( void );
 #define MCLK_REGS                        ((mclk_registers_t*)0x40000800)               /* MCLK Registers Address       */
 #define NVMCTRL_REGS                     ((nvmctrl_registers_t*)0x41004000)            /* NVMCTRL Registers Address    */
 #define SW0_FUSES_REGS                   ((fuses_sw0_fuses_registers_t*)0x00800080)    /* FUSES Registers Address      */
-#define TEMP_LOG_FUSES_REGS              ((fuses_temp_log_fuses_registers_t*)0x00800100) /* FUSES Registers Address      */
 #define USER_FUSES_REGS                  ((fuses_user_fuses_registers_t*)0x00804000)   /* FUSES Registers Address      */
 #define OSCCTRL_REGS                     ((oscctrl_registers_t*)0x40001000)            /* OSCCTRL Registers Address    */
 #define OSC32KCTRL_REGS                  ((osc32kctrl_registers_t*)0x40001400)         /* OSC32KCTRL Registers Address */
@@ -751,7 +746,7 @@ void SDHC0_Handler                 ( void );
 #endif /* (defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__)) */
 
 /* ************************************************************************** */
-/*   BASE ADDRESS DEFINITIONS FOR PIC32CX1025SG41064                          */
+/*              BASE ADDRESS DEFINITIONS FOR PIC32CX1025SG41064               */
 /* ************************************************************************** */
 #define AC_BASE_ADDRESS                  _UINT32_(0x42002000)                          /* AC Base Address */
 #define ADC0_BASE_ADDRESS                _UINT32_(0x43001c00)                          /* ADC0 Base Address */
@@ -773,7 +768,6 @@ void SDHC0_Handler                 ( void );
 #define MCLK_BASE_ADDRESS                _UINT32_(0x40000800)                          /* MCLK Base Address */
 #define NVMCTRL_BASE_ADDRESS             _UINT32_(0x41004000)                          /* NVMCTRL Base Address */
 #define SW0_FUSES_BASE_ADDRESS           _UINT32_(0x00800080)                          /* FUSES Base Address */
-#define TEMP_LOG_FUSES_BASE_ADDRESS      _UINT32_(0x00800100)                          /* FUSES Base Address */
 #define USER_FUSES_BASE_ADDRESS          _UINT32_(0x00804000)                          /* FUSES Base Address */
 #define OSCCTRL_BASE_ADDRESS             _UINT32_(0x40001000)                          /* OSCCTRL Base Address */
 #define OSC32KCTRL_BASE_ADDRESS          _UINT32_(0x40001400)                          /* OSC32KCTRL Base Address */
@@ -810,22 +804,18 @@ void SDHC0_Handler                 ( void );
 #define WDT_BASE_ADDRESS                 _UINT32_(0x40002000)                          /* WDT Base Address */
 
 /* ************************************************************************** */
-/*   PIO DEFINITIONS FOR PIC32CX1025SG41064                                   */
+/*                   PIO DEFINITIONS FOR PIC32CX1025SG41064                   */
 /* ************************************************************************** */
 #include "pio/pic32cx1025sg41064.h"
 
 /* ************************************************************************** */
-/*   MEMORY MAPPING DEFINITIONS FOR PIC32CX1025SG41064                        */
+/*             MEMORY MAPPING DEFINITIONS FOR PIC32CX1025SG41064              */
 /* ************************************************************************** */
 #define FLASH_SIZE                     _UINT32_(0x00100000)    /* 1024kB Memory segment type: flash */
 #define FLASH_PAGE_SIZE                _UINT32_(       512)
 #define FLASH_NB_OF_PAGES              _UINT32_(      2048)
 
-#define SW0_SIZE                       _UINT32_(0x00000010)    /*    0kB Memory segment type: fuses */
-#define TEMP_LOG_SIZE                  _UINT32_(0x00000200)    /*    0kB Memory segment type: fuses */
-#define TEMP_LOG_PAGE_SIZE             _UINT32_(       512)
-#define TEMP_LOG_NB_OF_PAGES           _UINT32_(         1)
-
+#define SW0_SIZE                       _UINT32_(0x00000008)    /*    0kB Memory segment type: fuses */
 #define USER_PAGE_SIZE                 _UINT32_(0x00000200)    /*    0kB Memory segment type: user_page */
 #define USER_PAGE_PAGE_SIZE            _UINT32_(       512)
 #define USER_PAGE_NB_OF_PAGES          _UINT32_(         1)
@@ -850,7 +840,6 @@ void SDHC0_Handler                 ( void );
 
 #define FLASH_ADDR                     _UINT32_(0x00000000)    /* FLASH base address (type: flash)*/
 #define SW0_ADDR                       _UINT32_(0x00800080)    /* SW0 base address (type: fuses)*/
-#define TEMP_LOG_ADDR                  _UINT32_(0x00800100)    /* TEMP_LOG base address (type: fuses)*/
 #define USER_PAGE_ADDR                 _UINT32_(0x00804000)    /* USER_PAGE base address (type: user_page)*/
 #define CMCC_ADDR                      _UINT32_(0x03000000)    /* CMCC base address (type: io)*/
 #define CMCC_DATARAM_ADDR              _UINT32_(0x03000000)    /* CMCC_DATARAM base address (type: io)*/
@@ -871,16 +860,16 @@ void SDHC0_Handler                 ( void );
 #define SCS_ADDR                       _UINT32_(0xe000e000)    /* SCS base address (type: io)*/
 
 /* ************************************************************************** */
-/*   DEVICE SIGNATURES FOR PIC32CX1025SG41064                                 */
+/*                  DEVICE SIGNATURES FOR PIC32CX1025SG41064                  */
 /* ************************************************************************** */
 #define CHIP_DSU_DID                   _UINT32_(0X61870602)
 
 /* ************************************************************************** */
-/*   ELECTRICAL DEFINITIONS FOR PIC32CX1025SG41064                            */
+/*               ELECTRICAL DEFINITIONS FOR PIC32CX1025SG41064                */
 /* ************************************************************************** */
 
 /* ************************************************************************** */
-/* Event Generator IDs for C32CX1025SG41064 */
+/*                  Event Generator IDs for C32CX1025SG41064                  */
 /* ************************************************************************** */
 #define EVENT_ID_GEN_OSCCTRL_XOSC_FAIL_0                  1 /* ID for OSCCTRL event generator XOSC_FAIL_0 */
 #define EVENT_ID_GEN_OSCCTRL_XOSC_FAIL_1                  2 /* ID for OSCCTRL event generator XOSC_FAIL_1 */
@@ -985,8 +974,6 @@ void SDHC0_Handler                 ( void );
 #define EVENT_ID_GEN_AC_WIN_0                           109 /* ID for AC event generator WIN_0 */
 #define EVENT_ID_GEN_DAC_EMPTY_0                        110 /* ID for DAC event generator EMPTY_0 */
 #define EVENT_ID_GEN_DAC_EMPTY_1                        111 /* ID for DAC event generator EMPTY_1 */
-#define EVENT_ID_GEN_DAC_RESRDY_0                       112 /* ID for DAC event generator RESRDY_0 */
-#define EVENT_ID_GEN_DAC_RESRDY_1                       113 /* ID for DAC event generator RESRDY_1 */
 #define EVENT_ID_GEN_GMAC_TSU_CMP                       114 /* ID for GMAC event generator TSU_CMP */
 #define EVENT_ID_GEN_TRNG_READY                         115 /* ID for TRNG event generator READY */
 #define EVENT_ID_GEN_CCL_LUTOUT_0                       116 /* ID for CCL event generator LUTOUT_0 */
@@ -995,7 +982,7 @@ void SDHC0_Handler                 ( void );
 #define EVENT_ID_GEN_CCL_LUTOUT_3                       119 /* ID for CCL event generator LUTOUT_3 */
 
 /* ************************************************************************** */
-/*  Event User IDs for C32CX1025SG41064 */
+/*                    Event User IDs for C32CX1025SG41064                     */
 /* ************************************************************************** */
 #define EVENT_ID_USER_RTC_TAMPER                          0 /* ID for RTC event user TAMPER */
 #define EVENT_ID_USER_PORT_EV_0                           1 /* ID for PORT event user EV_0 */

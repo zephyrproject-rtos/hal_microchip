@@ -64,7 +64,7 @@
 #endif /* SKIP_INTEGER_LITERALS */
 
 /* ************************************************************************** */
-/* CMSIS DEFINITIONS FOR PIC32CX1025SG41128                                 */
+/*                  CMSIS DEFINITIONS FOR PIC32CX1025SG41128                  */
 /* ************************************************************************** */
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))
 /* Interrupt Number Definition */
@@ -82,7 +82,7 @@ typedef enum IRQn
   PendSV_IRQn               =  -2, /* -2  Pendable request for system service */
   SysTick_IRQn              =  -1, /* -1  System Tick Timer                   */
 
-/******  PIC32CX1025SG41128 specific Interrupt Numbers ***********************************/
+/* ************* PIC32CX1025SG41128 specific Interrupt Numbers ************** */
   PM_IRQn                   =   0, /* 0   Power Manager (PM)                  */
   MCLK_IRQn                 =   1, /* 1   Main Clock (MCLK)                   */
   OSCCTRL_XOSC0_IRQn        =   2, /* 2   Oscillators Control (OSCCTRL)       */
@@ -555,7 +555,7 @@ void SDHC1_Handler                 ( void );
 #endif /* USE_CMSIS_INIT */
 
 /* ************************************************************************** */
-/*   SOFTWARE PERIPHERAL API DEFINITION FOR PIC32CX1025SG41128                */
+/*         SOFTWARE PERIPHERAL API DEFINITIONS FOR PIC32CX1025SG41128         */
 /* ************************************************************************** */
 #include "component/ac.h"
 #include "component/adc.h"
@@ -599,7 +599,7 @@ void SDHC1_Handler                 ( void );
 #include "component/wdt.h"
 
 /* ************************************************************************** */
-/*   INSTANCE DEFINITIONS FOR PIC32CX1025SG41128 */
+/*                INSTANCE DEFINITIONS FOR PIC32CX1025SG41128                 */
 /* ************************************************************************** */
 #include "instance/ac.h"
 #include "instance/adc0.h"
@@ -663,7 +663,7 @@ void SDHC1_Handler                 ( void );
 #include "instance/wdt.h"
 
 /* ************************************************************************** */
-/*  PERIPHERAL ID DEFINITIONS FOR PIC32CX1025SG41128                          */
+/*              PERIPHERAL ID DEFINITIONS FOR PIC32CX1025SG41128              */
 /* ************************************************************************** */
 #define ID_PAC           (  0) /* Instance index for PAC (PAC) */
 #define ID_PM            (  1) /* Instance index for PM (PM) */
@@ -727,7 +727,7 @@ void SDHC1_Handler                 ( void );
 #define ID_PERIPH_MAX    (107) /* Number of peripheral IDs */
 
 /* ************************************************************************** */
-/*   REGISTER STRUCTURE ADDRESS DEFINITIONS FOR PIC32CX1025SG41128            */
+/*       REGISTER STRUCTURE ADDRESS DEFINITIONS FOR PIC32CX1025SG41128        */
 /* ************************************************************************** */
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))
 #define AC_REGS                          ((ac_registers_t*)0x42002000)                 /* AC Registers Address         */
@@ -794,7 +794,7 @@ void SDHC1_Handler                 ( void );
 #endif /* (defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__)) */
 
 /* ************************************************************************** */
-/*   BASE ADDRESS DEFINITIONS FOR PIC32CX1025SG41128                          */
+/*              BASE ADDRESS DEFINITIONS FOR PIC32CX1025SG41128               */
 /* ************************************************************************** */
 #define AC_BASE_ADDRESS                  _UINT32_(0x42002000)                          /* AC Base Address */
 #define ADC0_BASE_ADDRESS                _UINT32_(0x43001c00)                          /* ADC0 Base Address */
@@ -859,12 +859,12 @@ void SDHC1_Handler                 ( void );
 #define WDT_BASE_ADDRESS                 _UINT32_(0x40002000)                          /* WDT Base Address */
 
 /* ************************************************************************** */
-/*   PIO DEFINITIONS FOR PIC32CX1025SG41128                                   */
+/*                   PIO DEFINITIONS FOR PIC32CX1025SG41128                   */
 /* ************************************************************************** */
 #include "pio/pic32cx1025sg41128.h"
 
 /* ************************************************************************** */
-/*   MEMORY MAPPING DEFINITIONS FOR PIC32CX1025SG41128                        */
+/*             MEMORY MAPPING DEFINITIONS FOR PIC32CX1025SG41128              */
 /* ************************************************************************** */
 #define FLASH_SIZE                     _UINT32_(0x00100000)    /* 1024kB Memory segment type: flash */
 #define FLASH_PAGE_SIZE                _UINT32_(       512)
@@ -917,16 +917,16 @@ void SDHC1_Handler                 ( void );
 #define SCS_ADDR                       _UINT32_(0xe000e000)    /* SCS base address (type: io)*/
 
 /* ************************************************************************** */
-/*   DEVICE SIGNATURES FOR PIC32CX1025SG41128                                 */
+/*                  DEVICE SIGNATURES FOR PIC32CX1025SG41128                  */
 /* ************************************************************************** */
 #define CHIP_DSU_DID                   _UINT32_(0X61870500)
 
 /* ************************************************************************** */
-/*   ELECTRICAL DEFINITIONS FOR PIC32CX1025SG41128                            */
+/*               ELECTRICAL DEFINITIONS FOR PIC32CX1025SG41128                */
 /* ************************************************************************** */
 
 /* ************************************************************************** */
-/* Event Generator IDs for C32CX1025SG41128 */
+/*                  Event Generator IDs for C32CX1025SG41128                  */
 /* ************************************************************************** */
 #define EVENT_ID_GEN_OSCCTRL_XOSC_FAIL_0                  1 /* ID for OSCCTRL event generator XOSC_FAIL_0 */
 #define EVENT_ID_GEN_OSCCTRL_XOSC_FAIL_1                  2 /* ID for OSCCTRL event generator XOSC_FAIL_1 */
@@ -1045,7 +1045,7 @@ void SDHC1_Handler                 ( void );
 #define EVENT_ID_GEN_CCL_LUTOUT_3                       119 /* ID for CCL event generator LUTOUT_3 */
 
 /* ************************************************************************** */
-/*  Event User IDs for C32CX1025SG41128 */
+/*                    Event User IDs for C32CX1025SG41128                     */
 /* ************************************************************************** */
 #define EVENT_ID_USER_RTC_TAMPER                          0 /* ID for RTC event user TAMPER */
 #define EVENT_ID_USER_PORT_EV_0                           1 /* ID for PORT event user EV_0 */
