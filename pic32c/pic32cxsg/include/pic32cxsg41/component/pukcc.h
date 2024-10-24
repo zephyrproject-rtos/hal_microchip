@@ -17,18 +17,18 @@
  *
  */
 
-/* file generated from device description file (ATDF) version 2023-03-17T09:48:34Z */
+/*  file generated from device description file (ATDF) version 2023-03-17T09:48:34Z  */
 #ifndef _PIC32CXSG41_PUKCC_COMPONENT_H_
 #define _PIC32CXSG41_PUKCC_COMPONENT_H_
 
 /* ************************************************************************** */
-/*   SOFTWARE API DEFINITION FOR PUKCC                                        */
+/*                     SOFTWARE API DEFINITION FOR PUKCC                      */
 /* ************************************************************************** */
 
-/** \brief PUKCC register offsets definitions */
+/* PUKCC register offsets definitions */
 
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))
-/** \brief No register API structure defined for PUKCC */
+/* No register API structure defined for PUKCC */
 typedef void Pukcc;
 
 

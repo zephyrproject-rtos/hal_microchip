@@ -7,6 +7,7 @@
 # Pin codes:
 #
 # - 064     pins: 064
+# - 080     pins: 080
 # - 100     pins: 100
 # - 128     pins: 128
 #
@@ -24,6 +25,8 @@ series: [cx1025sg41, cx1025sg60, cx1025sg61]
 variants:
   - pincode: 064
     series: [cx1025sg41, cx1025sg60, cx1025sg61]
+  - pincode: 080
+    series: [cx1025sg41]
   - pincode: 100
     series: [cx1025sg41, cx1025sg60, cx1025sg61]
   - pincode: 128
@@ -32,7 +35,7 @@ variants:
     
 pins:
   pb03:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint3]
       - [b, adc0, ain15]
@@ -40,13 +43,13 @@ pins:
       - [d, sercom5, pad1]
       - [e, tc6, wo1]
   pa00:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint0]
       - [d, sercom1, pad0]
       - [e, tc2, wo0]
   pa01:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint1]
       - [d, sercom1, pad1]
@@ -72,26 +75,26 @@ pins:
       - [a, eic, extint3]
       - [b, adc1, ain5]
   pa02:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint2]
       - [b, adc0, ain0]
       - [b, dac, vout0]
   pa03:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint3]
       - [b, anaref, vrefa]
       - [b, adc0, ain1]
       - [b, ptc, xy0]
   pb04:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint4]
       - [b, adc1, ain6]
       - [b, ptc, xy22]
   pb05:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint5]
       - [b, adc1, ain7]
@@ -107,21 +110,21 @@ pins:
       - [a, eic, extint1]
       - [b, adc1, ain15]
   pb06:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint6]
       - [b, adc1, ain8]
       - [b, ptc, xy24]
       - [n, ccl, in6]
   pb07:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint7]
       - [b, adc1, ain9]
       - [b, ptc, xy25]
       - [n, ccl, in7]
   pb08:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint8]
       - [b, adc0, ain2]
@@ -131,7 +134,7 @@ pins:
       - [e, tc4, wo0]
       - [n, ccl, in8]
   pb09:
-    pincodes: [064, 100, 128]
+    pincodes: [064 080,, 100, 128]
     periph:
       - [a, eic, extint9]
       - [b, adc0, ain3]
@@ -141,7 +144,7 @@ pins:
       - [e, tc4, wo1]
       - [n, ccl, out2]
   pa04:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint4]
       - [b, anaref, vrefb]
@@ -152,7 +155,7 @@ pins:
       - [e, tc0, wo0]
       - [n, ccl, in0]
   pa05:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint5]
       - [b, adc0, ain5]
@@ -162,7 +165,7 @@ pins:
       - [e, tc0, wo1]
       - [n, ccl, in1]
   pa06:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint6]
       - [b, anaref, vrefc]
@@ -174,7 +177,7 @@ pins:
       - [i, sdhc0, cd]
       - [n, ccl, in2]
   pa07:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint7]
       - [b, adc0, ain7]
@@ -196,19 +199,19 @@ pins:
       - [a, eic, extint5]
       - [c, sercom6, pad1]
   pc06:
-    pincodes: [100, 128]
+    pincodes: [080, 100, 128]
     periph:
       - [a, eic, extint6]
       - [c, sercom6, pad2]
       - [i, sdhc0, cd]
   pc07:
-    pincodes: [100, 128]
+    pincodes: [080, 100, 128]
     periph:
       - [a, eic, extint7]
       - [c, sercom6, pad3]
       - [i, sdhc0, wp]
   pa08:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, nmi]
       - [b, adc0, ain8]
@@ -224,7 +227,7 @@ pins:
       - [j, iis, mck0]
       - [n, ccl, in3]
   pa09:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint9]
       - [b, adc0, ain9]
@@ -240,7 +243,7 @@ pins:
       - [j, iis, fs0]
       - [n, ccl, in4]
   pa10:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint10]
       - [b, adc0, ain10]
@@ -256,7 +259,7 @@ pins:
       - [m, gclk, io4]
       - [n, ccl, in5]
   pa11:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint11]
       - [b, adc0, ain11]
@@ -272,7 +275,7 @@ pins:
       - [m, gclk, io5]
       - [n, ccl, out1]
   pb10:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint10]
       - [d, sercom4, pad2]
@@ -285,7 +288,7 @@ pins:
       - [m, gclk, io4]
       - [n, ccl, in11]
   pb11:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint11]
       - [d, sercom4, pad3]
@@ -298,7 +301,7 @@ pins:
       - [m, gclk, io5]
       - [n, ccl, out1]
   pb12:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint12]
       - [b, ptc, xy26]
@@ -311,7 +314,7 @@ pins:
       - [j, iis, sck1]
       - [m, gclk, io6]
   pb13:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint13]
       - [b, ptc, xy27]
@@ -324,7 +327,7 @@ pins:
       - [j, iis, mck1]
       - [m, gclk, io7]
   pb14:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint14]
       - [b, ptc, xy28]
@@ -338,7 +341,7 @@ pins:
       - [m, gclk, io0]
       - [n, ccl, in9]
   pb15:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint15]
       - [b, ptc, xy29]
@@ -402,7 +405,7 @@ pins:
       - [g, tcc1, wo5]
       - [l, gmac, gmdc]
   pc12:
-    pincodes: [100, 128]
+    pincodes: [080, 100, 128]
     periph:
       - [a, eic, extint12]
       - [c, sercom7, pad0]
@@ -412,7 +415,7 @@ pins:
       - [k, pcc, data10]
       - [l, gmac, gmdio]
   pc13:
-    pincodes: [100, 128]
+    pincodes: [080, 100, 128]
     periph:
       - [a, eic, extint13]
       - [c, sercom7, pad1]
@@ -421,7 +424,7 @@ pins:
       - [g, tcc1, wo7]
       - [k, pcc, data11]
   pc14:
-    pincodes: [100, 128]
+    pincodes: [080, 100, 128]
     periph:
       - [a, eic, extint14]
       - [c, sercom7, pad2]
@@ -431,7 +434,7 @@ pins:
       - [k, pcc, data12]
       - [l, gmac, grx3]
   pc15:
-    pincodes: [100, 128]
+    pincodes: [080, 100, 128]
     periph:
       - [a, eic, extint15]
       - [c, sercom7, pad3]
@@ -441,7 +444,7 @@ pins:
       - [k, pcc, data13]
       - [l, gmac, grx2]
   pa12:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint12]
       - [c, sercom2, pad0]
@@ -454,7 +457,7 @@ pins:
       - [l, gmac, grx1]
       - [m, ac, cmp0]
   pa13:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint13]
       - [c, sercom2, pad1]
@@ -467,7 +470,7 @@ pins:
       - [l, gmac, grx0]
       - [m, ac, cmp1]
   pa14:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint14]
       - [c, sercom2, pad2]
@@ -479,7 +482,7 @@ pins:
       - [l, gmac, gtxck]
       - [m, glkc, io0]
   pa15:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint15]
       - [c, sercom2, pad3]
@@ -490,7 +493,7 @@ pins:
       - [l, gmac, grxer]
       - [m, glkc, io1]
   pa16:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint0]
       - [b, ptc, xy10]
@@ -504,7 +507,7 @@ pins:
       - [m, gclk, io2]
       - [n, ccl, in0]
   pa17:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint1]
       - [b, ptc, xy11]
@@ -518,7 +521,7 @@ pins:
       - [m, gclk, io3]
       - [n, ccl, in1]
   pa18:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint2]
       - [b, ptc, xy12]
@@ -532,7 +535,7 @@ pins:
       - [m, ac, cmp0]
       - [n, ccl, in2]
   pa19:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint3]
       - [b, ptc, xy13]
@@ -546,7 +549,7 @@ pins:
       - [m, ac, cmp1]
       - [n, ccl, out0]
   pc16:
-    pincodes: [100, 128]
+    pincodes: [080, 100, 128]
     periph:
       - [a, eic, extint0]
       - [c, sercom6, pad0]
@@ -555,7 +558,7 @@ pins:
       - [g, pdec, qdi0]
       - [l, gmac, gtx2]
   pc17:
-    pincodes: [100, 128]
+    pincodes: [080, 100, 128]
     periph:
       - [a, eic, extint1]
       - [c, sercom6, pad1]
@@ -629,7 +632,7 @@ pins:
       - [f, tcc1, wo1]
       - [i, sdhc1, wp]
   pb16:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint0]
       - [c, sercom5, pad0]
@@ -641,7 +644,7 @@ pins:
       - [m, gclk, io2]
       - [n, ccl, in11]
   pb17:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint1]
       - [c, sercom5, pad1]
@@ -653,7 +656,7 @@ pins:
       - [m, gclk, io3]
       - [n, ccl, out3]
   pb18:
-    pincodes: [100, 128]
+    pincodes: [080, 100, 128]
     periph:
       - [a, eic, extint2]
       - [c, sercom5, pad2]
@@ -663,7 +666,7 @@ pins:
       - [i, sdhc1, dat0]
       - [m, gclk, io4]
   pb19:
-    pincodes: [100, 128]
+    pincodes: [080, 100, 128]
     periph:
       - [a, eic, extint3]
       - [c, sercom5, pad3]
@@ -673,7 +676,7 @@ pins:
       - [i, sdhc1, dat1]
       - [m, gclk, io5]
   pb20:
-    pincodes: [100, 128]
+    pincodes: [080, 100, 128]
     periph:
       - [a, eic, extint4]
       - [c, sercom3, pad0]
@@ -683,7 +686,7 @@ pins:
       - [i, sdhc1, dat2]
       - [m, gclk, io6]
   pb21:
-    pincodes: [100, 128]
+    pincodes: [080, 100, 128]
     periph:
       - [a, eic, extint5]
       - [c, sercom3, pad1]
@@ -692,7 +695,7 @@ pins:
       - [i, sdhc1, dat3]
       - [m, gclk, io7]
   pa20:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint4]
       - [b, ptc, xy14]
@@ -706,7 +709,7 @@ pins:
       - [k, pcc, data4]
       - [l, gmac, gmdc]
   pa21:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint5]
       - [b, ptc, xy15]
@@ -720,7 +723,7 @@ pins:
       - [k, pcc, data5]
       - [l, gmac, gmdio]
   pa22:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint6]
       - [b, ptc, xy16]
@@ -734,7 +737,7 @@ pins:
       - [k, pcc, data6]
       - [n, ccl, in6]
   pa23:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint7]
       - [b, ptc, xy17]
@@ -749,7 +752,7 @@ pins:
       - [k, pcc, data7]
       - [n, ccl, in7]
   pa24:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint8]
       - [c, sercom3, pad2]
@@ -761,7 +764,7 @@ pins:
       - [i, can0, tx]
       - [n, ccl, in8]
   pa25:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint9]
       - [c, sercom3, pad3]
@@ -772,7 +775,7 @@ pins:
       - [i, can0, rx]
       - [n, ccl, out2]
   pb22:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint6]
       - [c, sercom1, pad2]
@@ -783,7 +786,7 @@ pins:
       - [m, gclk, io0]
       - [n, ccl, in0]
   pb23:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint7]
       - [c, sercom1, pad3]
@@ -858,7 +861,7 @@ pins:
       - [a, eic, extint10]
       - [h, trace, data1]
   pc27:
-    pincodes: [100, 128]
+    pincodes: [080, 100, 128]
     periph:
       - [a, eic, extint11]
       - [c, sercom1, pad0]
@@ -866,20 +869,20 @@ pins:
       - [m, swd, swo]
       - [n, ccl, in4]
   pc28:
-    pincodes: [100, 128]
+    pincodes: [080, 100, 128]
     periph:
       - [a, eic, extint12]
       - [c, sercom1, pad1]
       - [h, trace, data0]
       - [n, ccl, in5]
   pa27:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint11]
       - [b, ptc, xy18]
       - [m, gclk, io1]
   pa30:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint14]
       - [b, ptc, xy19]
@@ -890,7 +893,7 @@ pins:
       - [m, gclk, io0]
       - [n, ccl, in3]
   pa31:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint15]
       - [d, sercom1, pad3]
@@ -899,7 +902,7 @@ pins:
       - [h, swd, io]
       - [n, ccl, out1]
   pb30:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint14]
       - [d, sercom5, pad1]
@@ -908,7 +911,7 @@ pins:
       - [g, tcc0, wo6]
       - [h, swd, swo]
   pb31:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint15]
       - [d, sercom5, pad0]
@@ -926,7 +929,7 @@ pins:
       - [a, eic, extint15]
       - [b, adc1, ain13]
   pb00:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint0]
       - [b, adc0, ain12]
@@ -935,7 +938,7 @@ pins:
       - [e, tc7, wo0]
       - [n, ccl, in1]
   pb01:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint1]
       - [b, adc0, ain13]
@@ -944,7 +947,7 @@ pins:
       - [e, tc7, wo1]
       - [n, ccl, in2]
   pb02:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint2]
       - [b, adc0, ain14]

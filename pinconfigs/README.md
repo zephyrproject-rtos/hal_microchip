@@ -43,6 +43,7 @@ aleatory pins to help understand the definition schema.
 # Pin codes:
 #
 # - 064     pins: 64
+# - 080     pins: 80
 # - 100     pins: 100
 # - 128     pins: 128
 #
@@ -60,6 +61,8 @@ series: [cx1025sg41, cx1025sg60, cx1025sg61]
 variants:
   - pincode: 064
     series: [cx1025sg41, cx1025sg60, cx1025sg61]
+  - pincode: 080
+    series: [cx1025sg41]
   - pincode: 100
     series: [cx1025sg41, cx1025sg60, cx1025sg61]
   - pincode: 128
@@ -67,7 +70,7 @@ variants:
 
 pins:
   pb08:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint8]
       - [b, adc0, ain2]
@@ -77,7 +80,7 @@ pins:
       - [e, tc4, wo0]
       - [n, ccl, in8]
   pb09:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint9]
       - [b, adc0, ain3]
@@ -87,7 +90,7 @@ pins:
       - [e, tc4, wo1]
       - [n, ccl, out2]
   pa04:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint4]
       - [b, anaref, vrefb]
@@ -98,7 +101,7 @@ pins:
       - [e, tc0, wo0]
       - [n, ccl, in0]
   pa05:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint5]
       - [b, adc0, ain5]
@@ -108,7 +111,7 @@ pins:
       - [e, tc0, wo1]
       - [n, ccl, in1]
   pa06:
-    pincodes: [064, 100, 128]
+    pincodes: [064, 080, 100, 128]
     periph:
       - [a, eic, extint6]
       - [b, anaref, vrefc]
@@ -163,7 +166,7 @@ At below `yaml` snip code defines `pc16` pin:
 
 ```yaml
   pc16:
-    pincodes: [100, 128]
+    pincodes: [ 080, 100, 128]
     periph:
       - [a, eic, extint0]
       - [c, sercom6, pad0]

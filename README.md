@@ -37,7 +37,7 @@ For more information about External Modules see
 
  - When submitting an updated firmware library version, it is important to make
    sure that the last firmware version will be merged. The library version is
-   used to be checked at [Microchip packs download site](http://packs.download.microchip.com/).
+   used to be checked at [Microchip packs download site](https://packs.download.microchip.com/).
  - When submitting an updated firmware library version the patchset already
    applied should be rebased on top of the newer version.
  - The patchset must be sent as an individual commit per SoC series to easy rebase.
@@ -48,7 +48,7 @@ For more information about External Modules see
  - The `pic32c/[pic32cxsg]/include/<soc>/README` file should be updated accordingly.
    If for some reason the file not exists it should be created.
  - Directory names should be converted to lowercase.
- - The recommendation is add **all fixups** in the `hal_atmel` instead on the
+ - The recommendation is add **all fixups** in the `hal_microchip` instead on the
    ZephyrRTOS project.
 
 The above are general guidelines and exceptions could happen. In this case, the

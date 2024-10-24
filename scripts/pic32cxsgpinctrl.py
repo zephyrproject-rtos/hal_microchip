@@ -1,3 +1,4 @@
+# Copyright (c) 2022 Gerson Fernando Budke <nandojve@gmail.com>
 # Copyright (c) 2024 Microchip
 # SPDX-License-Identifier: Apache-2.0
 
