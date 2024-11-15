@@ -40,6 +40,8 @@
 /* Enable checks of base address passed to PECI API's */
 /* #define MEC_PECI_BASE_CHECK */
 
+#define MEC_QSPI_BASE_CHECK
+
 /* QSPI LDMA transfer API: treat TX and RX buffer NULL pointers
  * with non-zero length as a request to generate SPI clocks with
  * I/O lines tri-stated. Length is the number of clocks.

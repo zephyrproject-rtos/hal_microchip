@@ -320,6 +320,25 @@ int mec_hal_qspi_load_descrs(struct mec_qspi_regs *regs, struct mec_qspi_context
 int mec_hal_qspi_load_descrs_at(struct mec_qspi_regs *regs, const uint32_t *descrs, uint8_t ndescr,
                                 uint8_t start_descr_idx);
 
+/* -------- 2024-11-04 -------- */
+#define MEC5_QSPI_ULDMA_FLAG_START 0x01u
+#define MEC5_QSPI_ULDMA_FLAG_IEN   0x02u
+#define MEC5_QSPI_ULDMA_FLAG_CLOSE 0x10u
+
+/* Full-duplex TX overrun data value used when rxlen > txlen.
+ * This value will be transmitted for the remaining (rxlen - txlen) bytes.
+ */
+#define MEC_QSPI_ULDMA_FLAG_TX_OVR_VAL_SET(f, b) \
+    (((uint32_t)(f) & 0x00ffffffu) | ((uint32_t)(b) << 24))
+
+#define MEC_QSPI_ULDMA_FLAG_TX_OVR_VAL_GET(f) ((uint32_t)(f) >> 24)
+
+int mec_hal_qspi_uldma_fd(struct mec_qspi_regs *regs, const uint8_t *txb, size_t txlen,
+                          uint8_t *rxb, size_t rxlen, uint32_t flags);
+
+int mec_hal_qspi_xfr_fifo_fd(struct mec_qspi_regs *regs, const uint8_t *txb, uint8_t *rxb,
+                             size_t xlen, uint32_t flags);
+
 #ifdef __cplusplus
 }
 #endif
