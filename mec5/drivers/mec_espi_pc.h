@@ -220,6 +220,27 @@ int mec_hal_espi_sram_bar_cfg(struct mec_espi_mem_regs *base,
 int mec_hal_espi_sram_bar_extended_addr_set(struct mec_espi_mem_regs *base,
                                             uint32_t extended_addr);
 
+/* eSPI SRAM BARs EC memory location, size, access, and enable can be programmed
+ * while ESPI_nRESET or nPLTRST are active. Host address cannot.
+ */
+int mec_hal_espi_sram_bar_ec_mem_cfg(struct mec_espi_mem_regs *regs, uint8_t sram_bar_id,
+                                     uint32_t maddr, uint16_t size, uint8_t access,
+                                     uint8_t enable);
+
+int mec_hal_espi_sram_bar_enable(struct mec_espi_mem_regs *base, uint8_t sram_bar_id,
+                                 uint8_t enable);
+
+int mec_hal_espi_sram_bar_host_addr_set(struct mec_espi_mem_regs *base, uint8_t sram_bar_id,
+                                        uint32_t host_addr_lsw, uint32_t host_addr_msw);
+
+/* get specified SRAM BAR size in bytes */
+int mec_hal_espi_sram_bar_size_get(struct mec_espi_mem_regs *base, uint8_t sram_bar_id,
+                                   size_t *size);
+
+/* get access mode */
+int mec_hal_espi_sram_bar_access_get(struct mec_espi_mem_regs *base, uint8_t sram_bar_id,
+                                     int *access);
+
 /* Return the number of Serial IRQ's a logical device implements */
 uint8_t mec_hal_espi_ld_sirq_num(struct mec_espi_io_regs *iobase, uint8_t ldn);
 
@@ -234,7 +255,7 @@ void mec_hal_espi_ld_sirq_set(struct mec_espi_io_regs *iobase, uint8_t ldn,
 /* Generate EC_IRQ Serial IRQ to the Host using the Serial IRQ slot
  * number previously programmed by mec_espi_ld_sirq_set().
  */
-int mec_hal_espi_gen_ec_sirq(struct mec_espi_io_regs *iobase);
+int mec_hal_espi_gen_ec_sirq(struct mec_espi_io_regs *iobase, uint8_t val);
 
 #ifdef __cplusplus
 }

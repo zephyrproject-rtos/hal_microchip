@@ -265,6 +265,41 @@ int mec_hal_espi_mbar_cfg(struct mec_espi_mem_regs *base, uint8_t ldn,
     return MEC_RET_OK;
 }
 
+int mec_hal_espi_sram_bar_ec_mem_cfg(struct mec_espi_mem_regs *regs, uint8_t sram_bar_id,
+                                     uint32_t maddr, uint16_t size, uint8_t access,
+                                     uint8_t enable)
+{
+    uint16_t vasz = 0;
+    uint8_t nz = 0;
+
+    if (!regs || !size) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    if ((size & (size - 1)) != 0) { /* not power of 2 */
+        return MEC_RET_ERR_INVAL;
+    }
+
+    nz = 31u - __CLZ((uint32_t)size);
+    if (nz > 15u) {
+        nz = 15u;
+    }
+
+    vasz = (uint16_t)nz << MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_SIZE_Pos;
+    vasz |= (((uint16_t)access << MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_ACCESS_Pos)
+             & MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_ACCESS_Msk);
+    if (enable) {
+        vasz |= MEC_BIT(MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_VALID_Pos);
+    }
+
+    regs->EC_SRAM_BAR[sram_bar_id].VASZ = 0;
+    regs->EC_SRAM_BAR[sram_bar_id].EC_SRAM_ADDR_15_0 = maddr & 0xffffu;
+    regs->EC_SRAM_BAR[sram_bar_id].EC_SRAM_ADDR_31_16 = (uint16_t)(maddr >> 16);
+    regs->EC_SRAM_BAR[sram_bar_id].VASZ = vasz;
+
+    return MEC_RET_OK;
+}
+
 int mec_hal_espi_sram_bar_cfg(struct mec_espi_mem_regs *base,
                               const struct espi_mec5_sram_bar_cfg *barcfg,
                               uint8_t sram_bar_id, uint8_t enable)
@@ -298,10 +333,76 @@ int mec_hal_espi_sram_bar_cfg(struct mec_espi_mem_regs *base,
     return MEC_RET_OK;
 }
 
+int mec_hal_espi_sram_bar_host_addr_set(struct mec_espi_mem_regs *base, uint8_t sram_bar_id,
+                                        uint32_t host_addr_lsw, uint32_t host_addr_msw)
+{
+    if (!base || (sram_bar_id >= MEC_ESPI_SRAM_BAR_MAX)) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    base->SRAM_BAR_HOST_EXTEND = host_addr_msw;
+    base->HOST_SRAM_BAR[sram_bar_id].HOST_ADDR_15_0 = (uint16_t)host_addr_lsw;
+    base->HOST_SRAM_BAR[sram_bar_id].HOST_ADDR_31_16 = (uint16_t)(host_addr_lsw >> 16);
+
+    return MEC_RET_OK;
+}
+
+int mec_hal_espi_sram_bar_enable(struct mec_espi_mem_regs *base, uint8_t sram_bar_id,
+                                 uint8_t enable)
+{
+    if (!base || (sram_bar_id >= MEC_ESPI_SRAM_BAR_MAX)) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    if (enable) {
+        base->EC_SRAM_BAR[sram_bar_id].VASZ |= MEC_BIT(MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_VALID_Pos);
+    } else {
+        base->EC_SRAM_BAR[sram_bar_id].VASZ &=
+            (uint16_t)~MEC_BIT(MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_VALID_Pos);
+    }
+
+    return MEC_RET_OK;
+}
+
+int mec_hal_espi_sram_bar_size_get(struct mec_espi_mem_regs *base, uint8_t sram_bar_id,
+                                   size_t *size)
+{
+    uint16_t temp = 0;
+
+    if (!base || !size || (sram_bar_id >= MEC_ESPI_SRAM_BAR_MAX)) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    /* size of power of 2 */
+    temp = base->EC_SRAM_BAR[sram_bar_id].VASZ & MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_SIZE_Msk;
+    temp >>= MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_SIZE_Pos;
+    *size = (1u << temp);
+
+    return MEC_RET_OK;
+}
+
+int mec_hal_espi_sram_bar_access_get(struct mec_espi_mem_regs *base, uint8_t sram_bar_id,
+                                     int *access)
+{
+    uint16_t temp = 0;
+
+    if (!base || !access || (sram_bar_id >= MEC_ESPI_SRAM_BAR_MAX)) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    /* size of power of 2 */
+    temp = base->EC_SRAM_BAR[sram_bar_id].VASZ & MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_ACCESS_Msk;
+    temp >>= MEC_ESPI_MEM_EC_SRAM_BAR_VASZ_ACCESS_Pos;
+    *access = (int)temp;
+
+    return MEC_RET_OK;
+}
+
 /* Set host address bits[47:32] for memory BAR's
  * Each Logical device implementing a memory BAR includes Host address bits [31:0].
  * Host address bits [47:32] are the same for all memory BAR's. Therefore all memory
  * BAR's must be located in the same 4GB host address space range.
+ * NOTE: this register is held in reset by chip reset, ESPI_nRESET, and nPLTRST.
  */
 int mec_hal_espi_mbar_extended_addr_set(struct mec_espi_mem_regs *base, uint32_t extended_addr)
 {
@@ -314,6 +415,11 @@ int mec_hal_espi_mbar_extended_addr_set(struct mec_espi_mem_regs *base, uint32_t
     return MEC_RET_OK;
 }
 
+/* Program eSPI Peripheral Channel SRAM BAR extended Host address register.
+ * This register contains Host memory space address bits[47:32] and applies
+ * to both SRAM BARs.
+ * NOTE: this register is held in reset by by chip reset, ESPI_nRESET, and nPLTRST.
+ */
 int mec_hal_espi_sram_bar_extended_addr_set(struct mec_espi_mem_regs *base,
                                             uint32_t extended_addr)
 {
@@ -482,13 +588,17 @@ void mec_hal_espi_ld_sirq_set(struct mec_espi_io_regs *iobase, uint8_t ldn,
 /* Generate EC_IRQ Serial IRQ to the Host using the Serial IRQ slot
  * number previously programmed by mec_espi_ld_sirq_set().
  */
-int mec_hal_espi_gen_ec_sirq(struct mec_espi_io_regs *iobase)
+int mec_hal_espi_gen_ec_sirq(struct mec_espi_io_regs *iobase, uint8_t val)
 {
     if (!iobase) {
         return MEC_RET_ERR_INVAL;
     }
 
-    iobase->PCECIRQ |= MEC_BIT(MEC_ESPI_IO_PCECIRQ_GEN_EC_IRQ_Pos);
+    if (val) {
+        iobase->PCECIRQ |= MEC_BIT(MEC_ESPI_IO_PCECIRQ_GEN_EC_IRQ_Pos);
+    } else {
+        iobase->PCECIRQ &= (uint32_t)~MEC_BIT(MEC_ESPI_IO_PCECIRQ_GEN_EC_IRQ_Pos);
+    }
 
     return MEC_RET_OK;
 }
