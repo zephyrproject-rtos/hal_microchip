@@ -11,7 +11,7 @@
 
 #define MEC5_VER_MAJOR    0
 #define MEC5_VER_MINOR    3
-#define MEC5_VER_REVISION 0
+#define MEC5_VER_REVISION 1
 
 size_t mec5_hal_version_size(void);
 char const *mec5_hal_version_string(void);
