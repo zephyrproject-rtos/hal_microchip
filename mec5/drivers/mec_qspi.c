@@ -1505,34 +1505,34 @@ static void qspi_uldma_fd_neq(struct mec_qspi_regs *regs, const uint8_t *txb, si
         dma1_len = txlen - rxlen;
     }
 
-    regs->TX_LDMA_CHAN[0].CTRL = QLDC_1B_EN;
     regs->TX_LDMA_CHAN[0].MEM_START = (uint32_t)&mec5_qspi_tx_dumpster;
-    regs->TX_LDMA_CHAN[1].CTRL = QLDC_1B_EN;
     regs->TX_LDMA_CHAN[1].MEM_START = (uint32_t)&mec5_qspi_tx_dumpster;
     regs->TX_LDMA_CHAN[0].LEN = dma0_len;
     regs->TX_LDMA_CHAN[1].LEN = dma1_len;
+    regs->TX_LDMA_CHAN[0].CTRL = QLDC_1B_EN;
+    regs->TX_LDMA_CHAN[1].CTRL = QLDC_1B_EN;
 
     if (txb) {
-        regs->TX_LDMA_CHAN[0].CTRL = QLDC_1B_INCM_EN;
         regs->TX_LDMA_CHAN[0].MEM_START = (uint32_t)txb;
+        regs->TX_LDMA_CHAN[0].CTRL = QLDC_1B_INCM_EN;
         if (txlen > rxlen) {
-            regs->TX_LDMA_CHAN[1].CTRL = QLDC_1B_INCM_EN;
             regs->TX_LDMA_CHAN[1].MEM_START = (uint32_t)txb + dma0_len;
+            regs->TX_LDMA_CHAN[1].CTRL = QLDC_1B_INCM_EN;
         }
     }
     regs->LDMA_TXEN = MEC_BIT(0) | MEC_BIT(1);
 
     if (rxb) {
         descr0 |= QD_RX_EN | QD_RX_LDMA_EN_CH0;
-        regs->RX_LDMA_CHAN[0].CTRL = QLDC_1B_INCM_EN;
-        regs->RX_LDMA_CHAN[0].MEM_START = (uint32_t)rxb;
         regs->RX_LDMA_CHAN[0].LEN = dma0_len;
+        regs->RX_LDMA_CHAN[0].MEM_START = (uint32_t)rxb;
+        regs->RX_LDMA_CHAN[0].CTRL = QLDC_1B_INCM_EN;
         regs->LDMA_RXEN = MEC_BIT(0);
         if (rxlen > txlen) {
             descr1 |= QD_RX_EN | QD_RX_LDMA_EN_CH1;
-            regs->RX_LDMA_CHAN[1].CTRL = QLDC_1B_INCM_EN;
-            regs->RX_LDMA_CHAN[1].MEM_START = (uint32_t)rxb + dma0_len;
             regs->RX_LDMA_CHAN[1].LEN = dma1_len;
+            regs->RX_LDMA_CHAN[1].MEM_START = (uint32_t)rxb + dma0_len;
+            regs->RX_LDMA_CHAN[1].CTRL = QLDC_1B_INCM_EN;
             regs->LDMA_RXEN |= MEC_BIT(1);
         }
         ldma_enables |= QM_RX_LDMA_EN;
@@ -1589,6 +1589,63 @@ int mec_hal_qspi_uldma_fd(struct mec_qspi_regs *regs, const uint8_t *txb, size_t
     return MEC_RET_OK;
 }
 
+int mec_hal_qspi_uldma_fd2(struct mec_qspi_regs *regs, const uint8_t *txb, uint8_t *rxb,
+                           size_t xfrlen, uint32_t flags)
+{
+#ifdef MEC_QSPI_BASE_CHECK
+    if ((uintptr_t)regs != (uintptr_t)(MEC_QSPI0_BASE)) {
+        return MEC_RET_ERR_INVAL;
+    }
+#endif
+    if (!xfrlen) {
+        return MEC_RET_ERR_NOP;
+    }
+
+    mec5_qspi_tx_dumpster = MEC_QSPI_ULDMA_FLAG_TX_OVR_VAL_GET(flags);
+
+    qspi_ldma_init(regs);
+
+    regs->RX_LDMA_CHAN[0].LEN = xfrlen;
+    regs->RX_LDMA_CHAN[0].MEM_START = (uint32_t)rxb;
+    if (flags & MEC5_QSPI_ULDMA_FLAG_INCR_RX) {
+        regs->RX_LDMA_CHAN[0].CTRL = QLDC_1B_INCM_EN;
+    } else {
+        regs->RX_LDMA_CHAN[0].CTRL = QLDC_1B_EN;
+    }
+
+    regs->TX_LDMA_CHAN[0].LEN = xfrlen;
+    regs->TX_LDMA_CHAN[0].MEM_START = (uint32_t)txb;
+    if (flags & MEC5_QSPI_ULDMA_FLAG_INCR_TX) {
+        regs->TX_LDMA_CHAN[0].CTRL = QLDC_1B_INCM_EN;
+    } else {
+        regs->TX_LDMA_CHAN[0].CTRL = QLDC_1B_EN;
+    }
+
+    regs->DESCR[0] = (QD_IO_FD | QD_TX_EN_DATA | QD_TX_LDMA_EN_CH0 |
+                      QD_RX_EN | QD_RX_LDMA_EN_CH0 | QD_LAST_EN);
+    regs->DESCR[1] = 0;
+
+    regs->LDMA_RXEN = MEC_BIT(0);
+    regs->LDMA_TXEN = MEC_BIT(0);
+    regs->MODE |= (QM_RX_LDMA_EN | QM_TX_LDMA_EN);
+
+    if (flags & MEC5_QSPI_ULDMA_FLAG_CLOSE) {
+        regs->DESCR[0] |= QD_CLOSE_EN;
+    }
+
+    regs->CTRL |= MEC_BIT(MEC_QSPI_CTRL_DESCR_MODE_Pos);
+
+    if (flags & MEC5_QSPI_ULDMA_FLAG_IEN) {
+        regs->INTR_CTRL = QIEN_DONE_AND_ERR;
+    }
+
+    if (flags & MEC5_QSPI_ULDMA_FLAG_START) {
+        regs->EXE = MEC_BIT(MEC_QSPI_EXE_START_Pos);
+    }
+
+    return MEC_RET_OK;
+}
+
 int mec_hal_qspi_xfr_fifo_fd(struct mec_qspi_regs *regs, const uint8_t *txb, uint8_t *rxb,
                              size_t xlen, uint32_t flags)
 {
@@ -1632,6 +1689,99 @@ int mec_hal_qspi_xfr_fifo_fd(struct mec_qspi_regs *regs, const uint8_t *txb, uin
 
     regs->DESCR[0] = descr0;
     regs->CTRL |= MEC_BIT(MEC_QSPI_CTRL_DESCR_MODE_Pos);
+
+    if (flags & MEC5_QSPI_ULDMA_FLAG_IEN) {
+        regs->INTR_CTRL = QIEN_DONE_AND_ERR;
+    }
+
+    if (flags & MEC5_QSPI_ULDMA_FLAG_START) {
+        regs->EXE = MEC_BIT(MEC_QSPI_EXE_START_Pos);
+    }
+
+    return MEC_RET_OK;
+}
+
+int mec_hal_qspi_uldma(struct mec_qspi_regs *regs, const uint8_t *txb, size_t txlen,
+                       uint8_t *rxb, size_t rxlen, uint32_t flags)
+{
+    uint32_t descr = 0, qmode = 0;
+    uint32_t ldma_rx_bm = 0, ldma_tx_bm = 0;
+    uint8_t iom = 0;
+    uint8_t didx = 0xffu;
+    uint8_t tx_ldma_idx = 0xffu;
+    uint8_t rx_ldma_idx = 0xffu;
+
+#ifdef MEC_QSPI_BASE_CHECK
+    if ((uintptr_t)regs != (uintptr_t)(MEC_QSPI0_BASE)) {
+        return MEC_RET_ERR_INVAL;
+    }
+#endif
+    if (!txlen && !rxlen) {
+        return MEC_RET_ERR_NOP;
+    }
+
+    mec5_qspi_tx_dumpster = MEC_QSPI_ULDMA_FLAG_TX_OVR_VAL_GET(flags);
+    iom = (uint8_t)MEC_QSPI_ULDMA_FLAG_IOM_GET(flags); /* power of 2 */
+
+    if (!iom) {
+        return mec_hal_qspi_uldma_fd(regs, txb, txlen, rxb, rxlen, flags);
+    }
+
+    if (iom > 2) {
+        iom = 2u;
+    }
+    descr = iom;
+
+    qspi_ldma_init(regs);
+
+    if (txlen) {
+        ++didx;
+        if (txb) {
+            ++tx_ldma_idx;
+            descr |= (QD_TX_EN_DATA | QD_TX_LDMA_EN_CH0);
+            ldma_tx_bm |= MEC_BIT(didx);
+            qmode |= QM_TX_LDMA_EN;
+            regs->TX_LDMA_CHAN[tx_ldma_idx].LEN = txlen;
+            regs->TX_LDMA_CHAN[tx_ldma_idx].MEM_START = (uint32_t)txb;
+            regs->TX_LDMA_CHAN[tx_ldma_idx].CTRL = QLDC_1B_INCM_EN;
+        } else { /* enable RX to R/O registers to generate clocks with TX lines tri-stated */
+            ++rx_ldma_idx;
+            descr |= (QD_RX_EN | QD_RX_LDMA_EN_CH0);
+            ldma_rx_bm |= MEC_BIT(didx);
+            qmode |= QM_RX_LDMA_EN;
+            regs->RX_LDMA_CHAN[rx_ldma_idx].LEN = txlen;
+            regs->RX_LDMA_CHAN[rx_ldma_idx].MEM_START = (uint32_t)&regs->BCNT_STS;
+            regs->RX_LDMA_CHAN[rx_ldma_idx].CTRL = QLDC_1B_EN;
+        }
+        regs->DESCR[didx] = descr;
+    }
+
+    if (rxlen) {
+        ++didx;
+        ++rx_ldma_idx;
+        descr = iom | (QD_RX_EN | QD_RX_LDMA_EN_CH0);
+        regs->RX_LDMA_CHAN[rx_ldma_idx].LEN = rxlen;
+        if (rxb) {
+            regs->RX_LDMA_CHAN[rx_ldma_idx].MEM_START = (uint32_t)rxb;
+            regs->RX_LDMA_CHAN[rx_ldma_idx].CTRL = QLDC_1B_INCM_EN;
+        } else { /* discard RX data */
+            regs->RX_LDMA_CHAN[rx_ldma_idx].MEM_START = (uint32_t)&regs->BCNT_STS;
+            regs->RX_LDMA_CHAN[rx_ldma_idx].CTRL = QLDC_1B_EN;
+        }
+        regs->DESCR[didx] = descr;
+        ldma_rx_bm |= MEC_BIT(didx);
+        qmode |= QM_RX_LDMA_EN;
+    }
+
+    regs->DESCR[didx] |= QD_LAST_EN;
+    if (flags & MEC5_QSPI_ULDMA_FLAG_CLOSE) {
+        regs->DESCR[didx] |= QD_CLOSE_EN;
+    }
+
+    regs->LDMA_RXEN = ldma_rx_bm;
+    regs->LDMA_TXEN = ldma_tx_bm;
+    regs->CTRL = MEC_BIT(MEC_QSPI_CTRL_DESCR_MODE_Pos);
+    regs->MODE |= qmode;
 
     if (flags & MEC5_QSPI_ULDMA_FLAG_IEN) {
         regs->INTR_CTRL = QIEN_DONE_AND_ERR;
