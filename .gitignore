@@ -1,7 +1,9 @@
 .clangd
+.clang-format
 .dir-locals.el
 .editorconfig
 .vscode
+.zed
 # Tag files
 GPATH
 GRTAGS
