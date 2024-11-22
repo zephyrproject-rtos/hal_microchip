@@ -358,8 +358,8 @@ typedef struct mec_espi_io_regs {               /*!< (@ 0x400F3400) MEC_ESPI_IO 
 #define MEC_ESPI_IO_RPMC_OP1_CFG_CS0_040_Msk (0x1UL)                /*!< CS0_040 (Bitfield-Mask: 0x01)                         */
 #define MEC_ESPI_IO_RPMC_OP1_CFG_CS0_848_Pos (1UL)                  /*!< CS0_848 (Bit 1)                                       */
 #define MEC_ESPI_IO_RPMC_OP1_CFG_CS0_848_Msk (0x2UL)                /*!< CS0_848 (Bitfield-Mask: 0x01)                         */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_CS1_040_Pos (2UL)                  /*!< CS1_040 (Bit 2)                                       */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_CS1_040_Msk (0x4UL)                /*!< CS1_040 (Bitfield-Mask: 0x01)                         */
+#define MEC_ESPI_IO_RPMC_OP1_CFG_CS1_048_Pos (2UL)                  /*!< CS1_040 (Bit 2)                                       */
+#define MEC_ESPI_IO_RPMC_OP1_CFG_CS1_048_Msk (0x4UL)                /*!< CS1_040 (Bitfield-Mask: 0x01)                         */
 #define MEC_ESPI_IO_RPMC_OP1_CFG_CS1_848_Pos (3UL)                  /*!< CS1_848 (Bit 3)                                       */
 #define MEC_ESPI_IO_RPMC_OP1_CFG_CS1_848_Msk (0x8UL)                /*!< CS1_848 (Bitfield-Mask: 0x01)                         */
 #define MEC_ESPI_IO_RPMC_OP1_CFG_CS0_PNP_Pos (4UL)                  /*!< CS0_PNP (Bit 4)                                       */

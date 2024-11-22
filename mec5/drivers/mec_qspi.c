@@ -7,20 +7,20 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <device_mec5.h>
+#include "mec_pcfg.h"
 #include "mec_defs.h"
 #include "mec_ecia_api.h"
-#include "mec_pcfg.h"
 #include "mec_pcr_api.h"
 #include "mec_qspi_api.h"
 #include "mec_retval.h"
-#include <device_mec5.h>
 
-#define MEC_QSPI_GIRQ       18
-#define MEC_QSPI0_GIRQ_POS  1
-#define MEC_QSPI0_AGGR_NVIC 10
-#define MEC_QSPI0_NVIC      91
+#define MEC_QSPI_GIRQ                  18
+#define MEC_QSPI0_GIRQ_POS             1
+#define MEC_QSPI0_AGGR_NVIC            10
+#define MEC_QSPI0_NVIC                 91
 
-#define MEC_QSPI0_ECIA_INFO                                                                        \
+#define MEC_QSPI0_ECIA_INFO            \
     MEC5_ECIA_INFO(MEC_QSPI_GIRQ, MEC_QSPI0_GIRQ_POS, MEC_QSPI0_AGGR_NVIC, MEC_QSPI0_NVIC)
 
 #define MEC_QSPI_M_FDIV_MAX            0x10000
@@ -29,13 +29,14 @@
 #define MEC_QSPI_FORCE_STOP_WAIT_LOOPS 1000
 #define MEC_QSPI_DESCR_NU_MAX          0x7fffu
 
-#define MEC_QSPI_STATUS_ERRORS                                                                     \
-    (MEC_BIT(MEC_QSPI_STATUS_TXBERR_Pos) | MEC_BIT(MEC_QSPI_STATUS_RXBERR_Pos) |                   \
-     MEC_BIT(MEC_QSPI_STATUS_PROGERR_Pos) | MEC_BIT(MEC_QSPI_STATUS_LDRXERR_Pos) |                 \
-     MEC_BIT(MEC_QSPI_STATUS_LDTXERR_Pos))
+#define MEC_QSPI_STATUS_ERRORS (MEC_BIT(MEC_QSPI_STATUS_TXBERR_Pos) \
+                                | MEC_BIT(MEC_QSPI_STATUS_RXBERR_Pos) \
+                                | MEC_BIT(MEC_QSPI_STATUS_PROGERR_Pos) \
+                                | MEC_BIT(MEC_QSPI_STATUS_LDRXERR_Pos) \
+                                | MEC_BIT(MEC_QSPI_STATUS_LDTXERR_Pos))
 
 #define MEC_QSPI_SIG_MODE_POS MEC_QSPI_MODE_CPOL_Pos
-#define MEC_QSPI_SIG_MODE_MSK                                                                      \
+#define MEC_QSPI_SIG_MODE_MSK \
     (MEC_QSPI_MODE_CPOL_Msk | MEC_QSPI_MODE_CPHA_MOSI_Msk | MEC_QSPI_MODE_CPHA_MISO_Msk)
 
 #define MEC5_QSPI_START_DESCR_MSK0 ((uint32_t)MEC_QSPI_CTRL_DPTR_Msk >> MEC_QSPI_CTRL_DPTR_Pos)
@@ -79,7 +80,6 @@ static uint32_t qspi_max_spi_clock(void)
 
 static uint32_t qspi_get_freq(struct mec_qspi_regs *base)
 {
-
     uint32_t srcfreq = qspi_max_spi_clock();
     uint32_t fdiv = (base->MODE & MEC_QSPI_MODE_CLKDIV_Msk) >> MEC_QSPI_MODE_CLKDIV_Pos;
 
@@ -216,6 +216,11 @@ static uint32_t compute_freq_divisor(uint32_t freq_hz)
     }
 
     return fdiv;
+}
+
+uint32_t mec_hal_qspi_compute_freq_div(uint32_t freq_hz)
+{
+    return compute_freq_divisor(freq_hz);
 }
 
 static void qspi_set_freq(struct mec_qspi_regs *base, uint32_t freqhz)
