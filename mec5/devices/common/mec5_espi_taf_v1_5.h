@@ -223,6 +223,10 @@ typedef struct mec_espi_taf_regs {              /*!< (@ 0x40008000) MEC_ESPI_TAF
 #define MEC_ESPI_TAF_FC_MISC_RLD_SAC_EC1_Msk (0x400000UL)           /*!< RLD_SAC_EC1 (Bitfield-Mask: 0x01)                     */
 #define MEC_ESPI_TAF_FC_MISC_FORCE_RPMC_SUCC_Pos (24UL)             /*!< FORCE_RPMC_SUCC (Bit 24)                              */
 #define MEC_ESPI_TAF_FC_MISC_FORCE_RPMC_SUCC_Msk (0x1000000UL)      /*!< FORCE_RPMC_SUCC (Bitfield-Mask: 0x01)                 */
+#define MEC_ESPI_TAF_FC_MISC_CS0_RPMC_SUSM_Pos (25U)                /*!< CS0_RPMC_SUSM (Bit 25)                                */
+#define MEC_ESPI_TAF_FC_MISC_CS0_RPMC_SUSM_Msk (0x2000000UL)        /*!< CS0_RPMC_SUSM (Bitfield-Mask: 0x01)                   */
+#define MEC_ESPI_TAF_FC_MISC_CS1_RPMC_SUSM_Pos (26U)                /*!< CS1_RPMC_SUSM (Bit 25)                                */
+#define MEC_ESPI_TAF_FC_MISC_CS1_RPMC_SUSM_Msk (0x4000000UL)        /*!< CS1_RPMC_SUSM (Bitfield-Mask: 0x01)                   */
 /* ========================================================  MON_STS  ======================================================== */
 #define MEC_ESPI_TAF_MON_STS_TMOUT_ERR_Pos (0UL)                    /*!< TMOUT_ERR (Bit 0)                                     */
 #define MEC_ESPI_TAF_MON_STS_TMOUT_ERR_Msk (0x1UL)                  /*!< TMOUT_ERR (Bitfield-Mask: 0x01)                       */
@@ -548,8 +552,8 @@ typedef enum {                                  /*!< MEC_ESPI_TAF_ECP_CMD_EC_CMD
   MEC_ESPI_TAF_ECP_CMD_EC_CMD_ERASE    = 2,     /*!< ERASE : Perform region erase of flash devices                             */
   MEC_ESPI_TAF_ECP_CMD_EC_CMD_RPMC_OP1_CS0 = 3, /*!< RPMC_OP1_CS0 : Perform RPMC OP1 operation on flash at CS0                 */
   MEC_ESPI_TAF_ECP_CMD_EC_CMD_RPMC_OP2_CS0 = 4, /*!< RPMC_OP2_CS0 : Perform RPMC OP2 operation on flash at CS0                 */
-  MEC_ESPI_TAF_ECP_CMD_EC_CMD_RPMC_OP1_CS1 = 131,/*!< RPMC_OP1_CS1 : Perform RPMC OP1 operation on flash at CS1                */
-  MEC_ESPI_TAF_ECP_CMD_EC_CMD_RPMC_OP2_CS1 = 132,/*!< RPMC_OP2_CS1 : Perform RPMC OP2 operation on flash at CS1                */
+  MEC_ESPI_TAF_ECP_CMD_EC_CMD_RPMC_OP1_CS1 = 35,/*!< RPMC_OP1_CS1 : Perform RPMC OP1 operation on flash at CS1                */
+  MEC_ESPI_TAF_ECP_CMD_EC_CMD_RPMC_OP2_CS1 = 36,/*!< RPMC_OP2_CS1 : Perform RPMC OP2 operation on flash at CS1                */
 } MEC_ESPI_TAF_ECP_CMD_EC_CMD_Enum;
 
 /* ===========================================  MEC_ESPI_TAF ECP_CMD LEN [24..31]  =========================================== */

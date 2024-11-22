@@ -159,6 +159,7 @@ bool mec_hal_qspi_is_enabled(struct mec_qspi_regs *regs);
 uint32_t mec_hal_qspi_get_freq(struct mec_qspi_regs *base);
 uint32_t mec_hal_qspi_freq_div(struct mec_qspi_regs *base);
 uint16_t mec_hal_qspi_freq_div_raw(struct mec_qspi_regs *base);
+uint32_t mec_hal_qspi_compute_freq_div(uint32_t freq_hz);
 int mec_hal_qspi_set_freq(struct mec_qspi_regs *base, uint32_t freqhz);
 int mec_hal_qspi_byte_time_ns(struct mec_qspi_regs *base, uint32_t *btime_ns);
 
