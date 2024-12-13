@@ -15,10 +15,12 @@
 #define MEC5_ROM_VERSION_ADDR 0xf001u
 #define MEC5_ROM_OTP_RD8_ADDR 0xf009u
 #define MEC5_ROM_OTP_WR8_ADDR 0xf00du
+#define MEC5_ROM_CRYPT_SLEEP_CTRL_ADDR 0x0001f299u
 
 typedef uint32_t (*rom_ver_td)(void);
 typedef uint8_t (*rom_otp_rd8_td)(uint16_t otp_index, uint8_t *data);
 typedef uint8_t (*rom_otp_wr8_td)(uint16_t otp_index, uint8_t data);
+typedef void (*rom_crypt_sleep_ctrl_td)(bool sleep_en);
 
 uint32_t mec_hal_rom_version(void)
 {
@@ -55,6 +57,14 @@ int mec_hal_rom_otp_write_byte(uint16_t otp_index, uint8_t data)
     }
 
     return MEC_RET_OK;
+}
+
+void mec_hal_rom_crypto_enable(uint8_t enable)
+{
+    rom_crypt_sleep_ctrl_td fp = (rom_crypt_sleep_ctrl_td)MEC5_ROM_CRYPT_SLEEP_CTRL_ADDR;
+    bool sleep_en = (enable) ? true: false;
+
+    fp(sleep_en);
 }
 
 /* end mec_rom.c */
