@@ -527,6 +527,22 @@ int mec_hal_qspi_tap_select(struct mec_qspi_regs *base, uint8_t sel_sck_tap, uin
     return MEC_RET_OK;
 }
 
+int mec_hal_qspi_ifc(struct mec_qspi_regs *regs, uint8_t ifc_val, uint8_t ifc_msk)
+{
+    uint32_t v = ifc_val & 0xfu;
+    uint32_t m = ifc_msk & 0xfu;
+
+    if (!regs) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    if (ifc_msk) {
+        regs->IFCTRL = (regs->IFCTRL & (uint32_t)~m) | (v & m);
+    }
+
+    return MEC_RET_OK;
+}
+
 /* Initialize QMSPI controller using local DMA. */
 int mec_hal_qspi_init(struct mec_qspi_regs *base, uint32_t freq_hz,
                       enum mec_qspi_signal_mode spi_signal_mode, enum mec_qspi_io iom,
@@ -1331,12 +1347,9 @@ int mec_hal_qspi_load_descrs_at(struct mec_qspi_regs *regs, const uint32_t *desc
 {
     uint32_t didx, didx_lim, n;
 
-    if (!regs || !descrs || !ndescr || (start_descr_idx >= MEC5_QSPI_NUM_DESCRS)) {
+    if (!regs || !descrs || !ndescr || (start_descr_idx >= MEC5_QSPI_NUM_DESCRS)
+        || ((start_descr_idx + ndescr) > MEC5_QSPI_NUM_DESCRS)) {
         return MEC_RET_ERR_INVAL;
-    }
-
-    if (mec_hal_qspi_done(regs) == MEC_RET_ERR_BUSY) {
-        return MEC_RET_ERR_BUSY;
     }
 
     didx = start_descr_idx;
@@ -1354,44 +1367,6 @@ int mec_hal_qspi_load_descrs_at(struct mec_qspi_regs *regs, const uint32_t *desc
 }
 
 /* -------- 2024-11-04 -------- */
-
-#define QM_RX_LDMA_EN MEC_BIT(MEC_QSPI_MODE_RX_LDMA_Pos)
-#define QM_TX_LDMA_EN MEC_BIT(MEC_QSPI_MODE_TX_LDMA_Pos)
-
-#define QC_DM_EN MEC_BIT(MEC_QSPI_CTRL_DESCR_MODE_Pos)
-
-#define QD_IO_FD (MEC_QSPI_DESCR_IFM_FD << MEC_QSPI_DESCR_IFM_Pos)
-#define QD_TX_DIS 0
-#define QD_TX_EN_DATA (MEC_QSPI_CTRL_TXM_EN << MEC_QSPI_DESCR_TXEN_Pos)
-#define QD_TX_EN_ZEROS (MEC_QSPI_CTRL_TXM_ENZ << MEC_QSPI_DESCR_TXEN_Pos)
-#define QD_TX_EN_ONES (MEC_QSPI_CTRL_TXM_EN1 << MEC_QSPI_DESCR_TXEN_Pos)
-#define QD_TX_LDMA_DIS 0
-#define QD_TX_LDMA_EN_CH0 (MEC_QSPI_DESCR_TXDMA_1B_LDMA_CH0 << MEC_QSPI_DESCR_TXDMA_Pos)
-#define QD_TX_LDMA_EN_CH1 (MEC_QSPI_DESCR_TXDMA_2B_LDMA_CH1 << MEC_QSPI_DESCR_TXDMA_Pos)
-#define QD_TX_LDMA_EN_CH2 (MEC_QSPI_DESCR_TXDMA_4B_LDMA_CH2 << MEC_QSPI_DESCR_TXDMA_Pos)
-
-#define QD_RX_EN MEC_BIT(MEC_QSPI_DESCR_RXEN_Pos)
-#define QD_RX_LDMA_DIS 0
-#define QD_RX_LDMA_EN_CH0 (MEC_QSPI_DESCR_RXDMA_1B_LDMA_CH0 << MEC_QSPI_DESCR_RXDMA_Pos)
-#define QD_RX_LDMA_EN_CH1 (MEC_QSPI_DESCR_RXDMA_2B_LDMA_CH1 << MEC_QSPI_DESCR_RXDMA_Pos)
-#define QD_RX_LDMA_EN_CH2 (MEC_QSPI_DESCR_RXDMA_4B_LDMA_CH2 << MEC_QSPI_DESCR_RXDMA_Pos)
-
-#define QD_UNITS_1B (MEC_QSPI_DESCR_QUNITS_1B << MEC_QSPI_DESCR_QUNITS_Pos)
-#define QD_CLOSE_EN MEC_BIT(MEC_QSPI_DESCR_CLOSE_Pos)
-#define QD_LAST_EN  MEC_BIT(MEC_QSPI_DESCR_LAST_Pos)
-#define QD_NEXT_DESCR(n) (((uint32_t)(n) & 0xFu) << MEC_QSPI_DESCR_NEXT_Pos)
-
-#define QLDC_ACCSZ_1BYTE (MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_1B << MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos)
-#define QLDC_ACCSZ_2BYTE (MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_2B << MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos)
-#define QLDC_ACCSZ_4BYTE (MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_4B << MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos)
-
-#define QLDC_EN                                                                                    \
-    (MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_EN_Pos) | MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_OVRL_Pos))
-
-#define QLDC_EN_INCM (QLDC_EN | MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_INCRA_Pos))
-
-#define QLDC_1B_EN (QLDC_EN | QLDC_ACCSZ_1BYTE)
-#define QLDC_1B_INCM_EN (QLDC_EN | QLDC_ACCSZ_1BYTE | MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_INCRA_Pos))
 
 #define QIEN_DONE_AND_ERR                                                                          \
     (MEC_BIT(MEC_QSPI_INTR_CTRL_DONE_Pos) | MEC_BIT(MEC_QSPI_INTR_CTRL_TXBERR_Pos) |               \

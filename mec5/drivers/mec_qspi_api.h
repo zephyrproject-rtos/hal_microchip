@@ -105,6 +105,13 @@ enum mec_qspi_intr_enables {
     MEC_QSPI_IEN_RXB_REQ     = MEC_BIT(14),
 };
 
+enum mec_qpsi_ifc {
+    MEC_QSPI_IFC_WP_VAL_POS = 0,
+    MEC_QSPI_IFC_WP_DRIVE_POS,
+    MEC_QSPI_IFC_HOLD_VAL_POS,
+    MEC_QSPI_IFC_HOLD_DRIVE_POS
+};
+
 enum mec_qspi_options {
     MEC_QSPI_OPT_ACTV_EN_POS = 0,
     MEC_QSPI_OPT_TAF_DMA_EN_POS,
@@ -131,6 +138,59 @@ enum mec_qspi_options {
 #define MEC_QSPI_BUF_FLAG_IFM_DUAL 1u /* half-duplex, dual I/O */
 #define MEC_QSPI_BUF_FLAG_IFM_QUAD 2u /* half-duplex, quad I/O */
 #define MEC_QSPI_BUF_FLAG_DIR_TX_POS 4
+
+#define QM_RX_LDMA_EN MEC_BIT(MEC_QSPI_MODE_RX_LDMA_Pos)
+#define QM_TX_LDMA_EN MEC_BIT(MEC_QSPI_MODE_TX_LDMA_Pos)
+
+#define QC_DM_EN MEC_BIT(MEC_QSPI_CTRL_DESCR_MODE_Pos)
+
+#define QD_IO_FD (MEC_QSPI_DESCR_IFM_FD << MEC_QSPI_DESCR_IFM_Pos)
+#define QD_IO_DUAL (MEC_QSPI_DESCR_IFM_DUAL << MEC_QSPI_DESCR_IFM_Pos)
+#define QD_IO_QUAD (MEC_QSPI_DESCR_IFM_QUAD << MEC_QSPI_DESCR_IFM_Pos)
+#define QD_TX_DIS 0
+#define QD_TX_EN_DATA (MEC_QSPI_CTRL_TXM_EN << MEC_QSPI_DESCR_TXEN_Pos)
+#define QD_TX_EN_ZEROS (MEC_QSPI_CTRL_TXM_ENZ << MEC_QSPI_DESCR_TXEN_Pos)
+#define QD_TX_EN_ONES (MEC_QSPI_CTRL_TXM_EN1 << MEC_QSPI_DESCR_TXEN_Pos)
+#define QD_TX_LDMA_DIS 0
+#define QD_TX_LDMA_EN_CH0 (MEC_QSPI_DESCR_TXDMA_1B_LDMA_CH0 << MEC_QSPI_DESCR_TXDMA_Pos)
+#define QD_TX_LDMA_EN_CH1 (MEC_QSPI_DESCR_TXDMA_2B_LDMA_CH1 << MEC_QSPI_DESCR_TXDMA_Pos)
+#define QD_TX_LDMA_EN_CH2 (MEC_QSPI_DESCR_TXDMA_4B_LDMA_CH2 << MEC_QSPI_DESCR_TXDMA_Pos)
+/* 0 < ch < 2 */
+#define QD_TX_LDMA_EN_CH(ch) \
+    ((MEC_QSPI_DESCR_TXDMA_1B_LDMA_CH0 + (uint32_t)(ch)) << MEC_QSPI_DESCR_TXDMA_Pos)
+
+#define QD_RX_EN MEC_BIT(MEC_QSPI_DESCR_RXEN_Pos)
+#define QD_RX_LDMA_DIS 0
+#define QD_RX_LDMA_EN_CH0 (MEC_QSPI_DESCR_RXDMA_1B_LDMA_CH0 << MEC_QSPI_DESCR_RXDMA_Pos)
+#define QD_RX_LDMA_EN_CH1 (MEC_QSPI_DESCR_RXDMA_2B_LDMA_CH1 << MEC_QSPI_DESCR_RXDMA_Pos)
+#define QD_RX_LDMA_EN_CH2 (MEC_QSPI_DESCR_RXDMA_4B_LDMA_CH2 << MEC_QSPI_DESCR_RXDMA_Pos)
+/* 0 < ch < 2 */
+#define QD_RX_LDMA_EN_CH(ch) \
+    ((MEC_QSPI_DESCR_RXDMA_1B_LDMA_CH0 + (uint32_t)(ch)) << MEC_QSPI_DESCR_RXDMA_Pos)
+
+#define QD_UNITS_BITS (MEC_QSPI_DESCR_QUNITS_BITS << MEC_QSPI_DESCR_QUNITS_Pos)
+#define QD_UNITS_1B (MEC_QSPI_DESCR_QUNITS_1B << MEC_QSPI_DESCR_QUNITS_Pos)
+#define QD_UNITS_2B (MEC_QSPI_DESCR_QUNITS_2B << MEC_QSPI_DESCR_QUNITS_Pos)
+#define QD_UNITS_4B (MEC_QSPI_DESCR_QUNITS_4B << MEC_QSPI_DESCR_QUNITS_Pos)
+
+/* Number of QD_UNITS field */
+#define QD_NU(n) ((uint32_t)(n) << MEC_QSPI_DESCR_QNUNITS_Pos)
+
+#define QD_CLOSE_EN MEC_BIT(MEC_QSPI_DESCR_CLOSE_Pos)
+#define QD_LAST_EN  MEC_BIT(MEC_QSPI_DESCR_LAST_Pos)
+#define QD_NEXT_DESCR(n) (((uint32_t)(n) & 0xFu) << MEC_QSPI_DESCR_NEXT_Pos)
+
+#define QLDC_ACCSZ_1BYTE (MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_1B << MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos)
+#define QLDC_ACCSZ_2BYTE (MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_2B << MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos)
+#define QLDC_ACCSZ_4BYTE (MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_4B << MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos)
+
+#define QLDC_EN \
+    (MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_EN_Pos) | MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_OVRL_Pos))
+
+#define QLDC_EN_INCM (QLDC_EN | MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_INCRA_Pos))
+
+#define QLDC_1B_EN (QLDC_EN | QLDC_ACCSZ_1BYTE)
+#define QLDC_1B_INCM_EN (QLDC_EN | QLDC_ACCSZ_1BYTE | MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_INCRA_Pos))
 
 struct mec_qspi_buf {
     void *buf;
@@ -185,6 +245,8 @@ int mec_hal_qspi_init(struct mec_qspi_regs *base,
                       enum mec_qspi_signal_mode spi_mode,
                       enum mec_qspi_io iom,
                       enum mec_qspi_cs cs);
+
+int mec_hal_qspi_ifc(struct mec_qspi_regs *regs, uint8_t ifc_val, uint8_t ifc_msk);
 
 int mec_hal_qspi_options(struct mec_qspi_regs *regs, uint8_t en, uint32_t options);
 
