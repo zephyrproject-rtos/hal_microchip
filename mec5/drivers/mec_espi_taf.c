@@ -196,6 +196,8 @@ static void taf_soft_reset(struct mec_espi_taf_regs *regs)
     regs->CLKDIV_CS0 = 0;
     regs->CLKDIV_CS1 = 0;
     regs->PR_DIRTY = UINT32_MAX;
+    regs->CS0_OP_DESCR = 0;
+    regs->CS1_OP_DESCR = 0;
 }
 
 static void pr_init(struct mec_espi_taf_regs *regs)
@@ -296,19 +298,69 @@ static void taf_qspi_freq_timing(struct mec_qspi_regs *qregs,
     }
 }
 
+static void taf_qspi_descr_ldma_init(void)
+{
+    struct mec_qspi_regs *qregs = (struct mec_qspi_regs *)MEC_QSPI0_BASE;
+    uint32_t descr = 0;
+    uint8_t chan = 0;
+
+    for (uint32_t i = 0; i < MEC5_QSPI_NUM_DESCRS; i++) {
+        descr = qregs->DESCR[i];
+        if (descr == 0) {
+            continue;
+        }
+
+        chan = (descr & MEC_QSPI_DESCR_RXDMA_Msk) >> MEC_QSPI_DESCR_RXDMA_Pos;
+        if ((descr & MEC_BIT(MEC_QSPI_DESCR_RXEN_Pos)) && chan) {
+            qregs->LDMA_RXEN |= MEC_BIT(i);
+            qregs->RX_LDMA_CHAN[chan - 1u].CTRL = (MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_EN_Pos)
+                | MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_RESTART_Pos)
+                | (MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_4B << MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos));
+        }
+    }
+
+    /* Corner case: Flash data write. All descriptors have been used up for Data Read,
+     * CM entry/exit, and status polling. TAF HW engine uses QSPI.Control with TX LDMA Channnel 0
+     * for flash write. We must program TX LDMA Channel 0 Control register. NOTE: do not set
+     * LDMA_TXEN for channel 0 since it is not being used by a descriptor.
+     */
+    qregs->TX_LDMA_CHAN[0].CTRL = (MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_EN_Pos)
+        | MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_RESTART_Pos)
+        | (MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_4B << MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos));
+}
+
+/* QSPI nWP(IO2) and nHOLD(IO3) values keep high and disable drive(output enable) */
+#define TAF_QSPI_IFC_VAL \
+    (MEC_BIT(MEC_QSPI_IFC_WP_VAL_POS) | MEC_BIT(MEC_QSPI_IFC_HOLD_VAL_POS))
+
+#define TAF_QSPI_IFC_MSK \
+    (MEC_BIT(MEC_QSPI_IFC_WP_VAL_POS) | MEC_BIT(MEC_QSPI_IFC_WP_DRIVE_POS) |\
+     MEC_BIT(MEC_QSPI_IFC_HOLD_VAL_POS) | MEC_BIT(MEC_QSPI_IFC_HOLD_DRIVE_POS))
+
+/* Initialize QSPI register for use by TAF controller.
+ * Once TAF is activate hardware hides the QSPI controller registers from
+ * access by the ARM Cortex-M4. Only the TAF HW block can access the QSPI registers.
+ * We configure QSPI based on the configuration passed by the application and requirements
+ * in the MCHP eSPI block specification.
+ */
 int mec_hal_espi_taf_qspi_init(struct mec_espi_taf_regs *tregs,
-                               const struct espi_taf_hw_cfg *thwcfg)
+                               const struct espi_taf_hw_cfg *hcfg,
+                               const struct espi_taf_flash_cfg *fcfgs, uint8_t nflash_cfgs)
 {
     struct mec_qspi_regs *qregs = (struct mec_qspi_regs *)MEC_QSPI0_BASE;
     int ret = 0;
     uint32_t flags = 0;
     uint32_t qfdiv = 0;
 
-    if (!taf_regs_valid(tregs) || !thwcfg) {
+    if (!taf_regs_valid(tregs) || !hcfg || !fcfgs || !nflash_cfgs) {
         return MEC_RET_ERR_INVAL;
     }
 
-    taf_qspi_freq_timing(qregs, thwcfg);
+    mec_hal_qspi_girq_ctrl(qregs, 0);
+    mec_hal_qspi_girq_clr(qregs);
+    mec_hal_qspi_ifc(qregs, TAF_QSPI_IFC_VAL, TAF_QSPI_IFC_MSK);
+
+    taf_qspi_freq_timing(qregs, hcfg);
 
     /* copy raw QSPI frequency divider field into TAF CS0/CS1 freq divider regs */
     qfdiv = mec_hal_qspi_freq_div_raw(qregs);
@@ -316,17 +368,15 @@ int mec_hal_espi_taf_qspi_init(struct mec_espi_taf_regs *tregs,
     tregs->CLKDIV_CS0 = qfdiv;
     tregs->CLKDIV_CS1 = qfdiv;
 
-    /* load continous mode enter/exit and status polling descriptors */
-    ret = mec_hal_qspi_load_descrs_at(qregs, thwcfg->generic_descr,
-                                      MEC_ESPI_TAF_GENERIC_DESCR_MAX,
-                                      MCHP_TAF_CM_EXIT_START_DESCR);
-    if (ret != MEC_RET_OK) {
+    ret = mec_hal_qspi_load_descrs_at(qregs, hcfg->qspi_descrs, 16u, 0);
+    if (ret) {
         return ret;
     }
 
-    /* TODO: MEC172x do we need to set QSPI.TX_LDMA[0].CTRL enable, restart-enable, and
-     * access size = 4?
+    /* scan descriptors for Local-DMA enables and set Local-DMA descriptor enable
+     * bit map registers and individual channel enables.
      */
+    taf_qspi_descr_ldma_init();
 
     mec_hal_qspi_intr_ctrl_msk(qregs, 1, MEC_QSPI_IEN_XFR_DONE);
     flags = MEC_BIT(MEC_QSPI_OPT_ACTV_EN_POS) | MEC_BIT(MEC_QSPI_OPT_TAF_DMA_EN_POS)
@@ -335,92 +385,6 @@ int mec_hal_espi_taf_qspi_init(struct mec_espi_taf_regs *tregs,
 
     return MEC_RET_OK;
 }
-
-/* TODO other TAF configuration:
- * prefetch: communication mode register and TAF Flash Misc. Config
- * Flash device config:
- *   Flash Config total size
- *   Flash Config threshold
- *   Flash Config Misc
- *   CS0: Opcode A, B, C, D regs
- *   CS1: Opcode A, B, C, D regs
- *   CS0: Descriptor indices
- *   CS1: Descriptor indices
- *   General Descriptors indices
- *   Config Poll2 mask
- *   Config special mode
- *   Continuous mode prefix
- *   Counter reload
- *   Power down control
- *   Power down status
- *   Timeout power down and up
- *   CS0: clock divider
- *   CS1: clock divider
- * Flash timing:
- *   Poll timeout register
- *   Poll interval register
- *   Suspend/resume interval
- *   Consecutive read timeout
- *   Suspend check delay
- * EC Portal
- *   Init of command reg and flash address reg?
- *   Buffer address if using driver based buffers
- *   Clear status register
- *   Interrupt enable register
- *   Clear busy register?
- *   API access including RPMC
- * Error Monitor
- *   Monitor status register
- *   Monitor interrupt enable register
- * RPMC
- *   RPMC opcodes in CS0 and CS1 Opcode D registers
- *   RPMC result address register access
- *
- * Pointer to this structure passed to Zephyr eSPI TAF configuration API
- * defined in zephyr/drivers/espi_taf.h
- * struct espi_taf_cfg {
- *	uint8_t nflash_devices;
- *	struct espi_taf_hw_cfg hwcfg;
- *	struct espi_taf_flash_cfg *flash_cfgs;
- * };
- *
- * defined in HAL mec_espi_taf.h
- * struct espi_taf_hw_cfg {
- *   uint8_t  version;
- *   uint8_t  flags;
- *   uint8_t  qspi_freq_mhz; if 0 copy divider from QSPI
- *   uint8_t  qspi_cpha;
- *   uint16_t qtaps_sel;
- *   uint32_t qspi_cs_timing;
- *   uint16_t flash_pd_timeout;
- *   uint16_t flash_pd_min_interval;
- *   uint32_t generic_descr[MEC_ESPI_TAF_GENERIC_DESCR_MAX = 4];
- *   uint32_t tag_map[MEC_ESPI_TAF_TAGMAP_MAX = 3];
- * };
- *
- * #define MEC_ESPI_TAF_QSPI_FLASH_DESCR_MAX   6u
- *
- * struct espi_taf_flash_cfg {
- *   uint8_t  version;
- *   uint8_t  cs;
- *   uint16_t flags;
- *   uint32_t flashsz;
- *   uint8_t  rd_freq_mhz; clkdiv in b[15:0] CSn clock divider register. Fast read. If 0 use espi_taf_hw_cfg.qspi_freq_mhz
- *   uint8_t  freq_mhz;    clkdiv in b[31:16] CSn clock divider register. All other commands. If 0 use espi_taf_hw_cfg.qspi_freq_mhz
- *   uint8_t  rsvd2[2];
- *   uint32_t opa;
- *   uint32_t opb;
- *   uint32_t opc;
- *   uint32_t opd;
- *   uint32_t rpmc_op1;
- *   uint16_t poll2_mask;
- *   uint16_t cont_prefix;
- *   uint16_t cs_cfg_descr_ids;
- *   uint16_t rsvd3;
- *   uint32_t descr[MEC_ESPI_TAF_QSPI_FLASH_DESCR_MAX];
- * };
- *
- */
 
 /* Program TAF total flash array size and boundary.
  * Hardware requires total flash array size to be expressed as a limit, the address
@@ -451,11 +415,12 @@ static int mec_hal_espi_taf_flash_sizes_set(struct mec_espi_taf_regs *regs,
     }
 
     total_msk = (uint32_t)(--total_sz & 0xffffffffu);
-    total_msk |= 0xfffu; /* HW requires b[11:0] are all 1 (4KB)*/
+    total_msk |= 0xfffu; /* HW requires b[11:0] are all 1 (4KB) */
     regs->FC_SZ_LIM = total_msk;
-    if (total_msk < UINT32_MAX) {
-        regs->FC_THR = total_msk + 1u;
-    }
+    /* threshold is offset of the first byte in the second flash device.
+     * It is equal to the size of the first device. HW requires 4KB alignment.
+     */
+    regs->FC_THR = flash0_sz & 0xfffff000u;
 
     if ((flash0_sz == 0) || (flash1_sz == 0)) { /* only one flash device? */
         if (flags & MEC_BIT(MEC_ESPI_TAF_FSZ_ALIAS_EN_POS)) { /* allow aliasing? */
@@ -474,32 +439,36 @@ static int mec_hal_espi_taf_flash_sizes_set(struct mec_espi_taf_regs *regs,
 
 static int mec_hal_espi_taf_cfg_freq(struct mec_espi_taf_regs *regs,
                                      const struct espi_taf_hw_cfg *hcfg,
-                                     const struct espi_taf_flash_cfg *fcfg)
+                                     const struct espi_taf_flash_cfg *fcfg,
+                                     uint8_t cs)
 {
     struct mec_qspi_regs *qregs = (struct mec_qspi_regs *)MEC_QSPI0_BASE;
-    uint32_t qspi_fdiv = 0, qspi_rd_fdiv = 0, tclkdiv = 0;
+    uint32_t qspi_freq_hz = 0, qspi_fdiv = 0, qspi_rd_fdiv = 0, tclkdiv = 0;
 
     if (!regs || !hcfg || !fcfg) {
         return MEC_RET_ERR_INVAL;
     }
 
-    if (hcfg->qspi_freq_mhz) {
-        qspi_fdiv = mec_hal_qspi_compute_freq_div(hcfg->qspi_freq_mhz);
+    qspi_freq_hz = hcfg->qspi_freq_mhz * 1000000U;
+    if (qspi_freq_hz) {
+        qspi_fdiv = mec_hal_qspi_compute_freq_div(qspi_freq_hz);
     } else { /* get clock divider from QSPI */
         qspi_fdiv = mec_hal_qspi_freq_div(qregs);
     }
     qspi_rd_fdiv = qspi_fdiv;
 
     if (fcfg->freq_mhz) {
-        qspi_fdiv = mec_hal_qspi_compute_freq_div(fcfg->freq_mhz);
+        qspi_freq_hz = fcfg->freq_mhz * 1000000U;
+        qspi_fdiv = mec_hal_qspi_compute_freq_div(qspi_freq_hz);
     }
 
     if (fcfg->rd_freq_mhz) {
-        qspi_rd_fdiv = mec_hal_qspi_compute_freq_div(fcfg->rd_freq_mhz);
+        qspi_freq_hz = fcfg->rd_freq_mhz * 1000000U;
+        qspi_rd_fdiv = mec_hal_qspi_compute_freq_div(qspi_freq_hz);
     }
 
     tclkdiv = ((qspi_fdiv & 0xffffu) << 16) | (qspi_rd_fdiv & 0xffffu);
-    if (fcfg->cs == 0) {
+    if (cs == 0) {
         regs->CLKDIV_CS0 = tclkdiv;
     } else {
         regs->CLKDIV_CS1 = tclkdiv;
@@ -541,25 +510,28 @@ static int taf_config_activity_couter(struct mec_espi_taf_regs *regs,
     return MEC_RET_OK;
 }
 
-static void taf_flash_power_down_config(struct mec_espi_taf_regs *regs,
+static void taf_flash_power_down_config(struct mec_espi_taf_regs *regs, uint8_t cs,
                                         const struct espi_taf_flash_cfg *fcfg)
 {
     uint32_t msk = 0, val = 0;
 
-    msk = MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS0_RPMC_SUSM_Pos);
+#ifdef MEC5_ESPI_HW_VER_15
     if (fcfg->flags & MCHP_FLASH_FLAG_RPMC_SR_DIS) {
-        if (fcfg->cs == 0) {
+        if (cs == 0) {
+            msk = MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS0_RPMC_SUSM_Pos);
             val = MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS0_RPMC_SUSM_Pos);
         } else {
+            msk = MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS1_RPMC_SUSM_Pos);
             val = MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS1_RPMC_SUSM_Pos);
         }
     }
 
     regs->FC_MISC = (regs->FC_MISC & (uint32_t)~msk) | (val & msk);
+#endif
 
     msk = 0u;
     val = 0u;
-    if (fcfg->cs == 0) {
+    if (cs == 0) {
         msk = MEC_BIT(MEC_ESPI_TAF_PD_CTRL_CS0_PD_EN_Pos)
             | MEC_BIT(MEC_ESPI_TAF_PD_CTRL_CS0_WAKE_EN_Pos);
         if (fcfg->flags & MCHP_FLASH_FLAG_PD_EN) {
@@ -582,65 +554,21 @@ static void taf_flash_power_down_config(struct mec_espi_taf_regs *regs,
     regs->PD_CTRL = (regs->PD_CTRL & (uint32_t)~msk) | (val & msk);
 }
 
-#if 0
-struct espi_taf_flash_cfg {
-    uint8_t  version;
-    uint8_t  cs;
-    uint16_t flags;
-    uint32_t flashsz;
-    uint8_t  rd_freq_mhz;
-    uint8_t  freq_mhz;
-    uint8_t  rsvd2[2];
-    uint32_t opa;
-    uint32_t opb;
-    uint32_t opc;
-    uint32_t opd;
-    uint32_t rpmc_info;
-    uint16_t poll2_mask;
-    uint16_t cont_prefix;
-    uint16_t cs_cfg_descr_ids;
-    uint16_t rsvd3;
-    uint32_t descr[MEC_ESPI_TAF_QSPI_FLASH_DESCR_MAX];
-};
-
-/* Positions in 32-bit rpmc_info word */
-#define MCHP_FLASH_RPMC_OP1_OPCODE_POS		0
-#define MCHP_FLASH_RPMC_OP1_OPCODE_MSK0		0xffU
-#define MCHP_FLASH_RPMC_OP1_OPCODE_MSK		0xffU
-#define MCHP_FLASH_RPMC_OP1_NCTR_POS		8
-#define MCHP_FLASH_RPMC_OP1_NCTR_MSK0		0x1fU
-#define MCHP_FLASH_RPMC_OP1_NCTR_MSK		0x1f00U
-#define MCHP_FLASH_RPMC_OP1_FLAGS_POS		16
-#define MCHP_FLASH_RPMC_OP1_FLAGS_MSK0		0xffffU
-#define MCHP_FLASH_RPMC_OP1_FLAGS_MSK		0xffff0000U
-
-#define MCHP_FLASH_RPMC_OP1_FLAG_DISP_CS0_040 0x10000u
-#define MCHP_FLASH_RPMC_OP1_FLAG_DISP_CS0_848 0x20000u
-#define MCHP_FLASH_RPMC_OP1_FLAG_DISP_CS1_048 0x40000u
-#define MCHP_FLASH_RPMC_OP1_FLAG_DISP_CS1_848 0x80000u
-#define MCHP_FLASH_RPMC_OP1_FLAG_DISP_CS0_PNP 0x100000u
-#define MCHP_FLASH_RPMC_OP1_FLAG_DISP_CS1_PNP 0x200000u
-
-#define MEC_ESPI_IO_RPMC_OP1_NCNTRS_CS0_OP1_Pos (0UL)               /*!< CS0_OP1 (Bit 0)                                       */
-#define MEC_ESPI_IO_RPMC_OP1_NCNTRS_CS0_OP1_Msk (0xffUL)            /*!< CS0_OP1 (Bitfield-Mask: 0xff)                         */
-#define MEC_ESPI_IO_RPMC_OP1_NCNTRS_CS0_COUNT_Pos (8UL)             /*!< CS0_COUNT (Bit 8)                                     */
-#define MEC_ESPI_IO_RPMC_OP1_NCNTRS_CS0_COUNT_Msk (0x1f00UL)        /*!< CS0_COUNT (Bitfield-Mask: 0x1f)                       */
-
-#define MEC_ESPI_TAF_RPMC_STRICT_CYCLE_TYPE_POS 13
-
-#endif
-
 int mec_hal_espi_taf_flash_rpmc_op1_config(struct mec_espi_taf_regs *regs,
                                            const struct espi_taf_hw_cfg *hcfg,
                                            const struct espi_taf_flash_cfg *fcfg,
                                            uint8_t nflashes)
 {
+#ifdef MEC5_ESPI_HW_VER_15
     struct mec_espi_io_regs *ioregs = (struct mec_espi_io_regs *)MEC_ESPI_IO_BASE;
     uint32_t nc = 0, total_nc = 0, nrpmc = 0, op1_dcfg = 0, op1_nc = 0, op1_opcode = 0;
 
     /* disable RPMC */
     ioregs->RPMC_OP1_CFG = 0u;
     ioregs->RPMC_OP1_NCNTRS = 0u;
+
+    regs->RPMC_OP2_HOST_RESULT = MEC_ESPI_TAF_RPMC_OP2_HOST_MEM_BASE;
+    regs->RPMC_OP2_EC0_RESULT =MEC_ESPI_TAF_RPMC_OP2_ECP_MEM_BASE;
 
     for (uint8_t n = 0; n < nflashes; n++) {
         const struct espi_taf_flash_cfg *f = &fcfg[n];
@@ -649,7 +577,8 @@ int mec_hal_espi_taf_flash_rpmc_op1_config(struct mec_espi_taf_regs *regs,
             continue;
         }
 
-        op1_opcode = (fcfg->rpmc_info & MCHP_FLASH_RPMC_OP1_OPCODE_MSK) >> MCHP_FLASH_RPMC_OP1_OPCODE_POS;
+        op1_opcode = ((fcfg->rpmc_info & MCHP_FLASH_RPMC_OP1_OPCODE_MSK) >>
+                      MCHP_FLASH_RPMC_OP1_OPCODE_POS);
         nc = (fcfg->rpmc_info & MCHP_FLASH_RPMC_OP1_NCTR_MSK) >> MCHP_FLASH_RPMC_OP1_NCTR_POS;
 
         if (!op1_opcode || !nc) {
@@ -707,12 +636,15 @@ int mec_hal_espi_taf_flash_rpmc_op1_config(struct mec_espi_taf_regs *regs,
     ioregs->RPMC_OP1_NCNTRS = op1_nc;
 
     return MEC_RET_OK;
+#else /* HW version 1.4 */
+    return MEC_RET_ERR_HW_NOT_SUPP;
+#endif
 }
 
-static void taf_flash_opcode_config(struct mec_espi_taf_regs *regs,
+static void taf_flash_opcode_config(struct mec_espi_taf_regs *regs, uint8_t cs,
                                     const struct espi_taf_flash_cfg *fcfg)
 {
-    if (fcfg->cs == 0) {
+    if (cs == 0) {
         regs->CS0_OPA = fcfg->opa;
         regs->CS0_OPB = fcfg->opb;
         regs->CS0_OPC = fcfg->opc;
@@ -729,6 +661,7 @@ static uint8_t taf_flash_erase_size_bitmap(struct mec_espi_taf_regs *regs,
                                            const struct espi_taf_flash_cfg *fcfg)
 {
     uint8_t erase_bitmap = 0u;
+    (void)regs;
 
     if (fcfg->opb & 0xffu) { /* bits[7:0] = 4KB erase opcode */
         erase_bitmap |= MEC_BIT(MEC_ESPI_IO_TAFEBS_4KB_Pos);
@@ -743,26 +676,64 @@ static uint8_t taf_flash_erase_size_bitmap(struct mec_espi_taf_regs *regs,
     return erase_bitmap;
 }
 
+static void taf_flash_cm_prefix(struct mec_espi_taf_regs *regs, uint8_t cs, uint16_t cm_prefix)
+{
+    uint32_t cmpfx = cm_prefix;
+    uint32_t msk = 0xffffu;
+
+    if (cs) {
+        cmpfx <<= 16u;
+        msk <<= 16u;
+    }
+
+    regs->FC_CM_PREFIX = (regs->FC_CM_PREFIX & (uint32_t)~msk) | cmpfx;
+}
+
+static void taf_flash_poll2_mask(struct mec_espi_taf_regs *regs, uint8_t cs, uint16_t poll2_mask)
+{
+    uint32_t p2msk = poll2_mask;
+    uint32_t regmsk = 0xffffu;
+
+    if (cs) {
+        p2msk <<= 16;
+        regmsk <<= 16;
+    }
+
+    regs->POLL2_MSKS = (regs->POLL2_MSKS & (uint32_t)~regmsk) | p2msk;
+}
+
+static void taf_flash_descr_ids(struct mec_espi_taf_regs *regs, uint8_t cs, uint32_t descr_idx)
+{
+    if (cs) {
+        regs->CS1_OP_DESCR = descr_idx;
+    } else {
+        regs->CS0_OP_DESCR = descr_idx;
+    }
+}
+
 int mec_hal_espi_flash_config(struct mec_espi_taf_regs *regs,
                               const struct espi_taf_hw_cfg *hcfg,
                               const struct espi_taf_flash_cfg *fcfg)
 {
-    uint32_t misc_cfg = 0, msk = 0;
+    uint32_t descr_ids = 0, misc_cfg = 0, msk = 0;
     int ret = 0;
 
     if (!regs || !hcfg || !fcfg) {
         return MEC_RET_ERR_INVAL;
     }
 
-    ret = mec_hal_espi_taf_cfg_freq(regs, hcfg, fcfg);
+    ret = mec_hal_espi_taf_cfg_freq(regs, hcfg, fcfg, fcfg->cs);
     if (ret) {
         return ret;
     }
 
-    msk = MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS0_4B_ADDR_MODE_Pos)
-        | MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS1_4B_ADDR_MODE_Pos)
-        | MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS0_CONT_PREFIX_Pos)
-        | MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS1_CONT_PREFIX_Pos);
+    msk = (MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS0_4B_ADDR_MODE_Pos)
+           | MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS0_CONT_PREFIX_Pos));
+
+    if (fcfg->cs) {
+        msk = (MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS1_4B_ADDR_MODE_Pos)
+                | MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS1_CONT_PREFIX_Pos));
+    }
 
     if (fcfg->flags & MCHP_FLASH_FLAG_ADDR32) {
         if (fcfg->cs == 0) {
@@ -772,20 +743,77 @@ int mec_hal_espi_flash_config(struct mec_espi_taf_regs *regs,
         }
     }
 
-    if (fcfg->cs == 0) {
-        if (fcfg->flags & MEC_BIT(MCHP_FLASH_FLAG_CS_CONT_PRFX_EN)) {
+    if (fcfg->flags & MCHP_FLASH_FLAG_CS_CONT_PRFX_EN) {
+        if (fcfg->cs == 0) {
             misc_cfg |= MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS0_CONT_PREFIX_Pos);
-        }
-    } else {
-        if (fcfg->flags & MEC_BIT(MCHP_FLASH_FLAG_CS_CONT_PRFX_EN)) {
+        } else {
             misc_cfg |= MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS1_CONT_PREFIX_Pos);
         }
     }
 
     regs->FC_MISC = (regs->FC_MISC & (uint32_t)~msk) | (misc_cfg & msk);
 
-    taf_flash_opcode_config(regs, fcfg);
-    taf_flash_power_down_config(regs, fcfg);
+    descr_ids = hcfg->cs0_descr_ids;
+    if (fcfg->cs) {
+        descr_ids = hcfg->cs1_descr_ids;
+    }
+
+    taf_flash_descr_ids(regs, fcfg->cs, descr_ids);
+    taf_flash_poll2_mask(regs, fcfg->cs, fcfg->poll2_mask);
+    taf_flash_cm_prefix(regs, fcfg->cs, fcfg->cont_prefix);
+    taf_flash_opcode_config(regs, fcfg->cs, fcfg);
+    taf_flash_power_down_config(regs, fcfg->cs, fcfg);
+
+    return MEC_RET_OK;
+}
+
+static int mec_hal_espi_flash_cfg2(struct mec_espi_taf_regs *regs,
+                                   const struct espi_taf_hw_cfg *hcfg,
+                                   const struct espi_taf_flash_cfg *fcfg,
+                                   uint8_t cs)
+{
+    uint32_t descr_ids = 0, misc_cfg = 0, msk = 0;
+    int ret = mec_hal_espi_taf_cfg_freq(regs, hcfg, fcfg, cs);
+    if (ret) {
+        return ret;
+    }
+
+    msk = (MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS0_4B_ADDR_MODE_Pos)
+           | MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS0_CONT_PREFIX_Pos));
+
+    if (cs) {
+        msk = (MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS1_4B_ADDR_MODE_Pos)
+                | MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS1_CONT_PREFIX_Pos));
+    }
+
+    if (fcfg->flags & MCHP_FLASH_FLAG_ADDR32) {
+        if (cs == 0) {
+            misc_cfg |= MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS0_4B_ADDR_MODE_Pos);
+        } else {
+            misc_cfg |= MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS1_4B_ADDR_MODE_Pos);
+        }
+    }
+
+    if (fcfg->flags & MCHP_FLASH_FLAG_CS_CONT_PRFX_EN) {
+        if (cs == 0) {
+            misc_cfg |= MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS0_CONT_PREFIX_Pos);
+        } else {
+            misc_cfg |= MEC_BIT(MEC_ESPI_TAF_FC_MISC_CS1_CONT_PREFIX_Pos);
+        }
+    }
+
+    regs->FC_MISC = (regs->FC_MISC & (uint32_t)~msk) | (misc_cfg & msk);
+
+    descr_ids = hcfg->cs0_descr_ids;
+    if (cs) {
+        descr_ids = hcfg->cs1_descr_ids;
+    }
+
+    taf_flash_descr_ids(regs, cs, descr_ids);
+    taf_flash_poll2_mask(regs, cs, fcfg->poll2_mask);
+    taf_flash_cm_prefix(regs, cs, fcfg->cont_prefix);
+    taf_flash_opcode_config(regs, cs, fcfg);
+    taf_flash_power_down_config(regs, cs, fcfg);
 
     return MEC_RET_OK;
 }
@@ -809,6 +837,12 @@ static int config_default_pr(struct mec_espi_taf_regs *regs)
     pr.pr_num = 0;
     pr.flags = MCHP_TAF_PR_FLAG_ENABLE;
 
+    if (pr.size) {
+        pr.size++;
+    } else {
+        pr.size = UINT32_MAX;
+    }
+
     /* works for start == 0 and size == 0xffff_ffff because the value is
      * shifted right by 12 (aligned on 4KB).
      */
@@ -817,34 +851,44 @@ static int config_default_pr(struct mec_espi_taf_regs *regs)
     return ret;
 }
 
+/* Configure TAF controller.
+ * NOTE: if only one flash device is specified we must clone its settings
+ * into the other chip select register fields.
+ */
 int mec_hal_espi_taf_config(struct mec_espi_taf_regs *regs,
                             const struct espi_taf_hw_cfg *hcfg,
                             const struct espi_taf_flash_cfg *fcfgs, uint8_t nflashes)
 {
     struct mec_espi_io_regs *ioregs = (struct mec_espi_io_regs *)MEC_ESPI_IO_BASE;
+    struct espi_taf_flash_cfg const *f = NULL;
     uint32_t flash0_sz = 0, flash1_sz = 0, flags = 0, msk = 0, rval = 0;
     int ret = 0;
+    uint8_t cs = 0;
+    uint8_t flash_exist_bm = 0u;
     uint8_t erase_size_bm = 0xffu;
 
     if (!regs || !hcfg || !fcfgs || !nflashes || (nflashes > 2u)) {
         return MEC_RET_ERR_INVAL;
     }
 
-    for (uint8_t n = 0; n < nflashes; n++) {
-        const struct espi_taf_flash_cfg *fcfg = &fcfgs[n];
+    regs->GEN_DESCR = hcfg->gen_descr_ids;
 
-        if (fcfg->cs == 0) {
-            flash0_sz = fcfg->flashsz;
+    for (uint8_t n = 0; n < 2u; n++) {
+        if (n < nflashes) {
+            f = &fcfgs[n];
+            cs = (f->cs) ? 1 : 0;
+            flash_exist_bm |= MEC_BIT(cs);
+            if (cs == 0) {
+                flash0_sz = f->flashsz;
+            } else {
+                flash1_sz = f->flashsz;
+            }
+            erase_size_bm &= taf_flash_erase_size_bitmap(regs, f);
         } else {
-            flash1_sz = fcfg->flashsz;
+            cs = (cs ^ 1u) & 1u;
         }
 
-        ret = mec_hal_espi_flash_config(regs, hcfg, fcfg);
-        if (ret != MEC_RET_OK) {
-            return ret;
-        }
-
-        erase_size_bm &= taf_flash_erase_size_bitmap(regs, fcfg);
+        mec_hal_espi_flash_cfg2(regs, hcfg, f, cs);
     }
 
     ioregs->TAFEBS = erase_size_bm;
@@ -861,16 +905,23 @@ int mec_hal_espi_taf_config(struct mec_espi_taf_regs *regs,
     taf_config_activity_couter(regs, hcfg);
 
     rval = MEC_ESPI_TAF_FC_MISC_PREFETCH_MODE_DEFAULT;
+#ifdef MEC5_ESPI_HW_VER_15
     msk = MEC_ESPI_TAF_FC_MISC_PREFETCH_MODE_Msk | MEC_ESPI_TAF_FC_MISC_FORCE_RPMC_SUCC_Msk
         | MEC_ESPI_TAF_FC_MISC_LPF_HSLP_Msk | MEC_ESPI_TAF_FC_MISC_LPF_LSLP_Msk;
+#else
+    msk = MEC_ESPI_TAF_FC_MISC_PREFETCH_MODE_Msk | MEC_ESPI_TAF_FC_MISC_LPF_HSLP_Msk
+        | MEC_ESPI_TAF_FC_MISC_LPF_LSLP_Msk;
+#endif
 
     if (hcfg->flags & MEC_BIT(MEC_ESPI_TAF_HW_CFG_FLAG_PFEXP_POS)) {
         rval = MEC_ESPI_TAF_FC_MISC_PREFETCH_MODE_EXPEDITED;
     }
 
+#ifdef MEC5_ESPI_HW_VER_15
     if (hcfg->flags & MEC_BIT(MEC_ESPI_TAF_HW_CFG_FLAG_FORCE_RPMC_OP1_POS)) {
         rval |= MEC_BIT(MEC_ESPI_TAF_FC_MISC_FORCE_RPMC_SUCC_Pos);
     }
+#endif
 
     if (hcfg->flags & MEC_BIT(MEC_ESPI_TAF_FL_DEEP_SLEEP_EN_POS)) {
         rval |= MEC_BIT(MEC_ESPI_TAF_FC_MISC_LPF_HSLP_Pos);
@@ -891,15 +942,89 @@ int mec_hal_espi_taf_config(struct mec_espi_taf_regs *regs,
 
     /* TAF protection regions */
     pr_init(regs);
-	ret = mec_hal_espi_taf_pr_tag_maps_load(regs, hcfg->tag_map, 0x7u);
-	if (ret) {
-		return ret;
-	}
+    ret = mec_hal_espi_taf_pr_tag_maps_load(regs, hcfg->tag_map, 0x7u);
+    if (ret) {
+        return ret;
+    }
 
     /* configure PR0 to allow EC access to whole flash array */
     ret = config_default_pr(regs);
 
     return ret;
+}
+
+/*
+ * HW poll_timeout is in 32KHz units (30.5 us)
+ * HW poll_interval is in 48MHz units (20.8 ns)
+ */
+int mec_hal_espi_taf_poll_timing(struct mec_espi_taf_regs *regs, uint32_t poll_timeout_us,
+                                 uint32_t poll_interval_ns)
+{
+    uint32_t temp = 0;
+
+    if (!regs) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    temp = 2u * (poll_timeout_us / 61u);
+    if (temp > 0x3ffffu) {
+        temp = 0x3ffffu;
+    }
+
+    regs->POLL_TIMEOUT = (regs->POLL_TIMEOUT & (uint32_t)~0xffffu) | (temp & 0xffffu);
+
+    temp = 10u * (poll_interval_ns / 208u);
+    if (temp > 0xffffu) {
+        temp = 0xffffu;
+    }
+
+    regs->POLL_INTERVAL = (regs->POLL_INTERVAL & (uint32_t)~MEC_ESPI_TAF_POLL_TIMEOUT_VAL_Msk)
+        | (temp & MEC_ESPI_TAF_POLL_TIMEOUT_VAL_Msk);
+
+    return MEC_RET_OK;
+}
+
+int mec_hal_espi_taf_read_timeout(struct mec_espi_taf_regs *regs, uint32_t timeout_ns)
+{
+    if (!regs) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    uint32_t temp = 10u * (timeout_ns / 208u);
+
+    if (temp > 0xfffffu) {
+        temp = 0xfffffu;
+    }
+
+    regs->CRD_TIMEOUT = (regs->CRD_TIMEOUT & (uint32_t)~0xfffffu) | temp;
+
+    return MEC_RET_OK;
+}
+
+int mec_hal_espi_taf_sus_timeout(struct mec_espi_taf_regs *regs, uint32_t sus_rsm_ival_us,
+                                 uint32_t sus_chk_delay_ns)
+{
+    uint32_t temp = 0;
+
+    if (!regs) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    temp = (2u * sus_rsm_ival_us) / 61u;
+    if (temp > 0xffffu) {
+        temp = 0xffffu;
+    }
+
+    regs->SR_INTERVAL = (regs->SR_INTERVAL & (uint32_t)~0xffffu) | temp;
+
+    temp = (10u * sus_chk_delay_ns) / 208u;
+    if (temp > 0x3fffffu) {
+        temp = 0x3fffffu;
+    }
+
+    regs->SUS_CHK_DLY = (regs->SUS_CHK_DLY & (uint32_t)~0x3fffffu) | temp;
+
+    return MEC_RET_OK;
 }
 
 int mec_hal_espi_taf_pr_tag_map_get(struct mec_espi_taf_regs *regs,
@@ -926,81 +1051,11 @@ int mec_hal_espi_taf_pr_tag_map_get(struct mec_espi_taf_regs *regs,
     return MEC_RET_OK;
 }
 
-#if 0
-  __IOM uint8_t   TAFEBS;                       /*!< (@ 0x000002EE) eSPI IO TAF Erase Block size configuration                 */
-  __IM  uint8_t   RESERVED12;
-  __IM  uint32_t  RESERVED13[4];
-  __IOM uint32_t  RPMC_OP1_CFG;                 /*!< (@ 0x00000300) Specify how RPMC flash devices attached to eSPI
-                                                                    TAF are reported to eSPI Host                              */
-  __IOM uint32_t  RPMC_OP1_NCNTRS;              /*!< (@ 0x00000304) Number of RPMC counters in each attached flash
-                                                                    device                                                     */
-
-done in mec_hal_espi_taf_init()
-#define MEC_ESPI_IO_CAPFC_MAX_PLD_SIZE_Pos (0UL)                    /*!< MAX_PLD_SIZE (Bit 0)                                  */
-#define MEC_ESPI_IO_CAPFC_MAX_PLD_SIZE_Msk (0x7UL)                  /*!< MAX_PLD_SIZE (Bitfield-Mask: 0x07)                    */
-#define MEC_ESPI_IO_CAPFC_SHARING_SUPP_Pos (3UL)                    /*!< SHARING_SUPP (Bit 3)                                  */
-#define MEC_ESPI_IO_CAPFC_SHARING_SUPP_Msk (0x18UL)                 /*!< SHARING_SUPP (Bitfield-Mask: 0x03)                    */
-#define MEC_ESPI_IO_CAPFC_TAF_MAX_READ_SIZE_Pos (5UL)               /*!< TAF_MAX_READ_SIZE (Bit 5)                             */
-#define MEC_ESPI_IO_CAPFC_TAF_MAX_READ_SIZE_Msk (0xe0UL)            /*!< TAF_MAX_READ_SIZE (Bitfield-Mask: 0x07)               */
-
-#define MEC_ESPI_IO_TAFEBS_1KB_Pos        (0UL)                     /*!< 1KB (Bit 0)                                           */
-#define MEC_ESPI_IO_TAFEBS_1KB_Msk        (0x1UL)                   /*!< 1KB (Bitfield-Mask: 0x01)                             */
-#define MEC_ESPI_IO_TAFEBS_2KB_Pos        (1UL)                     /*!< 2KB (Bit 1)                                           */
-#define MEC_ESPI_IO_TAFEBS_2KB_Msk        (0x2UL)                   /*!< 2KB (Bitfield-Mask: 0x01)                             */
-#define MEC_ESPI_IO_TAFEBS_4KB_Pos        (2UL)                     /*!< 4KB (Bit 2)                                           */
-#define MEC_ESPI_IO_TAFEBS_4KB_Msk        (0x4UL)                   /*!< 4KB (Bitfield-Mask: 0x01)                             */
-#define MEC_ESPI_IO_TAFEBS_8KB_Pos        (3UL)                     /*!< 8KB (Bit 3)                                           */
-#define MEC_ESPI_IO_TAFEBS_8KB_Msk        (0x8UL)                   /*!< 8KB (Bitfield-Mask: 0x01)                             */
-#define MEC_ESPI_IO_TAFEBS_16KB_Pos       (4UL)                     /*!< 16KB (Bit 4)                                          */
-#define MEC_ESPI_IO_TAFEBS_16KB_Msk       (0x10UL)                  /*!< 16KB (Bitfield-Mask: 0x01)                            */
-#define MEC_ESPI_IO_TAFEBS_32KB_Pos       (5UL)                     /*!< 32KB (Bit 5)                                          */
-#define MEC_ESPI_IO_TAFEBS_32KB_Msk       (0x20UL)                  /*!< 32KB (Bitfield-Mask: 0x01)                            */
-#define MEC_ESPI_IO_TAFEBS_64KB_Pos       (6UL)                     /*!< 64KB (Bit 6)                                          */
-#define MEC_ESPI_IO_TAFEBS_64KB_Msk       (0x40UL)                  /*!< 64KB (Bitfield-Mask: 0x01)                            */
-#define MEC_ESPI_IO_TAFEBS_128KB_Pos      (7UL)                     /*!< 128KB (Bit 7)                                         */
-#define MEC_ESPI_IO_TAFEBS_128KB_Msk      (0x80UL)                  /*!< 128KB (Bitfield-Mask: 0x01)                           */
-/* =====================================================  RPMC_OP1_CFG  ====================================================== */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_CS0_040_Pos (0UL)                  /*!< CS0_040 (Bit 0)                                       */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_CS0_040_Msk (0x1UL)                /*!< CS0_040 (Bitfield-Mask: 0x01)                         */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_CS0_848_Pos (1UL)                  /*!< CS0_848 (Bit 1)                                       */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_CS0_848_Msk (0x2UL)                /*!< CS0_848 (Bitfield-Mask: 0x01)                         */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_CS1_040_Pos (2UL)                  /*!< CS1_040 (Bit 2)                                       */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_CS1_040_Msk (0x4UL)                /*!< CS1_040 (Bitfield-Mask: 0x01)                         */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_CS1_848_Pos (3UL)                  /*!< CS1_848 (Bit 3)                                       */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_CS1_848_Msk (0x8UL)                /*!< CS1_848 (Bitfield-Mask: 0x01)                         */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_CS0_PNP_Pos (4UL)                  /*!< CS0_PNP (Bit 4)                                       */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_CS0_PNP_Msk (0x10UL)               /*!< CS0_PNP (Bitfield-Mask: 0x01)                         */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_CS1_PNP_Pos (5UL)                  /*!< CS1_PNP (Bit 5)                                       */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_CS1_PNP_Msk (0x20UL)               /*!< CS1_PNP (Bitfield-Mask: 0x01)                         */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_NUM_RPMC_DEV_Pos (6UL)             /*!< NUM_RPMC_DEV (Bit 6)                                  */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_NUM_RPMC_DEV_Msk (0xc0UL)          /*!< NUM_RPMC_DEV (Bitfield-Mask: 0x03)                    */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_TOTAL_NCNTR_Pos (8UL)              /*!< TOTAL_NCNTR (Bit 8)                                   */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_TOTAL_NCNTR_Msk (0x3f00UL)         /*!< TOTAL_NCNTR (Bitfield-Mask: 0x3f)                     */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_STRICT_RCT_Pos (31UL)              /*!< STRICT_RCT (Bit 31)                                   */
-#define MEC_ESPI_IO_RPMC_OP1_CFG_STRICT_RCT_Msk (0x80000000UL)      /*!< STRICT_RCT (Bitfield-Mask: 0x01)                      */
-/* ====================================================  RPMC_OP1_NCNTRS  ==================================================== */
-#define MEC_ESPI_IO_RPMC_OP1_NCNTRS_CS0_OP1_Pos (0UL)               /*!< CS0_OP1 (Bit 0)                                       */
-#define MEC_ESPI_IO_RPMC_OP1_NCNTRS_CS0_OP1_Msk (0xffUL)            /*!< CS0_OP1 (Bitfield-Mask: 0xff)                         */
-#define MEC_ESPI_IO_RPMC_OP1_NCNTRS_CS0_COUNT_Pos (8UL)             /*!< CS0_COUNT (Bit 8)                                     */
-#define MEC_ESPI_IO_RPMC_OP1_NCNTRS_CS0_COUNT_Msk (0x1f00UL)        /*!< CS0_COUNT (Bitfield-Mask: 0x1f)                       */
-#define MEC_ESPI_IO_RPMC_OP1_NCNTRS_CS1_OP1_Pos (16UL)              /*!< CS1_OP1 (Bit 16)                                      */
-#define MEC_ESPI_IO_RPMC_OP1_NCNTRS_CS1_OP1_Msk (0xff0000UL)        /*!< CS1_OP1 (Bitfield-Mask: 0xff)                         */
-#define MEC_ESPI_IO_RPMC_OP1_NCNTRS_CS1_COUNT_Pos (24UL)            /*!< CS1_COUNT (Bit 24)                                    */
-#define MEC_ESPI_IO_RPMC_OP1_NCNTRS_CS1_COUNT_Msk (0x1f000000UL)    /*!< CS1_COUNT (Bitfield-Mask: 0x1f)                       */
-
-#endif
-
 int mec_hal_espi_taf_set_erase_block_sizes(uint8_t size_bitmap)
 {
     struct mec_espi_io_regs *iobase = (struct mec_espi_io_regs *)MEC_ESPI_IO_BASE;
 
-    iobase->TAFEBS = 0;
-
-    return MEC_RET_OK;
-}
-
-int mec_hal_espi_taf_rpmc_config(struct mec_espi_taf_regs *regs, uint32_t rpmc_info)
-{
+    iobase->TAFEBS = size_bitmap;
 
     return MEC_RET_OK;
 }
@@ -1138,7 +1193,7 @@ int mec_hal_espi_taf_pr_set(struct mec_espi_taf_regs *regs, const struct espi_ta
 
     volatile struct mec_espi_taf_pr_regs *pregs = &regs->PR[pr->pr_num];
 
-    if (pr->flags & MEC_BIT(MCHP_TAF_PR_FLAG_ENABLE)) {
+    if (pr->flags & MCHP_TAF_PR_FLAG_ENABLE) {
         pregs->START =  (pr->start >> MEC_TAF_PR_UNIT_SHIFT) & MEC_TAF_PR_START_LIM_MASK;
         pregs->LIMIT = (((pr->start + pr->size - 1u) >> MEC_TAF_PR_UNIT_SHIFT)
                     & MEC_TAF_PR_START_LIM_MASK);
@@ -1147,7 +1202,7 @@ int mec_hal_espi_taf_pr_set(struct mec_espi_taf_regs *regs, const struct espi_ta
 
         regs->PR_DIRTY = MEC_BIT(pr->pr_num);
 
-        if (pr->flags & MEC_BIT(MCHP_TAF_PR_FLAG_LOCK)) {
+        if (pr->flags & MCHP_TAF_PR_FLAG_LOCK) {
             regs->PR_LOCK |= MEC_BIT(pr->pr_num);
         }
     } else {
@@ -1221,7 +1276,7 @@ static void start_ecp(struct mec_espi_taf_regs *regs, uint32_t flags)
         regs->ECP_IEN = MEC_BIT(MEC_ESPI_TAF_ECP_IEN_DONE_Pos);
     }
 
-    regs->ECP_START |= MEC_BIT(MEC_ESPI_TAF_ECP_START_START_Pos);
+    regs->ECP_START = MEC_BIT(MEC_ESPI_TAF_ECP_START_START_Pos);
 }
 
 /* check cmd_pkt->dataptr is valid
@@ -1237,7 +1292,8 @@ static int start_taf_ecp_rw(struct mec_espi_taf_regs *regs, enum mec_taf_ecp_com
         return MEC_RET_ERR_DATA_ALIGN;
     }
 
-    if ((cmd_pkt->dlen < MEC_TAF_ECP_MIN_RW_PKT_SIZE) || (cmd_pkt->dlen > MEC_TAF_ECP_MAX_RW_PKT_SIZE)) {
+    if ((cmd_pkt->dlen < MEC_TAF_ECP_MIN_RW_PKT_SIZE)
+        || (cmd_pkt->dlen > MEC_TAF_ECP_MAX_RW_PKT_SIZE)) {
         return MEC_RET_ERR_DATA_LEN;
     }
 
@@ -1263,18 +1319,19 @@ static int start_taf_ecp_rw(struct mec_espi_taf_regs *regs, enum mec_taf_ecp_com
  * cmd_pkt->flash_addr specifies the region. It can be any address
  * inside the region.
  */
-static int start_taf_ecp_erase(struct mec_espi_taf_regs *regs, enum mec_taf_ecp_command cmd,
-                               struct mec_taf_ecp_cmd_pkt *cmd_pkt, uint32_t flags)
+static int start_taf_ecp_erase(struct mec_espi_taf_regs *regs, struct mec_taf_ecp_cmd_pkt *cmd_pkt,
+                               uint32_t flags)
 {
     uint32_t ecp_cmd = (MEC_TAF_ECP_CMD_TYPE
                         | (MEC_ESPI_TAF_ECP_CMD_EC_CMD_ERASE << MEC_ESPI_TAF_ECP_CMD_EC_CMD_Pos));
     uint32_t erase_len_encoding = 0; /* 4KB */
 
     switch (cmd_pkt->dlen) {
-    case (1024U * 16U):
+    case (1024U * 4U):
         break;
     case (1024U * 32U):
         erase_len_encoding = 1u;
+        break;
     case (1024U * 64U):
         erase_len_encoding = 2u;
         break;
@@ -1293,10 +1350,14 @@ static int start_taf_ecp_erase(struct mec_espi_taf_regs *regs, enum mec_taf_ecp_
     return MEC_RET_OK;
 }
 
-static int start_taf_ecp_rpmc(struct mec_espi_taf_regs *regs, enum mec_taf_ecp_command cmd,
+#ifdef MEC5_ESPI_HW_VER_15
+static int start_taf_ecp_rpmc(struct mec_espi_taf_regs *regs, uint8_t taf_rpmc_op,
                               struct mec_taf_ecp_cmd_pkt *cmd_pkt, uint32_t flags)
 {
     uint32_t ecp_cmd = MEC_TAF_ECP_CMD_TYPE;
+
+    ecp_cmd |= ((uint32_t)taf_rpmc_op << MEC_ESPI_TAF_ECP_CMD_EC_CMD_Pos);
+    ecp_cmd |= (cmd_pkt->dlen << MEC_ESPI_TAF_ECP_CMD_LEN_Pos) & MEC_ESPI_TAF_ECP_CMD_LEN_Msk;
 
     regs->ECP_FADDR = cmd_pkt->flash_addr;
     regs->ECP_BADDR = (uint32_t)cmd_pkt->dataptr;
@@ -1306,6 +1367,7 @@ static int start_taf_ecp_rpmc(struct mec_espi_taf_regs *regs, enum mec_taf_ecp_c
 
     return MEC_RET_OK;
 }
+#endif
 
 int mec_hal_espi_taf_ecp_cmd_start(struct mec_espi_taf_regs *regs, enum mec_taf_ecp_command cmd,
                                    struct mec_taf_ecp_cmd_pkt *cmd_pkt, uint32_t flags)
@@ -1322,14 +1384,22 @@ int mec_hal_espi_taf_ecp_cmd_start(struct mec_espi_taf_regs *regs, enum mec_taf_
         ret = start_taf_ecp_rw(regs, cmd, cmd_pkt, flags);
         break;
     case MEC_TAF_ECP_CMD_ERASE:
-        ret = start_taf_ecp_erase(regs, cmd, cmd_pkt, flags);
+        ret = start_taf_ecp_erase(regs, cmd_pkt, flags);
         break;
+#ifdef MEC5_ESPI_HW_VER_15
     case MEC_TAF_ECP_CMD_RPMC_OP1_CS0:
-    case MEC_TAF_ECP_CMD_RPMC_OP2_CS0:
-    case MEC_TAF_ECP_CMD_RPMC_OP1_CS1:
-    case MEC_TAF_ECP_CMD_RPMC_OP2_CS1:
-        ret = start_taf_ecp_rpmc(regs, cmd, cmd_pkt, flags);
+        ret = start_taf_ecp_rpmc(regs, MEC_ESPI_TAF_ECP_CMD_EC_CMD_RPMC_OP1_CS0, cmd_pkt, flags);
         break;
+    case MEC_TAF_ECP_CMD_RPMC_OP2_CS0:
+        ret = start_taf_ecp_rpmc(regs, MEC_ESPI_TAF_ECP_CMD_EC_CMD_RPMC_OP2_CS0, cmd_pkt, flags);
+        break;
+    case MEC_TAF_ECP_CMD_RPMC_OP1_CS1:
+        ret = start_taf_ecp_rpmc(regs, MEC_ESPI_TAF_ECP_CMD_EC_CMD_RPMC_OP1_CS1, cmd_pkt, flags);
+        break;
+    case MEC_TAF_ECP_CMD_RPMC_OP2_CS1:
+        ret = start_taf_ecp_rpmc(regs, MEC_ESPI_TAF_ECP_CMD_EC_CMD_RPMC_OP2_CS1, cmd_pkt, flags);
+        break;
+#endif
     default:
         ret = MEC_RET_ERR_INVAL;
     }
