@@ -204,6 +204,30 @@ static void i2c_config(struct mec_i2c_smb_ctx *ctx, struct mec_i2c_smb_cfg *conf
     base->COMPL |= MEC_I2C_SMB_COMPL_STS_RW1C_MSK;
 }
 
+uint8_t mec_hal_i2c_smb_port_get(struct mec_i2c_smb_regs *regs)
+{
+    if (!regs) {
+        return MEC_I2C_PORT_MAX;
+    }
+
+    return (uint8_t)((regs->CONFIG & MEC_I2C_SMB_CONFIG_PORT_SEL_Msk)
+                     >> MEC_I2C_SMB_CONFIG_PORT_SEL_Pos);
+}
+
+uint8_t mec_hal_i2c_smb_port_set(struct mec_i2c_smb_regs *regs, uint8_t port)
+{
+    if (!regs || (port >= MEC_I2C_PORT_MAX)) {
+        return MEC_I2C_PORT_MAX;
+    }
+
+    uint32_t temp = (((uint32_t)port << MEC_I2C_SMB_CONFIG_PORT_SEL_Pos)
+                     | MEC_I2C_SMB_CONFIG_PORT_SEL_Msk);
+
+    regs->CONFIG = (regs->CONFIG & (uint32_t)~MEC_I2C_SMB_CONFIG_PORT_SEL_Msk) | temp;
+
+    return port;
+}
+
 /* I2C-SMB bus clock frequency =
  * Fixed HW BAUD clock freq / ((low_period+1) + (high_period+1))
  */

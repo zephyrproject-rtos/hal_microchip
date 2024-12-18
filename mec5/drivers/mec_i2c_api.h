@@ -10,6 +10,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "mec_defs.h"
 #include "mec_retval.h"
 
 /* Interfaces to any C modules */
@@ -102,6 +103,26 @@ enum mec_i2c_nl_tm_event {
     MEC_I2C_NL_TM_EVENT_ALL_DONE,
 };
 
+enum mec_i2c_port {
+    MEC_I2C_PORT_0 = 0,
+    MEC_I2C_PORT_1,
+    MEC_I2C_PORT_2,
+    MEC_I2C_PORT_3,
+    MEC_I2C_PORT_4,
+    MEC_I2C_PORT_5,
+    MEC_I2C_PORT_6,
+    MEC_I2C_PORT_7,
+    MEC_I2C_PORT_8,
+    MEC_I2C_PORT_9,
+    MEC_I2C_PORT_10,
+    MEC_I2C_PORT_11,
+    MEC_I2C_PORT_12,
+    MEC_I2C_PORT_13,
+    MEC_I2C_PORT_14,
+    MEC_I2C_PORT_15,
+    MEC_I2C_PORT_MAX,
+};
+
 struct mec_i2c_freq_cfg {
     uint32_t freqhz;
     uint32_t idle_scaling;
@@ -139,6 +160,9 @@ int mec_hal_i2c_smb_init(struct mec_i2c_smb_ctx *ctx, struct mec_i2c_smb_cfg *co
                          struct mec_i2c_freq_cfg *custom_freq_cfg);
 
 int mec_hal_i2c_smb_bus_freq_get(struct mec_i2c_smb_ctx *ctx, uint32_t *bus_freq_hz);
+
+uint8_t mec_hal_i2c_smb_port_get(struct mec_i2c_smb_regs *regs);
+uint8_t mec_hal_i2c_smb_port_set(struct mec_i2c_smb_regs *regs, uint8_t port);
 
 int mec_hal_i2c_smb_ctrl_set(struct mec_i2c_smb_ctx *ctx, uint8_t ctrl);
 uint8_t mec_hal_i2c_smb_ctrl_get(struct mec_i2c_smb_ctx *ctx);
