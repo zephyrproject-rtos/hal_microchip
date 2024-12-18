@@ -234,10 +234,10 @@ typedef struct mec_i2c_smb_regs {               /*!< (@ 0x40004000) MEC_I2C_SMB0
 #define MEC_I2C_SMB_CONFIG_FLUSH_CTXB_Msk (0x40000UL)               /*!< FLUSH_CTXB (Bitfield-Mask: 0x01)                      */
 #define MEC_I2C_SMB_CONFIG_FLUSH_CRXB_Pos (19UL)                    /*!< FLUSH_CRXB (Bit 19)                                   */
 #define MEC_I2C_SMB_CONFIG_FLUSH_CRXB_Msk (0x80000UL)               /*!< FLUSH_CRXB (Bitfield-Mask: 0x01)                      */
-#define MEC_I2C_SMB_CONFIG_ENI_STOP_Pos   (24UL)                    /*!< ENI_STOP (Bit 28)                                     */
+#define MEC_I2C_SMB_CONFIG_ENI_STOP_Pos   (24UL)                    /*!< ENI_STOP (Bit 24)                                     */
 #define MEC_I2C_SMB_CONFIG_ENI_STOP_Msk   (0x01000000UL)            /*!< ENI_STOP (Bitfield-Mask: 0x01)                        */
-#define MEC_I2C_SMB_CONFIG_ENI_NL_STS_Pos (27UL)                    /*!< ENI_AAT (Bit 28)                                      */
-#define MEC_I2C_SMB_CONFIG_ENI_NL_STS_Msk (0x08000000UL)            /*!< ENI_AAT (Bitfield-Mask: 0x01)                         */
+#define MEC_I2C_SMB_CONFIG_ENI_NL_STS_Pos (27UL)                    /*!< ENI_NL_STS (Bit 27)                                      */
+#define MEC_I2C_SMB_CONFIG_ENI_NL_STS_Msk (0x08000000UL)            /*!< ENI_NL_STS (Bitfield-Mask: 0x01)                         */
 #define MEC_I2C_SMB_CONFIG_ENI_AAT_Pos    (28UL)                    /*!< ENI_AAT (Bit 28)                                      */
 #define MEC_I2C_SMB_CONFIG_ENI_AAT_Msk    (0x10000000UL)            /*!< ENI_AAT (Bitfield-Mask: 0x01)                         */
 #define MEC_I2C_SMB_CONFIG_ENI_IDLE_Pos   (29UL)                    /*!< ENI_IDLE (Bit 29)                                     */
