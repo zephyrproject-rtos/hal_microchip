@@ -617,14 +617,18 @@ uint32_t mec_hal_i2c_smb_status(struct mec_i2c_smb_ctx *ctx, uint8_t clear)
     }
 #endif
     struct mec_i2c_smb_regs *base = ctx->base;
-    uint32_t status = base->STATUS;
+    uint32_t status = base->STATUS & 0xffu;
     uint32_t compl = base->COMPL;
 
     if (clear) {
         base->COMPL = compl;
     }
 
-    return (status | (compl & 0xffffff00u));
+    /* completion b[7:0] are control not status bits. Store 8-bit I2C status there */
+    compl &= 0xffffff00u;
+    compl |= status;
+
+    return compl;
 }
 
 uint32_t mec_hal_i2c_smb_wake_status(struct mec_i2c_smb_ctx *ctx)
