@@ -43,7 +43,7 @@ enum mec_i2c_status {
     MEC_I2C_STS_CHDH_POS,
     MEC_I2C_STS_BERR_POS,
     MEC_I2C_STS_LAB_POS,
-    MEC_I2C_STS_TM_NACK_POS = 16,
+    MEC_I2C_STS_TM_NACKR_POS = 16,
     MEC_I2C_STS_TM_RCV_DONE_RO_POS, /* Valid when TM_DONE=1. Receive phase finished else transmit phase finished */
     MEC_I2C_STS_TM_PERR_POS = 19, /* Target mode protocol error */
     MEC_I2C_STS_TM_RPTS_RD_POS, /* Target mode repeated start with read address detected */
