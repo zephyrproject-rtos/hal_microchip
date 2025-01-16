@@ -15,9 +15,9 @@
   */
 typedef struct mec_dma_chan_regs {
   __IOM uint32_t  ACTV;                         /*!< (@ 0x00000000) Channel n Activate                                         */
-  __IOM uint32_t  MSTART;                       /*!< (@ 0x00000004) Channel n Memory start address                             */
-  __IOM uint32_t  MEND;                         /*!< (@ 0x00000008) Channel n Memory end address                               */
-  __IOM uint32_t  DSTART;                       /*!< (@ 0x0000000C) Channel n Device start address                             */
+  __IOM uint32_t  MADDR;                        /*!< (@ 0x00000004) Channel n Memory start address                             */
+  __IOM uint32_t  MADDR_END;                    /*!< (@ 0x00000008) Channel n Memory end address                               */
+  __IOM uint32_t  DADDR;                        /*!< (@ 0x0000000C) Channel n Device start address                             */
   __IOM uint32_t  CTRL;                         /*!< (@ 0x00000010) Channel n Control                                          */
   __IOM uint32_t  ISTATUS;                      /*!< (@ 0x00000014) Channel n Interrupt status                                 */
   __IOM uint32_t  IEN;                          /*!< (@ 0x00000018) Channel n Interrupt enable                                 */
