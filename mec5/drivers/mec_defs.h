@@ -74,6 +74,14 @@
 #define MEC_FIELD_VAL(val, pos) ((uint32_t)(val) << (pos))
 #endif
 
+#ifndef MEC_IS_PTR_ALIGNED
+/* Check if a pointer is aligned for against a specific byte boundary  */
+#define MEC_IS_PTR_ALIGNED_BYTES(ptr, bytes) ((((uintptr_t)ptr) % bytes) == 0)
+
+/* Check if a pointer is aligned enough for a particular data type. */
+#define MEC_IS_PTR_ALIGNED(ptr, type) MEC_IS_PTR_ALIGNED_BYTES(ptr, __alignof(type))
+#endif
+
 #ifndef MEC_IS_PTR_ALIGNED16
 #define MEC_IS_PTR_ALIGNED16(ptr) ((((uintptr_t)(ptr)) & 0x01U) == 0)
 #endif
@@ -144,6 +152,22 @@
 #ifndef MEC_GENMASK64
 #define MEC_GENMASK64(h, l) \
     (((~0ULL) - (1ULL << (l)) + 1) & (~0ULL >> (MEC_BITS_PER_LONG_LONG - 1 - (h))))
+#endif
+
+#define MEC_ZERO_OR_COMPILE_ERROR(cond) ((int) sizeof(char[1 - 2 * !(cond)]) - 1)
+
+#ifndef MEC_ARRAY_SIZE
+#if defined(__cplusplus)
+#define MEC_ARRAY_SIZE(array) (sizeof(array) / sizeof((array)[0]))
+#else
+#define MEC_IS_ARRAY(array) \
+    MEC_ZERO_OR_COMPILE_ERROR( \
+        !__builtin_types_compatible_p(__typeof__(array), \
+                          __typeof__(&(array)[0])))
+
+#define MEC_ARRAY_SIZE(array) \
+    ((size_t) (MEC_IS_ARRAY(array) + (sizeof(array) / sizeof((array)[0]))))
+#endif
 #endif
 
 struct mec_buf {
