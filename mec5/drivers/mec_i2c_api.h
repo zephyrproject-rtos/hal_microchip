@@ -19,6 +19,8 @@ extern "C"
 {
 #endif
 
+#define MEC_I2C_SMB_BASE(i) (MEC_I2C_SMB0_BASE + ((uint32_t)(i) * 0x400u))
+
 #define MEC_I2C_SMB_BAUD_CLK_FREQ_HZ 16000000u
 
 #define MEC_I2C_SMB_CFG_CUST_FREQ 0x01u
@@ -189,6 +191,8 @@ int mec_hal_i2c_smb_girq_status_clr(struct mec_i2c_smb_ctx *ctx);
 int mec_hal_i2c_smb_girq_status(struct mec_i2c_smb_ctx *ctx);
 int mec_hal_i2c_smb_girq_result(struct mec_i2c_smb_ctx *ctx);
 
+uint32_t mec_hal_i2c_smb_get_nvic_id(uint8_t i2c_ctrl_id);
+
 uint32_t mec_hal_i2c_smb_wake_status(struct mec_i2c_smb_ctx *ctx);
 void mec_hal_i2c_smb_wake_status_clr(struct mec_i2c_smb_ctx *ctx);
 
@@ -234,11 +238,21 @@ struct mec_i2c_smb_nl_state {
 #define MEC_I2C_NL_FLAG_START       0x01
 #define MEC_I2C_NL_FLAG_RPT_START   0x02
 #define MEC_I2C_NL_FLAG_STOP        0x04
+#define MEC_I2C_NL_FLAG_FLUSH_BUF   0x10u
 #define MEC_I2C_NL_FLAG_CM_DONE_IEN 0x100u
 #define MEC_I2C_NL_FLAG_IDLE_IEN    0x200u
 
 int mec_hal_i2c_nl_cm_cfg_start(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint16_t nrx,
                                 uint32_t flags);
+
+/* I2C-NL CM start without context. If cm_cm_val is not NULL it saves the synthesized
+ * CM_CMD register value into cm_cm_val before writing HW CM_CMD register.
+ */
+int mec_hal_i2c_nl_cm_start(struct mec_i2c_smb_regs *i2c_regs, uint16_t ntx, uint16_t nrx,
+                            uint32_t flags, uint32_t *cm_cmd_val);
+
+int mec_hal_i2c_nl_cm_start_by_id(uint8_t i2c_ctrl_id, uint16_t ntx, uint16_t nrx, uint32_t flags,
+                                  uint32_t *cm_cmd_val);
 
 #define MEC_I2C_NL_CM_SEL 0
 #define MEC_I2C_NL_TM_SEL 1
