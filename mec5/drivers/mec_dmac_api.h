@@ -51,23 +51,26 @@ enum mec_dmac_dir {
 };
 
 enum mec_dmac_hwfc_dev_id {
-    MEC_DMAC_DEV_ID_SMB_0_T2C = 0,
-    MEC_DMAC_DEV_ID_SMB_0_C2T,
-    MEC_DMAC_DEV_ID_SMB_1_T2C,
-    MEC_DMAC_DEV_ID_SMB_1_C2T,
-    MEC_DMAC_DEV_ID_SMB_2_T2C,
-    MEC_DMAC_DEV_ID_SMB_2_C2T,
-    MEC_DMAC_DEV_ID_SMB_3_T2C,
-    MEC_DMAC_DEV_ID_SMB_3_C2T,
-    MEC_DMAC_DEV_ID_SMB_4_T2C,
-    MEC_DMAC_DEV_ID_SMB_4_C2T,
+    MEC_DMAC_DEV_ID_SMB_0_TARG = 0,
+    MEC_DMAC_DEV_ID_SMB_0_HOST,
+    MEC_DMAC_DEV_ID_SMB_1_TARG,
+    MEC_DMAC_DEV_ID_SMB_1_HOST,
+    MEC_DMAC_DEV_ID_SMB_2_TARG,
+    MEC_DMAC_DEV_ID_SMB_2_HOST,
+    MEC_DMAC_DEV_ID_SMB_3_TARG,
+    MEC_DMAC_DEV_ID_SMB_3_HOST,
+    MEC_DMAC_DEV_ID_SMB_4_TARG,
+    MEC_DMAC_DEV_ID_SMB_4_HOST,
     MEC_DMAC_DEV_ID_QSPI_0_TX,
     MEC_DMAC_DEV_ID_QSPI_0_RX,
     MEC_DMAC_DEV_ID_GPSPI_0_TX,
     MEC_DMAC_DEV_ID_GPSPI_0_RX,
     MEC_DMAC_DEV_ID_GPSPI_1_TX,
     MEC_DMAC_DEV_ID_GPSPI_1_RX,
-    MEC_DMAC_DEV_ID_NONE, /* software flow control */
+    MEC_DMAC_DEV_ID_I3C_HOST_0_TX,
+    MEC_DMAC_DEV_ID_I3C_HOST_0_RX,
+    MEC_DMAC_DEV_ID_I3C_SEC_0_TX,
+    MEC_DMAC_DEV_ID_I3C_SEC_0_RX,
     MEC_DMAC_DEV_ID_MAX,
 };
 
@@ -88,6 +91,7 @@ enum mec_dma_chan_status_pos {
 
 #define MEC_DMA_CFG_FLAG_INCR_SRC_ADDR 0x01
 #define MEC_DMA_CFG_FLAG_INCR_DST_ADDR 0x02
+#define MEC_DMA_CFG_FLAG_SWFLC 0x04
 
 struct mec_dma_cfg {
     uintptr_t src_addr;
@@ -117,6 +121,23 @@ struct mec_dma_cfg3 {
     uint8_t flags;
 };
 
+#define MEC_DMA_CFG4_FLAG_INCR_MEM_ADDR 0x01
+#define MEC_DMA_CFG4_FLAG_INCR_DEV_ADDR 0x02
+#define MEC_DMA_CFG4_FLAG_DONE_IEN 0x10
+#define MEC_DMA_CFG4_FLAG_BERR_IEN 0x20
+#define MEC_DMA_CFG4_FLAG_HWFLC_ERR_IEN 0x40
+#define MEC_DMA_CFG4_FLAG_HWFLC_TERM_IEN 0x80
+
+struct mec_dma_cfg4 {
+    struct mec_dma_cfg4 *next;
+    uintptr_t mem_addr;
+    uint32_t len;
+    enum mec_dmac_unit_size unitsz;
+    enum mec_dmac_dir dir;
+    enum mec_dmac_hwfc_dev_id hwfc_dev;
+    uint8_t flags;
+};
+
 /* forward declaration */
 struct mec_dmac_regs;
 struct mec_dma_chan_regs;
@@ -140,6 +161,7 @@ uintptr_t mec_hal_dma_chan_reg_addr(enum mec_dmac_channel chan);
 
 uint32_t mec_hal_dmac_girq_result(void);
 void mec_hal_dmac_girq_aggr(uint8_t enable);
+void mec_hal_dmac_aggr_nvic_ien(uint8_t enable);
 
 /* ---- channel API ---- */
 int mec_hal_dma_chan_init(enum mec_dmac_channel);
@@ -157,6 +179,7 @@ int mec_hal_dma_chan_ia_disable(enum mec_dmac_channel channel);
 
 bool mec_hal_dma_chan_is_busy(enum mec_dmac_channel chan);
 
+int mec_hal_dma_chan_go(struct mec_dma_chan_regs *regs);
 int mec_hal_dma_chan_start(enum mec_dmac_channel chan);
 int mec_hal_dma_chan_start2(enum mec_dmac_channel chan, uint32_t flags);
 
@@ -223,6 +246,9 @@ int mec_hal_dma_chan_cfg2(enum mec_dmac_channel chan, uint32_t nbytes,
                           uint32_t maddr, uint32_t daddr, uint32_t chan_cfg);
 
 int mec_hal_dma_chan_cfg3(enum mec_dmac_channel chan, struct mec_dma_cfg3 *cfg3);
+
+int mec_hal_dma_chan_cfg4(struct mec_dma_chan_regs *chan_regs, struct mec_dma_cfg4 *cfg);
+int mec_hal_dma_chan_cfg4_by_id(enum mec_dmac_channel chan, struct mec_dma_cfg4 *cfg);
 
 #ifdef __cplusplus
 }
