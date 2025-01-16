@@ -238,10 +238,10 @@ typedef struct mec_i2c_smb_regs {               /*!< (@ 0x40004000) MEC_I2C_SMB0
 #define MEC_I2C_SMB_CONFIG_ENI_AAT_Msk    (0x10000000UL)            /*!< ENI_AAT (Bitfield-Mask: 0x01)                         */
 #define MEC_I2C_SMB_CONFIG_ENI_IDLE_Pos   (29UL)                    /*!< ENI_IDLE (Bit 29)                                     */
 #define MEC_I2C_SMB_CONFIG_ENI_IDLE_Msk   (0x20000000UL)            /*!< ENI_IDLE (Bitfield-Mask: 0x01)                        */
-#define MEC_I2C_SMB_CONFIG_ENMI_Pos       (30UL)                    /*!< ENMI (Bit 30)                                         */
-#define MEC_I2C_SMB_CONFIG_ENMI_Msk       (0x40000000UL)            /*!< ENMI (Bitfield-Mask: 0x01)                            */
-#define MEC_I2C_SMB_CONFIG_ENSI_Pos       (31UL)                    /*!< ENSI (Bit 31)                                         */
-#define MEC_I2C_SMB_CONFIG_ENSI_Msk       (0x80000000UL)            /*!< ENSI (Bitfield-Mask: 0x01)                            */
+#define MEC_I2C_SMB_CONFIG_ENI_HOST_Pos   (30UL)                    /*!< ENI_HOST (Bit 30)                                         */
+#define MEC_I2C_SMB_CONFIG_ENI_HOST_Msk   (0x40000000UL)            /*!< ENI_HOST (Bitfield-Mask: 0x01)                            */
+#define MEC_I2C_SMB_CONFIG_ENI_TARG_Pos   (31UL)                    /*!< ENI_TARG (Bit 31)                                         */
+#define MEC_I2C_SMB_CONFIG_ENI_TARG_Msk   (0x80000000UL)            /*!< ENI_TARG (Bitfield-Mask: 0x01)                            */
 /* ========================================================  BUSCLK  ========================================================= */
 #define MEC_I2C_SMB_BUSCLK_LOPER_Pos      (0UL)                     /*!< LOPER (Bit 0)                                         */
 #define MEC_I2C_SMB_BUSCLK_LOPER_Msk      (0xffUL)                  /*!< LOPER (Bitfield-Mask: 0xff)                           */
