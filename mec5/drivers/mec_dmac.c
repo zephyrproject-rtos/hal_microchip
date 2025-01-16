@@ -28,6 +28,7 @@
 
 #define MEC_DMAC_GIRQ           14
 #define MEC_DMAC_GIRQ_IDX       6
+#define MEC_DMAC_GIRQ_NVIC_NUM  6
 
 #define MEC_DMAC_CHAN0_ECIA_INFO  MEC5_ECIA_INFO(14, 0, 6, 24)
 #define MEC_DMAC_CHAN1_ECIA_INFO  MEC5_ECIA_INFO(14, 1, 6, 25)
@@ -64,6 +65,41 @@ const uint32_t dmac_ecia_info_table[MEC5_DMAC_NUM_CHANNELS] = {
 #if MEC5_DMAC_NUM_CHANNELS == 20
     MEC_DMAC_CHAN16_ECIA_INFO, MEC_DMAC_CHAN17_ECIA_INFO,
     MEC_DMAC_CHAN18_ECIA_INFO, MEC_DMAC_CHAN19_ECIA_INFO,
+#endif
+};
+
+/* index using (enum mec_dmac_hwfc_dev_id * 2) + direction
+ * where direction is 0(dev2Mem) or 1(mem2dev)
+ */
+const uint32_t dma_hwflc_reg_addrs[MEC_DMAC_DEV_ID_MAX * 2] = {
+    (uint32_t)&MEC_I2C_SMB0->TM_RXB, (uint32_t)&MEC_I2C_SMB0->TM_TXB, /* dev2mem, mem2dev */
+    (uint32_t)&MEC_I2C_SMB0->CM_RXB, (uint32_t)&MEC_I2C_SMB0->CM_TXB,
+    (uint32_t)&MEC_I2C_SMB1->TM_RXB, (uint32_t)&MEC_I2C_SMB1->TM_TXB,
+    (uint32_t)&MEC_I2C_SMB1->CM_RXB, (uint32_t)&MEC_I2C_SMB1->CM_TXB,
+    (uint32_t)&MEC_I2C_SMB2->TM_RXB, (uint32_t)&MEC_I2C_SMB2->TM_TXB,
+    (uint32_t)&MEC_I2C_SMB2->CM_RXB, (uint32_t)&MEC_I2C_SMB2->CM_TXB,
+    (uint32_t)&MEC_I2C_SMB3->TM_RXB, (uint32_t)&MEC_I2C_SMB3->TM_TXB,
+    (uint32_t)&MEC_I2C_SMB3->CM_RXB, (uint32_t)&MEC_I2C_SMB3->CM_TXB,
+    (uint32_t)&MEC_I2C_SMB4->TM_RXB, (uint32_t)&MEC_I2C_SMB4->TM_TXB,
+    (uint32_t)&MEC_I2C_SMB4->CM_RXB, (uint32_t)&MEC_I2C_SMB4->CM_TXB,
+    0xDEADBEEFu, (uint32_t)&MEC_QSPI0->TX_FIFO,
+    (uint32_t)&MEC_QSPI0->RX_FIFO, 0xDEADBEEFu,
+#if MEC5_GPSPI_CTRL_VERSION == 2
+    0xDEADBEEFu, (uint32_t)&MEC_GSPI0->TX_FIFO,
+    (uint32_t)&MEC_GSPI0->RX_FIFO, 0xDEADBEEFu,
+    0xDEADBEEFu, (uint32_t)&MEC_GSPI1->TX_FIFO,
+    (uint32_t)&MEC_GSPI1->RX_FIFO, 0xDEADBEEFu,
+#else
+    0xDEADBEEFu, (uint32_t)&MEC_GSPI0->TXD,
+    (uint32_t)&MEC_GSPI0->RXD, 0xDEADBEEFu,
+    0xDEADBEEFu, (uint32_t)&MEC_GSPI1->TXD,
+    (uint32_t)&MEC_GSPI1->RXD, 0xDEADBEEFu,
+#endif
+#if MEC5_DMAC_NUM_CHANNELS == 20
+    0xDEADBEEFu, (uint32_t)&MEC_I3C_HOST0->TX_DATA,
+    (uint32_t)&MEC_I3C_HOST0->RX_DATA, 0xDEADBEEFu,
+    0xDEADBEEFu, (uint32_t)&MEC_I3C_SEC0->TX_DATA,
+    (uint32_t)&MEC_I3C_SEC0->RX_DATA, 0xDEADBEEFu,
 #endif
 };
 
@@ -127,6 +163,15 @@ uint32_t mec_hal_dmac_girq_result(void)
 void mec_hal_dmac_girq_aggr(uint8_t enable)
 {
     mec_hal_ecia_girq_aggr_enable(MEC_DMAC_GIRQ, enable);
+}
+
+void mec_hal_dmac_aggr_nvic_ien(uint8_t enable)
+{
+    if (enable) {
+        NVIC_EnableIRQ(MEC_DMAC_GIRQ_NVIC_NUM);
+    } else {
+        NVIC_DisableIRQ(MEC_DMAC_GIRQ_NVIC_NUM);
+    }
 }
 
 int mec_hal_dmac_reset(void)
@@ -248,6 +293,19 @@ int mec_hal_dmac_init(uint32_t chan_mask)
     return MEC_RET_OK;
 }
 
+static uint32_t mec_hal_dma_dev_addr(enum mec_dmac_hwfc_dev_id hwfc_id, enum mec_dmac_dir dir)
+{
+    uint32_t devAddr = 0xDEADBEEFu;
+    uint32_t idx = 0;
+
+    if (hwfc_id < MEC_DMAC_DEV_ID_MAX) {
+        idx = ((uint32_t)hwfc_id * 2u) + ((uint32_t)dir & 0x1u);
+        devAddr = dma_hwflc_reg_addrs[idx];
+    }
+
+    return devAddr;
+}
+
 uintptr_t mec_hal_dma_chan_reg_addr(enum mec_dmac_channel chan)
 {
     struct mec_dmac_regs *base = MEC_DMAC;
@@ -269,12 +327,12 @@ int mec_hal_dma_chan_init(enum mec_dmac_channel chan)
 
     struct mec_dma_chan_regs *regs = &base->CHAN[chan];
 
-    regs->MEND = 0;
-    regs->MSTART = 0;
+    regs->MADDR_END = 0;
+    regs->MADDR = 0;
 
     regs->ACTV = 0;
     regs->CTRL = 0;
-    regs->DSTART = 0;
+    regs->DADDR = 0;
     regs->IEN = 0;
     regs->ISTATUS = MEC_DMA_CHAN_ALL_STATUS;
 
@@ -344,17 +402,14 @@ int mec_hal_dma_chan_intr_en(enum mec_dmac_channel chan, uint8_t ien)
     return MEC_RET_OK;
 }
 
-int mec_hal_dma_chan_start(enum mec_dmac_channel chan)
+int mec_hal_dma_chan_go(struct mec_dma_chan_regs *regs)
 {
     uint32_t ctrl = 0;
-    struct mec_dmac_regs *base = MEC_DMAC;
     uint8_t start_pos = MEC_DMA_CHAN_CTRL_HFC_RUN_Pos;
 
-    if (chan >= MEC_DMAC_CHAN_MAX) {
+    if (!regs) {
         return MEC_RET_ERR_INVAL;
     }
-
-    struct mec_dma_chan_regs *regs = &base->CHAN[chan];
 
     ctrl = regs->CTRL;
 
@@ -367,9 +422,9 @@ int mec_hal_dma_chan_start(enum mec_dmac_channel chan)
 
 #ifdef MEC_DMAC_DEBUG_REGS
     dbg_mec_dma[chan].actv = MEC_BIT(MEC_DMA_CHAN_ACTV_EN_Pos);
-    dbg_mec_dma[chan].mstart = regs->MSTART;
-    dbg_mec_dma[chan].mend = regs->MEND;
-    dbg_mec_dma[chan].dstart = regs->DSTART;
+    dbg_mec_dma[chan].mstart = regs->MADDR;
+    dbg_mec_dma[chan].mend = regs->MADDR_END;
+    dbg_mec_dma[chan].dstart = regs->DADDR;
     dbg_mec_dma[chan].ctrl = ctrl | MEC_BIT(start_pos);
     dbg_mec_dma[chan].istatus = regs->ISTATUS;
     dbg_mec_dma[chan].ien = regs->IEN;
@@ -377,9 +432,21 @@ int mec_hal_dma_chan_start(enum mec_dmac_channel chan)
 #endif
 
     regs->CTRL = ctrl | MEC_BIT(start_pos);
-    regs->ACTV = MEC_BIT(MEC_DMA_CHAN_ACTV_EN_Pos);
 
     return MEC_RET_OK;
+}
+
+int mec_hal_dma_chan_start(enum mec_dmac_channel chan)
+{
+    struct mec_dmac_regs *base = MEC_DMAC;
+
+    if (chan >= MEC_DMAC_CHAN_MAX) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    struct mec_dma_chan_regs *regs = &base->CHAN[chan];
+
+    return mec_hal_dma_chan_go(regs);
 }
 
 int mec_hal_dma_chan_start2(enum mec_dmac_channel chan, uint32_t flags)
@@ -506,9 +573,9 @@ int mec_hal_chan_regs_get(enum mec_dmac_channel chan, uint32_t *regbuf, uint8_t 
 
     regs = &base->CHAN[chan];
     regbuf[0] = regs->ACTV;
-    regbuf[1] = regs->MSTART;
-    regbuf[2] = regs->MEND;
-    regbuf[3] = regs->DSTART;
+    regbuf[1] = regs->MADDR;
+    regbuf[2] = regs->MADDR_END;
+    regbuf[3] = regs->DADDR;
     regbuf[4] = regs->CTRL;
     regbuf[5] = regs->ISTATUS;
     regbuf[6] = regs->IEN;
@@ -533,7 +600,7 @@ int mec_hal_dma_chan_hwfc_set(enum mec_dmac_channel chan, enum mec_dmac_hwfc_dev
     ctrl |= (((uint32_t)hwfc_dev << MEC_DMA_CHAN_CTRL_HFC_DEV_Pos)
              & MEC_DMA_CHAN_CTRL_HFC_DEV_Msk);
     regs->CTRL = ctrl;
-    regs->DSTART = dev_addr;
+    regs->DADDR = dev_addr;
 
     return MEC_RET_OK;
 }
@@ -583,8 +650,8 @@ int mec_hal_dma_chan_mem_set(enum mec_dmac_channel chan, uintptr_t maddr, size_t
 
     struct mec_dma_chan_regs *regs = &base->CHAN[chan];
 
-    regs->MSTART = maddr;
-    regs->MEND = maddr + nbytes;
+    regs->MADDR = maddr;
+    regs->MADDR_END = maddr + nbytes;
 
     return MEC_RET_OK;
 }
@@ -625,8 +692,8 @@ int mec_hal_dma_chan_rem_bytes(enum mec_dmac_channel chan, uint32_t *remsz)
     struct mec_dma_chan_regs *regs = &base->CHAN[chan];
 
     nrem = 0u;
-    mend = regs->MEND;
-    mstart = regs->MSTART;
+    mend = regs->MADDR_END;
+    mstart = regs->MADDR;
     if (mend > mstart) {
         nrem = mend - mstart;
     }
@@ -648,17 +715,17 @@ int mec_hal_dma_chan_reload(enum mec_dmac_channel chan, uintptr_t src, uintptr_t
     struct mec_dma_chan_regs *regs = &base->CHAN[chan];
 
     /* ensure HW is "done" by mstart == mend */
-    regs->MSTART = base->CHAN[chan].MEND;
-    regs->MEND = 0; /* keep mend <= mstart */
+    regs->MADDR = base->CHAN[chan].MADDR_END;
+    regs->MADDR_END = 0; /* keep mend <= mstart */
 
     if (regs->CTRL & MEC_BIT(MEC_DMA_CHAN_CTRL_MEM2DEV_Pos)) {
-        regs->MSTART = src;
-        regs->MEND = src + nbytes;
-        regs->DSTART = dest;
+        regs->MADDR = src;
+        regs->MADDR_END = src + nbytes;
+        regs->DADDR = dest;
     } else { /* device to memory */
-        regs->MSTART = dest;
-        regs->MEND = dest + nbytes;
-        regs->DSTART = src;
+        regs->MADDR = dest;
+        regs->MADDR_END = dest + nbytes;
+        regs->DADDR = src;
     }
 
     return MEC_RET_OK;
@@ -706,9 +773,9 @@ int mec_hal_dma_chan_cfg(enum mec_dmac_channel chan, struct mec_dma_cfg *cfg)
     ctrl = usz << MEC_DMA_CHAN_CTRL_UNITSZ_Pos;
     if (cfg->dir == MEC_DMAC_DIR_MEM_TO_DEV) {
         ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_MEM2DEV_Pos);
-        regs->MSTART = cfg->src_addr;
-        regs->MEND = cfg->src_addr + cfg->nbytes;
-        regs->DSTART = cfg->dst_addr;
+        regs->MADDR = cfg->src_addr;
+        regs->MADDR_END = cfg->src_addr + cfg->nbytes;
+        regs->DADDR = cfg->dst_addr;
         if (cfg->flags & MEC_DMA_CFG_FLAG_INCR_SRC_ADDR) {
             ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_INCRM_Pos);
         }
@@ -716,9 +783,9 @@ int mec_hal_dma_chan_cfg(enum mec_dmac_channel chan, struct mec_dma_cfg *cfg)
             ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_INCRD_Pos);
         }
     } else { /* device(source address) to memory(destination address) */
-        regs->MSTART = cfg->dst_addr;
-        regs->MEND = cfg->dst_addr + cfg->nbytes;
-        regs->DSTART = cfg->src_addr;
+        regs->MADDR = cfg->dst_addr;
+        regs->MADDR_END = cfg->dst_addr + cfg->nbytes;
+        regs->DADDR = cfg->src_addr;
         if (cfg->flags & MEC_DMA_CFG_FLAG_INCR_SRC_ADDR) {
             ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_INCRD_Pos);
         }
@@ -727,12 +794,12 @@ int mec_hal_dma_chan_cfg(enum mec_dmac_channel chan, struct mec_dma_cfg *cfg)
         }
     }
 
-    if (cfg->hwfc_dev < MEC_DMAC_DEV_ID_NONE) {
-        ctrl |= (((uint32_t)cfg->hwfc_dev << MEC_DMA_CHAN_CTRL_HFC_DEV_Pos)
-                 & MEC_DMA_CHAN_CTRL_HFC_DEV_Msk);
-    } else {
+    if (cfg->flags & MEC_DMA_CFG_FLAG_SWFLC) {
         ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_DHFC_Pos);
     }
+
+    ctrl |= (((uint32_t)cfg->hwfc_dev << MEC_DMA_CHAN_CTRL_HFC_DEV_Pos)
+             & MEC_DMA_CHAN_CTRL_HFC_DEV_Msk);
 
     regs->CTRL = ctrl;
     regs->ACTV |= MEC_BIT(MEC_DMA_CHAN_ACTV_EN_Pos);
@@ -755,10 +822,10 @@ int mec_hal_dma_chan_cfg_get(enum mec_dmac_channel chan, struct mec_dma_cfg *cfg
 
     ctrl = regs->CTRL;
     if (ctrl & MEC_BIT(MEC_DMA_CHAN_CTRL_DHFC_Pos)) {
-        cfg->hwfc_dev = MEC_DMAC_DEV_ID_NONE;
-    } else {
-        cfg->hwfc_dev =  (ctrl & MEC_DMA_CHAN_CTRL_HFC_DEV_Msk) >> MEC_DMA_CHAN_CTRL_HFC_DEV_Pos;
+        cfg->flags |= MEC_DMA_CFG_FLAG_SWFLC;
     }
+
+    cfg->hwfc_dev =  (ctrl & MEC_DMA_CHAN_CTRL_HFC_DEV_Msk) >> MEC_DMA_CHAN_CTRL_HFC_DEV_Pos;
 
     if (ctrl & MEC_BIT(MEC_DMA_CHAN_CTRL_MEM2DEV_Pos)) {
         cfg->dir = MEC_DMAC_DIR_MEM_TO_DEV;
@@ -779,9 +846,9 @@ int mec_hal_dma_chan_cfg_get(enum mec_dmac_channel chan, struct mec_dma_cfg *cfg
     }
 
     cfg->nbytes = 0u;
-    mstart = regs->MSTART;
-    mend = regs->MEND;
-    dstart = regs->DSTART;
+    mstart = regs->MADDR;
+    mend = regs->MADDR_END;
+    dstart = regs->DADDR;
     if (mend > mstart) {
         cfg->nbytes = mend - mstart;
     }
@@ -864,9 +931,9 @@ int mec_hal_dma_chan_cfg2(enum mec_dmac_channel chan, uint32_t nbytes,
         ien |= MEC_BIT(MEC_DMA_CHAN_IEN_BERR_Pos);
     }
 
-    regs->MSTART = maddr;
-    regs->MEND = maddr + nbytes;
-    regs->DSTART = daddr;
+    regs->MADDR = maddr;
+    regs->MADDR_END = maddr + nbytes;
+    regs->DADDR = daddr;
 
     regs->IEN = ien;
     regs->CTRL = ctrl;
@@ -892,9 +959,9 @@ int mec_hal_dma_chan_cfg3(enum mec_dmac_channel chan, struct mec_dma_cfg3 *cfg3)
     regs->ACTV = 1u;
     regs->ISTATUS = UINT8_MAX;
 
-    regs->MSTART = cfg3->mem_addr;
-    regs->MEND = cfg3->mem_addr + cfg3->nbytes;
-    regs->DSTART = cfg3->dev_addr;
+    regs->MADDR = cfg3->mem_addr;
+    regs->MADDR_END = cfg3->mem_addr + cfg3->nbytes;
+    regs->DADDR = cfg3->dev_addr;
 
     ctrl = ((uint32_t)(cfg3->unitsz & 0x7u) << MEC_DMA_CHAN_CTRL_UNITSZ_Pos);
     ctrl |= (((uint32_t)cfg3->hwfc_dev & 0x7fu) << MEC_DMA_CHAN_CTRL_HFC_DEV_Pos);
@@ -930,6 +997,82 @@ int mec_hal_dma_chan_cfg3(enum mec_dmac_channel chan, struct mec_dma_cfg3 *cfg3)
     regs->IEN = ien;
 
     return MEC_RET_OK;
+}
+
+int mec_hal_dma_chan_cfg4(struct mec_dma_chan_regs *chan_regs, struct mec_dma_cfg4 *cfg)
+{
+    uint32_t ctrl = 0, daddr = 0;
+    uint8_t ien = 0;
+
+    if (!chan_regs) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    /* TODO error or use 0xDEADBEEF and get AHB error from channel? */
+    daddr = mec_hal_dma_dev_addr(cfg->hwfc_dev,  cfg->dir);
+#if 0
+    if (daddr == 0xDEADBEEF) {
+        return MEC_RET_ERR_INVAL;
+    }
+#endif
+
+    chan_regs->CTRL = 0;
+    chan_regs->IEN = 0;
+    chan_regs->ACTV = 1u;
+    chan_regs->ISTATUS = UINT8_MAX;
+
+    chan_regs->MADDR = cfg->mem_addr;
+    chan_regs->MADDR_END = cfg->mem_addr + cfg->len;
+    chan_regs->DADDR = daddr;
+
+    ctrl = ((uint32_t)(cfg->unitsz & 0x7u) << MEC_DMA_CHAN_CTRL_UNITSZ_Pos);
+    ctrl |= (((uint32_t)cfg->hwfc_dev & 0x7fu) << MEC_DMA_CHAN_CTRL_HFC_DEV_Pos);
+    if (cfg->dir == MEC_DMAC_DIR_MEM_TO_DEV) {
+        ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_MEM2DEV_Pos);
+    }
+
+    if (cfg->flags & MEC_DMA_CFG4_FLAG_INCR_MEM_ADDR) {
+        ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_INCRM_Pos);
+    }
+
+    if (cfg->flags & MEC_DMA_CFG4_FLAG_DONE_IEN) {
+        ien |= MEC_BIT(MEC_DMA_CHAN_IEN_DONE_Pos);
+    }
+
+    if (cfg->flags & MEC_DMA_CFG4_FLAG_BERR_IEN) {
+        ien |= MEC_BIT(MEC_DMA_CHAN_IEN_BERR_Pos);
+    }
+
+    if (cfg->flags & MEC_DMA_CFG4_FLAG_HWFLC_ERR_IEN) {
+        ien |= MEC_BIT(MEC_DMA_CHAN_IEN_HFCREQ_Pos);
+    }
+
+    if (cfg->flags & MEC_DMA_CFG4_FLAG_HWFLC_TERM_IEN) {
+        ien |= MEC_BIT(MEC_DMA_CHAN_IEN_HFCTERM_Pos);
+    }
+
+    chan_regs->IEN = ien;
+    chan_regs->CTRL = ctrl;
+
+    return MEC_RET_OK;
+}
+
+/* Configure DMA channel for specific peripheral as HW flow control device.
+ * Current peripherals usually have separate single TX and RX hardware data registers.
+ * Device address increment is not supported. Device address is obtained via a look-up
+ * table using HW Flow Control device ID and data direction specified in struct mec_dma_cfg4.
+ */
+int mec_hal_dma_chan_cfg4_by_id(enum mec_dmac_channel chan, struct mec_dma_cfg4 *cfg)
+{
+    struct mec_dma_chan_regs *regs = NULL;
+
+    if ((chan >= MEC_DMAC_CHAN_MAX) || !cfg) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    regs = (struct mec_dma_chan_regs *)MEC_DMAC_CHAN_REG_ADDR(MEC_DMAC_BASE, chan);
+
+    return  mec_hal_dma_chan_cfg4(regs, cfg);
 }
 
 /* end mec_dmac.c */
