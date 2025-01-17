@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
+ * Copyright 2019-2025 Microchip FPGA Embedded Systems Solutions.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -27,18 +27,18 @@
 #ifndef FPGA_DESIGN_CONFIG_H_
 #define FPGA_DESIGN_CONFIG_H_
 
-#define  LIBERO_SETTING_MSS_CONFIGURATOR_VERSION                    "2021.1"
+#define  LIBERO_SETTING_MSS_CONFIGURATOR_VERSION                    "2023.2"
 #define  LIBERO_SETTING_DESIGN_NAME                                 "ICICLE_MSS"
 #define  LIBERO_SETTING_MPFS_PART                                   "MPFS250T_ES"
-#define  LIBERO_SETTING_GENERATION_DATE                             "07-06-2021_20:54:25"
-#define  LIBERO_SETTING_XML_VERSION                                 "0.5.3"
+#define  LIBERO_SETTING_GENERATION_DATE                             "01-08-2024_11:10:03"
+#define  LIBERO_SETTING_XML_VERSION                                 "0.6.8"
 #define  LIBERO_SETTING_XML_VERSION_MAJOR                           0
-#define  LIBERO_SETTING_XML_VERSION_MINOR                           5
-#define  LIBERO_SETTING_XML_VERSION_PATCH                           3
-#define  LIBERO_SETTING_HEADER_GENERATOR_VERSION                    "0.6.3"
+#define  LIBERO_SETTING_XML_VERSION_MINOR                           6
+#define  LIBERO_SETTING_XML_VERSION_PATCH                           8
+#define  LIBERO_SETTING_HEADER_GENERATOR_VERSION                    "0.6.4"
 #define  LIBERO_SETTING_HEADER_GENERATOR_VERSION_MAJOR              0
 #define  LIBERO_SETTING_HEADER_GENERATOR_VERSION_MINOR              6
-#define  LIBERO_SETTING_HEADER_GENERATOR_VERSION_PATCH              3
+#define  LIBERO_SETTING_HEADER_GENERATOR_VERSION_PATCH              4
 
 #include "memory_map/hw_memory.h"
 #include "memory_map/hw_apb_split.h"
@@ -58,7 +58,9 @@
 #include "memory_map/hw_mpu_mmc.h"
 #include "memory_map/hw_mpu_scb.h"
 #include "memory_map/hw_mpu_trace.h"
+#include "memory_map/hw_nvm_map.h"
 #include "io/hw_mssio_mux.h"
+#include "io/hw_mssio_mux_alternate.h"
 #include "io/hw_hsio_mux.h"
 #include "sgmii/hw_sgmii_tip.h"
 #include "ddr/hw_ddr_options.h"
