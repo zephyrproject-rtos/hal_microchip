@@ -909,8 +909,10 @@ int mec_hal_i2c_nl_cm_cfg_start(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint1
     ctx->rdcnt = nrx;
 
     regs->CONFIG &= (uint32_t)~MEC_BIT(MEC_I2C_SMB_CONFIG_ENI_HOST_Pos);
-    regs->CONFIG |= (MEC_BIT(MEC_I2C_SMB_CONFIG_FLUSH_CTXB_Pos)
-                     | MEC_BIT(MEC_I2C_SMB_CONFIG_FLUSH_CRXB_Pos));
+    if (flags & MEC_I2C_NL_FLAG_FLUSH_BUF) {
+        regs->CONFIG |= (MEC_BIT(MEC_I2C_SMB_CONFIG_FLUSH_CTXB_Pos)
+                         | MEC_BIT(MEC_I2C_SMB_CONFIG_FLUSH_CRXB_Pos));
+    }
     regs->COMPL |= MEC_BIT(MEC_I2C_SMB_COMPL_CM_DONE_Pos);
 
     regs->EXTLEN = ((ntx >> 8) & 0xffu) | (nrx & 0xff00u);
