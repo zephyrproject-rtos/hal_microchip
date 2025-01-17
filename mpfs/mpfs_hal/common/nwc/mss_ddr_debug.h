@@ -1,15 +1,10 @@
 /*******************************************************************************
- * Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
+ * Copyright 2019 Microchip FPGA Embedded Systems Solutions.
  *
  * SPDX-License-Identifier: MIT
  *
- * MPFS HAL Embedded Software
- *
- */
-
-/*******************************************************************************
  * @file mss_ddr_debug.h
- * @author Microchip-FPGA Embedded Systems Solutions
+ * @author Microchip FPGA Embedded Systems Solutions
  * @brief mss_ddr_debug related defines
  *
  */
@@ -62,6 +57,12 @@ typedef enum DDR_ACCESS_SIZE_
     DDR_32_BIT,
     DDR_64_BIT
 } DDR_ACCESS_SIZE;
+
+typedef enum DDR_FILL_TYPE_
+{
+    DDR_TEST_FILL,
+    DDR_INIT_FILL
+} DDR_FILL_TYPE;
 
 
 /***************************************************************************//**
@@ -229,9 +230,7 @@ uint32_t no_of_regs
 void
 load_ddr_pattern
 (
-uint64_t base,
-uint32_t size,
-uint8_t pattern_offset
+volatile PATTERN_TEST_PARAMS *pattern_test
 );
 
 /***************************************************************************//**
@@ -241,9 +240,17 @@ uint32_t
 test_ddr
 (
 uint32_t no_of_iterations,
-uint32_t size
+volatile PATTERN_TEST_PARAMS *pattern_test
 );
 
+/***************************************************************************//**
+ *
+ */
+void
+execute_ddr_pattern
+(
+uint64_t start_addr
+);
 
 
 
