@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
+ * Copyright 2019-2025 Microchip FPGA Embedded Systems Solutions.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -35,23 +35,23 @@ extern  "C" {
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPCFG0)
 /*PMP configuration for 8 adress regions, bit 0 read, bit 1 write, bit 2
 execute, bit 7 disable, bits 3,4 address format (0x18 => NAPOT) */
-#define LIBERO_SETTING_HART3_CSR_PMPCFG0    0x9F9B9B9B00000000ULL
-    /* PMP0CFG                           [0:8]   RW value= 0x00 */
-    /* PMP1CFG                           [8:8]   RW value= 0x00 */
-    /* PMP2CFG                           [16:8]  RW value= 0x00 */
-    /* PMP3CFG                           [24:8]  RW value= 0x00 */
-    /* PMP4CFG                           [32:8]  RW value= 0x9B */
-    /* PMP5CFG                           [40:8]  RW value= 0x9B */
-    /* PMP6CFG                           [48:8]  RW value= 0x9B */
-    /* PMP7CFG                           [56:8]  RW value= 0x9F */
+#define LIBERO_SETTING_HART3_CSR_PMPCFG0    0x000000000000009FULL
+    /* PMP0CFG                           [0:8]   RW value= 0x9F */
+    /* PMP1CFG                           [8:8]   RW value= 0x0 */
+    /* PMP2CFG                           [16:8]  RW value= 0x0 */
+    /* PMP3CFG                           [24:8]  RW value= 0x0 */
+    /* PMP4CFG                           [32:8]  RW value= 0x0 */
+    /* PMP5CFG                           [40:8]  RW value= 0x0 */
+    /* PMP6CFG                           [48:8]  RW value= 0x0 */
+    /* PMP7CFG                           [56:8]  RW value= 0x0 */
 #endif
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPCFG2)
 /*PMP configuration for 8 address regions, bit 0 read, bit 1 write, bit 2
 execute, bit 7 disable, bits 3,4 address format (0x18 => NAPOT) */
-#define LIBERO_SETTING_HART3_CSR_PMPCFG2    0x0000000000989B9BULL
-    /* PMP8CFG                           [0:8]   RW value= 0x9B */
-    /* PMP9CFG                           [8:8]   RW value= 0x9B */
-    /* PMP10CFG                          [16:8]  RW value= 0x98 */
+#define LIBERO_SETTING_HART3_CSR_PMPCFG2    0x0000000000000000ULL
+    /* PMP8CFG                           [0:8]   RW value= 0x0 */
+    /* PMP9CFG                           [8:8]   RW value= 0x0 */
+    /* PMP10CFG                          [16:8]  RW value= 0x0 */
     /* PMP11CFG                          [24:8]  RW value= 0x0 */
     /* PMP12CFG                          [32:8]  RW value= 0x0 */
     /* PMP13CFG                          [40:8]  RW value= 0x0 */
@@ -61,68 +61,68 @@ execute, bit 7 disable, bits 3,4 address format (0x18 => NAPOT) */
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPADDR0)
 /*PMP ADRESS and size, format determined from bit 3 and 4 of configuration byte
 in CSR_PMPCFGx */
-#define LIBERO_SETTING_HART3_CSR_PMPADDR0    0x0000000000000000ULL
-    /* CSR_PMPADDR0                      [0:64]  RW value= 0x00 */
+#define LIBERO_SETTING_HART3_CSR_PMPADDR0    0xFFFFFFFFFFFFFFFFULL
+    /* CSR_PMPADDR0                      [0:64]  RW value= 0xFFFFFFFFFFFFFFFF */
 #endif
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPADDR1)
 /*PMP ADRESS and size, format determined from bit 3 and 4 of configuration byte
 in CSR_PMPCFGx */
 #define LIBERO_SETTING_HART3_CSR_PMPADDR1    0x0000000000000000ULL
-    /* CSR_PMPADDR1                      [0:64]  RW value= 0x00 */
+    /* CSR_PMPADDR1                      [0:64]  RW value= 0x0 */
 #endif
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPADDR2)
 /*PMP ADRESS and size, format determined from bit 3 and 4 of configuration byte
 in CSR_PMPCFGx */
 #define LIBERO_SETTING_HART3_CSR_PMPADDR2    0x0000000000000000ULL
-    /* CSR_PMPADDR2                      [0:64]  RW value= 0x00 */
+    /* CSR_PMPADDR2                      [0:64]  RW value= 0x0 */
 #endif
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPADDR3)
 /*PMP ADRESS and size, format determined from bit 3 and 4 of configuration byte
 in CSR_PMPCFGx */
 #define LIBERO_SETTING_HART3_CSR_PMPADDR3    0x0000000000000000ULL
-    /* CSR_PMPADDR3                      [0:64]  RW value= 0x00 */
+    /* CSR_PMPADDR3                      [0:64]  RW value= 0x0 */
 #endif
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPADDR4)
 /*PMP ADRESS and size, format determined from bit 3 and 4 of configuration byte
 in CSR_PMPCFGx */
-#define LIBERO_SETTING_HART3_CSR_PMPADDR4    0x000000000A047FFFULL
-    /* CSR_PMPADDR4                      [0:64]  RW value= 0xA047FFF */
+#define LIBERO_SETTING_HART3_CSR_PMPADDR4    0x0000000000000000ULL
+    /* CSR_PMPADDR4                      [0:64]  RW value= 0x0 */
 #endif
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPADDR5)
 /*PMP ADRESS and size, format determined from bit 3 and 4 of configuration byte
 in CSR_PMPCFGx */
-#define LIBERO_SETTING_HART3_CSR_PMPADDR5    0x000000000307FFFFULL
-    /* CSR_PMPADDR5                      [0:64]  RW value= 0x307FFFF */
+#define LIBERO_SETTING_HART3_CSR_PMPADDR5    0x0000000000000000ULL
+    /* CSR_PMPADDR5                      [0:64]  RW value= 0x0 */
 #endif
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPADDR6)
 /*PMP ADRESS and size, format determined from bit 3 and 4 of configuration byte
 in CSR_PMPCFGx */
-#define LIBERO_SETTING_HART3_CSR_PMPADDR6    0x00000000080009FFULL
-    /* CSR_PMPADDR6                      [0:64]  RW value= 0x80009FF */
+#define LIBERO_SETTING_HART3_CSR_PMPADDR6    0x0000000000000000ULL
+    /* CSR_PMPADDR6                      [0:64]  RW value= 0x0 */
 #endif
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPADDR7)
 /*PMP ADRESS and size, format determined from bit 3 and 4 of configuration byte
 in CSR_PMPCFGx */
-#define LIBERO_SETTING_HART3_CSR_PMPADDR7    0x00000000200BFFFFULL
-    /* CSR_PMPADDR7                      [0:64]  RW value= 0x200BFFFF */
+#define LIBERO_SETTING_HART3_CSR_PMPADDR7    0x0000000000000000ULL
+    /* CSR_PMPADDR7                      [0:64]  RW value= 0x0 */
 #endif
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPADDR8)
 /*PMP ADRESS and size, format determined from bit 3 and 4 of configuration byte
 in CSR_PMPCFGx */
-#define LIBERO_SETTING_HART3_CSR_PMPADDR8    0x00000000008041FFULL
-    /* CSR_PMPADDR8                      [0:64]  RW value= 0x8041FF */
+#define LIBERO_SETTING_HART3_CSR_PMPADDR8    0x0000000000000000ULL
+    /* CSR_PMPADDR8                      [0:64]  RW value= 0x0 */
 #endif
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPADDR9)
 /*PMP ADRESS and size, format determined from bit 3 and 4 of configuration byte
 in CSR_PMPCFGx */
-#define LIBERO_SETTING_HART3_CSR_PMPADDR9    0x0000000000801FFFULL
-    /* CSR_PMPADDR9                      [0:64]  RW value= 0x801FFF */
+#define LIBERO_SETTING_HART3_CSR_PMPADDR9    0x0000000000000000ULL
+    /* CSR_PMPADDR9                      [0:64]  RW value= 0x0 */
 #endif
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPADDR10)
 /*PMP ADRESS and size, format determined from bit 3 and 4 of configuration byte
 in CSR_PMPCFGx */
-#define LIBERO_SETTING_HART3_CSR_PMPADDR10    0xFFFFFFFFFFFFFFFFULL
-    /* CSR_PMPADDR10                     [0:64]  RW value= 0xFFFFFFFFFFFFFFFF */
+#define LIBERO_SETTING_HART3_CSR_PMPADDR10    0x0000000000000000ULL
+    /* CSR_PMPADDR10                     [0:64]  RW value= 0x0 */
 #endif
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPADDR11)
 /*PMP ADRESS and size, format determined from bit 3 and 4 of configuration byte
