@@ -36,7 +36,7 @@
 extern "C" {
 #endif
 
-#define mb() __asm__ volatile ("fence" ::: "memory")
+#define mb() asm volatile ("fence" ::: "memory")
 #define atomic_set(ptr, val) (*(volatile typeof(*(ptr)) *)(ptr) = val)
 #define atomic_read(ptr) (*(volatile typeof(*(ptr)) *)(ptr))
 
