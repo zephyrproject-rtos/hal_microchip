@@ -129,7 +129,6 @@ struct mec_dma_cfg3 {
 #define MEC_DMA_CFG4_FLAG_HWFLC_TERM_IEN 0x80
 
 struct mec_dma_cfg4 {
-    struct mec_dma_cfg4 *next;
     uintptr_t mem_addr;
     uint32_t len;
     enum mec_dmac_unit_size unitsz;
