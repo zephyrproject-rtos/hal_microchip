@@ -626,8 +626,11 @@ uint32_t mec_hal_i2c_smb_status(struct mec_i2c_smb_ctx *ctx, uint8_t clear)
     }
 #endif
     struct mec_i2c_smb_regs *base = ctx->base;
-    uint32_t status = base->STATUS & 0xffu;
-    uint32_t compl = base->COMPL;
+    uint32_t compl = 0, status = 0;
+
+    /* Read completion first. Not sure if low-level read-only I2C.STATUS has read side-effects. */
+    compl = base->COMPL;
+    status = base->STATUS;
 
     if (clear) {
         base->COMPL = compl;
@@ -635,7 +638,7 @@ uint32_t mec_hal_i2c_smb_status(struct mec_i2c_smb_ctx *ctx, uint8_t clear)
 
     /* completion b[7:0] are control not status bits. Store 8-bit I2C status there */
     compl &= 0xffffff00u;
-    compl |= status;
+    compl |= (status & 0xffu);
 
     return compl;
 }
