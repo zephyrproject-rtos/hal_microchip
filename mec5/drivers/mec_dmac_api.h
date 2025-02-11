@@ -89,6 +89,10 @@ enum mec_dma_chan_status_pos {
     MEC_DMA_CHAN_STS_MAX_POS,
 };
 
+#define MEC_DMA_CHAN_STS_ALL_MSK \
+    (MEC_BIT(MEC_DMA_CHAN_STS_DONE_POS) | MEC_BIT(MEC_DMA_CHAN_STS_BUS_ERR_POS) |\
+     MEC_BIT(MEC_DMA_CHAN_STS_HFC_OVF_POS) | MEC_BIT(MEC_DMA_CHAN_STS_HFC_TERM_POS))
+
 #define MEC_DMA_CFG_FLAG_INCR_SRC_ADDR 0x01
 #define MEC_DMA_CFG_FLAG_INCR_DST_ADDR 0x02
 #define MEC_DMA_CFG_FLAG_SWFLC 0x04
@@ -203,6 +207,8 @@ int mec_hal_dma_chan_rem_bytes(enum mec_dmac_channel chan, uint32_t *remsz);
 
 int mec_hal_dma_chan_reload(enum mec_dmac_channel chan, uintptr_t src, uintptr_t dest,
                             size_t nbytes);
+
+int mec_hal_dma_chan_ien(enum mec_dmac_channel chan, uint8_t iflags, uint8_t enable);
 
 int mec_hal_dma_chan_cfg(enum mec_dmac_channel chan, struct mec_dma_cfg *cfg);
 

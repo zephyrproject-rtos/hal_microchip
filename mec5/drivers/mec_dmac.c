@@ -562,6 +562,25 @@ int mec_hal_dma_chan_ctrl_get(enum mec_dmac_channel chan, uint32_t *ctrl)
     return MEC_RET_OK;
 }
 
+int mec_hal_dma_chan_ien(enum mec_dmac_channel chan, uint8_t iflags, uint8_t enable)
+{
+    struct mec_dmac_regs *base = MEC_DMAC;
+    struct mec_dma_chan_regs *regs = NULL;
+
+    if (chan >= MEC_DMAC_CHAN_MAX) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    regs = &base->CHAN[chan];
+    if (enable) {
+        regs->IEN |= (uint32_t)iflags;
+    } else {
+        regs->IEN &= (uint32_t)~iflags;
+    }
+
+    return MEC_RET_OK;
+}
+
 int mec_hal_chan_regs_get(enum mec_dmac_channel chan, uint32_t *regbuf, uint8_t n)
 {
     struct mec_dmac_regs *base = MEC_DMAC;
@@ -889,13 +908,9 @@ int mec_hal_dma_chan_cfg2(enum mec_dmac_channel chan, uint32_t nbytes,
 
     struct mec_dma_chan_regs *regs = &base->CHAN[chan];
 
-#if 0
-    mec_hal_dma_chan_init(chan);
-#else
     regs->CTRL &= ~halt;
     regs->IEN = 0;
     regs->ISTATUS = UINT8_MAX;
-#endif
 
     ctrl = MEC_HAL_DMA_CHAN_CFG_GET_HWDEV(chan_cfg);
     ctrl <<= MEC_DMA_CHAN_CTRL_HFC_DEV_Pos;
@@ -1008,13 +1023,7 @@ int mec_hal_dma_chan_cfg4(struct mec_dma_chan_regs *chan_regs, struct mec_dma_cf
         return MEC_RET_ERR_INVAL;
     }
 
-    /* TODO error or use 0xDEADBEEF and get AHB error from channel? */
     daddr = mec_hal_dma_dev_addr(cfg->hwfc_dev,  cfg->dir);
-#if 0
-    if (daddr == 0xDEADBEEF) {
-        return MEC_RET_ERR_INVAL;
-    }
-#endif
 
     chan_regs->CTRL = 0;
     chan_regs->IEN = 0;
