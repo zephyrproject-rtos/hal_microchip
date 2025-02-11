@@ -58,75 +58,22 @@ enum mchp_hash_alg_id {
     MCHP_HASH_ALG_MAX,
 };
 
-#define MEC5_HASH_USE_OPAQUE_STRUCTS
 
 /* redefine structures for a 32-bit target CPU */
-#if 0 /* TODO remove */
-struct mchpdesc {
-    uint8_t *addr;
-    struct mchpdesc *next;
-    uint32_t sz;
-    uint32_t dmatag;
-};
-#endif
+#define MEC5_MCHP_HASH_STATE_NUM_WORDS 2u
+#define MEC5_MCHP_HASH_NUM_WORDS (240u / 4u)
 
-#ifdef MEC5_HASH_USE_OPAQUE_STRUCTS
 struct mchphashstate {
-    uint32_t d[2];
+    uint32_t d[MEC5_MCHP_HASH_STATE_NUM_WORDS];
 };
-#else
-struct mchphashstate {
-    uint8_t *m;
-    size_t sz;
-};
-#endif
-
-#if 0 /* TODO remove */
-struct hashalgo {
-    uint32_t cfgword;
-    size_t digestsz;
-    size_t blocksz;
-    size_t statesz;
-    const uint8_t *initstate;
-};
-#endif
 
 struct mchp_regs {
     uint8_t *base;
 };
 
-#if 0 /* TODO remove */
-struct mchp_dmaslot {
-    uint32_t cfg;
-    uint8_t extramem[26]; /* length = 0x1a */
-    struct mchpdesc indescs[6]; /* gcc puts this at offset 0x20. Two bytes of padding before it */
-    struct mchpdesc outdescs[5];
-};
-#endif
-
-#if 0 /* TODO remove */
-struct mchp_dmactl {
-    struct mchp_regs *regs;
-    struct mchpdesc *mapped_in;
-    struct mchpdesc *mapped_out;
-    struct mchp_dmaslot dmamem;
-};
-#endif
-
-#ifdef MEC5_HASH_USE_OPAQUE_STRUCTS
 struct mchphash {
-    uint32_t d[240 / 4];
+    uint32_t d[MEC5_MCHP_HASH_NUM_WORDS];
 };
-#else
-struct mchphash { /* 240 bytes */
-    struct mchpdesc *d;
-    struct mchphashstate *h;
-    const struct hashalgo *algo;
-    uint32_t cntindescs;
-    struct mchp_dmactl dma;
-    uint32_t feedsz;
-};
-#endif
 
 struct mchphmac2 { /* 256 bytes */
     enum mchp_hash_alg_id id; /* 4 bytes */
