@@ -417,6 +417,119 @@ int mec_hal_qspi_uldma(struct mec_qspi_regs *regs, const uint8_t *txb, size_t tx
 int mec_hal_qspi_xfr_fifo_fd(struct mec_qspi_regs *regs, const uint8_t *txb, uint8_t *rxb,
                              size_t xlen, uint32_t flags);
 
+/* ---- SPI flash API ---- */
+#define MEC_SPI_CMD_OP_IO_POS   0
+#define MEC_SPI_CMD_OP_IO_MASK  0x07
+#define MEC_SPI_CMD_OP_IO_NONE  0
+#define MEC_SPI_CMD_OP_IO_1     (1 << MEC_SPI_CMD_OP_IO_POS)
+#define MEC_SPI_CMD_OP_IO_2     (2 << MEC_SPI_CMD_OP_IO_POS)
+#define MEC_SPI_CMD_OP_IO_4     (4 << MEC_SPI_CMD_OP_IO_POS)
+
+#define MEC_SPI_CMD_ADDR_IO_POS  4
+#define MEC_SPI_CMD_ADDR_IO_MASK (0x07 << MEC_SPI_CMD_ADDR_IO_POS)
+#define MEC_SPI_CMD_ADDR_IO_NONE 0
+#define MEC_SPI_CMD_ADDR_IO_1    (1 << MEC_SPI_CMD_ADDR_IO_POS)
+#define MEC_SPI_CMD_ADDR_IO_2    (2 << MEC_SPI_CMD_ADDR_IO_POS)
+#define MEC_SPI_CMD_ADDR_IO_4    (4 << MEC_SPI_CMD_ADDR_IO_POS)
+
+#define MEC_SPI_CMD_DATA_IO_POS  8
+#define MEC_SPI_CMD_DATA_IO_MASK (0x07 << MEC_SPI_CMD_DATA_IO_POS)
+#define MEC_SPI_CMD_DATA_IO_1    (1 << MEC_SPI_CMD_DATA_IO_POS)
+#define MEC_SPI_CMD_DATA_IO_2    (2 << MEC_SPI_CMD_DATA_IO_POS)
+#define MEC_SPI_CMD_DATA_IO_4    (4 << MEC_SPI_CMD_DATA_IO_POS)
+
+#define MEC_SPI_CMD_ADDR24       0
+#define MEC_SPI_CMD_ADDR32       MEC_BIT(12)
+#define MEC_SPI_CMD_MODE_BYTE    MEC_BIT(13)
+#define MEC_SPI_CMD_DATA_DIR_TX  MEC_BIT(15)
+
+#define MEC_SPI_CMD_ENCODE_PINS(nc, na, nd)              \
+    ((((uint32_t)(nc) & 7) << MEC_SPI_CMD_OP_IO_POS) |   \
+     (((uint32_t)(na) & 7) << MEC_SPI_CMD_ADDR_IO_POS) | \
+     (((uint32_t)(nd) & 7) << MEC_SPI_CMD_DATA_IO_POS))
+
+#define MEC_SPI_CMD_OP_NPINS(n) (((n) & MEC_SPI_CMD_OP_IO_MASK) >> MEC_SPI_CMD_OP_IO_POS)
+
+#define MEC_SPI_CMD_ADDR_NPINS(n) (((n) & MEC_SPI_CMD_ADDR_IO_MASK) >> MEC_SPI_CMD_ADDR_IO_POS)
+
+#define MEC_SPI_CMD_DATA_NPINS(n) (((n) & MEC_SPI_CMD_DATA_IO_MASK) >> MEC_SPI_CMD_DATA_IO_POS)
+
+struct mec_spi_command {
+    uint32_t flags;
+    uint8_t opcode;
+    uint8_t mode_byte;
+    uint8_t mode_bits;
+    uint8_t ts_clocks; /* clocks with I/O lines tri-stated */
+};
+
+#define MEC_QSPI_FLASH_USE_CONTEXT2_TX_BUF
+
+struct mec_qspi_context2 {
+    uint8_t qid;
+    uint8_t ndescrs;
+    uint8_t flags;
+#ifdef MEC_QSPI_FLASH_USE_CONTEXT2_TX_BUF
+    uint8_t ntxp;
+#else
+    uint8_t rsvd;
+#endif
+    uint8_t ldma_rx_ctrl;
+    uint8_t ldma_rx_descr_idx;
+    uint8_t ldma_tx_ctrl;
+    uint8_t ldma_tx_descr_idx;
+    uint32_t ldma_rx_maddr;
+    uint32_t ldma_rx_len;
+    uint32_t ldma_tx_maddr;
+    uint32_t ldma_tx_len;
+#ifdef MEC_QSPI_FLASH_USE_CONTEXT2_TX_BUF
+    uint8_t tx_params[MEC5_QSPI_FIFO_LEN]; /*  8 */
+#endif
+    uint32_t descrs[MEC5_QSPI_NUM_DESCRS]; /* 64. Total = 72 + 28 = 100 bytes */
+};
+
+
+/* QSPI flash read/write and commands
+ * Usage:
+ *
+ * Initialize struct mec_qspi_context2 for the selected QSPI controller
+ * int mec_hal_qspi_context2_init(struct mec_qspi_context2 *ctx, uint8_t qid)
+ *
+ * Configure the chip select
+ * int mec_hal_qspi_cs_select(struct mec_qspi_regs *base, enum mec_qspi_cs cs)
+ *
+ * Configure the SPI flash command specified in struct mec_spi_command and SPI address
+ * int mec_hal_qspi_flash_cmd_setup(struct mec_qspi_context2 *ctx2, struct mec_spi_command *cmd,
+ *                                uint32_t spi_addr);
+ *
+ * Configure the flash data phase
+ * int mec_hal_qspi_flash_data_setup(struct mec_qspi_context2 *ctx2, struct mec_spi_command *cmd,
+ *                                   void *data, uint32_t nbytes, uint32_t flags)
+ *
+ * Load the configuration into the QSPI controller
+ * int mec_hal_qspi_flash_xfr_load(struct mec_qspi_context2 *ctx2)
+
+ * Start the QSPI hardware
+ * int mec_hal_qspi_start(struct mec_qspi_regs *base, uint32_t ien_mask)
+ *
+*/
+
+struct mec_qspi_regs *mec_hal_qspi_regs_from_id(uint8_t qid);
+int mec_hal_qspi_id_from_regs(struct mec_qspi_regs *regs, uint8_t *qid);
+
+int mec_hal_qspi_context2_init(struct mec_qspi_context2 *ctx, uint8_t qid);
+int mec_hal_qspi_context2_init_from_regs(struct mec_qspi_context2 *ctx, struct mec_qspi_regs *regs);
+
+int mec_hal_qspi_flash_cmd_setup(struct mec_qspi_context2 *ctx2, struct mec_spi_command *cmd,
+                                 uint32_t spi_addr);
+
+#define MEC_QSPI_FLASH_DATA_SETUP_DIR_TX 0
+#define MEC_QSPI_FLASH_DATA_SETUP_DIR_RX 1
+
+int mec_hal_qspi_flash_data_setup(struct mec_qspi_context2 *ctx2, struct mec_spi_command *cmd,
+                                  void *data, uint32_t nbytes, uint32_t flags);
+
+int mec_hal_qspi_flash_xfr_load(struct mec_qspi_context2 *ctx2);
+
 #ifdef __cplusplus
 }
 #endif

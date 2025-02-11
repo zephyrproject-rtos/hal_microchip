@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h> /* memset */
 
 #include <device_mec5.h>
 #include "mec_pcfg.h"
@@ -69,6 +70,19 @@ static struct mec_qspi_info const *qspi_get_info(struct mec_qspi_regs *base)
     }
 
     return NULL;
+}
+
+static uint8_t qspi_get_id(struct mec_qspi_regs *base)
+{
+    for (size_t n = 0u; n < MEC5_QSPI_INSTANCES; n++) {
+        const struct mec_qspi_info *p = &qspi_instances[n];
+
+        if (p->base_addr == (uintptr_t)base) {
+            return (uint8_t)(n & 0xffu);
+        }
+    }
+
+    return UINT8_MAX;
 }
 
 /* Return the QSPI controller clock source frequency in Hz. */
@@ -765,6 +779,12 @@ int mec_hal_qspi_rx_fifo_is_full(struct mec_qspi_regs *base)
     return 0;
 }
 
+/* Clear status, set QSPI interrupt enables based on ien_mask, and
+ * start QSPI processing.
+ * ISSUE: Interrupt status for RX and TX FIFO empty are set if the
+ * conditions are true before QSPI is started. The interrupt can fire
+ * before the engine is started.
+ */
 int mec_hal_qspi_start(struct mec_qspi_regs *base, uint32_t ien_mask)
 {
     if (!base) {
@@ -846,10 +866,10 @@ static void qspi_ldma_init(struct mec_qspi_regs *base)
     base->EXE = MEC_BIT(MEC_QSPI_EXE_CLRF_Pos);
     for (uint32_t i = 0; i < 3; i++) {
         base->RX_LDMA_CHAN[i].CTRL = 0;
-        base->RX_LDMA_CHAN[i].MEM_START = 0;
+        base->RX_LDMA_CHAN[i].MEM_ADDR = 0;
         base->RX_LDMA_CHAN[i].LEN = 0;
         base->TX_LDMA_CHAN[i].CTRL = 0;
-        base->TX_LDMA_CHAN[i].MEM_START = 0;
+        base->TX_LDMA_CHAN[i].MEM_ADDR = 0;
         base->TX_LDMA_CHAN[i].LEN = 0;
     }
     base->STATUS = UINT32_MAX;
@@ -881,16 +901,16 @@ static void qspi_ldma_cfg1(struct mec_qspi_regs *base, const uint8_t *txb, uint8
 
     base->RX_LDMA_CHAN[0].LEN = lenb;
     if (rxb) {
-        base->RX_LDMA_CHAN[0].MEM_START = (uintptr_t)rxb;
+        base->RX_LDMA_CHAN[0].MEM_ADDR = (uintptr_t)rxb;
         rctrl |= MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_INCRA_Pos);
     } else {
-        base->RX_LDMA_CHAN[0].MEM_START = (uintptr_t)&base->BCNT_STS;
+        base->RX_LDMA_CHAN[0].MEM_ADDR = (uintptr_t)&base->BCNT_STS;
     }
     base->RX_LDMA_CHAN[0].CTRL = rctrl;
 
     if (txb) {
         base->TX_LDMA_CHAN[0].LEN = lenb;
-        base->TX_LDMA_CHAN[0].MEM_START = (uintptr_t)txb;
+        base->TX_LDMA_CHAN[0].MEM_ADDR = (uintptr_t)txb;
         base->TX_LDMA_CHAN[0].CTRL = wctrl | MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_INCRA_Pos);
     }
 }
@@ -952,7 +972,7 @@ static int qspi_gen_ts_clocks(struct mec_qspi_regs *base, uint32_t nclocks, uint
     if (flags & MEC_BIT(MEC_QSPI_XFR_FLAG_CLOSE_POS)) {
         descr |= MEC_BIT(MEC_QSPI_DESCR_CLOSE_Pos);
     }
-    base->DESCR[0] = descr;
+    base->DESCRS[0] = descr;
 
     if (flags & MEC_BIT(MEC_QSPI_XFR_FLAG_IEN_POS)) {
         ien = 1;
@@ -1025,7 +1045,7 @@ int mec_hal_qspi_ldma(struct mec_qspi_regs *base, const uint8_t *txb, uint8_t *r
 
         descr |= (nu << MEC_QSPI_DESCR_QNUNITS_Pos);
         descr |= (((didx + 1u) << MEC_QSPI_DESCR_NEXT_Pos) & MEC_QSPI_DESCR_NEXT_Msk);
-        base->DESCR[didx] = descr;
+        base->DESCRS[didx] = descr;
         base->LDMA_RXEN |= MEC_BIT(didx);
         if (txb) {
             base->LDMA_TXEN |= MEC_BIT(didx);
@@ -1034,11 +1054,11 @@ int mec_hal_qspi_ldma(struct mec_qspi_regs *base, const uint8_t *txb, uint8_t *r
         didx++;
     }
 
-    descr = base->DESCR[didx - 1u] | MEC_BIT(MEC_QSPI_DESCR_LAST_Pos);
+    descr = base->DESCRS[didx - 1u] | MEC_BIT(MEC_QSPI_DESCR_LAST_Pos);
     if (flags & MEC_BIT(MEC_QSPI_XFR_FLAG_CLOSE_POS)) {
         descr |= MEC_BIT(MEC_QSPI_DESCR_CLOSE_Pos);
     }
-    base->DESCR[didx - 1u] = descr;
+    base->DESCRS[didx - 1u] = descr;
 
     if (nbytes) {
         return MEC_RET_ERR_DATA_LEN;
@@ -1186,13 +1206,13 @@ int mec_hal_qspi_ldma_cfg1(struct mec_qspi_regs *regs, uintptr_t buf_addr, uint3
     }
 
     ldma_regs->CTRL = 0;
-    ldma_regs->MEM_START = (uint32_t)buf_addr;
+    ldma_regs->MEM_ADDR = (uint32_t)buf_addr;
     ldma_regs->LEN = nbytes;
 
     if (buf_addr) {
         ctrl |= MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_INCRA_Pos);
     } else {
-        ldma_regs->MEM_START = (uint32_t)((uintptr_t)&regs->BCNT_STS & UINT32_MAX);
+        ldma_regs->MEM_ADDR = (uint32_t)((uintptr_t)&regs->BCNT_STS & UINT32_MAX);
     }
 
     if (!((buf_addr | nbytes) & 0x3u)) {
@@ -1297,7 +1317,7 @@ int mec_hal_qspi_load_descrs(struct mec_qspi_regs *regs, struct mec_qspi_context
         descr = ctx->descrs[didx];
         descr &= (uint32_t)~(MEC_QSPI_DESCR_NEXT_Msk);
         descr |= ((((uint32_t)didx + 1u) << MEC_QSPI_DESCR_NEXT_Pos) & MEC_QSPI_DESCR_NEXT_Msk);
-        regs->DESCR[didx] = descr;
+        regs->DESCRS[didx] = descr;
 
         if ((descr & MEC_QSPI_DESCR_TXEN_Msk) ==
             (MEC_QSPI_DESCR_TXEN_EN << MEC_QSPI_DESCR_TXEN_Pos)) {
@@ -1328,11 +1348,11 @@ int mec_hal_qspi_load_descrs(struct mec_qspi_regs *regs, struct mec_qspi_context
 
     didx = max_ndescr - 1u;
     if (flags & MEC_BIT(MEC5_QSPI_LD_FLAGS_LAST_POS)) {
-        regs->DESCR[didx] |= MEC_BIT(MEC_QSPI_DESCR_LAST_Pos);
+        regs->DESCRS[didx] |= MEC_BIT(MEC_QSPI_DESCR_LAST_Pos);
     }
 
     if (flags & MEC_BIT(MEC5_QSPI_LD_FLAGS_CLOSE_ON_LAST_POS)) {
-        regs->DESCR[didx] |= MEC_BIT(MEC_QSPI_DESCR_CLOSE_Pos);
+        regs->DESCRS[didx] |= MEC_BIT(MEC_QSPI_DESCR_CLOSE_Pos);
     }
 
     /* Enable descriptor mode with start descriptor = Descr[0] */
@@ -1360,7 +1380,7 @@ int mec_hal_qspi_load_descrs_at(struct mec_qspi_regs *regs, const uint32_t *desc
 
     n = 0;
     while (didx < didx_lim) {
-        regs->DESCR[didx++] = descrs[n++];
+        regs->DESCRS[didx++] = descrs[n++];
     }
 
     return MEC_RET_OK;
@@ -1413,10 +1433,10 @@ static void qspi_uldma_fd_eq(struct mec_qspi_regs *regs, const uint8_t *txb, uin
     regs->RX_LDMA_CHAN[0].LEN = xlen;
     if (rxb) {
         regs->RX_LDMA_CHAN[0].CTRL = QLDC_1B_INCM_EN;
-        regs->RX_LDMA_CHAN[0].MEM_START = (uint32_t)rxb;
+        regs->RX_LDMA_CHAN[0].MEM_ADDR = (uint32_t)rxb;
     } else {
         regs->RX_LDMA_CHAN[0].CTRL = QLDC_1B_EN;
-        regs->RX_LDMA_CHAN[0].MEM_START = (uint32_t)&regs->BCNT_STS;
+        regs->RX_LDMA_CHAN[0].MEM_ADDR = (uint32_t)&regs->BCNT_STS;
     }
     rx_ldma_en |= MEC_BIT(0);
     ldma_mode_en |= QM_RX_LDMA_EN;
@@ -1425,14 +1445,14 @@ static void qspi_uldma_fd_eq(struct mec_qspi_regs *regs, const uint8_t *txb, uin
         descr0 |= QD_TX_EN_DATA | QD_TX_LDMA_EN_CH0;
         /* Length must be programmed to non-zero before channel is enabled! */
         regs->TX_LDMA_CHAN[0].LEN = xlen;
-        regs->TX_LDMA_CHAN[0].MEM_START = (uint32_t)txb;
+        regs->TX_LDMA_CHAN[0].MEM_ADDR = (uint32_t)txb;
         regs->TX_LDMA_CHAN[0].CTRL = QLDC_1B_INCM_EN;
         tx_ldma_en |= MEC_BIT(0);
         ldma_mode_en |= QM_TX_LDMA_EN;
     }
 
-    regs->DESCR[0] = descr0;
-    regs->DESCR[1] = 0;
+    regs->DESCRS[0] = descr0;
+    regs->DESCRS[1] = 0;
     regs->LDMA_RXEN = rx_ldma_en;
     regs->LDMA_TXEN = tx_ldma_en;
     regs->MODE |= ldma_mode_en;
@@ -1485,18 +1505,18 @@ static void qspi_uldma_fd_neq(struct mec_qspi_regs *regs, const uint8_t *txb, si
         dma1_len = txlen - rxlen;
     }
 
-    regs->TX_LDMA_CHAN[0].MEM_START = (uint32_t)&mec5_qspi_tx_dumpster;
-    regs->TX_LDMA_CHAN[1].MEM_START = (uint32_t)&mec5_qspi_tx_dumpster;
+    regs->TX_LDMA_CHAN[0].MEM_ADDR = (uint32_t)&mec5_qspi_tx_dumpster;
+    regs->TX_LDMA_CHAN[1].MEM_ADDR = (uint32_t)&mec5_qspi_tx_dumpster;
     regs->TX_LDMA_CHAN[0].LEN = dma0_len;
     regs->TX_LDMA_CHAN[1].LEN = dma1_len;
     regs->TX_LDMA_CHAN[0].CTRL = QLDC_1B_EN;
     regs->TX_LDMA_CHAN[1].CTRL = QLDC_1B_EN;
 
     if (txb) {
-        regs->TX_LDMA_CHAN[0].MEM_START = (uint32_t)txb;
+        regs->TX_LDMA_CHAN[0].MEM_ADDR = (uint32_t)txb;
         regs->TX_LDMA_CHAN[0].CTRL = QLDC_1B_INCM_EN;
         if (txlen > rxlen) {
-            regs->TX_LDMA_CHAN[1].MEM_START = (uint32_t)txb + dma0_len;
+            regs->TX_LDMA_CHAN[1].MEM_ADDR = (uint32_t)txb + dma0_len;
             regs->TX_LDMA_CHAN[1].CTRL = QLDC_1B_INCM_EN;
         }
     }
@@ -1505,21 +1525,21 @@ static void qspi_uldma_fd_neq(struct mec_qspi_regs *regs, const uint8_t *txb, si
     if (rxb) {
         descr0 |= QD_RX_EN | QD_RX_LDMA_EN_CH0;
         regs->RX_LDMA_CHAN[0].LEN = dma0_len;
-        regs->RX_LDMA_CHAN[0].MEM_START = (uint32_t)rxb;
+        regs->RX_LDMA_CHAN[0].MEM_ADDR = (uint32_t)rxb;
         regs->RX_LDMA_CHAN[0].CTRL = QLDC_1B_INCM_EN;
         regs->LDMA_RXEN = MEC_BIT(0);
         if (rxlen > txlen) {
             descr1 |= QD_RX_EN | QD_RX_LDMA_EN_CH1;
             regs->RX_LDMA_CHAN[1].LEN = dma1_len;
-            regs->RX_LDMA_CHAN[1].MEM_START = (uint32_t)rxb + dma0_len;
+            regs->RX_LDMA_CHAN[1].MEM_ADDR = (uint32_t)rxb + dma0_len;
             regs->RX_LDMA_CHAN[1].CTRL = QLDC_1B_INCM_EN;
             regs->LDMA_RXEN |= MEC_BIT(1);
         }
         ldma_enables |= QM_RX_LDMA_EN;
     }
 
-    regs->DESCR[0] = descr0;
-    regs->DESCR[1] = descr1;
+    regs->DESCRS[0] = descr0;
+    regs->DESCRS[1] = descr1;
     regs->MODE |= ldma_enables;
 }
 
@@ -1549,10 +1569,10 @@ int mec_hal_qspi_uldma_fd(struct mec_qspi_regs *regs, const uint8_t *txb, size_t
     }
 
     if (flags & MEC5_QSPI_ULDMA_FLAG_CLOSE) {
-        if (regs->DESCR[1]) {
-            regs->DESCR[1] |= QD_CLOSE_EN;
+        if (regs->DESCRS[1]) {
+            regs->DESCRS[1] |= QD_CLOSE_EN;
         } else {
-            regs->DESCR[0] |= QD_CLOSE_EN;
+            regs->DESCRS[0] |= QD_CLOSE_EN;
         }
     }
 
@@ -1586,7 +1606,7 @@ int mec_hal_qspi_uldma_fd2(struct mec_qspi_regs *regs, const uint8_t *txb, uint8
     qspi_ldma_init(regs);
 
     regs->RX_LDMA_CHAN[0].LEN = xfrlen;
-    regs->RX_LDMA_CHAN[0].MEM_START = (uint32_t)rxb;
+    regs->RX_LDMA_CHAN[0].MEM_ADDR = (uint32_t)rxb;
     if (flags & MEC5_QSPI_ULDMA_FLAG_INCR_RX) {
         regs->RX_LDMA_CHAN[0].CTRL = QLDC_1B_INCM_EN;
     } else {
@@ -1594,23 +1614,23 @@ int mec_hal_qspi_uldma_fd2(struct mec_qspi_regs *regs, const uint8_t *txb, uint8
     }
 
     regs->TX_LDMA_CHAN[0].LEN = xfrlen;
-    regs->TX_LDMA_CHAN[0].MEM_START = (uint32_t)txb;
+    regs->TX_LDMA_CHAN[0].MEM_ADDR = (uint32_t)txb;
     if (flags & MEC5_QSPI_ULDMA_FLAG_INCR_TX) {
         regs->TX_LDMA_CHAN[0].CTRL = QLDC_1B_INCM_EN;
     } else {
         regs->TX_LDMA_CHAN[0].CTRL = QLDC_1B_EN;
     }
 
-    regs->DESCR[0] = (QD_IO_FD | QD_TX_EN_DATA | QD_TX_LDMA_EN_CH0 |
-                      QD_RX_EN | QD_RX_LDMA_EN_CH0 | QD_LAST_EN);
-    regs->DESCR[1] = 0;
+    regs->DESCRS[0] = (QD_IO_FD | QD_TX_EN_DATA | QD_TX_LDMA_EN_CH0 |
+                       QD_RX_EN | QD_RX_LDMA_EN_CH0 | QD_LAST_EN);
+    regs->DESCRS[1] = 0;
 
     regs->LDMA_RXEN = MEC_BIT(0);
     regs->LDMA_TXEN = MEC_BIT(0);
     regs->MODE |= (QM_RX_LDMA_EN | QM_TX_LDMA_EN);
 
     if (flags & MEC5_QSPI_ULDMA_FLAG_CLOSE) {
-        regs->DESCR[0] |= QD_CLOSE_EN;
+        regs->DESCRS[0] |= QD_CLOSE_EN;
     }
 
     regs->CTRL |= MEC_BIT(MEC_QSPI_CTRL_DESCR_MODE_Pos);
@@ -1667,7 +1687,7 @@ int mec_hal_qspi_xfr_fifo_fd(struct mec_qspi_regs *regs, const uint8_t *txb, uin
         descr0 |= QD_CLOSE_EN;
     }
 
-    regs->DESCR[0] = descr0;
+    regs->DESCRS[0] = descr0;
     regs->CTRL |= MEC_BIT(MEC_QSPI_CTRL_DESCR_MODE_Pos);
 
     if (flags & MEC5_QSPI_ULDMA_FLAG_IEN) {
@@ -1722,7 +1742,7 @@ int mec_hal_qspi_uldma(struct mec_qspi_regs *regs, const uint8_t *txb, size_t tx
             ldma_tx_bm |= MEC_BIT(didx);
             qmode |= QM_TX_LDMA_EN;
             regs->TX_LDMA_CHAN[tx_ldma_idx].LEN = txlen;
-            regs->TX_LDMA_CHAN[tx_ldma_idx].MEM_START = (uint32_t)txb;
+            regs->TX_LDMA_CHAN[tx_ldma_idx].MEM_ADDR = (uint32_t)txb;
             regs->TX_LDMA_CHAN[tx_ldma_idx].CTRL = QLDC_1B_INCM_EN;
         } else { /* enable RX to R/O registers to generate clocks with TX lines tri-stated */
             ++rx_ldma_idx;
@@ -1730,10 +1750,10 @@ int mec_hal_qspi_uldma(struct mec_qspi_regs *regs, const uint8_t *txb, size_t tx
             ldma_rx_bm |= MEC_BIT(didx);
             qmode |= QM_RX_LDMA_EN;
             regs->RX_LDMA_CHAN[rx_ldma_idx].LEN = txlen;
-            regs->RX_LDMA_CHAN[rx_ldma_idx].MEM_START = (uint32_t)&regs->BCNT_STS;
+            regs->RX_LDMA_CHAN[rx_ldma_idx].MEM_ADDR = (uint32_t)&regs->BCNT_STS;
             regs->RX_LDMA_CHAN[rx_ldma_idx].CTRL = QLDC_1B_EN;
         }
-        regs->DESCR[didx] = descr;
+        regs->DESCRS[didx] = descr;
     }
 
     if (rxlen) {
@@ -1742,20 +1762,20 @@ int mec_hal_qspi_uldma(struct mec_qspi_regs *regs, const uint8_t *txb, size_t tx
         descr = iom | (QD_RX_EN | QD_RX_LDMA_EN_CH0);
         regs->RX_LDMA_CHAN[rx_ldma_idx].LEN = rxlen;
         if (rxb) {
-            regs->RX_LDMA_CHAN[rx_ldma_idx].MEM_START = (uint32_t)rxb;
+            regs->RX_LDMA_CHAN[rx_ldma_idx].MEM_ADDR = (uint32_t)rxb;
             regs->RX_LDMA_CHAN[rx_ldma_idx].CTRL = QLDC_1B_INCM_EN;
         } else { /* discard RX data */
-            regs->RX_LDMA_CHAN[rx_ldma_idx].MEM_START = (uint32_t)&regs->BCNT_STS;
+            regs->RX_LDMA_CHAN[rx_ldma_idx].MEM_ADDR = (uint32_t)&regs->BCNT_STS;
             regs->RX_LDMA_CHAN[rx_ldma_idx].CTRL = QLDC_1B_EN;
         }
-        regs->DESCR[didx] = descr;
+        regs->DESCRS[didx] = descr;
         ldma_rx_bm |= MEC_BIT(didx);
         qmode |= QM_RX_LDMA_EN;
     }
 
-    regs->DESCR[didx] |= QD_LAST_EN;
+    regs->DESCRS[didx] |= QD_LAST_EN;
     if (flags & MEC5_QSPI_ULDMA_FLAG_CLOSE) {
-        regs->DESCR[didx] |= QD_CLOSE_EN;
+        regs->DESCRS[didx] |= QD_CLOSE_EN;
     }
 
     regs->LDMA_RXEN = ldma_rx_bm;
@@ -1770,6 +1790,483 @@ int mec_hal_qspi_uldma(struct mec_qspi_regs *regs, const uint8_t *txb, size_t tx
     if (flags & MEC5_QSPI_ULDMA_FLAG_START) {
         regs->EXE = MEC_BIT(MEC_QSPI_EXE_START_Pos);
     }
+
+    return MEC_RET_OK;
+}
+
+/* ---- SPI flash API ---- */
+
+#define MEC_QSPI_TX_DIS      (MEC_QSPI_DESCR_TXEN_DIS << MEC_QSPI_DESCR_TXEN_Pos)
+#define MEC_QSPI_TX_EN_DATA  (MEC_QSPI_DESCR_TXEN_EN << MEC_QSPI_DESCR_TXEN_Pos)
+#define MEC_QSPI_TX_EN_ZEROS (MEC_QSPI_DESCR_TXEN_ENZ << MEC_QSPI_DESCR_TXEN_Pos)
+#define MEC_QSPI_TX_EN_ONES  (MEC_QSPI_DESCR_TXEN_EN1 << MEC_QSPI_DESCR_TXEN_Pos)
+
+#define MEC_QSPI_TX_LDMA_DIS (MEC_QSPI_DESCR_TXDMA_DIS << MEC_QSPI_DESCR_TXDMA_Pos)
+#define MEC_QSPI_TX_LDMA_CH0 (MEC_QSPI_DESCR_TXDMA_1B_LDMA_CH0 << MEC_QSPI_DESCR_TXDMA_Pos)
+#define MEC_QSPI_TX_LDMA_CH1 (MEC_QSPI_DESCR_TXDMA_2B_LDMA_CH1 << MEC_QSPI_DESCR_TXDMA_Pos)
+#define MEC_QSPI_TX_LDMA_CH2 (MEC_QSPI_DESCR_TXDMA_4B_LDMA_CH2 << MEC_QSPI_DESCR_TXDMA_Pos)
+
+#define MEC_QSPI_RX_DIS      (MEC_QSPI_DESCR_RXEN_DIS << MEC_QSPI_DESCR_RXEN_Pos)
+#define MEC_QSPI_RX_EN       (MEC_QSPI_DESCR_RXEN_EN << MEC_QSPI_DESCR_RXEN_Pos)
+
+#define MEC_QSPI_RX_LDMA_DIS (MEC_QSPI_DESCR_RXDMA_DIS << MEC_QSPI_DESCR_RXDMA_Pos)
+#define MEC_QSPI_RX_LDMA_CH0 (MEC_QSPI_DESCR_RXDMA_1B_LDMA_CH0 << MEC_QSPI_DESCR_RXDMA_Pos)
+#define MEC_QSPI_RX_LDMA_CH1 (MEC_QSPI_DESCR_RXDMA_2B_LDMA_CH1 << MEC_QSPI_DESCR_RXDMA_Pos)
+#define MEC_QSPI_RX_LDMA_CH2 (MEC_QSPI_DESCR_RXDMA_4B_LDMA_CH2 << MEC_QSPI_DESCR_RXDMA_Pos)
+
+#define MEC_QUNITS_BITS    (MEC_QSPI_DESCR_QUNITS_BITS << MEC_QSPI_DESCR_QUNITS_Pos)
+#define MEC_QUNITS_1BYTE   (MEC_QSPI_DESCR_QUNITS_1B << MEC_QSPI_DESCR_QUNITS_Pos)
+#define MEC_QUNITS_4BYTES  (MEC_QSPI_DESCR_QUNITS_4B << MEC_QSPI_DESCR_QUNITS_Pos)
+#define MEC_QUNITS_16BYTES (MEC_QSPI_DESCR_QUNITS_16B << MEC_QSPI_DESCR_QUNITS_Pos)
+
+#define MEC_NEXT_DESCR_MSK0 0xfu
+
+#define MEC_NUM_QUNITS(n) (((uint32_t)(n) & 0x7fffu) << MEC_QSPI_DESCR_QNUNITS_Pos)
+#define MEC_GET_QUNITS(d) (((uint32_t)(d) >> MEC_QSPI_DESCR_QNUNITS_Pos) & 0x7fffu)
+
+struct mec_qspi_regs *mec_hal_qspi_regs_from_id(uint8_t qid)
+{
+    if (qid) {
+        return NULL;
+    }
+
+    return (struct mec_qspi_regs *)(MEC_QSPI0_BASE);
+}
+
+int mec_hal_qspi_id_from_regs(struct mec_qspi_regs *regs, uint8_t *qid)
+{
+    uint8_t id = qspi_get_id(regs);
+
+    if (id == UINT8_MAX) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    if (qid) {
+        *qid = id;
+    }
+
+    return MEC_RET_OK;
+}
+
+int mec_hal_qspi_context2_init(struct mec_qspi_context2 *ctx, uint8_t qid)
+{
+    if (!ctx || (qid != 0)) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    memset(ctx, 0, sizeof(struct mec_qspi_context2));
+    ctx->qid = qid;
+
+    return MEC_RET_OK;
+}
+
+int mec_hal_qspi_context2_init_from_regs(struct mec_qspi_context2 *ctx, struct mec_qspi_regs *regs)
+{
+    int ret = 0;
+    uint8_t qid = 0;
+
+    ret = mec_hal_qspi_id_from_regs(regs, &qid);
+    if (ret != MEC_RET_OK) {
+        return ret;
+    }
+
+    return mec_hal_qspi_context2_init(ctx, qid);
+}
+
+static int add_descr(struct mec_qspi_context2 *ctx2, uint32_t d)
+{
+    uint8_t nd = ctx2->ndescrs;
+
+    if (nd >= MEC5_QSPI_NUM_DESCRS) {
+        return MEC_RET_ERR_NO_RES;
+    }
+
+    ctx2->descrs[nd] = d;
+    ctx2->ndescrs = nd + 1u;
+
+    return MEC_RET_OK;
+}
+
+static uint32_t npins_to_ifm(uint8_t npins)
+{
+    switch (npins) {
+    case 4: /* Quad IO */
+        return (MEC_QSPI_DESCR_IFM_QUAD << MEC_QSPI_DESCR_IFM_Pos);
+    case 2: /* Dual I/O */
+        return (MEC_QSPI_DESCR_IFM_DUAL << MEC_QSPI_DESCR_IFM_Pos);
+    default: /* default to full-duplex one pin each for TX and RX */
+        return (MEC_QSPI_DESCR_IFM_FD << MEC_QSPI_DESCR_IFM_Pos);
+    }
+}
+
+#ifdef MEC_QSPI_FLASH_USE_CONTEXT2_TX_BUF
+/* addrsz    fmt_addr[31:0]
+ * 4         a0_a1_a2_a3
+ * 3         xx_a0_a1_a2
+ * 2         xx_xx_a0_a1
+ * 1         xx_xx_xx_a0
+ */
+static void spi_flash_addr_to_ctx(struct mec_qspi_context2 *ctx2, const uint32_t spi_addr,
+                                  uint8_t addrsz)
+{
+    uint32_t fmt_addr = __REV(spi_addr);
+    uint8_t *p = &ctx2->tx_params[ctx2->ntxp];
+
+    if (addrsz == 0) {
+        return;
+    }
+
+    if (addrsz >= 4u) {
+        addrsz = 4u;
+    } else {
+        fmt_addr >>= ((4u - addrsz) * 8u);
+    }
+
+    for (uint8_t i = 0; i < addrsz; i++) {
+        *p++ = (uint8_t)(fmt_addr & 0xffu);
+        fmt_addr >>= 8;
+    }
+
+    ctx2->ntxp += addrsz;
+}
+#else
+static void spi_flash_addr_to_fifo(struct mec_qspi_regs *regs, const uint32_t spi_addr,
+                                   uint8_t addrsz)
+{
+    uint32_t saddr = __REV(spi_addr);
+
+    if (addrsz >= 4u) {
+        regs->TX_FIFO = spi_addr;
+    } else {
+        for (uint8_t i = 0; i < addrsz; i++) {
+            saddr >>= 8;
+            MEC_MMCR8(&regs->TX_FIFO) = (uint8_t)saddr;
+        }
+    }
+}
+#endif
+
+static int descr_cfg(struct mec_qspi_context2 *ctx2, struct mec_qspi_regs *regs,
+                     uint8_t npins, uint8_t nbytes)
+{
+    uint32_t d = 0;
+
+    d = npins_to_ifm(npins);
+    d |= (MEC_QSPI_TX_EN_DATA | MEC_QSPI_TX_LDMA_DIS | MEC_QUNITS_1BYTE);
+    d |= MEC_NUM_QUNITS(nbytes);
+
+    return add_descr(ctx2, d);
+}
+
+static int descr_cfg_mode_byte(struct mec_qspi_context2 *ctx2, struct mec_qspi_regs *regs,
+                               uint8_t npins, uint8_t mode_byte, uint8_t mode_bits)
+{
+    int ret = 0;
+    uint32_t d = 0, dbase = 0;
+
+    dbase = npins_to_ifm(npins);
+
+    if (mode_bits >= 8) {
+        d = dbase | (MEC_QSPI_TX_EN_DATA | MEC_QUNITS_1BYTE);
+        d |= MEC_NUM_QUNITS(1u);
+        ret = add_descr(ctx2, d);
+    } else { /* require two descriptors */
+        d = dbase | (MEC_QSPI_TX_EN_DATA | MEC_QUNITS_BITS);
+        d |= MEC_NUM_QUNITS(mode_bits);
+        ret = add_descr(ctx2, d);
+        if (ret) {
+            return ret;
+        }
+
+        d = dbase | (MEC_QSPI_TX_DIS | MEC_QUNITS_BITS);
+        d |= MEC_NUM_QUNITS(8u - mode_bits);
+        ret = add_descr(ctx2, d);
+    }
+
+    return ret;
+}
+
+/*
+ * 1X mode: 1 bit/clock.
+ * 2X mode: 2 bits/clock.
+ * 4X mode: 4 bits/clock.
+ */
+static uint32_t clocks_to_bits(uint32_t clocks, uint8_t npins)
+{
+    if (npins >= 4) {
+        return clocks * 4;
+    } else if (npins >= 2) {
+        return clocks * 2;
+    } else {
+        return clocks;
+    }
+}
+
+static int descr_cfg_ts_clocks(struct mec_qspi_context2 *ctx2, struct mec_qspi_regs *regs,
+                               uint8_t npins, uint8_t num_ts_clocks)
+{
+    uint32_t d = clocks_to_bits(num_ts_clocks, npins);
+
+    d = MEC_NUM_QUNITS(d);
+    d |= npins_to_ifm(npins);
+    d |= (MEC_QSPI_TX_DIS | MEC_QUNITS_BITS);
+
+    return add_descr(ctx2, d);
+}
+
+static void update_next_descr(struct mec_qspi_context2 *ctx2)
+{
+    uint8_t nd = ctx2->ndescrs;
+
+    if (nd > MEC5_QSPI_NUM_DESCRS) {
+        nd = MEC5_QSPI_NUM_DESCRS;
+    }
+
+    for (uint8_t n = 0; n < nd; n++) {
+        uint32_t d = ctx2->descrs[n];
+
+        d &= (uint32_t)~MEC_QSPI_DESCR_NEXT_Msk;
+        d |= ((uint32_t)((n + 1u) & MEC_NEXT_DESCR_MSK0) << MEC_QSPI_DESCR_NEXT_Pos);
+        ctx2->descrs[n] = d;
+    }
+}
+
+static void qspi_prep(struct mec_qspi_regs *regs)
+{
+    regs->MODE &= ~(MEC_BIT(MEC_QSPI_MODE_RX_LDMA_Pos) | MEC_BIT(MEC_QSPI_MODE_TX_LDMA_Pos));
+    regs->CTRL = 0u;
+    regs->LDMA_RXEN = 0u;
+    regs->LDMA_TXEN = 0u;
+    regs->EXE = MEC_BIT(MEC_QSPI_EXE_CLRF_Pos);
+    for (uint32_t i = 0; i < 3; i++) {
+        regs->RX_LDMA_CHAN[i].CTRL = 0;
+        regs->RX_LDMA_CHAN[i].MEM_ADDR = 0;
+        regs->RX_LDMA_CHAN[i].LEN = 0;
+        regs->TX_LDMA_CHAN[i].CTRL = 0;
+        regs->TX_LDMA_CHAN[i].MEM_ADDR = 0;
+        regs->TX_LDMA_CHAN[i].LEN = 0;
+    }
+    regs->STATUS = UINT32_MAX;
+}
+
+static void load_descriptors(struct mec_qspi_context2 *ctx2, struct mec_qspi_regs *regs)
+{
+    for (uint8_t i = 0; i < ctx2->ndescrs; i++) {
+        regs->DESCRS[i] = ctx2->descrs[i];
+        if (i == (ctx2->ndescrs - 1u)) {
+            regs->DESCRS[i] |= MEC_BIT(MEC_QSPI_DESCR_CLOSE_Pos) | MEC_BIT(MEC_QSPI_DESCR_LAST_Pos);
+        }
+    }
+
+    regs->CTRL = MEC_BIT(MEC_QSPI_CTRL_DESCR_MODE_Pos);
+}
+
+static void load_ldma(struct mec_qspi_context2 *ctx2, struct mec_qspi_regs *regs)
+{
+    if (ctx2->flags & MEC_BIT(0)) { /* RX LDMA */
+        regs->RX_LDMA_CHAN[0].LEN = ctx2->ldma_rx_len;
+        regs->RX_LDMA_CHAN[0].MEM_ADDR = ctx2->ldma_rx_maddr;
+        regs->RX_LDMA_CHAN[0].CTRL = ctx2->ldma_rx_ctrl;
+        regs->LDMA_RXEN = MEC_BIT(ctx2->ldma_rx_descr_idx);
+        regs->MODE |= MEC_BIT(MEC_QSPI_MODE_RX_LDMA_Pos);
+    }
+
+    if (ctx2->flags & MEC_BIT(1)) { /* TX LDMA */
+        regs->TX_LDMA_CHAN[0].LEN = ctx2->ldma_tx_len;
+        regs->TX_LDMA_CHAN[0].MEM_ADDR = ctx2->ldma_tx_maddr;
+        regs->TX_LDMA_CHAN[0].CTRL = ctx2->ldma_tx_ctrl;
+        regs->LDMA_TXEN = MEC_BIT(ctx2->ldma_tx_descr_idx);
+        regs->MODE |= MEC_BIT(MEC_QSPI_MODE_TX_LDMA_Pos);
+    }
+}
+
+#ifdef MEC_QSPI_FLASH_USE_CONTEXT2_TX_BUF
+static void load_tx_fifo(struct mec_qspi_context2 *ctx2, struct mec_qspi_regs *regs)
+{
+    uint8_t num_cmd_params = ctx2->ntxp;
+
+    if (num_cmd_params > MEC5_QSPI_FIFO_LEN) {
+        num_cmd_params = MEC5_QSPI_FIFO_LEN;
+    }
+
+    for (uint8_t i = 0; i < num_cmd_params; i++) {
+        MEC_MMCR8(&regs->TX_FIFO) = ctx2->tx_params[i];
+    }
+}
+#endif
+
+int mec_hal_qspi_flash_cmd_setup(struct mec_qspi_context2 *ctx2, struct mec_spi_command *cmd,
+                                 uint32_t spi_addr)
+{
+    struct mec_qspi_regs *regs = NULL;
+    int ret = 0;
+    uint8_t nb = 0, npins = 0;
+
+    if (!ctx2 || !cmd) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    regs = mec_hal_qspi_regs_from_id(ctx2->qid);
+    if (!regs) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    if (cmd->flags & MEC_SPI_CMD_OP_IO_MASK) {
+#ifdef MEC_QSPI_FLASH_USE_CONTEXT2_TX_BUF
+        ctx2->tx_params[0] = cmd->opcode;
+        ctx2->ntxp = 1u;
+#else
+        MEC_MMCR8(&regs->TX_FIFO) = cmd->opcode;
+#endif
+        npins = MEC_SPI_CMD_OP_NPINS(cmd->flags);
+        ret = descr_cfg(ctx2, regs, npins, 1u);
+        if (ret) {
+            return ret;
+        }
+    }
+
+    if (cmd->flags & MEC_SPI_CMD_ADDR_IO_MASK) {
+        nb = (cmd->flags & MEC_SPI_CMD_ADDR32) ? 4u : 3u;
+#ifdef MEC_QSPI_FLASH_USE_CONTEXT2_TX_BUF
+        spi_flash_addr_to_ctx(ctx2, spi_addr, nb);
+#else
+        spi_flash_addr_to_fifo(regs, spi_addr, nb);
+#endif
+        npins = MEC_SPI_CMD_ADDR_NPINS(cmd->flags);
+        ret = descr_cfg(ctx2, regs, npins, nb);
+        if (ret) {
+            return ret;
+        }
+    }
+
+    if (cmd->flags & MEC_SPI_CMD_MODE_BYTE) {
+#ifdef MEC_QSPI_FLASH_USE_CONTEXT2_TX_BUF
+        ctx2->tx_params[ctx2->ntxp] = cmd->opcode;
+        ctx2->ntxp++;
+#else
+        MEC_MMCR8(&regs->TX_FIFO) = cmd->mode_byte;
+#endif
+        npins = MEC_SPI_CMD_ADDR_NPINS(cmd->flags);
+        ret = descr_cfg_mode_byte(ctx2, regs, npins, cmd->mode_byte, cmd->mode_bits);
+        if (ret) {
+            return ret;
+        }
+    }
+
+    if (cmd->ts_clocks) {
+        npins = MEC_SPI_CMD_DATA_NPINS(cmd->flags);
+        ret = descr_cfg_ts_clocks(ctx2, regs, npins, cmd->ts_clocks);
+        if (ret) {
+            return ret;
+        }
+    }
+
+    return MEC_RET_OK;
+}
+
+/* LDMA can access memory in chunks of 4 bytes, 2 bytes, or 1 bytes.
+ * Access depends upon memory alignment and number of bytes being transferred.
+ */
+static const uint8_t qspi_ldma_access_size[4] = {
+    MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_4B, /* index 0 */
+    MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_1B, /* index 1 */
+    MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_2B, /* index 2 */
+    MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_1B, /* index 3 */
+};
+
+/* Flags bit[0] = direction, 0=read, 1=write
+ * Configure a descriptor for read or write using one LDMA channel in length override mode.
+ * LDMA length override mode is where the LDMA channel length register specifies the transfer
+ * size in bytes instead of the descriptor number of units field.
+ * NOTE: program LDMA CTRL enable bit after all other LDMA CTRL fields, MEM_START reg, and LEN reg
+ * are configured!
+ */
+int mec_hal_qspi_flash_data_setup(struct mec_qspi_context2 *ctx2, struct mec_spi_command *cmd,
+                                  void *data, uint32_t nbytes, uint32_t flags)
+{
+    struct mec_qspi_regs *regs  = NULL;
+    uint32_t temp = 0, d = 0;
+    uint8_t npins = 0;
+    uint32_t maddr = (uint32_t)data;
+    uint32_t ctrl = (MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_EN_Pos) |
+                     MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_OVRL_Pos) |
+                     MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_RSTA_Pos));
+    bool is_rx = (cmd->flags & MEC_SPI_CMD_DATA_DIR_TX) ? false : true;
+
+    if (!data && !nbytes) {
+        return MEC_RET_OK;
+    }
+
+    if (!ctx2 || !cmd) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    regs = mec_hal_qspi_regs_from_id(ctx2->qid);
+    if (!regs) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    if (ctx2->ndescrs >= MEC5_QSPI_NUM_DESCRS) {
+        return MEC_RET_ERR_NO_RES;
+    }
+
+    /* if data pointer is NULL generate clocks with I/O's tri-stated.
+     * This is accomplished by receive mode and disarding data to a read-only location.
+     * QSPI buffer count status register is a 32-bit read-only register.
+     */
+    if (!data && nbytes) {
+        maddr = (uint32_t)&regs->BCNT_STS; /* read-only register, writes have no effect */
+        is_rx = true;
+    } else {
+        ctrl |= MEC_BIT(MEC_QSPI_LDMA_CHAN_CTRL_INCRA_Pos);
+    }
+
+    temp = qspi_ldma_access_size[(maddr | nbytes) & 0x3u];
+    ctrl |= (temp << MEC_QSPI_LDMA_CHAN_CTRL_ACCSZ_Pos);
+
+    if (is_rx) {
+        ctx2->flags |= MEC_BIT(0);
+        ctx2->ldma_rx_ctrl = ctrl;
+        ctx2->ldma_rx_maddr = maddr;
+        ctx2->ldma_rx_len = nbytes;
+        ctx2->ldma_rx_descr_idx = ctx2->ndescrs;
+        d = MEC_QSPI_RX_EN | MEC_QSPI_RX_LDMA_CH0;
+    } else { /* TX? */
+        ctx2->flags |= MEC_BIT(1);
+        ctx2->ldma_tx_ctrl = ctrl;
+        ctx2->ldma_tx_maddr = maddr;
+        ctx2->ldma_tx_len = nbytes;
+        ctx2->ldma_tx_descr_idx = ctx2->ndescrs;
+        d = MEC_QSPI_TX_EN_DATA | MEC_QSPI_TX_LDMA_CH0;
+    }
+
+    npins = MEC_SPI_CMD_DATA_NPINS(cmd->flags);
+    d |= npins_to_ifm(npins);
+
+    return add_descr(ctx2, d);
+}
+
+int mec_hal_qspi_flash_xfr_load(struct mec_qspi_context2 *ctx2)
+{
+    struct mec_qspi_regs *regs  = NULL;
+
+    if (!ctx2) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    regs = mec_hal_qspi_regs_from_id(ctx2->qid);
+    if (!regs) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    qspi_prep(regs);
+
+    update_next_descr(ctx2);
+    load_descriptors(ctx2, regs);
+    load_ldma(ctx2, regs);
+#ifdef MEC_QSPI_FLASH_USE_CONTEXT2_TX_BUF
+    load_tx_fifo(ctx2, regs);
+#endif
 
     return MEC_RET_OK;
 }

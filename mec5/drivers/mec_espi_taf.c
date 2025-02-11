@@ -305,7 +305,7 @@ static void taf_qspi_descr_ldma_init(void)
     uint8_t chan = 0;
 
     for (uint32_t i = 0; i < MEC5_QSPI_NUM_DESCRS; i++) {
-        descr = qregs->DESCR[i];
+        descr = qregs->DESCRS[i];
         if (descr == 0) {
             continue;
         }
