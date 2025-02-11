@@ -1147,4 +1147,40 @@
 	/omit-if-no-ref/ uart1_dsr_n_gpio255: uart1_dsr_n_gpio255 {
 		pinmux = < MCHP_XEC_PINMUX(0255, MCHP_AF2) >;
 	};
+
+	/* Low power */
+	/omit-if-no-ref/ qspi_shd_io3_gpio016_lp: qspi_shd_io3_gpio016_lp {
+		pinmux = < MCHP_XEC_PINMUX(0016, MCHP_AF2) >;
+		low-power-enable;
+	};
+
+	/omit-if-no-ref/ qspi_shd_io2_gpio227_lp: qspi_shd_io2_gpio227_lp {
+		pinmux = < MCHP_XEC_PINMUX(0227, MCHP_AF1) >;
+		low-power-enable;
+	};
+
+	/omit-if-no-ref/ qspi_shd_io1_gpio224_lp: qspi_shd_io1_gpio224_lp {
+		pinmux = < MCHP_XEC_PINMUX(0224, MCHP_AF2) >;
+		low-power-enable;
+	};
+
+	/omit-if-no-ref/ qspi_shd_io0_gpio223_lp: qspi_shd_io0_gpio223_lp {
+		pinmux = < MCHP_XEC_PINMUX(0223, MCHP_AF1) >;
+		low-power-enable;
+	};
+
+	/omit-if-no-ref/ qspi_shd_clk_gpio056_lp: qspi_shd_clk_gpio056_lp {
+		pinmux = < MCHP_XEC_PINMUX(0056, MCHP_AF2) >;
+		low-power-enable;
+	};
+
+	/omit-if-no-ref/ qspi_shd_cs0_n_gpio055_lp: qspi_shd_cs0_n_gpio055_fp {
+		pinmux = < MCHP_XEC_PINMUX(0055, MCHP_AF2) >;
+		low-power-enable;
+	};
+	
+	/omit-if-no-ref/ qspi_shd_cs1_n_gpio002_lp: qspi_shd_cs1_n_gpio002_lp {
+		pinmux = < MCHP_XEC_PINMUX(0002, MCHP_AF2) >;
+		low-power-enable;
+	};
 };
