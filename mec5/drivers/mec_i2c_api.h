@@ -161,7 +161,11 @@ int mec_hal_i2c_smb_reset(struct mec_i2c_smb_ctx *ctx);
 int mec_hal_i2c_smb_init(struct mec_i2c_smb_ctx *ctx, struct mec_i2c_smb_cfg *config,
                          struct mec_i2c_freq_cfg *custom_freq_cfg);
 
-int mec_hal_i2c_smb_bus_freq_get(struct mec_i2c_smb_ctx *ctx, uint32_t *bus_freq_hz);
+int mec_hal_i2c_smb_get_id(struct mec_i2c_smb_regs *regs, uint8_t *ctrl_id);
+
+int mec_hal_i2c_smb_bus_freq_get(struct mec_i2c_smb_regs *regs, uint32_t *bus_freq_hz);
+int mec_hal_i2c_smb_bus_freq_get_by_ctx(struct mec_i2c_smb_ctx *ctx, uint32_t *bus_freq_hz);
+int mec_hal_i2c_smb_bus_freq_get_by_id(uint8_t i2c_id, uint32_t *bus_freq_hz);
 
 uint8_t mec_hal_i2c_smb_port_get(struct mec_i2c_smb_regs *regs);
 uint8_t mec_hal_i2c_smb_port_set(struct mec_i2c_smb_regs *regs, uint8_t port);

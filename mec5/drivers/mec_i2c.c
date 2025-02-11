@@ -228,23 +228,64 @@ uint8_t mec_hal_i2c_smb_port_set(struct mec_i2c_smb_regs *regs, uint8_t port)
     return port;
 }
 
+int mec_hal_i2c_smb_get_id(struct mec_i2c_smb_regs *regs, uint8_t *ctrl_id)
+{
+    if (!ctrl_id) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    for (uint8_t i = 0; i < MEC5_I2C_SMB_INSTANCES; i++) {
+        if (i2c_instances[i].base_addr == (uintptr_t)regs) {
+            *ctrl_id = i;
+            return MEC_RET_OK;
+        }
+    }
+
+    return MEC_RET_ERR_INVAL;
+}
+
+int mec_hal_i2c_smb_bus_freq_get(struct mec_i2c_smb_regs *regs, uint32_t *bus_freq_hz)
+{
+    uint32_t busclk = 0, lcnt = 0, hcnt = 0;
+
+    if (!regs || !bus_freq_hz) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    busclk = regs->BUSCLK;
+    lcnt = busclk & 0xffu;
+    hcnt = (busclk >> 8) & 0xffu;
+
+    *bus_freq_hz = MEC_I2C_SMB_BAUD_CLK_FREQ_HZ / ((lcnt + 1u) + (hcnt + 1u));
+
+    return MEC_RET_OK;
+}
+
 /* I2C-SMB bus clock frequency =
  * Fixed HW BAUD clock freq / ((low_period+1) + (high_period+1))
  */
-int mec_hal_i2c_smb_bus_freq_get(struct mec_i2c_smb_ctx *ctx, uint32_t *bus_freq_hz)
+int mec_hal_i2c_smb_bus_freq_get_by_ctx(struct mec_i2c_smb_ctx *ctx, uint32_t *bus_freq_hz)
 {
-    if (!ctx || !ctx->base || !bus_freq_hz) {
+    if (!ctx || !ctx->base) {
         return MEC_RET_ERR_INVAL;
     }
 
     struct mec_i2c_smb_regs *regs = ctx->base;
-    uint32_t busclk = regs->BUSCLK;
-    uint32_t lcnt = busclk & 0xffu;
-    uint32_t hcnt = (busclk >> 8) & 0xffu;
 
-    *bus_freq_hz = MEC_I2C_SMB_BAUD_CLK_FREQ_HZ / ((lcnt + 1u) + (hcnt + 1));
+    return mec_hal_i2c_smb_bus_freq_get(regs, bus_freq_hz);
+}
 
-    return MEC_RET_OK;
+int mec_hal_i2c_smb_bus_freq_get_by_id(uint8_t i2c_id, uint32_t *bus_freq_hz)
+{
+    struct mec_i2c_smb_regs *regs = NULL;
+
+    if (i2c_id >= MEC5_I2C_SMB_INSTANCES) {
+        return MEC_RET_ERR_INVAL;
+    }
+
+    regs = (struct mec_i2c_smb_regs *)MEC_I2C_SMB_BASE(i2c_id);
+
+    return mec_hal_i2c_smb_bus_freq_get(regs, bus_freq_hz);
 }
 
 int mec_hal_i2c_smb_init(struct mec_i2c_smb_ctx *ctx, struct mec_i2c_smb_cfg *config,
