@@ -120,7 +120,10 @@ typedef union {
 } MCLK_APBAMASK_Type;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
-#define MCLK_APBAMASK_EIC_BIT_MASK ((uint32_t)(0x1) << MCLK_APBAMASK_EIC_Pos) 
+#ifdef MCLK_APBAMASK_EIC
+#undef MCLK_APBAMASK_EIC
+#endif
+#define MCLK_APBAMASK_EIC ((uint32_t)(0x1) << MCLK_APBAMASK_EIC_Pos) 
 
 /* -------- MCLK_APBBMASK : (MCLK Offset: 0x18) (R/W 32) APBB Mask -------- */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
