@@ -906,7 +906,6 @@ typedef struct { /* USB is Host */
 } UsbHostDescriptor;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
-#define SECTION_USB_DESCRIPTOR
 
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef union {
