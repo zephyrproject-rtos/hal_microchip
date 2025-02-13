@@ -3492,4 +3492,7 @@ typedef struct
 
 
 #endif /* !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__)) */
+
+#include "flexcom_usart_spi_twi.h"
+
 #endif /* _SAMA7G5_FLEXCOM_COMPONENT_H_ */
