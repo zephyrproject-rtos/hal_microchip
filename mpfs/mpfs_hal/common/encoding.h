@@ -1,4 +1,3 @@
-#if 1
 /*
     Copyright (c) 2013, The Regents of the University of California (Regents).
     All Rights Reserved.
@@ -229,26 +228,26 @@
 #ifdef __GNUC__
 
 #define read_reg(reg) ({ unsigned long __tmp; \
-  __asm__ volatile ("mv %0, " #reg : "=r"(__tmp)); \
+  asm volatile ("mv %0, " #reg : "=r"(__tmp)); \
   __tmp; })
 
 #define read_csr(reg) __extension__({ unsigned long __tmp; \
-  __asm__ volatile ("csrr %0, " #reg : "=r"(__tmp)); \
+  asm volatile ("csrr %0, " #reg : "=r"(__tmp)); \
   __tmp; })
 
 #define write_csr(reg, val) __extension__({ \
-  __asm__ volatile ("csrw " #reg ", %0" :: "rK"(val)); })
+  asm volatile ("csrw " #reg ", %0" :: "rK"(val)); })
 
 #define swap_csr(reg, val) ({ unsigned long __tmp; \
-  __asm__ volatile ("csrrw %0, " #reg ", %1" : "=r"(__tmp) : "rK"(val)); \
+  asm volatile ("csrrw %0, " #reg ", %1" : "=r"(__tmp) : "rK"(val)); \
   __tmp; })
 
 #define set_csr(reg, bit) __extension__({ unsigned long __tmp; \
-  __asm__ volatile ("csrrs %0, " #reg ", %1" : "=r"(__tmp) : "rK"(bit)); \
+  asm volatile ("csrrs %0, " #reg ", %1" : "=r"(__tmp) : "rK"(bit)); \
   __tmp; })
 
 #define clear_csr(reg, bit) __extension__({ unsigned long __tmp; \
-  __asm__ volatile ("csrrc %0, " #reg ", %1" : "=r"(__tmp) : "rK"(bit)); \
+  asm volatile ("csrrc %0, " #reg ", %1" : "=r"(__tmp) : "rK"(bit)); \
   __tmp; })
 
 #if 0
@@ -1530,5 +1529,4 @@ DECLARE_CAUSE("machine_ecall", CAUSE_MACHINE_ECALL)
 DECLARE_CAUSE("fetch page fault", CAUSE_FETCH_PAGE_FAULT)
 DECLARE_CAUSE("load page fault", CAUSE_LOAD_PAGE_FAULT)
 DECLARE_CAUSE("store page fault", CAUSE_STORE_PAGE_FAULT)
-#endif
 #endif
