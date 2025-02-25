@@ -15,7 +15,7 @@
   */
 typedef struct mec_qspi_ldma_chan_regs {
   __IOM uint32_t  CTRL;                         /*!< (@ 0x00000000) Local DMA Control                                          */
-  __IOM uint32_t  MEM_START;                    /*!< (@ 0x00000004) Memory start address                                       */
+  __IOM uint32_t  MEM_ADDR;                     /*!< (@ 0x00000004) Memory start address                                       */
   __IOM uint32_t  LEN;                          /*!< (@ 0x00000008) Maximum number of bytes to be transferred                  */
   __IM  uint32_t  RESERVED;
 } MEC_QSPI_LDMA_CHAN_Type;                      /*!< Size = 16 (0x10)                                                          */
@@ -42,7 +42,7 @@ typedef struct mec_qspi_regs {                  /*!< (@ 0x40070000) MEC_QSPI Str
   __IM  uint32_t  RX_FIFO;                      /*!< (@ 0x00000024) QSPI receive FIFO 32-bit access                            */
   __IOM uint32_t  CSTM;                         /*!< (@ 0x00000028) QSPI chip select timing                                    */
   __IM  uint32_t  RESERVED;
-  __IOM uint32_t  DESCR[16];                    /*!< (@ 0x00000030) QSPI descriptor n                                          */
+  __IOM uint32_t  DESCRS[16];                   /*!< (@ 0x00000030) QSPI descriptor n                                          */
   __IM  uint32_t  RESERVED1[16];
   __IOM uint32_t  ALIAS_CTRL;                   /*!< (@ 0x000000B0) QSPI alias control                                         */
   __IM  uint32_t  RESERVED2[3];
@@ -272,6 +272,7 @@ typedef struct mec_qspi_regs {                  /*!< (@ 0x40070000) MEC_QSPI Str
 /** @addtogroup EnumValue_clusters
   * @{
   */
+/* =========================================================  CTRL  ========================================================== */
 /* ==============================================  LDMA_CHAN CTRL EN [0..0]  ============================================== */
 typedef enum {                                  /*!< MEC_QSPI_LDMA_CHAN_CTRL_EN                                            */
   MEC_QSPI_LDMA_CHAN_CTRL_EN_EN    = 1,     /*!< EN : Enable                                                               */
@@ -303,7 +304,6 @@ typedef enum {                                  /*!< MEC_QSPI_LDMA_CHAN_CTRL_ACC
 typedef enum {                                  /*!< MEC_QSPI_LDMA_CHAN_CTRL_INCRA                                         */
   MEC_QSPI_LDMA_CHAN_CTRL_INCRA_EN = 1,     /*!< EN : Enable                                                               */
 } MEC_QSPI_LDMA_CHAN_CTRL_INCRA_Enum;
-
 
 /** @} */ /* End of group EnumValue_clusters */
 
