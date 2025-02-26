@@ -948,6 +948,10 @@
 		pinmux = < MCHP_XEC_PINMUX(0155, MCHP_AF1) >;
 	};
 
+	/omit-if-no-ref/ ps2_dat1b_gpio155: ps2_dat1b_gpio155 {
+		pinmux = < MCHP_XEC_PINMUX(0155, MCHP_AF3) >;
+	};
+
 	/omit-if-no-ref/ led0_gpio156: led0_gpio156 {
 		pinmux = < MCHP_XEC_PINMUX(0156, MCHP_AF1) >;
 	};
