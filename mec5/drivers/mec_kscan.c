@@ -7,6 +7,9 @@
 #include <stdint.h>
 
 #include <device_mec5.h>
+
+#ifdef MEC5_KSCAN_INSTANCES
+
 #include "mec_pcfg.h"
 #include "mec_defs.h"
 #include "mec_ecia_api.h"
@@ -212,4 +215,5 @@ void mec_hal_kscan_wake_enable(uint8_t enable)
         mec_hal_girq_clr_src(MEC_KSCAN_ECIA_INFO);
     }
 }
+#endif /* MEC5_KSCAN_INSTANCES */
 /* end mec_kscan.c */
