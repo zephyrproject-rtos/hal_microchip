@@ -7,6 +7,9 @@
 #include <stdint.h>
 
 #include <device_mec5.h>
+
+#ifdef MEC5_HAS_EEPROM
+
 #include "mec_defs.h"
 #include "mec_adc_api.h"
 #include "mec_ecia_api.h"
@@ -328,5 +331,5 @@ int mec_hal_eeprom_xfr_start(struct mec_eeprom_ctrl_regs *regs, uint8_t op,
 
     return MEC_RET_OK;
 }
-
+#endif /* MEC5_HAS_EEPROM */
 /* end mec_eeprom.c */

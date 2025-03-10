@@ -139,6 +139,7 @@
 #define MEC5_VCI_PINS_MASK 0x3fu
 #define MEC5_VCI_GPIO_PINS_MASK 0x3eu
 
+#define MEC5_HAS_EEPROM 1
 #define MEC5_EEPROM_SIZE_IN_BYTES 2048u
 
 /* BC-Link */
