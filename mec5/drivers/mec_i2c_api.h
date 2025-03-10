@@ -93,16 +93,15 @@ enum mec_i2c_ien {
     MEC_I2C_NL_IEN_AAT_POS,
 };
 
-enum mec_i2c_nl_cm_event {
-    MEC_I2C_NL_CM_EVENT_NONE = 0,
-    MEC_I2C_NL_CM_EVENT_W2R,
-    MEC_I2C_NL_CM_EVENT_ALL_DONE,
-};
-
-enum mec_i2c_nl_tm_event {
-    MEC_I2C_NL_TM_EVENT_NONE = 0,
-    MEC_I2C_NL_TM_EVENT_W2R,
-    MEC_I2C_NL_TM_EVENT_ALL_DONE,
+enum mec_i2c_nl_events {
+    MEC_I2C_NL_EVENT_NACK_POS,
+    MEC_I2C_NL_EVENT_BERR_POS,
+    MEC_I2C_NL_EVENT_LAB_POS,
+    MEC_I2C_NL_EVENT_IDLE_POS,
+    MEC_I2C_NL_EVENT_PAUSE_POS,
+    MEC_I2C_NL_EVENT_DONE_POS,
+    MEC_I2C_NL_EVENT_DMA_DONE_POS,
+    MEC_I2C_NL_EVENT_DMA_ERR_POS,
 };
 
 enum mec_i2c_port {
@@ -270,7 +269,7 @@ uint32_t mec_hal_i2c_nl_cmd_get(struct mec_i2c_smb_ctx *ctx, uint8_t is_tm);
 int mec_hal_i2c_nl_state_get(struct mec_i2c_smb_regs *regs, struct mec_i2c_smb_nl_state *state,
                              uint8_t is_tm);
 
-uint32_t mec_hal_i2c_nl_cm_event(struct mec_i2c_smb_ctx *ctx);
+uint32_t mec_hal_i2c_nl_get_events(struct mec_i2c_smb_ctx *ctx, uint8_t is_tm);
 
 #define MEC_I2C_NL_CM_DIR_WR 0
 #define MEC_I2C_NL_CM_DIR_RD 1
@@ -313,8 +312,6 @@ static inline uint8_t mec_hal_i2c_nl_shad_data_get(struct mec_i2c_smb_regs *regs
 
 int mec_hal_i2c_nl_tm_config(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint16_t nrx,
                              uint32_t flags);
-
-uint32_t mec_hal_i2c_nl_tm_event(struct mec_i2c_smb_ctx *ctx);
 
 #define MEC_I2C_NL_TM_DIR_TX 0 /* We supply data to external Controller */
 #define MEC_I2C_NL_TM_DIR_RX 1 /* We clock in data from external Controller */

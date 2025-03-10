@@ -3,8 +3,10 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-#ifndef _MEC5_I2C_SMB_V3_7_H
-#define _MEC5_I2C_SMB_V3_7_H
+#ifndef _MEC5_I2C_SMB_V3_8_H
+#define _MEC5_I2C_SMB_V3_8_H
+
+#include <stdint.h>
 
 /** @addtogroup Device_Peripheral_peripherals
   * @{
@@ -14,7 +16,7 @@
   */
 
 typedef struct mec_i2c_smb_regs {               /*!< (@ 0x40004000) MEC_I2C_SMB0 Structure                                     */
-  
+
   union {
     __OM  uint8_t CTRL;                         /*!< (@ 0x00000000) I2C mode Control(WO)                                       */
     __IM  uint8_t STATUS;                       /*!< (@ 0x00000000) I2C mode Status(RO)                                        */
@@ -878,4 +880,4 @@ typedef enum {                                  /*!< MEC_I2C_SMB0_PROM_CTRL_ARAC
 
 /** @} */ /* End of group EnumValue_peripherals */
 
-#endif /* _MEC5_I2C_SMB_V3_7_H */
+#endif /* _MEC5_I2C_SMB_V3_8_H */
