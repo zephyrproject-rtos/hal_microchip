@@ -1082,34 +1082,61 @@ int mec_hal_i2c_nl_cm_start_by_id(uint8_t i2c_ctrl_id, uint16_t ntx, uint16_t nr
     return mec_hal_i2c_nl_cm_start(regs, ntx, nrx, flags, cm_cmd_val);
 }
 
-/* I2C-NL FSM clears MRUN and MPROCEED when both wrCnt and rdCnt transition to 0.
- * MRUN==1 and MPROCEED is cleared to 0 when FSM requires software to reconfigure
- * DMA for the direction change from write to read. After the Rpt-Start and rdAddr
- * are transmitted and (n)ACK'd the FSM clears MPROCEED only.
- * NOTE: any error should clear MRUN and MPROCEED.
+/* I2C-NL FSM clears MRUN and MPROCEED when both wrCnt and rdCnt transition to
+ * 0. MRUN==1 and MPROCEED is cleared to 0 when FSM requires software to
+ * reconfigure DMA for the direction change from write to read. After the
+ * Rpt-Start and rdAddr are transmitted and (n)ACK'd the FSM clears MPROCEED
+ * only. NOTE: any error should clear MRUN and MPROCEED.
  */
-uint32_t mec_hal_i2c_nl_cm_event(struct mec_i2c_smb_ctx *ctx)
+uint32_t mec_hal_i2c_nl_get_events(struct mec_i2c_smb_ctx *ctx, uint8_t is_tm)
 {
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
-        return MEC_I2C_NL_CM_EVENT_NONE;
+        return 0;
     }
 #endif
     struct mec_i2c_smb_regs *regs = ctx->base;
-    uint32_t cm_cmd = regs->CM_CMD;
-    uint16_t wrcnt = (uint16_t)((regs->EXTLEN & 0xffu) << 8);
-    uint16_t rdcnt = (uint16_t)(regs->EXTLEN & 0xff00u);
+    uint32_t cfg = 0, cmd = 0, sts = 0, events = 0, extlen = 0;
+    uint32_t rdcnt = 0, wrcnt = 0;
 
-    wrcnt |= (uint16_t)((cm_cmd >> 16) & 0xffu);
-    rdcnt |= (uint16_t)((cm_cmd >> 24) & 0xffu);
-
-    if (!cm_cmd && !(ctx->wrcnt || ctx->rdcnt)) {
-        return MEC_I2C_NL_CM_EVENT_ALL_DONE;
-    } else if (rdcnt && !wrcnt && ((cm_cmd & 0x03u) == 0x01)) {
-        return MEC_I2C_NL_CM_EVENT_W2R;
-    } else {
-        return MEC_I2C_NL_CM_EVENT_NONE;
+    cmd = regs->CM_CMD;
+    if (is_tm) {
+        cmd = regs->TM_CMD;
     }
+
+    extlen = regs->EXTLEN;
+    wrcnt = ((extlen & 0xffu) << 8) | ((cmd >> 16) & 0xffu);
+    rdcnt = (extlen & 0xff00u) | ((cmd >> 24) & 0xffu);
+
+    cfg = regs->CONFIG;
+    sts = (regs->COMPL & 0xffffff00u) | (regs->STATUS & 0xffu);
+
+    if ((cfg & sts) & MEC_BIT(MEC_I2C_SMB_COMPL_IDLE_Pos)) { /* same bit position */
+        events |= MEC_BIT(MEC_I2C_NL_EVENT_IDLE_POS);
+    }
+
+    if (sts & MEC_BIT(4)) {
+        events |= MEC_BIT(MEC_I2C_NL_EVENT_BERR_POS);
+    }
+
+    if (sts & MEC_BIT(1)) {
+        events |= MEC_BIT(MEC_I2C_NL_EVENT_LAB_POS);
+    }
+
+    if (sts & MEC_BIT(24)) {
+        events |= MEC_BIT(MEC_I2C_NL_EVENT_NACK_POS);
+    }
+
+    /* Write-to-Read turn around is wrcnt==0, rdcnd!=0, and cmd[1:0]==01b */
+    if ((cmd & 0x03u) == 0x01u) {
+        events |= MEC_BIT(MEC_I2C_NL_EVENT_PAUSE_POS);
+    }
+
+    if (!rdcnt && !wrcnt && !(cmd & 0x03u)) {
+        events |= MEC_BIT(MEC_I2C_NL_EVENT_DONE_POS);
+    }
+
+	return events;
 }
 
 int mec_hal_i2c_nl_cmd_clear(struct mec_i2c_smb_ctx *ctx, uint8_t is_tm)
@@ -1373,38 +1400,13 @@ int mec_hal_i2c_nl_tm_config(struct mec_i2c_smb_ctx *ctx, uint16_t ntx, uint16_t
     return MEC_RET_OK;
 }
 
-uint32_t mec_hal_i2c_nl_tm_event(struct mec_i2c_smb_ctx *ctx)
-{
-#ifdef MEC_I2C_BASE_CHECK
-    if (!ctx || !ctx->base) {
-        return MEC_I2C_NL_TM_EVENT_NONE;
-    }
-#endif
-    struct mec_i2c_smb_regs *regs = ctx->base;
-    uint32_t tm_cmd = regs->TM_CMD;
-    uint32_t elen = regs->EXTLEN;
-    uint16_t wrcnt = (uint16_t)((elen >> 8) & 0xff00u);
-    uint16_t rdcnt = (uint16_t)((elen >> 16) & 0xff00u);
-
-    wrcnt |= (uint16_t)((tm_cmd >> 8) & 0xffu);
-    rdcnt |= (uint16_t)((tm_cmd >> 16) & 0xffu);
-
-    if (!tm_cmd && (ctx->wrcnt || ctx->rdcnt)) {
-        return MEC_I2C_NL_TM_EVENT_ALL_DONE;
-    } else if (rdcnt && !wrcnt && ((tm_cmd & 0x03u) == 0x01)) {
-        return MEC_I2C_NL_TM_EVENT_W2R;
-    } else {
-        return MEC_I2C_NL_TM_EVENT_NONE;
-    }
-}
-
 uint32_t mec_hal_i2c_nl_tm_xfr_count_get(struct mec_i2c_smb_ctx *ctx, uint8_t is_rx)
 {
     uint32_t cnt = 0;
 
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
-        return MEC_I2C_NL_TM_EVENT_NONE;
+        return 0;
     }
 #endif
     struct mec_i2c_smb_regs *regs = ctx->base;
@@ -1466,7 +1468,7 @@ uint32_t mec_hal_i2c_nl_tm_transfered(struct mec_i2c_smb_ctx *ctx, uint8_t is_rx
 
 #ifdef MEC_I2C_BASE_CHECK
     if (!ctx || !ctx->base) {
-        return MEC_I2C_NL_TM_EVENT_NONE;
+        return 0;
     }
 #endif
 
