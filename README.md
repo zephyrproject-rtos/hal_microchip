@@ -5,24 +5,51 @@ The HAL is organized following the directory structure detailed below.
 
 ## Directory Structure
 
-The directory is composed by six parts:
+The directory is composed of:
+
 ```
 .
-├── pic32c
+├── CMakeLists.txt
+├── dts
+│   └── microchip
+│       └── mec5
+│           ├── MEC5 PINCTRL DTSI files
 ├── include
+│   └── dt-bindings
+│       └── pinctrl
+│           ├── PIC32CX PINCTRL C header files
+├── mec
+│   ├── Legacy MEC150x/2x C chip and peripheral header files
+├── mec5
+│   ├── CMakeLists.txt
+│   ├── devices
+│   │   ├── MEC5 HAL chip and peripheral header files
+│   └── drivers
+│       ├── MEC5 HAL peripheral C source files
+├── mpfs
+│   ├── PolarFire board and HAL files
+├── pic32c
+│   ├── PIC32CX chip and peripheral HAL files
 ├── pinconfigs
+│   ├── PIC32CX pin config definition XML
 ├── README.md
 ├── scripts
+│   ├── PIC32C Python pin config generation scripts
 └── zephyr
+    └── module.yml
+
 ```
 
+ - MEC5 chips Zephyr device tree PINCFG DTSI files
  - PIC32C SoC specific include libraries.
  - Includes specific for these platforms
    - devicetree bindings
- - [Pin definitions](pinconfigs/README.md)
- - [Scripts](scripts/README.md) used for code generation
+ - Legacy MEC152x header files
+ - MEC5 HAL chip and peripheral header and C source files
+ - [PIC32C Pin definitions](pinconfigs/README.md)
+ - This README file
+ - [PIC32C Scripts](scripts/README.md) used for code generation
  - ZephyrRTOS module directory (`zephyr`).
- - This README file.
 
 # How to submit code
 
@@ -32,8 +59,30 @@ For more information about External Modules see
 [Modules Section](https://docs.zephyrproject.org/latest/develop/modules.html) in special
 [Submitting Changes to Modules](https://docs.zephyrproject.org/latest/develop/modules.html#submitting-changes-to-modules)
 
+## MEC5 HAL
+The MEC5 HAL currently support Microchip MEC172x (named MECH172x in Zephyr SoC), MEC174x, and MEC175x.<br/>
+On the Zephyr side the SoC layer build rules set CONFIG_HAS_MEC5_HAL=y.<br/>
+The top level CMakeLists.txt then processes the hal_microchip/mec5 subfolder.<br/>
+The MEC5 HAL device is chosen using Zephyr CONFIG_SOC_SERIES and CONFIG_SOC.<br/>
+Zephyr SoC layer soc.h for MECH172x, MEC174x, and MEC175x include device_mec5.h from the MEC5 HAL.<br/>
+Zephyr drivres and applications should include individual HAL API headers to access specific peripherals.<br/>
 
-## Repository specific guidelines
+## MPFS PolarFile HAL
+The Microchip Polarfire SOC HAL was downloaded from:
+
+https://github.com/polarfire-soc/platform
+
+Addditionally, the bare metal samples from https://github.com/polarfire-soc/polarfire-soc-bare-metal-examples
+are required to extract the Icicle Kit bopard configuration files.
+
+Both are from Tag 21.08
+
+The following changes were made:
+
+ - platform-2021.08 top folder renamed to mpfs and located at modules/hal/microchip
+ - The applications/mpfs-pmp-demo/mpfs-pmp-app-u54-1/src/boards folder is copied to modules/hal/microchip/mpfs
+
+## PIC32C Repository specific guidelines
 
  - When submitting an updated firmware library version, it is important to make
    sure that the last firmware version will be merged. The library version is
@@ -54,7 +103,7 @@ For more information about External Modules see
 The above are general guidelines and exceptions could happen. In this case, the
 exception should be addressed at review phase.
 
-## The standard API
+## PIC32C Standard API
 
 The PIC32C/PIC32M standard API define all information to access Microchip SoC's
 peripherals. This library does not have namespaces and prefixes which
