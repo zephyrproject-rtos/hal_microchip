@@ -84,15 +84,18 @@ void mec_hal_ecs_debug_port(enum mec_debug_mode mode)
         break;
     case MEC_DEBUG_MODE_JTAG:
         msk = MEC_ECS_DBG_CTRL_CFG_Msk;
-        val = MEC_BIT(MEC_ECS_DBG_CTRL_EN_Pos) | (uint32_t)MEC_ECS_DBG_CTRL_CFG_JTAG;
+        val = MEC_BIT(MEC_ECS_DBG_CTRL_EN_Pos) |
+            (uint32_t)(MEC_ECS_DBG_CTRL_CFG_JTAG << MEC_ECS_DBG_CTRL_CFG_Pos);
         break;
     case MEC_DEBUG_MODE_SWD:
         msk = MEC_ECS_DBG_CTRL_CFG_Msk;
-        val = MEC_BIT(MEC_ECS_DBG_CTRL_EN_Pos) | (uint32_t)MEC_ECS_DBG_CTRL_CFG_SWD_ONLY;
+        val = MEC_BIT(MEC_ECS_DBG_CTRL_EN_Pos) |
+            (uint32_t)(MEC_ECS_DBG_CTRL_CFG_SWD_ONLY << MEC_ECS_DBG_CTRL_CFG_Pos);
         break;
     case MEC_DEBUG_MODE_SWD_SWV:
         msk = MEC_ECS_DBG_CTRL_CFG_Msk;
-        val = MEC_BIT(MEC_ECS_DBG_CTRL_EN_Pos) | (uint32_t)MEC_ECS_DBG_CTRL_CFG_SWD_SWV;
+        val = MEC_BIT(MEC_ECS_DBG_CTRL_EN_Pos) |
+            (uint32_t)(MEC_ECS_DBG_CTRL_CFG_SWD_SWV << MEC_ECS_DBG_CTRL_CFG_Pos);
         break;
     default:
         return;
