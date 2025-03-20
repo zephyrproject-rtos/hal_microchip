@@ -52,7 +52,7 @@ uint8_t mec_hal_ecs_peci_vtt_ref_pin_is_enabled(void);
 #define ECS_ETM_PINS_DISABLE 0
 #define ECS_ETM_PINS_ENABLE 1
 
-void mec_ecs_etm_pins(uint8_t enable);
+void mec_hal_ecs_etm_pins(uint8_t enable);
 
 enum mec_debug_mode {
     MEC_DEBUG_MODE_DISABLE = 0,
