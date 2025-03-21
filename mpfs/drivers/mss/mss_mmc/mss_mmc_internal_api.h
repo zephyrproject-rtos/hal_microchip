@@ -1,11 +1,15 @@
 /*******************************************************************************
- * Copyright 2019-2020 Microchip FPGA Embedded Systems Solutions.
+ * Copyright 2019 Microchip FPGA Embedded Systems Solutions.
  *
  * SPDX-License-Identifier: MIT
  *
- * PolarFire SoC MSS eMMC SD driver API's for internal use cases.
+ * @file mss_mmc_internal_api.h
+ * @author Microchip FPGA Embedded Systems Solutions
+ * @brief PolarFire SoC Microprocessor Subsystem (MSS) eMMC SD driver API's for
+ * internal use cases.
  *
  */
+
 /*=========================================================================*//**
   Note: The MSS_MMC_pause_sdma_write_hpi(), MSS_MMC_resume_sdma_write_hpi(),
   MSS_MMC_packed_read(), MSS_MMC_packed_write(), MSS_MMC_cq_single_task_write(),
@@ -61,8 +65,8 @@
   only.
 
  *//*=========================================================================*/
-#ifndef __MSS_MMC_INTERNAL_API_H
-#define __MSS_MMC_INTERNAL_API_H
+#ifndef MSS_MMC_INTERNAL_API_H
+#define MSS_MMC_INTERNAL_API_H
 
 #ifdef __cplusplus
 extern "C"
@@ -607,4 +611,4 @@ MSS_MMC_cq_single_task_read
 }
 #endif
 
-#endif  /* __MSS_MMC_INTERNAL_API_H */
+#endif  /* MSS_MMC_INTERNAL_API_H */
