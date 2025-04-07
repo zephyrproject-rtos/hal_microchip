@@ -383,22 +383,22 @@
 /* -------- FLEX_US_IER : (FLEXCOM Offset: 0x208) ( /W 32) USART Interrupt Enable Register -------- */
 #define US_IER_RXRDY_Pos                 _UINT32_(0)                                          /* (US_IER) RXRDY Interrupt Enable Position */
 #define US_IER_RXRDY_Msk                 (_UINT32_(0x1) << US_IER_RXRDY_Pos)             /* (US_IER) RXRDY Interrupt Enable Mask */
-#define US_IER_RXRDY(value)              (US_IER_RXRDY_Msk & (_UINT32_(value) << US_IER_RXRDY_Pos)) /* Assignment of value for RXRDY in the US_IER register */
+#define US_IER_RXRDY                     (US_IER_RXRDY_Msk)
 #define US_IER_TXRDY_Pos                 _UINT32_(1)                                          /* (US_IER) TXRDY Interrupt Enable Position */
 #define US_IER_TXRDY_Msk                 (_UINT32_(0x1) << US_IER_TXRDY_Pos)             /* (US_IER) TXRDY Interrupt Enable Mask */
-#define US_IER_TXRDY(value)              (US_IER_TXRDY_Msk & (_UINT32_(value) << US_IER_TXRDY_Pos)) /* Assignment of value for TXRDY in the US_IER register */
+#define US_IER_TXRDY                     (US_IER_TXRDY_Msk)
 #define US_IER_RXBRK_Pos                 _UINT32_(2)                                          /* (US_IER) Receiver Break Interrupt Enable Position */
 #define US_IER_RXBRK_Msk                 (_UINT32_(0x1) << US_IER_RXBRK_Pos)             /* (US_IER) Receiver Break Interrupt Enable Mask */
 #define US_IER_RXBRK(value)              (US_IER_RXBRK_Msk & (_UINT32_(value) << US_IER_RXBRK_Pos)) /* Assignment of value for RXBRK in the US_IER register */
 #define US_IER_OVRE_Pos                  _UINT32_(5)                                          /* (US_IER) Overrun Error Interrupt Enable Position */
 #define US_IER_OVRE_Msk                  (_UINT32_(0x1) << US_IER_OVRE_Pos)              /* (US_IER) Overrun Error Interrupt Enable Mask */
-#define US_IER_OVRE(value)               (US_IER_OVRE_Msk & (_UINT32_(value) << US_IER_OVRE_Pos)) /* Assignment of value for OVRE in the US_IER register */
+#define US_IER_OVRE                      (US_IER_OVRE_Msk)
 #define US_IER_FRAME_Pos                 _UINT32_(6)                                          /* (US_IER) Framing Error Interrupt Enable Position */
 #define US_IER_FRAME_Msk                 (_UINT32_(0x1) << US_IER_FRAME_Pos)             /* (US_IER) Framing Error Interrupt Enable Mask */
-#define US_IER_FRAME(value)              (US_IER_FRAME_Msk & (_UINT32_(value) << US_IER_FRAME_Pos)) /* Assignment of value for FRAME in the US_IER register */
+#define US_IER_FRAME                     (US_IER_FRAME_Msk)
 #define US_IER_PARE_Pos                  _UINT32_(7)                                          /* (US_IER) Parity Error Interrupt Enable Position */
 #define US_IER_PARE_Msk                  (_UINT32_(0x1) << US_IER_PARE_Pos)              /* (US_IER) Parity Error Interrupt Enable Mask */
-#define US_IER_PARE(value)               (US_IER_PARE_Msk & (_UINT32_(value) << US_IER_PARE_Pos)) /* Assignment of value for PARE in the US_IER register */
+#define US_IER_PARE                      (US_IER_PARE_Msk)
 #define US_IER_TIMEOUT_Pos               _UINT32_(8)                                          /* (US_IER) Timeout Interrupt Enable Position */
 #define US_IER_TIMEOUT_Msk               (_UINT32_(0x1) << US_IER_TIMEOUT_Pos)           /* (US_IER) Timeout Interrupt Enable Mask */
 #define US_IER_TIMEOUT(value)            (US_IER_TIMEOUT_Msk & (_UINT32_(value) << US_IER_TIMEOUT_Pos)) /* Assignment of value for TIMEOUT in the US_IER register */
@@ -459,22 +459,22 @@
 /* -------- FLEX_US_IDR : (FLEXCOM Offset: 0x20C) ( /W 32) USART Interrupt Disable Register -------- */
 #define US_IDR_RXRDY_Pos                 _UINT32_(0)                                          /* (US_IDR) RXRDY Interrupt Disable Position */
 #define US_IDR_RXRDY_Msk                 (_UINT32_(0x1) << US_IDR_RXRDY_Pos)             /* (US_IDR) RXRDY Interrupt Disable Mask */
-#define US_IDR_RXRDY(value)              (US_IDR_RXRDY_Msk & (_UINT32_(value) << US_IDR_RXRDY_Pos)) /* Assignment of value for RXRDY in the US_IDR register */
+#define US_IDR_RXRDY                     (US_IDR_RXRDY_Msk)
 #define US_IDR_TXRDY_Pos                 _UINT32_(1)                                          /* (US_IDR) TXRDY Interrupt Disable Position */
 #define US_IDR_TXRDY_Msk                 (_UINT32_(0x1) << US_IDR_TXRDY_Pos)             /* (US_IDR) TXRDY Interrupt Disable Mask */
-#define US_IDR_TXRDY(value)              (US_IDR_TXRDY_Msk & (_UINT32_(value) << US_IDR_TXRDY_Pos)) /* Assignment of value for TXRDY in the US_IDR register */
+#define US_IDR_TXRDY                     (US_IDR_TXRDY_Msk)
 #define US_IDR_RXBRK_Pos                 _UINT32_(2)                                          /* (US_IDR) Receiver Break Interrupt Disable Position */
 #define US_IDR_RXBRK_Msk                 (_UINT32_(0x1) << US_IDR_RXBRK_Pos)             /* (US_IDR) Receiver Break Interrupt Disable Mask */
 #define US_IDR_RXBRK(value)              (US_IDR_RXBRK_Msk & (_UINT32_(value) << US_IDR_RXBRK_Pos)) /* Assignment of value for RXBRK in the US_IDR register */
 #define US_IDR_OVRE_Pos                  _UINT32_(5)                                          /* (US_IDR) Overrun Error Interrupt Disable Position */
 #define US_IDR_OVRE_Msk                  (_UINT32_(0x1) << US_IDR_OVRE_Pos)              /* (US_IDR) Overrun Error Interrupt Disable Mask */
-#define US_IDR_OVRE(value)               (US_IDR_OVRE_Msk & (_UINT32_(value) << US_IDR_OVRE_Pos)) /* Assignment of value for OVRE in the US_IDR register */
+#define US_IDR_OVRE                      (US_IDR_OVRE_Msk)
 #define US_IDR_FRAME_Pos                 _UINT32_(6)                                          /* (US_IDR) Framing Error Interrupt Disable Position */
 #define US_IDR_FRAME_Msk                 (_UINT32_(0x1) << US_IDR_FRAME_Pos)             /* (US_IDR) Framing Error Interrupt Disable Mask */
-#define US_IDR_FRAME(value)              (US_IDR_FRAME_Msk & (_UINT32_(value) << US_IDR_FRAME_Pos)) /* Assignment of value for FRAME in the US_IDR register */
+#define US_IDR_FRAME                     (US_IDR_FRAME_Msk)
 #define US_IDR_PARE_Pos                  _UINT32_(7)                                          /* (US_IDR) Parity Error Interrupt Disable Position */
 #define US_IDR_PARE_Msk                  (_UINT32_(0x1) << US_IDR_PARE_Pos)              /* (US_IDR) Parity Error Interrupt Disable Mask */
-#define US_IDR_PARE(value)               (US_IDR_PARE_Msk & (_UINT32_(value) << US_IDR_PARE_Pos)) /* Assignment of value for PARE in the US_IDR register */
+#define US_IDR_PARE                      (US_IDR_PARE_Msk)
 #define US_IDR_TIMEOUT_Pos               _UINT32_(8)                                          /* (US_IDR) Timeout Interrupt Disable Position */
 #define US_IDR_TIMEOUT_Msk               (_UINT32_(0x1) << US_IDR_TIMEOUT_Pos)           /* (US_IDR) Timeout Interrupt Disable Mask */
 #define US_IDR_TIMEOUT(value)            (US_IDR_TIMEOUT_Msk & (_UINT32_(value) << US_IDR_TIMEOUT_Pos)) /* Assignment of value for TIMEOUT in the US_IDR register */
@@ -537,10 +537,10 @@
 
 #define US_IMR_RXRDY_Pos                 _UINT32_(0)                                          /* (US_IMR) RXRDY Interrupt Mask Position */
 #define US_IMR_RXRDY_Msk                 (_UINT32_(0x1) << US_IMR_RXRDY_Pos)             /* (US_IMR) RXRDY Interrupt Mask Mask */
-#define US_IMR_RXRDY(value)              (US_IMR_RXRDY_Msk & (_UINT32_(value) << US_IMR_RXRDY_Pos)) /* Assignment of value for RXRDY in the US_IMR register */
+#define US_IMR_RXRDY                     (US_IMR_RXRDY_Msk)
 #define US_IMR_TXRDY_Pos                 _UINT32_(1)                                          /* (US_IMR) TXRDY Interrupt Mask Position */
 #define US_IMR_TXRDY_Msk                 (_UINT32_(0x1) << US_IMR_TXRDY_Pos)             /* (US_IMR) TXRDY Interrupt Mask Mask */
-#define US_IMR_TXRDY(value)              (US_IMR_TXRDY_Msk & (_UINT32_(value) << US_IMR_TXRDY_Pos)) /* Assignment of value for TXRDY in the US_IMR register */
+#define US_IMR_TXRDY                     (US_IMR_TXRDY_Msk)
 #define US_IMR_RXBRK_Pos                 _UINT32_(2)                                          /* (US_IMR) Receiver Break Interrupt Mask Position */
 #define US_IMR_RXBRK_Msk                 (_UINT32_(0x1) << US_IMR_RXBRK_Pos)             /* (US_IMR) Receiver Break Interrupt Mask Mask */
 #define US_IMR_RXBRK(value)              (US_IMR_RXBRK_Msk & (_UINT32_(value) << US_IMR_RXBRK_Pos)) /* Assignment of value for RXBRK in the US_IMR register */
@@ -620,7 +620,7 @@
 #define US_CSR_RXRDY_1                   (US_CSR_RXRDY_1_Val << US_CSR_RXRDY_Pos)   /* (US_CSR) FIFO Disabled: At least one complete character has been received and US_RHR has not yet been read. FIFO Enabled: At least one unread data is in the Receive FIFO Position */
 #define US_CSR_TXRDY_Pos                 _UINT32_(1)                                          /* (US_CSR) Transmitter Ready (cleared by writing US_THR) Position */
 #define US_CSR_TXRDY_Msk                 (_UINT32_(0x1) << US_CSR_TXRDY_Pos)             /* (US_CSR) Transmitter Ready (cleared by writing US_THR) Mask */
-#define US_CSR_TXRDY(value)              (US_CSR_TXRDY_Msk & (_UINT32_(value) << US_CSR_TXRDY_Pos)) /* Assignment of value for TXRDY in the US_CSR register */
+#define US_CSR_TXRDY                     (US_CSR_TXRDY_Msk)
 #define   US_CSR_TXRDY_0_Val             _UINT32_(0x0)                                        /* (US_CSR) FIFO Disabled: A character in US_THR is waiting to be transferred to the Transmit Shift Register, or an STTBRK command has been requested, or the transmitter is disabled. As soon as the transmitter is enabled, TXRDY becomes 1. FIFO Enabled: Transmit FIFO is full and cannot accept more data  */
 #define   US_CSR_TXRDY_1_Val             _UINT32_(0x1)                                        /* (US_CSR) FIFO Disabled: There is no character in US_THR. FIFO Enabled: Transmit FIFO is not full; one or more data can be written according to TXRDYM field configuration  */
 #define US_CSR_TXRDY_0                   (US_CSR_TXRDY_0_Val << US_CSR_TXRDY_Pos)   /* (US_CSR) FIFO Disabled: A character in US_THR is waiting to be transferred to the Transmit Shift Register, or an STTBRK command has been requested, or the transmitter is disabled. As soon as the transmitter is enabled, TXRDY becomes 1. FIFO Enabled: Transmit FIFO is full and cannot accept more data Position */
@@ -662,7 +662,7 @@
 #define US_CSR_TIMEOUT_1                 (US_CSR_TIMEOUT_1_Val << US_CSR_TIMEOUT_Pos) /* (US_CSR) There has been a timeout since the last Start Timeout command (US_CR.STTTO). Position */
 #define US_CSR_TXEMPTY_Pos               _UINT32_(9)                                          /* (US_CSR) Transmitter Empty (cleared by writing US_THR) Position */
 #define US_CSR_TXEMPTY_Msk               (_UINT32_(0x1) << US_CSR_TXEMPTY_Pos)           /* (US_CSR) Transmitter Empty (cleared by writing US_THR) Mask */
-#define US_CSR_TXEMPTY(value)            (US_CSR_TXEMPTY_Msk & (_UINT32_(value) << US_CSR_TXEMPTY_Pos)) /* Assignment of value for TXEMPTY in the US_CSR register */
+#define US_CSR_TXEMPTY                   (US_CSR_TXEMPTY_Msk)
 #define   US_CSR_TXEMPTY_0_Val           _UINT32_(0x0)                                        /* (US_CSR) There are characters in either US_THR or the Transmit Shift Register, or the transmitter is disabled.  */
 #define   US_CSR_TXEMPTY_1_Val           _UINT32_(0x1)                                        /* (US_CSR) There are no characters in US_THR, nor in the Transmit Shift Register.  */
 #define US_CSR_TXEMPTY_0                 (US_CSR_TXEMPTY_0_Val << US_CSR_TXEMPTY_Pos) /* (US_CSR) There are characters in either US_THR or the Transmit Shift Register, or the transmitter is disabled. Position */
