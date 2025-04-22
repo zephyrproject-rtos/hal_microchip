@@ -309,6 +309,16 @@
 #define TRNG_WPMR_REG_OFST             _UINT32_(0xE4)      /* (TRNG_WPMR) Write Protection Mode Register Offset */
 #define TRNG_WPSR_REG_OFST             _UINT32_(0xE8)      /* (TRNG_WPSR) Write Protection Status Register Offset */
 
+/* The definitions used in Zephyr source for register fields have different format
+ * with the ones in headers from SAMA7G5_DFP.
+ * Redefine them so that the current source code could be re-used with minimum changes.
+ */
+#undef TRNG_ISR_DATRDY
+#define TRNG_ISR_DATRDY TRNG_ISR_DATRDY_Msk
+#undef TRNG_CR_ENABLE
+#define TRNG_CR_ENABLE TRNG_CR_ENABLE_Msk
+#define TRNG_CR_KEY_PASSWD TRNG_CR_WAKEY_PASSWD
+
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))
 /* TRNG register API structure */
 typedef struct
@@ -328,6 +338,7 @@ typedef struct
   __I   uint32_t                       TRNG_WPSR;          /* Offset: 0xE8 (R/   32) Write Protection Status Register */
 } trng_registers_t;
 
+typedef trng_registers_t Trng;
 
 #endif /* !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__)) */
 #endif /* _SAMA7G5_TRNG_COMPONENT_H_ */
