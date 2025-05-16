@@ -1,15 +1,15 @@
 /*******************************************************************************
- * (c) Copyright 2008-2021 Microchip FPGA Embedded Systems Solutions.
+ * (c) Copyright 2008-2023 Microchip FPGA Embedded Systems Solutions.
  * 
+ * SPDX-License-Identifier: MIT
+ *
  * @file core_gpio.c
  * @author Microchip FPGA Embedded Systems Solutions
  * @brief CoreGPIO bare metal driver implementation.
  *
  */
- 
-#include "core_gpio.h"
 #include "coregpio_regs.h"
-#include "hal/hal.h"
+#include "core_gpio.h"
 
 /*-------------------------------------------------------------------------*//**
  *
