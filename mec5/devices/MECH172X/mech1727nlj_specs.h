@@ -30,7 +30,7 @@
 #define MEC5_MEC1727_NLJ
 #define MEC5_PKG176
 
-#define MEC_FAM_ID  4
+#define MEC_SERIES_ID  2
 
 #define MEC5_FAM2_ID        0x22u
 #define MEC172X_FAM_ID      0x00220000u
