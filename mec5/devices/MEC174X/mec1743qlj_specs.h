@@ -89,7 +89,7 @@
 #define MEC5_GPIO_PORT2_BITMAP 0x3fff3ff7u /* GPIO 0100 - 0036 */
 #define MEC5_GPIO_PORT3_BITMAP 0x3f67ffffu /* GPIO 0140 - 0176 */
 #define MEC5_GPIO_PORT4_BITMAP 0x7fffffffu /* GPIO 0200 - 0236 */
-#define MEC5_GPIO_PORT5_BITMAP 0x0001fe7fu /* GPIO 0240 - 0276 */
+#define MEC5_GPIO_PORT5_BITMAP 0x0003fe7fu /* GPIO 0240 - 0276 */
 
 /* some pins may not implement Control2 register */
 #define MEC5_GPIO_PORT0_C2_BITMAP 0x7fffffffu

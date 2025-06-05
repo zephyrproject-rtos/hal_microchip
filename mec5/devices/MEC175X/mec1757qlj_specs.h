@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2024 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2025 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -26,13 +26,13 @@
 #ifndef __MEC1753QLJ_SPECS_H__
 #define __MEC1753QLJ_SPECS_H__
 
-/* MEC1753-QLJ */
-#define MEC5_MEC1753_QLJ
+/* MEC1757-QLJ */
+#define MEC5_MEC1757_QLJ
 #define MEC5_PKG176
 
 #define MEC5_FAM5_ID 0x29u
 #define MEC175X_FAM_ID 0x00290000u
-#define MEC1753QLJ_DEV_ID 0x00296700u
+#define MEC1757QLJ_DEV_ID 0x00297700u
 
 #define MEC5_CODE_SRAM_BASE 0xb0000
 #define MEC5_CODE_SRAM_SIZE 0x68000
@@ -112,8 +112,8 @@
 /* TX and RX each implement this number of Local DMA channels */
 #define MEC5_QSPI_LDMA_CHANNELS 3
 
-#define MEC5_GSPI_CTRL_VERSION 2
-#define MEC5_GSPI_INSTANCES 2
+#define MEC5_GPSPI_CTRL_VERSION 2
+#define MEC5_GPSPI_INSTANCES 2
 
 #define MEC5_UART_INSTANCES 4
 #define MEC5_UART_INSTANCE_MAP 0xfu
@@ -146,9 +146,12 @@
 #define MEC5_HAS_ROM_TIMER 1
 #define MEC5_HAS_PERIPH_PRIVILEGE 1
 
-#define MEC5_HAS_EEPROM 1
-#define MEC5_EEPROM_SIZE_IN_BYTES 8192
-#define MEC5_EEPROM_WRITE_PAGE_SIZE 32u
+#define MEC5_HAS_INTERNAL_SPI_FLASH 1
+#define MEC5_INTERNAL_SPI_FLASH_SIZE (512u * 1024u)
+#define MEC5_INTERNAL_SPI_FLASH_PAGE_SIZE 256u
+#define MEC5_INTERNAL_SPI_FLASH_ERASE_SIZE_1 (4u * 1024u)
+#define MEC5_INTERNAL_SPI_FLASH_ERASE_SIZE_2 0
+#define MEC5_INTERNAL_SPI_FLASH_ERASE_SIZE_3 (64u * 1024u)
 
 /* I3C controllers capable of Controller role only */
 #define MEC5_I3C_HOST_CTRL_INSTANCES 1
