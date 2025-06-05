@@ -1,6 +1,6 @@
 /**
  *
- * Copyright (c) 2024 Microchip Technology Inc. and its subsidiaries.
+ * Copyright (c) 2025 Microchip Technology Inc. and its subsidiaries.
  *
  * \asf_license_start
  *
@@ -23,16 +23,16 @@
  * \asf_license_stop
  *
  */
-#ifndef __MEC1753QLJ_SPECS_H__
-#define __MEC1753QLJ_SPECS_H__
+#ifndef __MEC5_SPECS_H__
+#define __MEC5_SPECS_H__
 
-/* MEC1753-QLJ */
-#define MEC5_MEC1753_QLJ
+/* MEC1747-QLJ */
+#define MEC5_MEC1747_QLJ
 #define MEC5_PKG176
 
-#define MEC5_FAM5_ID 0x29u
-#define MEC175X_FAM_ID 0x00290000u
-#define MEC1753QLJ_DEV_ID 0x00296700u
+#define MEC5_FAM4_ID 0x26u
+#define MEC174X_FAM_ID 0x00260000u
+#define MEC1747QLJ_DEV_ID 0x00267700u
 
 #define MEC5_CODE_SRAM_BASE 0xb0000
 #define MEC5_CODE_SRAM_SIZE 0x68000
@@ -43,8 +43,8 @@
 
 #define MEC5_ECIA_NUM_GIRQS 19
 #define MEC5_NVIC_NUM_REGS  7
-#define MEC5_MAX_NVIC_EXT_INPUTS 198
-#define MEC5_NVIC_NUM_IP_REGS 50
+#define MEC5_MAX_NVIC_EXT_INPUTS 194
+#define MEC5_NVIC_NUM_IP_REGS 49
 #define MEC5_ECIA_FIRST_GIRQ_NOS 8
 #define MEC5_ECIA_LAST_GIRQ_NOS 26
 
@@ -67,7 +67,7 @@
 #define MEC5_CTMR_TIMER_INSTANCES 4
 #define MEC5_CCT_INSTANCES 1
 
-#define MEC5_DMAC_NUM_CHANNELS 20
+#define MEC5_DMAC_NUM_CHANNELS 16
 
 #define MEC5_ESPI_HW_VER_15 15
 #define MEC5_ESPI_IOBAR_MSK_LO 0xf7ffffu
@@ -89,15 +89,15 @@
 #define MEC5_GPIO_PORT2_BITMAP 0x3fff3ff7u /* GPIO 0100 - 0036 */
 #define MEC5_GPIO_PORT3_BITMAP 0x3f67ffffu /* GPIO 0140 - 0176 */
 #define MEC5_GPIO_PORT4_BITMAP 0x7fffffffu /* GPIO 0200 - 0236 */
-#define MEC5_GPIO_PORT5_BITMAP 0x0001fe7fu /* GPIO 0240 - 0276 */
+#define MEC5_GPIO_PORT5_BITMAP 0x0003fe7fu /* GPIO 0240 - 0276 */
 
 /* some pins may not implement Control2 register */
-#define MEC5_GPIO_PORT0_C2_BITMAP 0x7fffffffu /* GPIO 0000 - 0036 */
-#define MEC5_GPIO_PORT1_C2_BITMAP 0x0fffffffu /* GPIO 0040 - 0076 */
-#define MEC5_GPIO_PORT2_C2_BITMAP 0x3fff3ff7u /* GPIO 0100 - 0036 */
-#define MEC5_GPIO_PORT3_C2_BITMAP 0x3f67ffffu /* GPIO 0140 - 0176 */
-#define MEC5_GPIO_PORT4_C2_BITMAP 0x7fffffffu /* GPIO 0200 - 0236 */
-#define MEC5_GPIO_PORT5_C2_BITMAP 0x0003fe7fu /* GPIO 0240 - 0276 */
+#define MEC5_GPIO_PORT0_C2_BITMAP 0x7fffffffu
+#define MEC5_GPIO_PORT1_C2_BITMAP 0x0fffffffu
+#define MEC5_GPIO_PORT2_C2_BITMAP 0x3fff3ff7u
+#define MEC5_GPIO_PORT3_C2_BITMAP 0x3f67ffffu
+#define MEC5_GPIO_PORT4_C2_BITMAP 0x7fffffffu
+#define MEC5_GPIO_PORT5_C2_BITMAP 0x0001fe7fu
 
 #define MEC5_I2C_SMB_HW_VER 38
 #define MEC5_I2C_SMB_INSTANCES 5
@@ -112,8 +112,8 @@
 /* TX and RX each implement this number of Local DMA channels */
 #define MEC5_QSPI_LDMA_CHANNELS 3
 
-#define MEC5_GSPI_CTRL_VERSION 2
-#define MEC5_GSPI_INSTANCES 2
+#define MEC5_GPSPI_CTRL_VERSION 2
+#define MEC5_GPSPI_INSTANCES 2
 
 #define MEC5_UART_INSTANCES 4
 #define MEC5_UART_INSTANCE_MAP 0xfu
@@ -146,20 +146,14 @@
 #define MEC5_HAS_ROM_TIMER 1
 #define MEC5_HAS_PERIPH_PRIVILEGE 1
 
-#define MEC5_HAS_EEPROM 1
-#define MEC5_EEPROM_SIZE_IN_BYTES 8192
-#define MEC5_EEPROM_WRITE_PAGE_SIZE 32u
-
-/* I3C controllers capable of Controller role only */
-#define MEC5_I3C_HOST_CTRL_INSTANCES 1
-#define MEC5_I3C_HOST_CTRL_PORTS 3
-/* I3C controllers capable of Target and Controller roles */
-#define MEC5_I3C_SEC_CTRL_INSTANCES 1
-#define MEC5_I3C_SEC_CTRL_PORTS 3
-
-#define MEC5_I3C_CTRL_INSTANCES (MEC5_I3C_HOST_CTRL_INSTANCES + MEC5_I3C_SEC_CTRL_INSTANCES)
+#define MEC5_HAS_INTERNAL_SPI_FLASH 1
+#define MEC5_INTERNAL_SPI_FLASH_SIZE (512u * 1024u)
+#define MEC5_INTERNAL_SPI_FLASH_PAGE_SIZE 256u
+#define MEC5_INTERNAL_SPI_FLASH_ERASE_SIZE_1 (4u * 1024u)
+#define MEC5_INTERNAL_SPI_FLASH_ERASE_SIZE_2 0
+#define MEC5_INTERNAL_SPI_FLASH_ERASE_SIZE_3 (64u * 1024u)
 
 /* BC-Link */
 #define MEC5_BCL_INSTANCES 1
 
-#endif /* __MEC1753QLJ_SPECS_H__ */
+#endif /* __MEC5_SPECS_H__ */
