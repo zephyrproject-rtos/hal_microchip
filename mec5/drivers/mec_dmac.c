@@ -84,16 +84,29 @@ const uint32_t dma_hwflc_reg_addrs[MEC_DMAC_DEV_ID_MAX * 2] = {
     (uint32_t)&MEC_I2C_SMB4->CM_RXB, (uint32_t)&MEC_I2C_SMB4->CM_TXB,
     0xDEADBEEFu, (uint32_t)&MEC_QSPI0->TX_FIFO,
     (uint32_t)&MEC_QSPI0->RX_FIFO, 0xDEADBEEFu,
-#if MEC5_GPSPI_CTRL_VERSION == 2
+#if MEC5_GSPI_INSTANCES > 0
+#if MEC5_GSPI_CTRL_VERSION == 2
     0xDEADBEEFu, (uint32_t)&MEC_GSPI0->TX_FIFO,
     (uint32_t)&MEC_GSPI0->RX_FIFO, 0xDEADBEEFu,
-    0xDEADBEEFu, (uint32_t)&MEC_GSPI1->TX_FIFO,
-    (uint32_t)&MEC_GSPI1->RX_FIFO, 0xDEADBEEFu,
 #else
     0xDEADBEEFu, (uint32_t)&MEC_GSPI0->TXD,
     (uint32_t)&MEC_GSPI0->RXD, 0xDEADBEEFu,
+#endif
+#else
+    0xDEADBEEFu, 0xDEADBEEFu,
+    0xDEADBEEFu, 0xDEADBEEFu,
+#endif
+#if MEC5_GSPI_INSTANCES > 1
+#if MEC5_GSPI_CTRL_VERSION == 2
+    0xDEADBEEFu, (uint32_t)&MEC_GSPI1->TX_FIFO,
+    (uint32_t)&MEC_GSPI1->RX_FIFO, 0xDEADBEEFu,
+#else
     0xDEADBEEFu, (uint32_t)&MEC_GSPI1->TXD,
     (uint32_t)&MEC_GSPI1->RXD, 0xDEADBEEFu,
+#endif
+#else
+    0xDEADBEEFu, 0xDEADBEEFu,
+    0xDEADBEEFu, 0xDEADBEEFu,
 #endif
 #if MEC5_DMAC_NUM_CHANNELS == 20
     0xDEADBEEFu, (uint32_t)&MEC_I3C_HOST0->TX_DATA,
