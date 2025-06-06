@@ -43,6 +43,9 @@
 #elif defined (CONFIG_SOC_MECH1727_NSZ)
     #include <mech1727nsz_specs.h>
     #include <mech1727_nsz.h>
+#elif defined (CONFIG_SOC_MEC1653B_NSZ)
+    #include <mec1653b_nsz_specs.h>
+    #include <mec1653b_nsz.h>
 #else
     #error "No valid SoC defined!"
 #endif
