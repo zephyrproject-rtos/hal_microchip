@@ -112,7 +112,8 @@
 /* TX and RX each implement this number of Local DMA channels */
 #define MEC5_QSPI_LDMA_CHANNELS 3
 
-#define MEC5_GPSPI_CTRL_VERSION 2
+#define MEC5_GSPI_CTRL_VERSION 2
+#define MEC5_GSPI_INSTANCES 2
 
 #define MEC5_UART_INSTANCES 3
 #define MEC5_UART_INSTANCE_MAP 0x7u
