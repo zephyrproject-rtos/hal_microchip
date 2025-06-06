@@ -68,54 +68,6 @@ const uint32_t dmac_ecia_info_table[MEC5_DMAC_NUM_CHANNELS] = {
 #endif
 };
 
-/* index using (enum mec_dmac_hwfc_dev_id * 2) + direction
- * where direction is 0(dev2Mem) or 1(mem2dev)
- */
-const uint32_t dma_hwflc_reg_addrs[MEC_DMAC_DEV_ID_MAX * 2] = {
-    (uint32_t)&MEC_I2C_SMB0->TM_RXB, (uint32_t)&MEC_I2C_SMB0->TM_TXB, /* dev2mem, mem2dev */
-    (uint32_t)&MEC_I2C_SMB0->CM_RXB, (uint32_t)&MEC_I2C_SMB0->CM_TXB,
-    (uint32_t)&MEC_I2C_SMB1->TM_RXB, (uint32_t)&MEC_I2C_SMB1->TM_TXB,
-    (uint32_t)&MEC_I2C_SMB1->CM_RXB, (uint32_t)&MEC_I2C_SMB1->CM_TXB,
-    (uint32_t)&MEC_I2C_SMB2->TM_RXB, (uint32_t)&MEC_I2C_SMB2->TM_TXB,
-    (uint32_t)&MEC_I2C_SMB2->CM_RXB, (uint32_t)&MEC_I2C_SMB2->CM_TXB,
-    (uint32_t)&MEC_I2C_SMB3->TM_RXB, (uint32_t)&MEC_I2C_SMB3->TM_TXB,
-    (uint32_t)&MEC_I2C_SMB3->CM_RXB, (uint32_t)&MEC_I2C_SMB3->CM_TXB,
-    (uint32_t)&MEC_I2C_SMB4->TM_RXB, (uint32_t)&MEC_I2C_SMB4->TM_TXB,
-    (uint32_t)&MEC_I2C_SMB4->CM_RXB, (uint32_t)&MEC_I2C_SMB4->CM_TXB,
-    0xDEADBEEFu, (uint32_t)&MEC_QSPI0->TX_FIFO,
-    (uint32_t)&MEC_QSPI0->RX_FIFO, 0xDEADBEEFu,
-#if MEC5_GSPI_INSTANCES > 0
-#if MEC5_GSPI_CTRL_VERSION == 2
-    0xDEADBEEFu, (uint32_t)&MEC_GSPI0->TX_FIFO,
-    (uint32_t)&MEC_GSPI0->RX_FIFO, 0xDEADBEEFu,
-#else
-    0xDEADBEEFu, (uint32_t)&MEC_GSPI0->TXD,
-    (uint32_t)&MEC_GSPI0->RXD, 0xDEADBEEFu,
-#endif
-#else
-    0xDEADBEEFu, 0xDEADBEEFu,
-    0xDEADBEEFu, 0xDEADBEEFu,
-#endif
-#if MEC5_GSPI_INSTANCES > 1
-#if MEC5_GSPI_CTRL_VERSION == 2
-    0xDEADBEEFu, (uint32_t)&MEC_GSPI1->TX_FIFO,
-    (uint32_t)&MEC_GSPI1->RX_FIFO, 0xDEADBEEFu,
-#else
-    0xDEADBEEFu, (uint32_t)&MEC_GSPI1->TXD,
-    (uint32_t)&MEC_GSPI1->RXD, 0xDEADBEEFu,
-#endif
-#else
-    0xDEADBEEFu, 0xDEADBEEFu,
-    0xDEADBEEFu, 0xDEADBEEFu,
-#endif
-#if MEC5_DMAC_NUM_CHANNELS == 20
-    0xDEADBEEFu, (uint32_t)&MEC_I3C_HOST0->TX_DATA,
-    (uint32_t)&MEC_I3C_HOST0->RX_DATA, 0xDEADBEEFu,
-    0xDEADBEEFu, (uint32_t)&MEC_I3C_SEC0->TX_DATA,
-    (uint32_t)&MEC_I3C_SEC0->RX_DATA, 0xDEADBEEFu,
-#endif
-};
-
 #ifdef MEC_DMAC_DEBUG_REGS
 struct mec_dma_chan_regs_save {
     uint32_t  actv;
@@ -304,19 +256,6 @@ int mec_hal_dmac_init(uint32_t chan_mask)
     mec_hal_dma_chan_ia_enable_mask(chan_mask);
 
     return MEC_RET_OK;
-}
-
-static uint32_t mec_hal_dma_dev_addr(enum mec_dmac_hwfc_dev_id hwfc_id, enum mec_dmac_dir dir)
-{
-    uint32_t devAddr = 0xDEADBEEFu;
-    uint32_t idx = 0;
-
-    if (hwfc_id < MEC_DMAC_DEV_ID_MAX) {
-        idx = ((uint32_t)hwfc_id * 2u) + ((uint32_t)dir & 0x1u);
-        devAddr = dma_hwflc_reg_addrs[idx];
-    }
-
-    return devAddr;
 }
 
 uintptr_t mec_hal_dma_chan_reg_addr(enum mec_dmac_channel chan)
@@ -1025,76 +964,6 @@ int mec_hal_dma_chan_cfg3(enum mec_dmac_channel chan, struct mec_dma_cfg3 *cfg3)
     regs->IEN = ien;
 
     return MEC_RET_OK;
-}
-
-int mec_hal_dma_chan_cfg4(struct mec_dma_chan_regs *chan_regs, struct mec_dma_cfg4 *cfg)
-{
-    uint32_t ctrl = 0, daddr = 0;
-    uint8_t ien = 0;
-
-    if (!chan_regs) {
-        return MEC_RET_ERR_INVAL;
-    }
-
-    daddr = mec_hal_dma_dev_addr(cfg->hwfc_dev,  cfg->dir);
-
-    chan_regs->CTRL = 0;
-    chan_regs->IEN = 0;
-    chan_regs->ACTV = 1u;
-    chan_regs->ISTATUS = UINT8_MAX;
-
-    chan_regs->MADDR = cfg->mem_addr;
-    chan_regs->MADDR_END = cfg->mem_addr + cfg->len;
-    chan_regs->DADDR = daddr;
-
-    ctrl = ((uint32_t)(cfg->unitsz & 0x7u) << MEC_DMA_CHAN_CTRL_UNITSZ_Pos);
-    ctrl |= (((uint32_t)cfg->hwfc_dev & 0x7fu) << MEC_DMA_CHAN_CTRL_HFC_DEV_Pos);
-    if (cfg->dir == MEC_DMAC_DIR_MEM_TO_DEV) {
-        ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_MEM2DEV_Pos);
-    }
-
-    if (cfg->flags & MEC_DMA_CFG4_FLAG_INCR_MEM_ADDR) {
-        ctrl |= MEC_BIT(MEC_DMA_CHAN_CTRL_INCRM_Pos);
-    }
-
-    if (cfg->flags & MEC_DMA_CFG4_FLAG_DONE_IEN) {
-        ien |= MEC_BIT(MEC_DMA_CHAN_IEN_DONE_Pos);
-    }
-
-    if (cfg->flags & MEC_DMA_CFG4_FLAG_BERR_IEN) {
-        ien |= MEC_BIT(MEC_DMA_CHAN_IEN_BERR_Pos);
-    }
-
-    if (cfg->flags & MEC_DMA_CFG4_FLAG_HWFLC_ERR_IEN) {
-        ien |= MEC_BIT(MEC_DMA_CHAN_IEN_HFCREQ_Pos);
-    }
-
-    if (cfg->flags & MEC_DMA_CFG4_FLAG_HWFLC_TERM_IEN) {
-        ien |= MEC_BIT(MEC_DMA_CHAN_IEN_HFCTERM_Pos);
-    }
-
-    chan_regs->IEN = ien;
-    chan_regs->CTRL = ctrl;
-
-    return MEC_RET_OK;
-}
-
-/* Configure DMA channel for specific peripheral as HW flow control device.
- * Current peripherals usually have separate single TX and RX hardware data registers.
- * Device address increment is not supported. Device address is obtained via a look-up
- * table using HW Flow Control device ID and data direction specified in struct mec_dma_cfg4.
- */
-int mec_hal_dma_chan_cfg4_by_id(enum mec_dmac_channel chan, struct mec_dma_cfg4 *cfg)
-{
-    struct mec_dma_chan_regs *regs = NULL;
-
-    if ((chan >= MEC_DMAC_CHAN_MAX) || !cfg) {
-        return MEC_RET_ERR_INVAL;
-    }
-
-    regs = (struct mec_dma_chan_regs *)MEC_DMAC_CHAN_REG_ADDR(MEC_DMAC_BASE, chan);
-
-    return  mec_hal_dma_chan_cfg4(regs, cfg);
 }
 
 /* end mec_dmac.c */
