@@ -125,22 +125,6 @@ struct mec_dma_cfg3 {
     uint8_t flags;
 };
 
-#define MEC_DMA_CFG4_FLAG_INCR_MEM_ADDR 0x01
-#define MEC_DMA_CFG4_FLAG_INCR_DEV_ADDR 0x02
-#define MEC_DMA_CFG4_FLAG_DONE_IEN 0x10
-#define MEC_DMA_CFG4_FLAG_BERR_IEN 0x20
-#define MEC_DMA_CFG4_FLAG_HWFLC_ERR_IEN 0x40
-#define MEC_DMA_CFG4_FLAG_HWFLC_TERM_IEN 0x80
-
-struct mec_dma_cfg4 {
-    uintptr_t mem_addr;
-    uint32_t len;
-    enum mec_dmac_unit_size unitsz;
-    enum mec_dmac_dir dir;
-    enum mec_dmac_hwfc_dev_id hwfc_dev;
-    uint8_t flags;
-};
-
 /* forward declaration */
 struct mec_dmac_regs;
 struct mec_dma_chan_regs;
@@ -251,9 +235,6 @@ int mec_hal_dma_chan_cfg2(enum mec_dmac_channel chan, uint32_t nbytes,
                           uint32_t maddr, uint32_t daddr, uint32_t chan_cfg);
 
 int mec_hal_dma_chan_cfg3(enum mec_dmac_channel chan, struct mec_dma_cfg3 *cfg3);
-
-int mec_hal_dma_chan_cfg4(struct mec_dma_chan_regs *chan_regs, struct mec_dma_cfg4 *cfg);
-int mec_hal_dma_chan_cfg4_by_id(enum mec_dmac_channel chan, struct mec_dma_cfg4 *cfg);
 
 #ifdef __cplusplus
 }
