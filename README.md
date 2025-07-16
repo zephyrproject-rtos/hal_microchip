@@ -16,6 +16,8 @@ The directory is composed of:
 │           ├── MEC5 PINCTRL DTSI files
 ├── include
 │   └── dt-bindings
+│       ├── sam
+|       |   └── sam_d5x_e5x — dt-binding header files for the SAM_D5X_E5X family devices
 │       └── pinctrl
 │           ├── PIC32CX PINCTRL C header files
 ├── mec
@@ -32,6 +34,9 @@ The directory is composed of:
 │   ├── PIC32CX chip and peripheral HAL files
 ├── pinconfigs
 │   ├── PIC32CX pin config definition XML
+├── sam
+│   ├── CMakeLists.txt
+│   ├── sam_d5x_e5x — DFP header files for SAM_D5X_E5X family devices
 ├── README.md
 ├── scripts
 │   ├── PIC32C Python pin config generation scripts
@@ -47,6 +52,7 @@ The directory is composed of:
  - Legacy MEC152x header files
  - MEC5 HAL chip and peripheral header and C source files
  - [PIC32C Pin definitions](pinconfigs/README.md)
+ - sam device family dfp header files
  - This README file
  - [PIC32C Scripts](scripts/README.md) used for code generation
  - ZephyrRTOS module directory (`zephyr`).
