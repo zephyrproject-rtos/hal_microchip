@@ -236,9 +236,9 @@ typedef union {
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct {
   __IO NVMCTRL_CTRLA_Type        CTRLA;       /**< \brief Offset: 0x00 (R/W 16) Control A */
-       RoReg8                    Reserved1[0x2];
+       ro_reg8                    Reserved1[0x2];
   __O  NVMCTRL_CTRLB_Type        CTRLB;       /**< \brief Offset: 0x04 ( /W 16) Control B */
-       RoReg8                    Reserved2[0x2];
+       ro_reg8                    Reserved2[0x2];
   __I  NVMCTRL_PARAM_Type        PARAM;       /**< \brief Offset: 0x08 (R/  32) NVM Parameter */
   __IO NVMCTRL_INTENCLR_Type     INTENCLR;    /**< \brief Offset: 0x0C (R/W 16) Interrupt Enable Clear */
   __IO NVMCTRL_INTENSET_Type     INTENSET;    /**< \brief Offset: 0x0E (R/W 16) Interrupt Enable Set */
@@ -251,7 +251,7 @@ typedef struct {
   __IO NVMCTRL_DBGCTRL_Type      DBGCTRL;     /**< \brief Offset: 0x28 (R/W  8) Debug Control */
   __IO NVMCTRL_BCTRL_Type        BCTRL;		  /**< \brief Offset: 0x29 (R/W  8) Boot Control */
   __IO NVMCTRL_SEECFG_Type       SEECFG;      /**< \brief Offset: 0x2A (R/W  8) SmartEEPROM Configuration Register */
-       RoReg8                    Reserved4[0x1];
+       ro_reg8                    Reserved4[0x1];
   __I  NVMCTRL_SEESTAT_Type      SEESTAT;     /**< \brief Offset: 0x2C (R/  32) SmartEEPROM Status Register */
 } Nvmctrl;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

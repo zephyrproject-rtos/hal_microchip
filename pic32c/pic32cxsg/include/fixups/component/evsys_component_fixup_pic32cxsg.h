@@ -259,12 +259,12 @@ typedef struct {
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct {
   __IO EVSYS_CTRLA_Type          CTRLA;       /**< \brief Offset: 0x000 (R/W  8) Control */
-       RoReg8                    Reserved1[0x3];
+       ro_reg8                    Reserved1[0x3];
   __O  EVSYS_SWEVT_Type          SWEVT;       /**< \brief Offset: 0x004 ( /W 32) Software Event */
   __IO EVSYS_PRICTRL_Type        PRICTRL;     /**< \brief Offset: 0x008 (R/W  8) Priority Control */
-       RoReg8                    Reserved2[0x7];
+       ro_reg8                    Reserved2[0x7];
   __IO EVSYS_INTPEND_Type        INTPEND;     /**< \brief Offset: 0x010 (R/W 16) Channel Pending Interrupt */
-       RoReg8                    Reserved3[0x2];
+       ro_reg8                    Reserved3[0x2];
   __I  EVSYS_INTSTATUS_Type      INTSTATUS;   /**< \brief Offset: 0x014 (R/  32) Interrupt Status */
   __I  EVSYS_BUSYCH_Type         BUSYCH;      /**< \brief Offset: 0x018 (R/  32) Busy Channels */
   __I  EVSYS_READYUSR_Type       READYUSR;    /**< \brief Offset: 0x01C (R/  32) Ready Users */

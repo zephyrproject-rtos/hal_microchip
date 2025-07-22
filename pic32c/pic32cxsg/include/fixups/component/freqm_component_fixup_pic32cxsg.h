@@ -115,7 +115,7 @@ typedef struct {
   __IO FREQM_CTRLA_Type          CTRLA;       /**< \brief Offset: 0x00 (R/W  8) Control A Register */
   __O  FREQM_CTRLB_Type          CTRLB;       /**< \brief Offset: 0x01 ( /W  8) Control B Register */
   __IO FREQM_CFGA_Type           CFGA;        /**< \brief Offset: 0x02 (R/W 16) Config A register */
-       RoReg8                    Reserved1[0x4];
+       ro_reg8                    Reserved1[0x4];
   __IO FREQM_INTENCLR_Type       INTENCLR;    /**< \brief Offset: 0x08 (R/W  8) Interrupt Enable Clear Register */
   __IO FREQM_INTENSET_Type       INTENSET;    /**< \brief Offset: 0x09 (R/W  8) Interrupt Enable Set Register */
   __IO FREQM_INTFLAG_Type        INTFLAG;     /**< \brief Offset: 0x0A (R/W  8) Interrupt Flag Register */

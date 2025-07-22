@@ -336,7 +336,7 @@ typedef union {
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct {
   __IO OSCCTRL_DPLLCTRLA_Type    DPLLCTRLA;   /**< \brief Offset: 0x00 (R/W  8) DPLL Control A */
-       RoReg8                    Reserved1[0x3];
+       ro_reg8                    Reserved1[0x3];
   __IO OSCCTRL_DPLLRATIO_Type    DPLLRATIO;   /**< \brief Offset: 0x04 (R/W 32) DPLL Ratio Control */
   __IO OSCCTRL_DPLLCTRLB_Type    DPLLCTRLB;   /**< \brief Offset: 0x08 (R/W 32) DPLL Control B */
   __I  OSCCTRL_DPLLSYNCBUSY_Type DPLLSYNCBUSY; /**< \brief Offset: 0x0C (R/  32) DPLL Synchronization Busy */
@@ -348,20 +348,20 @@ typedef struct {
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct {
   __IO OSCCTRL_EVCTRL_Type       EVCTRL;      /**< \brief Offset: 0x00 (R/W  8) Event Control */
-       RoReg8                    Reserved1[0x3];
+       ro_reg8                    Reserved1[0x3];
   __IO OSCCTRL_INTENCLR_Type     INTENCLR;    /**< \brief Offset: 0x04 (R/W 32) Interrupt Enable Clear */
   __IO OSCCTRL_INTENSET_Type     INTENSET;    /**< \brief Offset: 0x08 (R/W 32) Interrupt Enable Set */
   __IO OSCCTRL_INTFLAG_Type      INTFLAG;     /**< \brief Offset: 0x0C (R/W 32) Interrupt Flag Status and Clear */
   __I  OSCCTRL_STATUS_Type       STATUS;      /**< \brief Offset: 0x10 (R/  32) Status */
   __IO OSCCTRL_XOSCCTRL_Type     XOSCCTRL[2]; /**< \brief Offset: 0x14 (R/W 32) External Multipurpose Crystal Oscillator Control */
   __IO OSCCTRL_DFLLCTRLA_Type    DFLLCTRLA;   /**< \brief Offset: 0x1C (R/W  8) DFLL48M Control A */
-       RoReg8                    Reserved2[0x3];
+       ro_reg8                    Reserved2[0x3];
   __IO OSCCTRL_DFLLCTRLB_Type    DFLLCTRLB;   /**< \brief Offset: 0x20 (R/W  8) DFLL48M Control B */
-       RoReg8                    Reserved3[0x3];
+       ro_reg8                    Reserved3[0x3];
   __IO OSCCTRL_DFLLVAL_Type      DFLLVAL;     /**< \brief Offset: 0x24 (R/W 32) DFLL48M Value */
   __IO OSCCTRL_DFLLMUL_Type      DFLLMUL;     /**< \brief Offset: 0x28 (R/W 32) DFLL48M Multiplier */
   __IO OSCCTRL_DFLLSYNC_Type     DFLLSYNC;    /**< \brief Offset: 0x2C (R/W  8) DFLL48M Synchronization */
-       RoReg8                    Reserved4[0x3];
+       ro_reg8                    Reserved4[0x3];
        OscctrlDpll               Dpll[OSCCTRL_DPLL_NUMBER];     /**< \brief Offset: 0x30 OscctrlDpll groups [DPLLS_NUM] */
 } Oscctrl;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

@@ -637,15 +637,15 @@ typedef struct {
   __IO TCC_CTRLA_Type            CTRLA;       /**< \brief Offset: 0x00 (R/W 32) Control A */
   __IO TCC_CTRLBCLR_Type         CTRLBCLR;    /**< \brief Offset: 0x04 (R/W  8) Control B Clear */
   __IO TCC_CTRLBSET_Type         CTRLBSET;    /**< \brief Offset: 0x05 (R/W  8) Control B Set */
-       RoReg8                    Reserved1[0x2];
+       ro_reg8                    Reserved1[0x2];
   __I  TCC_SYNCBUSY_Type         SYNCBUSY;    /**< \brief Offset: 0x08 (R/  32) Synchronization Busy */
   __IO TCC_FCTRLA_Type           FCTRLA;      /**< \brief Offset: 0x0C (R/W 32) Recoverable Fault A Configuration */
   __IO TCC_FCTRLB_Type           FCTRLB;      /**< \brief Offset: 0x10 (R/W 32) Recoverable Fault B Configuration */
   __IO TCC_WEXCTRL_Type          WEXCTRL;     /**< \brief Offset: 0x14 (R/W 32) Waveform Extension Configuration */
   __IO TCC_DRVCTRL_Type          DRVCTRL;     /**< \brief Offset: 0x18 (R/W 32) Driver Control */
-       RoReg8                    Reserved2[0x2];
+       ro_reg8                    Reserved2[0x2];
   __IO TCC_DBGCTRL_Type          DBGCTRL;     /**< \brief Offset: 0x1E (R/W  8) Debug Control */
-       RoReg8                    Reserved3[0x1];
+       ro_reg8                    Reserved3[0x1];
   __IO TCC_EVCTRL_Type           EVCTRL;      /**< \brief Offset: 0x20 (R/W 32) Event Control */
   __IO TCC_INTENCLR_Type         INTENCLR;    /**< \brief Offset: 0x24 (R/W 32) Interrupt Enable Clear */
   __IO TCC_INTENSET_Type         INTENSET;    /**< \brief Offset: 0x28 (R/W 32) Interrupt Enable Set */
@@ -653,13 +653,13 @@ typedef struct {
   __IO TCC_STATUS_Type           STATUS;      /**< \brief Offset: 0x30 (R/W 32) Status */
   __IO TCC_COUNT_Type            COUNT;       /**< \brief Offset: 0x34 (R/W 32) Count */
   __IO TCC_PATT_Type             PATT;        /**< \brief Offset: 0x38 (R/W 16) Pattern */
-       RoReg8                    Reserved4[0x2];
+       ro_reg8                    Reserved4[0x2];
   __IO TCC_WAVE_Type             WAVE;        /**< \brief Offset: 0x3C (R/W 32) Waveform Control */
   __IO TCC_PER_Type              PER;         /**< \brief Offset: 0x40 (R/W 32) Period */
   __IO TCC_CC_Type               CC[6];       /**< \brief Offset: 0x44 (R/W 32) Compare and Capture */
-       RoReg8                    Reserved5[0x8];
+       ro_reg8                    Reserved5[0x8];
   __IO TCC_PATTBUF_Type          PATTBUF;     /**< \brief Offset: 0x64 (R/W 16) Pattern Buffer */
-       RoReg8                    Reserved6[0x6];
+       ro_reg8                    Reserved6[0x6];
   __IO TCC_PERBUF_Type           PERBUF;      /**< \brief Offset: 0x6C (R/W 32) Period Buffer */
   __IO TCC_CCBUF_Type            CCBUF[6];    /**< \brief Offset: 0x70 (R/W 32) Compare and Capture Buffer */
 } Tcc;

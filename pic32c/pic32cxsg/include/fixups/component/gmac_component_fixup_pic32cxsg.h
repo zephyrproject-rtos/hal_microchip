@@ -1310,7 +1310,7 @@ typedef struct {
   __IO GMAC_TPSF_Type            TPSF;        /**< \brief Offset: 0x040 (R/W 32) TX partial store and forward Register */
   __IO GMAC_RPSF_Type            RPSF;        /**< \brief Offset: 0x044 (R/W 32) RX partial store and forward Register */
   __IO GMAC_RJFML_Type           RJFML;       /**< \brief Offset: 0x048 (R/W 32) RX Jumbo Frame Max Length Register */
-       RoReg8                    Reserved1[0x34];
+       ro_reg8                    Reserved1[0x34];
   __IO GMAC_HRB_Type             HRB;         /**< \brief Offset: 0x080 (R/W 32) Hash Register Bottom [31:0] */
   __IO GMAC_HRT_Type             HRT;         /**< \brief Offset: 0x084 (R/W 32) Hash Register Top [63:32] */
        GmacSa                    Sa[4];       /**< \brief Offset: 0x088 GmacSa groups */
@@ -1321,7 +1321,7 @@ typedef struct {
   __IO GMAC_TPFCP_Type           TPFCP;       /**< \brief Offset: 0x0C4 (R/W 32) Transmit PFC Pause Register */
   __IO GMAC_SAMB1_Type           SAMB1;       /**< \brief Offset: 0x0C8 (R/W 32) Specific Address 1 Mask Bottom [31:0] Register */
   __IO GMAC_SAMT1_Type           SAMT1;       /**< \brief Offset: 0x0CC (R/W 32) Specific Address 1 Mask Top [47:32] Register */
-       RoReg8                    Reserved2[0xC];
+       ro_reg8                    Reserved2[0xC];
   __IO GMAC_NSC_Type             NSC;         /**< \brief Offset: 0x0DC (R/W 32) Tsu timer comparison nanoseconds Register */
   __IO GMAC_SCL_Type             SCL;         /**< \brief Offset: 0x0E0 (R/W 32) Tsu timer second comparison Register */
   __IO GMAC_SCH_Type             SCH;         /**< \brief Offset: 0x0E4 (R/W 32) Tsu timer second comparison Register */
@@ -1329,7 +1329,7 @@ typedef struct {
   __I  GMAC_EFRSH_Type           EFRSH;       /**< \brief Offset: 0x0EC (R/  32) PTP Event Frame Received Seconds High Register */
   __I  GMAC_PEFTSH_Type          PEFTSH;      /**< \brief Offset: 0x0F0 (R/  32) PTP Peer Event Frame Transmitted Seconds High Register */
   __I  GMAC_PEFRSH_Type          PEFRSH;      /**< \brief Offset: 0x0F4 (R/  32) PTP Peer Event Frame Received Seconds High Register */
-       RoReg8                    Reserved3[0x8];
+       ro_reg8                    Reserved3[0x8];
   __I  GMAC_OTLO_Type            OTLO;        /**< \brief Offset: 0x100 (R/  32) Octets Transmitted [31:0] Register */
   __I  GMAC_OTHI_Type            OTHI;        /**< \brief Offset: 0x104 (R/  32) Octets Transmitted [47:32] Register */
   __I  GMAC_FT_Type              FT;          /**< \brief Offset: 0x108 (R/  32) Frames Transmitted Register */
@@ -1375,10 +1375,10 @@ typedef struct {
   __I  GMAC_IHCE_Type            IHCE;        /**< \brief Offset: 0x1A8 (R/  32) IP Header Checksum Errors Register */
   __I  GMAC_TCE_Type             TCE;         /**< \brief Offset: 0x1AC (R/  32) TCP Checksum Errors Register */
   __I  GMAC_UCE_Type             UCE;         /**< \brief Offset: 0x1B0 (R/  32) UDP Checksum Errors Register */
-       RoReg8                    Reserved4[0x8];
+       ro_reg8                    Reserved4[0x8];
   __IO GMAC_TISUBN_Type          TISUBN;      /**< \brief Offset: 0x1BC (R/W 32) 1588 Timer Increment [15:0] Sub-Nanoseconds Register */
   __IO GMAC_TSH_Type             TSH;         /**< \brief Offset: 0x1C0 (R/W 32) 1588 Timer Seconds High [15:0] Register */
-       RoReg8                    Reserved5[0x4];
+       ro_reg8                    Reserved5[0x4];
   __IO GMAC_TSSSL_Type           TSSSL;       /**< \brief Offset: 0x1C8 (R/W 32) 1588 Timer Sync Strobe Seconds [31:0] Register */
   __IO GMAC_TSSN_Type            TSSN;        /**< \brief Offset: 0x1CC (R/W 32) 1588 Timer Sync Strobe Nanoseconds Register */
   __IO GMAC_TSL_Type             TSL;         /**< \brief Offset: 0x1D0 (R/W 32) 1588 Timer Seconds [31:0] Register */
@@ -1393,7 +1393,7 @@ typedef struct {
   __I  GMAC_PEFTN_Type           PEFTN;       /**< \brief Offset: 0x1F4 (R/  32) PTP Peer Event Frame Transmitted Nanoseconds */
   __I  GMAC_PEFRSL_Type          PEFRSL;      /**< \brief Offset: 0x1F8 (R/  32) PTP Peer Event Frame Received Seconds Low Register */
   __I  GMAC_PEFRN_Type           PEFRN;       /**< \brief Offset: 0x1FC (R/  32) PTP Peer Event Frame Received Nanoseconds */
-       RoReg8                    Reserved6[0x70];
+       ro_reg8                    Reserved6[0x70];
   __I  GMAC_RLPITR_Type          RLPITR;      /**< \brief Offset: 0x270 (R/  32) Receive LPI transition Register */
   __I  GMAC_RLPITI_Type          RLPITI;      /**< \brief Offset: 0x274 (R/  32) Receive LPI Time Register */
   __I  GMAC_TLPITR_Type          TLPITR;      /**< \brief Offset: 0x278 (R/  32) Receive LPI transition Register */

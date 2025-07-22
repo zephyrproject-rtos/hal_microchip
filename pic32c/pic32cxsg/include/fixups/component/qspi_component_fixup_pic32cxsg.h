@@ -223,11 +223,11 @@ typedef struct {
   __IO QSPI_INTENSET_Type        INTENSET;    /**< \brief Offset: 0x18 (R/W 32) Interrupt Enable Set */
   __IO QSPI_INTFLAG_Type         INTFLAG;     /**< \brief Offset: 0x1C (R/W 32) Interrupt Flag Status and Clear */
   __I  QSPI_STATUS_Type          STATUS;      /**< \brief Offset: 0x20 (R/  32) Status Register */
-       RoReg8                    Reserved1[0xC];
+       ro_reg8                    Reserved1[0xC];
   __IO QSPI_INSTRADDR_Type       INSTRADDR;   /**< \brief Offset: 0x30 (R/W 32) Instruction Address */
   __IO QSPI_INSTRCTRL_Type       INSTRCTRL;   /**< \brief Offset: 0x34 (R/W 32) Instruction Code */
   __IO QSPI_INSTRFRAME_Type      INSTRFRAME;  /**< \brief Offset: 0x38 (R/W 32) Instruction Frame */
-       RoReg8                    Reserved2[0x4];
+       ro_reg8                    Reserved2[0x4];
   __IO QSPI_SCRAMBCTRL_Type      SCRAMBCTRL;  /**< \brief Offset: 0x40 (R/W 32) Scrambling Mode */
   __O  QSPI_SCRAMBKEY_Type       SCRAMBKEY;   /**< \brief Offset: 0x44 ( /W 32) Scrambling Key */
 } Qspi;

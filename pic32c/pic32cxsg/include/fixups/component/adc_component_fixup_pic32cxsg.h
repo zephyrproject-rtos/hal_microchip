@@ -339,7 +339,7 @@ typedef struct {
   __IO ADC_INPUTCTRL_Type        INPUTCTRL;   /**< \brief Offset: 0x04 (R/W 16) Input Control */
   __IO ADC_CTRLB_Type            CTRLB;       /**< \brief Offset: 0x06 (R/W 16) Control B */
   __IO ADC_REFCTRL_Type          REFCTRL;     /**< \brief Offset: 0x08 (R/W  8) Reference Control */
-       RoReg8                    Reserved1[0x1];
+       ro_reg8                    Reserved1[0x1];
   __IO ADC_AVGCTRL_Type          AVGCTRL;     /**< \brief Offset: 0x0A (R/W  8) Average Control */
   __IO ADC_SAMPCTRL_Type         SAMPCTRL;    /**< \brief Offset: 0x0B (R/W  8) Sample Time Control */
   __IO ADC_WINLT_Type            WINLT;       /**< \brief Offset: 0x0C (R/W 16) Window Monitor Lower Threshold */
@@ -347,7 +347,7 @@ typedef struct {
   __IO ADC_GAINCORR_Type         GAINCORR;    /**< \brief Offset: 0x10 (R/W 16) Gain Correction */
   __IO ADC_OFFSETCORR_Type       OFFSETCORR;  /**< \brief Offset: 0x12 (R/W 16) Offset Correction */
   __IO ADC_SWTRIG_Type           SWTRIG;      /**< \brief Offset: 0x14 (R/W  8) Software Trigger */
-       RoReg8                    Reserved2[0x17];
+       ro_reg8                    Reserved2[0x17];
   __IO ADC_INTENCLR_Type         INTENCLR;    /**< \brief Offset: 0x2C (R/W  8) Interrupt Enable Clear */
   __IO ADC_INTENSET_Type         INTENSET;    /**< \brief Offset: 0x2D (R/W  8) Interrupt Enable Set */
   __IO ADC_INTFLAG_Type          INTFLAG;     /**< \brief Offset: 0x2E (R/W  8) Interrupt Flag Status and Clear */
@@ -357,9 +357,9 @@ typedef struct {
   __IO ADC_DSEQCTRL_Type         DSEQCTRL;    /**< \brief Offset: 0x38 (R/W 32) DMA Sequential Control */
   __I  ADC_DSEQSTAT_Type         DSEQSTAT;    /**< \brief Offset: 0x3C (R/  32) DMA Sequencial Status */
   __I  ADC_RESULT_Type           RESULT;      /**< \brief Offset: 0x40 (R/  16) Result Conversion Value */
-       RoReg8                    Reserved3[0x2];
+       ro_reg8                    Reserved3[0x2];
   __I  ADC_RESS_Type             RESS;        /**< \brief Offset: 0x44 (R/  16) Last Sample Result */
-       RoReg8                    Reserved4[0x2];
+       ro_reg8                    Reserved4[0x2];
   __IO ADC_CALIB_Type            CALIB;       /**< \brief Offset: 0x48 (R/W 16) Calibration */
 } Adc;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

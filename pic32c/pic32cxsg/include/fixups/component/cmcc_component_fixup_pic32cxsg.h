@@ -146,7 +146,7 @@ typedef struct {
   __O  CMCC_CTRL_Type            CTRL;        /**< \brief Offset: 0x08 ( /W 32) Cache Control Register */
   __I  CMCC_SR_Type              SR;          /**< \brief Offset: 0x0C (R/  32) Cache Status Register */
   __IO CMCC_LCKWAY_Type          LCKWAY;      /**< \brief Offset: 0x10 (R/W 32) Cache Lock per Way Register */
-       RoReg8                    Reserved1[0xC];
+       ro_reg8                    Reserved1[0xC];
   __O  CMCC_MAINT0_Type          MAINT0;      /**< \brief Offset: 0x20 ( /W 32) Cache Maintenance Register 0 */
   __O  CMCC_MAINT1_Type          MAINT1;      /**< \brief Offset: 0x24 ( /W 32) Cache Maintenance Register 1 */
   __IO CMCC_MCFG_Type            MCFG;        /**< \brief Offset: 0x28 (R/W 32) Cache Monitor Configuration Register */

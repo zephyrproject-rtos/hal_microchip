@@ -265,19 +265,19 @@ typedef union {
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct {
   __IO I2S_CTRLA_Type            CTRLA;       /**< \brief Offset: 0x00 (R/W  8) Control A */
-       RoReg8                    Reserved1[0x3];
+       ro_reg8                    Reserved1[0x3];
   __IO I2S_CLKCTRL_Type          CLKCTRL[2];  /**< \brief Offset: 0x04 (R/W 32) Clock Unit n Control */
   __IO I2S_INTENCLR_Type         INTENCLR;    /**< \brief Offset: 0x0C (R/W 16) Interrupt Enable Clear */
-       RoReg8                    Reserved2[0x2];
+       ro_reg8                    Reserved2[0x2];
   __IO I2S_INTENSET_Type         INTENSET;    /**< \brief Offset: 0x10 (R/W 16) Interrupt Enable Set */
-       RoReg8                    Reserved3[0x2];
+       ro_reg8                    Reserved3[0x2];
   __IO I2S_INTFLAG_Type          INTFLAG;     /**< \brief Offset: 0x14 (R/W 16) Interrupt Flag Status and Clear */
-       RoReg8                    Reserved4[0x2];
+       ro_reg8                    Reserved4[0x2];
   __I  I2S_SYNCBUSY_Type         SYNCBUSY;    /**< \brief Offset: 0x18 (R/  16) Synchronization Status */
-       RoReg8                    Reserved5[0x6];
+       ro_reg8                    Reserved5[0x6];
   __IO I2S_TXCTRL_Type           TXCTRL;      /**< \brief Offset: 0x20 (R/W 32) Tx Serializer Control */
   __IO I2S_RXCTRL_Type           RXCTRL;      /**< \brief Offset: 0x24 (R/W 32) Rx Serializer Control */
-       RoReg8                    Reserved6[0x8];
+       ro_reg8                    Reserved6[0x8];
   __O  I2S_TXDATA_Type           TXDATA;      /**< \brief Offset: 0x30 ( /W 32) Tx Data */
   __I  I2S_RXDATA_Type           RXDATA;      /**< \brief Offset: 0x34 (R/  32) Rx Data */
 } I2s;

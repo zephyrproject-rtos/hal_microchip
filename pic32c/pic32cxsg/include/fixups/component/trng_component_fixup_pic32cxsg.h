@@ -79,13 +79,13 @@ typedef union {
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct {
   __IO TRNG_CTRLA_Type           CTRLA;       /**< \brief Offset: 0x00 (R/W  8) Control A */
-       RoReg8                    Reserved1[0x3];
+       ro_reg8                    Reserved1[0x3];
   __IO TRNG_EVCTRL_Type          EVCTRL;      /**< \brief Offset: 0x04 (R/W  8) Event Control */
-       RoReg8                    Reserved2[0x3];
+       ro_reg8                    Reserved2[0x3];
   __IO TRNG_INTENCLR_Type        INTENCLR;    /**< \brief Offset: 0x08 (R/W  8) Interrupt Enable Clear */
   __IO TRNG_INTENSET_Type        INTENSET;    /**< \brief Offset: 0x09 (R/W  8) Interrupt Enable Set */
   __IO TRNG_INTFLAG_Type         INTFLAG;     /**< \brief Offset: 0x0A (R/W  8) Interrupt Flag Status and Clear */
-       RoReg8                    Reserved3[0x15];
+       ro_reg8                    Reserved3[0x15];
   __I  TRNG_DATA_Type            DATA;        /**< \brief Offset: 0x20 (R/  32) Output Data */
 } Trng;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

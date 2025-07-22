@@ -1307,20 +1307,20 @@ typedef struct {
   __I  CAN_TSCV_Type             TSCV;        /**< \brief Offset: 0x24 (R/  32) Timestamp Counter Value */
   __IO CAN_TOCC_Type             TOCC;        /**< \brief Offset: 0x28 (R/W 32) Timeout Counter Configuration */
   __IO CAN_TOCV_Type             TOCV;        /**< \brief Offset: 0x2C (R/W 32) Timeout Counter Value */
-       RoReg8                    Reserved1[0x10];
+       ro_reg8                    Reserved1[0x10];
   __I  CAN_ECR_Type              ECR;         /**< \brief Offset: 0x40 (R/  32) Error Counter */
   __I  CAN_PSR_Type              PSR;         /**< \brief Offset: 0x44 (R/  32) Protocol Status */
   __IO CAN_TDCR_Type             TDCR;        /**< \brief Offset: 0x48 (R/W 32) Extended ID Filter Configuration */
-       RoReg8                    Reserved2[0x4];
+       ro_reg8                    Reserved2[0x4];
   __IO CAN_IR_Type               IR;          /**< \brief Offset: 0x50 (R/W 32) Interrupt */
   __IO CAN_IE_Type               IE;          /**< \brief Offset: 0x54 (R/W 32) Interrupt Enable */
   __IO CAN_ILS_Type              ILS;         /**< \brief Offset: 0x58 (R/W 32) Interrupt Line Select */
   __IO CAN_ILE_Type              ILE;         /**< \brief Offset: 0x5C (R/W 32) Interrupt Line Enable */
-       RoReg8                    Reserved3[0x20];
+       ro_reg8                    Reserved3[0x20];
   __IO CAN_GFC_Type              GFC;         /**< \brief Offset: 0x80 (R/W 32) Global Filter Configuration */
   __IO CAN_SIDFC_Type            SIDFC;       /**< \brief Offset: 0x84 (R/W 32) Standard ID Filter Configuration */
   __IO CAN_XIDFC_Type            XIDFC;       /**< \brief Offset: 0x88 (R/W 32) Extended ID Filter Configuration */
-       RoReg8                    Reserved4[0x4];
+       ro_reg8                    Reserved4[0x4];
   __IO CAN_XIDAM_Type            XIDAM;       /**< \brief Offset: 0x90 (R/W 32) Extended ID AND Mask */
   __I  CAN_HPMS_Type             HPMS;        /**< \brief Offset: 0x94 (R/  32) High Priority Message Status */
   __IO CAN_NDAT1_Type            NDAT1;       /**< \brief Offset: 0x98 (R/W 32) New Data 1 */
@@ -1343,7 +1343,7 @@ typedef struct {
   __I  CAN_TXBCF_Type            TXBCF;       /**< \brief Offset: 0xDC (R/  32) Tx Buffer Cancellation Finished */
   __IO CAN_TXBTIE_Type           TXBTIE;      /**< \brief Offset: 0xE0 (R/W 32) Tx Buffer Transmission Interrupt Enable */
   __IO CAN_TXBCIE_Type           TXBCIE;      /**< \brief Offset: 0xE4 (R/W 32) Tx Buffer Cancellation Finished Interrupt Enable */
-       RoReg8                    Reserved5[0x8];
+       ro_reg8                    Reserved5[0x8];
   __IO CAN_TXEFC_Type            TXEFC;       /**< \brief Offset: 0xF0 (R/W 32) Tx Event FIFO Configuration */
   __I  CAN_TXEFS_Type            TXEFS;       /**< \brief Offset: 0xF4 (R/  32) Tx Event FIFO Status */
   __IO CAN_TXEFA_Type            TXEFA;       /**< \brief Offset: 0xF8 (R/W 32) Tx Event FIFO Acknowledge */

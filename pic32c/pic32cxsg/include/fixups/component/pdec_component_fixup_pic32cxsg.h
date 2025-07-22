@@ -305,20 +305,20 @@ typedef struct {
   __IO PDEC_INTENCLR_Type        INTENCLR;    /**< \brief Offset: 0x08 (R/W  8) Interrupt Enable Clear */
   __IO PDEC_INTENSET_Type        INTENSET;    /**< \brief Offset: 0x09 (R/W  8) Interrupt Enable Set */
   __IO PDEC_INTFLAG_Type         INTFLAG;     /**< \brief Offset: 0x0A (R/W  8) Interrupt Flag Status and Clear */
-       RoReg8                    Reserved1[0x1];
+       ro_reg8                    Reserved1[0x1];
   __IO PDEC_STATUS_Type          STATUS;      /**< \brief Offset: 0x0C (R/W 16) Status */
-       RoReg8                    Reserved2[0x1];
+       ro_reg8                    Reserved2[0x1];
   __IO PDEC_DBGCTRL_Type         DBGCTRL;     /**< \brief Offset: 0x0F (R/W  8) Debug Control */
   __I  PDEC_SYNCBUSY_Type        SYNCBUSY;    /**< \brief Offset: 0x10 (R/  32) Synchronization Status */
   __IO PDEC_PRESC_Type           PRESC;       /**< \brief Offset: 0x14 (R/W  8) Prescaler Value */
   __IO PDEC_FILTER_Type          FILTER;      /**< \brief Offset: 0x15 (R/W  8) Filter Value */
-       RoReg8                    Reserved3[0x2];
+       ro_reg8                    Reserved3[0x2];
   __IO PDEC_PRESCBUF_Type        PRESCBUF;    /**< \brief Offset: 0x18 (R/W  8) Prescaler Buffer Value */
   __IO PDEC_FILTERBUF_Type       FILTERBUF;   /**< \brief Offset: 0x19 (R/W  8) Filter Buffer Value */
-       RoReg8                    Reserved4[0x2];
+       ro_reg8                    Reserved4[0x2];
   __IO PDEC_COUNT_Type           COUNT;       /**< \brief Offset: 0x1C (R/W 32) Counter Value */
   __IO PDEC_CC_Type              CC[2];       /**< \brief Offset: 0x20 (R/W 32) Channel n Compare Value */
-       RoReg8                    Reserved5[0x8];
+       ro_reg8                    Reserved5[0x8];
   __IO PDEC_CCBUF_Type           CCBUF[2];    /**< \brief Offset: 0x30 (R/W 32) Channel Compare Buffer Value */
 } Pdec;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

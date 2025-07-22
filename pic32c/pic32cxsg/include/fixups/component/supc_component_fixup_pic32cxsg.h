@@ -183,7 +183,7 @@ typedef struct {
   __IO SUPC_INTFLAG_Type         INTFLAG;     /**< \brief Offset: 0x08 (R/W 32) Interrupt Flag Status and Clear */
   __I  SUPC_STATUS_Type          STATUS;      /**< \brief Offset: 0x0C (R/  32) Power and Clocks Status */
   __IO SUPC_BOD33_Type           BOD33;       /**< \brief Offset: 0x10 (R/W 32) BOD33 Control */
-       RoReg8                    Reserved1[0x4];
+       ro_reg8                    Reserved1[0x4];
   __IO SUPC_VREG_Type            VREG;        /**< \brief Offset: 0x18 (R/W 32) VREG Control */
   __IO SUPC_VREF_Type            VREF;        /**< \brief Offset: 0x1C (R/W 32) VREF Control */
   __IO SUPC_BBPS_Type            BBPS;        /**< \brief Offset: 0x20 (R/W 32) Battery Backup Power Switch */

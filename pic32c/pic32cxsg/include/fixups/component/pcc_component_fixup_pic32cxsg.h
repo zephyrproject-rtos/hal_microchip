@@ -119,7 +119,7 @@ typedef struct {
   __I  PCC_IMR_Type              IMR;         /**< \brief Offset: 0x0C (R/  32) Interrupt Mask Register */
   __I  PCC_ISR_Type              ISR;         /**< \brief Offset: 0x10 (R/  32) Interrupt Status Register */
   __I  PCC_RHR_Type              RHR;         /**< \brief Offset: 0x14 (R/  32) Reception Holding Register */
-       RoReg8                    Reserved1[0xC8];
+       ro_reg8                    Reserved1[0xC8];
   __IO PCC_WPMR_Type             WPMR;        /**< \brief Offset: 0xE0 (R/W 32) Write Protection Mode Register */
   __I  PCC_WPSR_Type             WPSR;        /**< \brief Offset: 0xE4 (R/  32) Write Protection Status Register */
 } Pcc;
