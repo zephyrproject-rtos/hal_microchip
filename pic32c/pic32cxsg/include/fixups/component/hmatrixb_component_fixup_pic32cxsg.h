@@ -33,7 +33,7 @@ typedef struct {
 /** \brief HMATRIXB hardware registers */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct {
-       RoReg8                    Reserved1[0x80];
+       ro_reg8                    Reserved1[0x80];
        HmatrixbPrs               Prs[HMATRIXB_PRS_NUMBER];     /**< \brief Offset: 0x080 HmatrixbPrs groups */
 } Hmatrixb;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

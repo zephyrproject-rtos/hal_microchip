@@ -196,7 +196,7 @@ typedef struct {
   __IO EIC_INTFLAG_Type          INTFLAG;     /**< \brief Offset: 0x14 (R/W 32) Interrupt Flag Status and Clear */
   __IO EIC_ASYNCH_Type           ASYNCH;      /**< \brief Offset: 0x18 (R/W 32) External Interrupt Asynchronous Mode */
   __IO EIC_CONFIG_Type           CONFIG[2];   /**< \brief Offset: 0x1C (R/W 32) External Interrupt Sense Configuration */
-       RoReg8                    Reserved1[0xC];
+       ro_reg8                    Reserved1[0xC];
   __IO EIC_DEBOUNCEN_Type        DEBOUNCEN;   /**< \brief Offset: 0x30 (R/W 32) Debouncer Enable */
   __IO EIC_DPRESCALER_Type       DPRESCALER;  /**< \brief Offset: 0x34 (R/W 32) Debouncer Prescaler */
   __I  EIC_PINSTATE_Type         PINSTATE;    /**< \brief Offset: 0x38 (R/  32) Pin State */

@@ -312,20 +312,20 @@ typedef struct {
   __O  DSU_CTRL_Type             CTRL;        /**< \brief Offset: 0x0000 ( /W  8) Control */
   __IO DSU_STATUSA_Type          STATUSA;     /**< \brief Offset: 0x0001 (R/W  8) Status A */
   __I  DSU_STATUSB_Type          STATUSB;     /**< \brief Offset: 0x0002 (R/   8) Status B */
-       RoReg8                    Reserved1[0x1];
+       ro_reg8                    Reserved1[0x1];
   __IO DSU_ADDR_Type             ADDR;        /**< \brief Offset: 0x0004 (R/W 32) Address */
   __IO DSU_LENGTH_Type           LENGTH;      /**< \brief Offset: 0x0008 (R/W 32) Length */
   __IO DSU_DATA_Type             DATA;        /**< \brief Offset: 0x000C (R/W 32) Data */
   __IO DSU_DCC_Type              DCC[2];      /**< \brief Offset: 0x0010 (R/W 32) Debug Communication Channel n */
   __I  DSU_DID_Type              DID;         /**< \brief Offset: 0x0018 (R/  32) Device Identification */
   __IO DSU_CFG_Type              CFG;         /**< \brief Offset: 0x001C (R/W 32) Configuration */
-       RoReg8                    Reserved2[0xD0];
+       ro_reg8                    Reserved2[0xD0];
   __IO DSU_DCFG_Type             DSU_DCFG[2];        /**< Offset: 0xF0 (R/W  32) Device Configuration */
-       RoReg8                    Reserved3[0xF08];
+       ro_reg8                    Reserved3[0xF08];
   __I  DSU_ENTRY0_Type           ENTRY0;      /**< \brief Offset: 0x1000 (R/  32) CoreSight ROM Table Entry 0 */
   __I  DSU_ENTRY1_Type           ENTRY1;      /**< \brief Offset: 0x1004 (R/  32) CoreSight ROM Table Entry 1 */
   __I  DSU_END_Type              END;         /**< \brief Offset: 0x1008 (R/  32) CoreSight ROM Table End */
-       RoReg8                    Reserved4[0xFC0];
+       ro_reg8                    Reserved4[0xFC0];
   __I  DSU_MEMTYPE_Type          MEMTYPE;     /**< \brief Offset: 0x1FCC (R/  32) CoreSight ROM Table Memory Type */
   __I  DSU_PID4_Type             PID4;        /**< \brief Offset: 0x1FD0 (R/  32) Peripheral Identification 4 */
   __I  DSU_PID5_Type             PID5;        /**< \brief Offset: 0x1FD4 (R/  32) Peripheral Identification 5 */

@@ -835,7 +835,7 @@ typedef union {
 typedef struct {
   __IO RTC_MODE2_ALARM_Type      ALARM;       /**< \brief Offset: 0x00 (R/W 32) MODE2_ALARM Alarm n Value */
   __IO RTC_MODE2_MASK_Type       MASK;        /**< \brief Offset: 0x04 (R/W  8) MODE2_ALARM Alarm n Mask */
-       RoReg8                    Reserved1[0x3];
+       ro_reg8                    Reserved1[0x3];
 } RtcMode2Alarm;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
@@ -849,20 +849,20 @@ typedef struct { /* 32-bit Counter with Single 32-bit Compare */
   __IO RTC_MODE0_INTENSET_Type   INTENSET;    /**< \brief Offset: 0x0A (R/W 16) MODE0 Interrupt Enable Set */
   __IO RTC_MODE0_INTFLAG_Type    INTFLAG;     /**< \brief Offset: 0x0C (R/W 16) MODE0 Interrupt Flag Status and Clear */
   __IO RTC_DBGCTRL_Type          DBGCTRL;     /**< \brief Offset: 0x0E (R/W  8) Debug Control */
-       RoReg8                    Reserved1[0x1];
+       ro_reg8                    Reserved1[0x1];
   __I  RTC_MODE0_SYNCBUSY_Type   SYNCBUSY;    /**< \brief Offset: 0x10 (R/  32) MODE0 Synchronization Busy Status */
   __IO RTC_FREQCORR_Type         FREQCORR;    /**< \brief Offset: 0x14 (R/W  8) Frequency Correction */
-       RoReg8                    Reserved2[0x3];
+       ro_reg8                    Reserved2[0x3];
   __IO RTC_MODE0_COUNT_Type      COUNT;       /**< \brief Offset: 0x18 (R/W 32) MODE0 Counter Value */
-       RoReg8                    Reserved3[0x4];
+       ro_reg8                    Reserved3[0x4];
   __IO RTC_MODE0_COMP_Type       COMP[2];     /**< \brief Offset: 0x20 (R/W 32) MODE0 Compare n Value */
-       RoReg8                    Reserved4[0x18];
+       ro_reg8                    Reserved4[0x18];
   __IO RTC_GP_Type               GP[4];       /**< \brief Offset: 0x40 (R/W 32) General Purpose */
-       RoReg8                    Reserved5[0x10];
+       ro_reg8                    Reserved5[0x10];
   __IO RTC_TAMPCTRL_Type         TAMPCTRL;    /**< \brief Offset: 0x60 (R/W 32) Tamper Control */
   __I  RTC_MODE0_TIMESTAMP_Type  TIMESTAMP;   /**< \brief Offset: 0x64 (R/  32) MODE0 Timestamp */
   __IO RTC_TAMPID_Type           TAMPID;      /**< \brief Offset: 0x68 (R/W 32) Tamper ID */
-       RoReg8                    Reserved6[0x14];
+       ro_reg8                    Reserved6[0x14];
   __IO RTC_BKUP_Type             BKUP[8];     /**< \brief Offset: 0x80 (R/W 32) Backup */
 } RtcMode0;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
@@ -877,22 +877,22 @@ typedef struct { /* 16-bit Counter with Two 16-bit Compares */
   __IO RTC_MODE1_INTENSET_Type   INTENSET;    /**< \brief Offset: 0x0A (R/W 16) MODE1 Interrupt Enable Set */
   __IO RTC_MODE1_INTFLAG_Type    INTFLAG;     /**< \brief Offset: 0x0C (R/W 16) MODE1 Interrupt Flag Status and Clear */
   __IO RTC_DBGCTRL_Type          DBGCTRL;     /**< \brief Offset: 0x0E (R/W  8) Debug Control */
-       RoReg8                    Reserved1[0x1];
+       ro_reg8                    Reserved1[0x1];
   __I  RTC_MODE1_SYNCBUSY_Type   SYNCBUSY;    /**< \brief Offset: 0x10 (R/  32) MODE1 Synchronization Busy Status */
   __IO RTC_FREQCORR_Type         FREQCORR;    /**< \brief Offset: 0x14 (R/W  8) Frequency Correction */
-       RoReg8                    Reserved2[0x3];
+       ro_reg8                    Reserved2[0x3];
   __IO RTC_MODE1_COUNT_Type      COUNT;       /**< \brief Offset: 0x18 (R/W 16) MODE1 Counter Value */
-       RoReg8                    Reserved3[0x2];
+       ro_reg8                    Reserved3[0x2];
   __IO RTC_MODE1_PER_Type        PER;         /**< \brief Offset: 0x1C (R/W 16) MODE1 Counter Period */
-       RoReg8                    Reserved4[0x2];
+       ro_reg8                    Reserved4[0x2];
   __IO RTC_MODE1_COMP_Type       COMP[4];     /**< \brief Offset: 0x20 (R/W 16) MODE1 Compare n Value */
-       RoReg8                    Reserved5[0x18];
+       ro_reg8                    Reserved5[0x18];
   __IO RTC_GP_Type               GP[4];       /**< \brief Offset: 0x40 (R/W 32) General Purpose */
-       RoReg8                    Reserved6[0x10];
+       ro_reg8                    Reserved6[0x10];
   __IO RTC_TAMPCTRL_Type         TAMPCTRL;    /**< \brief Offset: 0x60 (R/W 32) Tamper Control */
   __I  RTC_MODE1_TIMESTAMP_Type  TIMESTAMP;   /**< \brief Offset: 0x64 (R/  32) MODE1 Timestamp */
   __IO RTC_TAMPID_Type           TAMPID;      /**< \brief Offset: 0x68 (R/W 32) Tamper ID */
-       RoReg8                    Reserved7[0x14];
+       ro_reg8                    Reserved7[0x14];
   __IO RTC_BKUP_Type             BKUP[8];     /**< \brief Offset: 0x80 (R/W 32) Backup */
 } RtcMode1;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
@@ -907,20 +907,20 @@ typedef struct { /* Clock/Calendar with Alarm */
   __IO RTC_MODE2_INTENSET_Type   INTENSET;    /**< \brief Offset: 0x0A (R/W 16) MODE2 Interrupt Enable Set */
   __IO RTC_MODE2_INTFLAG_Type    INTFLAG;     /**< \brief Offset: 0x0C (R/W 16) MODE2 Interrupt Flag Status and Clear */
   __IO RTC_DBGCTRL_Type          DBGCTRL;     /**< \brief Offset: 0x0E (R/W  8) Debug Control */
-       RoReg8                    Reserved1[0x1];
+       ro_reg8                    Reserved1[0x1];
   __I  RTC_MODE2_SYNCBUSY_Type   SYNCBUSY;    /**< \brief Offset: 0x10 (R/  32) MODE2 Synchronization Busy Status */
   __IO RTC_FREQCORR_Type         FREQCORR;    /**< \brief Offset: 0x14 (R/W  8) Frequency Correction */
-       RoReg8                    Reserved2[0x3];
+       ro_reg8                    Reserved2[0x3];
   __IO RTC_MODE2_CLOCK_Type      CLOCK;       /**< \brief Offset: 0x18 (R/W 32) MODE2 Clock Value */
-       RoReg8                    Reserved3[0x4];
+       ro_reg8                    Reserved3[0x4];
        RtcMode2Alarm             Mode2Alarm[2]; /**< \brief Offset: 0x20 RtcMode2Alarm groups [NUM_OF_ALARMS] */
-       RoReg8                    Reserved4[0x10];
+       ro_reg8                    Reserved4[0x10];
   __IO RTC_GP_Type               GP[4];       /**< \brief Offset: 0x40 (R/W 32) General Purpose */
-       RoReg8                    Reserved5[0x10];
+       ro_reg8                    Reserved5[0x10];
   __IO RTC_TAMPCTRL_Type         TAMPCTRL;    /**< \brief Offset: 0x60 (R/W 32) Tamper Control */
   __I  RTC_MODE2_TIMESTAMP_Type  TIMESTAMP;   /**< \brief Offset: 0x64 (R/  32) MODE2 Timestamp */
   __IO RTC_TAMPID_Type           TAMPID;      /**< \brief Offset: 0x68 (R/W 32) Tamper ID */
-       RoReg8                    Reserved6[0x14];
+       ro_reg8                    Reserved6[0x14];
   __IO RTC_BKUP_Type             BKUP[8];     /**< \brief Offset: 0x80 (R/W 32) Backup */
 } RtcMode2;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

@@ -1204,19 +1204,19 @@ typedef struct { /* I2C Master Mode */
   __IO SERCOM_I2CM_CTRLB_Type    CTRLB;       /**< \brief Offset: 0x04 (R/W 32) I2CM Control B */
   __IO SERCOM_I2CM_CTRLC_Type    CTRLC;       /**< \brief Offset: 0x08 (R/W 32) I2CM Control C */
   __IO SERCOM_I2CM_BAUD_Type     BAUD;        /**< \brief Offset: 0x0C (R/W 32) I2CM Baud Rate */
-       RoReg8                    Reserved1[0x4];
+       ro_reg8                    Reserved1[0x4];
   __IO SERCOM_I2CM_INTENCLR_Type INTENCLR;    /**< \brief Offset: 0x14 (R/W  8) I2CM Interrupt Enable Clear */
-       RoReg8                    Reserved2[0x1];
+       ro_reg8                    Reserved2[0x1];
   __IO SERCOM_I2CM_INTENSET_Type INTENSET;    /**< \brief Offset: 0x16 (R/W  8) I2CM Interrupt Enable Set */
-       RoReg8                    Reserved3[0x1];
+       ro_reg8                    Reserved3[0x1];
   __IO SERCOM_I2CM_INTFLAG_Type  INTFLAG;     /**< \brief Offset: 0x18 (R/W  8) I2CM Interrupt Flag Status and Clear */
-       RoReg8                    Reserved4[0x1];
+       ro_reg8                    Reserved4[0x1];
   __IO SERCOM_I2CM_STATUS_Type   STATUS;      /**< \brief Offset: 0x1A (R/W 16) I2CM Status */
   __I  SERCOM_I2CM_SYNCBUSY_Type SYNCBUSY;    /**< \brief Offset: 0x1C (R/  32) I2CM Synchronization Busy */
-       RoReg8                    Reserved5[0x4];
+       ro_reg8                    Reserved5[0x4];
   __IO SERCOM_I2CM_ADDR_Type     ADDR;        /**< \brief Offset: 0x24 (R/W 32) I2CM Address */
   __IO SERCOM_I2CM_DATA_Type     DATA;        /**< \brief Offset: 0x28 (R/W 32) I2CM Data */
-       RoReg8                    Reserved6[0x4];
+       ro_reg8                    Reserved6[0x4];
   __IO SERCOM_I2CM_DBGCTRL_Type  DBGCTRL;     /**< \brief Offset: 0x30 (R/W  8) I2CM Debug Control */
 } SercomI2cm;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
@@ -1226,16 +1226,16 @@ typedef struct { /* I2C Slave Mode */
   __IO SERCOM_I2CS_CTRLA_Type    CTRLA;       /**< \brief Offset: 0x00 (R/W 32) I2CS Control A */
   __IO SERCOM_I2CS_CTRLB_Type    CTRLB;       /**< \brief Offset: 0x04 (R/W 32) I2CS Control B */
   __IO SERCOM_I2CS_CTRLC_Type    CTRLC;       /**< \brief Offset: 0x08 (R/W 32) I2CS Control C */
-       RoReg8                    Reserved1[0x8];
+       ro_reg8                    Reserved1[0x8];
   __IO SERCOM_I2CS_INTENCLR_Type INTENCLR;    /**< \brief Offset: 0x14 (R/W  8) I2CS Interrupt Enable Clear */
-       RoReg8                    Reserved2[0x1];
+       ro_reg8                    Reserved2[0x1];
   __IO SERCOM_I2CS_INTENSET_Type INTENSET;    /**< \brief Offset: 0x16 (R/W  8) I2CS Interrupt Enable Set */
-       RoReg8                    Reserved3[0x1];
+       ro_reg8                    Reserved3[0x1];
   __IO SERCOM_I2CS_INTFLAG_Type  INTFLAG;     /**< \brief Offset: 0x18 (R/W  8) I2CS Interrupt Flag Status and Clear */
-       RoReg8                    Reserved4[0x1];
+       ro_reg8                    Reserved4[0x1];
   __IO SERCOM_I2CS_STATUS_Type   STATUS;      /**< \brief Offset: 0x1A (R/W 16) I2CS Status */
   __I  SERCOM_I2CS_SYNCBUSY_Type SYNCBUSY;    /**< \brief Offset: 0x1C (R/  32) I2CS Synchronization Busy */
-       RoReg8                    Reserved5[0x2];
+       ro_reg8                    Reserved5[0x2];
   __IO SERCOM_I2CS_LENGTH_Type   LENGTH;      /**< \brief Offset: 0x22 (R/W 16) I2CS Length */
   __IO SERCOM_I2CS_ADDR_Type     ADDR;        /**< \brief Offset: 0x24 (R/W 32) I2CS Address */
   __IO SERCOM_I2CS_DATA_Type     DATA;        /**< \brief Offset: 0x28 (R/W 32) I2CS Data */
@@ -1248,20 +1248,20 @@ typedef struct { /* SPI Mode */
   __IO SERCOM_SPI_CTRLB_Type     CTRLB;       /**< \brief Offset: 0x04 (R/W 32) SPI Control B */
   __IO SERCOM_SPI_CTRLC_Type     CTRLC;       /**< \brief Offset: 0x08 (R/W 32) SPI Control C */
   __IO SERCOM_SPI_BAUD_Type      BAUD;        /**< \brief Offset: 0x0C (R/W  8) SPI Baud Rate */
-       RoReg8                    Reserved1[0x7];
+       ro_reg8                    Reserved1[0x7];
   __IO SERCOM_SPI_INTENCLR_Type  INTENCLR;    /**< \brief Offset: 0x14 (R/W  8) SPI Interrupt Enable Clear */
-       RoReg8                    Reserved2[0x1];
+       ro_reg8                    Reserved2[0x1];
   __IO SERCOM_SPI_INTENSET_Type  INTENSET;    /**< \brief Offset: 0x16 (R/W  8) SPI Interrupt Enable Set */
-       RoReg8                    Reserved3[0x1];
+       ro_reg8                    Reserved3[0x1];
   __IO SERCOM_SPI_INTFLAG_Type   INTFLAG;     /**< \brief Offset: 0x18 (R/W  8) SPI Interrupt Flag Status and Clear */
-       RoReg8                    Reserved4[0x1];
+       ro_reg8                    Reserved4[0x1];
   __IO SERCOM_SPI_STATUS_Type    STATUS;      /**< \brief Offset: 0x1A (R/W 16) SPI Status */
   __I  SERCOM_SPI_SYNCBUSY_Type  SYNCBUSY;    /**< \brief Offset: 0x1C (R/  32) SPI Synchronization Busy */
-       RoReg8                    Reserved5[0x2];
+       ro_reg8                    Reserved5[0x2];
   __IO SERCOM_SPI_LENGTH_Type    LENGTH;      /**< \brief Offset: 0x22 (R/W 16) SPI Length */
   __IO SERCOM_SPI_ADDR_Type      ADDR;        /**< \brief Offset: 0x24 (R/W 32) SPI Address */
   __IO SERCOM_SPI_DATA_Type      DATA;        /**< \brief Offset: 0x28 (R/W 32) SPI Data */
-       RoReg8                    Reserved6[0x4];
+       ro_reg8                    Reserved6[0x4];
   __IO SERCOM_SPI_DBGCTRL_Type   DBGCTRL;     /**< \brief Offset: 0x30 (R/W  8) SPI Debug Control */
 } SercomSpi;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
@@ -1273,21 +1273,21 @@ typedef struct { /* USART Mode */
   __IO SERCOM_USART_CTRLC_Type   CTRLC;       /**< \brief Offset: 0x08 (R/W 32) USART Control C */
   __IO SERCOM_USART_BAUD_Type    BAUD;        /**< \brief Offset: 0x0C (R/W 16) USART Baud Rate */
   __IO SERCOM_USART_RXPL_Type    RXPL;        /**< \brief Offset: 0x0E (R/W  8) USART Receive Pulse Length */
-       RoReg8                    Reserved1[0x5];
+       ro_reg8                    Reserved1[0x5];
   __IO SERCOM_USART_INTENCLR_Type INTENCLR;    /**< \brief Offset: 0x14 (R/W  8) USART Interrupt Enable Clear */
-       RoReg8                    Reserved2[0x1];
+       ro_reg8                    Reserved2[0x1];
   __IO SERCOM_USART_INTENSET_Type INTENSET;    /**< \brief Offset: 0x16 (R/W  8) USART Interrupt Enable Set */
-       RoReg8                    Reserved3[0x1];
+       ro_reg8                    Reserved3[0x1];
   __IO SERCOM_USART_INTFLAG_Type INTFLAG;     /**< \brief Offset: 0x18 (R/W  8) USART Interrupt Flag Status and Clear */
-       RoReg8                    Reserved4[0x1];
+       ro_reg8                    Reserved4[0x1];
   __IO SERCOM_USART_STATUS_Type  STATUS;      /**< \brief Offset: 0x1A (R/W 16) USART Status */
   __I  SERCOM_USART_SYNCBUSY_Type SYNCBUSY;    /**< \brief Offset: 0x1C (R/  32) USART Synchronization Busy */
   __I  SERCOM_USART_RXERRCNT_Type RXERRCNT;    /**< \brief Offset: 0x20 (R/   8) USART Receive Error Count */
-       RoReg8                    Reserved5[0x1];
+       ro_reg8                    Reserved5[0x1];
   __IO SERCOM_USART_LENGTH_Type  LENGTH;      /**< \brief Offset: 0x22 (R/W 16) USART Length */
-       RoReg8                    Reserved6[0x4];
+       ro_reg8                    Reserved6[0x4];
   __IO SERCOM_USART_DATA_Type    DATA;        /**< \brief Offset: 0x28 (R/W 32) USART Data */
-       RoReg8                    Reserved7[0x4];
+       ro_reg8                    Reserved7[0x4];
   __IO SERCOM_USART_DBGCTRL_Type DBGCTRL;     /**< \brief Offset: 0x30 (R/W  8) USART Debug Control */
 } SercomUsart;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

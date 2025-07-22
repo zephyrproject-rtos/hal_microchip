@@ -200,13 +200,13 @@ typedef union {
 
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct {
-       RoReg8                    Reserved1[0x1];
+       ro_reg8                    Reserved1[0x1];
   __IO MCLK_INTENCLR_Type        INTENCLR;    /**< \brief Offset: 0x01 (R/W  8) Interrupt Enable Clear */
   __IO MCLK_INTENSET_Type        INTENSET;    /**< \brief Offset: 0x02 (R/W  8) Interrupt Enable Set */
   __IO MCLK_INTFLAG_Type         INTFLAG;     /**< \brief Offset: 0x03 (R/W  8) Interrupt Flag Status and Clear */
   __I  MCLK_HSDIV_Type           HSDIV;       /**< \brief Offset: 0x04 (R/   8) HS Clock Division */
   __IO MCLK_CPUDIV_Type          CPUDIV;      /**< \brief Offset: 0x05 (R/W  8) CPU Clock Division */
-       RoReg8                    Reserved2[0xA];
+       ro_reg8                    Reserved2[0xA];
   __IO MCLK_AHBMASK_Type         AHBMASK;     /**< \brief Offset: 0x10 (R/W 32) AHB Mask */
   __IO MCLK_APBAMASK_Type        APBAMASK;    /**< \brief Offset: 0x14 (R/W 32) APBA Mask */
   __IO MCLK_APBBMASK_Type        APBBMASK;    /**< \brief Offset: 0x18 (R/W 32) APBB Mask */

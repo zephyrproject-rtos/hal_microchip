@@ -8,6 +8,57 @@
 #ifndef _SOC_MICROCHIP_PIC32CXSG41_FIXUPS_H_
 #define _SOC_MICROCHIP_PIC32CXSG41_FIXUPS_H_
 
+#if !defined(SKIP_INTEGER_LITERALS)
+#if defined(_U_) || defined(_L_) || defined(_UL_)
+#error "Integer Literals macros already defined elsewhere"
+#endif
+
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+/* Macros that deal with adding suffixes to integer literal constants for C/C++
+ */
+#define _U_(x) x##U /**< C code: Unsigned integer literal constant value */
+#define _L_(x) x##L /**< C code: Long integer literal constant value */
+#define _UL_(x)                                                                \
+  x##UL          /**< C code: Unsigned Long integer literal constant value */
+#else            /* Assembler */
+#define _U_(x) x /**< Assembler: Unsigned integer literal constant value */
+#define _L_(x) x /**< Assembler: Long integer literal constant value */
+#define _UL_(x)                                                                \
+  x    /**< Assembler: Unsigned Long integer literal constant value */
+#endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+#endif /* SKIP_INTEGER_LITERALS */
+
+#if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
+#include <stdint.h>
+#ifndef __cplusplus
+typedef volatile const uint32_t
+    ro_reg; /**< Read only 32-bit register (volatile const unsigned int) */
+typedef volatile const uint16_t
+    ro_reg16; /**< Read only 16-bit register (volatile const unsigned int) */
+typedef volatile const uint8_t
+    ro_reg8; /**< Read only  8-bit register (volatile const unsigned int) */
+#else        /* #ifndef __cplusplus */
+typedef volatile uint32_t
+    ro_reg; /**< Read only 32-bit reg (volatile const unsigned int) */
+typedef volatile uint16_t
+    ro_reg16; /**< Read only 16-bit reg (volatile const unsigned int) */
+typedef volatile uint8_t
+    ro_reg8; /**< Read only  8-bit reg (volatile const unsigned int) */
+#endif
+typedef volatile uint32_t
+    wo_reg; /**< Write only 32-bit reg (volatile unsigned int) */
+typedef volatile uint16_t
+    wo_reg16; /**< Write only 16-bit reg (volatile unsigned int) */
+typedef volatile uint8_t
+    wo_reg8; /**< Write only  8-bit reg (volatile unsigned int) */
+typedef volatile uint32_t
+    rw_reg; /**< Read-Write 32-bit reg (volatile unsigned int) */
+typedef volatile uint16_t
+    rw_reg16; /**< Read-Write 16-bit reg (volatile unsigned int) */
+typedef volatile uint8_t
+    rw_reg8; /**< Read-Write  8-bit reg (volatile unsigned int) */
+#endif       /* #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
+
 #include "sercom_fixup_pic32cxsg.h"
 #include "tc_fixup_pic32cxsg.h"
 #include "gmac_fixup_pic32cxsg.h"

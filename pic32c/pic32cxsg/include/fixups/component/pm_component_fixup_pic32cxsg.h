@@ -115,15 +115,15 @@ typedef union {
 typedef struct {
   __IO PM_CTRLA_Type             CTRLA;       /**< \brief Offset: 0x00 (R/W  8) Control A */
   __IO PM_SLEEPCFG_Type          SLEEPCFG;    /**< \brief Offset: 0x01 (R/W  8) Sleep Configuration */
-       RoReg8                    Reserved1[0x2];
+       ro_reg8                    Reserved1[0x2];
   __IO PM_INTENCLR_Type          INTENCLR;    /**< \brief Offset: 0x04 (R/W  8) Interrupt Enable Clear */
   __IO PM_INTENSET_Type          INTENSET;    /**< \brief Offset: 0x05 (R/W  8) Interrupt Enable Set */
   __IO PM_INTFLAG_Type           INTFLAG;     /**< \brief Offset: 0x06 (R/W  8) Interrupt Flag Status and Clear */
-       RoReg8                    Reserved2[0x1];
+       ro_reg8                    Reserved2[0x1];
   __IO PM_STDBYCFG_Type          STDBYCFG;    /**< \brief Offset: 0x08 (R/W  8) Standby Configuration */
   __IO PM_HIBCFG_Type            HIBCFG;      /**< \brief Offset: 0x09 (R/W  8) Hibernate Configuration */
   __IO PM_BKUPCFG_Type           BKUPCFG;     /**< \brief Offset: 0x0A (R/W  8) Backup Configuration */
-       RoReg8                    Reserved3[0x7];
+       ro_reg8                    Reserved3[0x7];
   __IO PM_PWSAKDLY_Type          PWSAKDLY;    /**< \brief Offset: 0x12 (R/W  8) Power Switch Acknowledge Delay */
 } Pm;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

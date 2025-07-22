@@ -237,13 +237,13 @@ typedef struct {
   __IO ICM_CFG_Type              CFG;         /**< \brief Offset: 0x00 (R/W 32) Configuration */
   __O  ICM_CTRL_Type             CTRL;        /**< \brief Offset: 0x04 ( /W 32) Control */
   __I  ICM_SR_Type               SR;          /**< \brief Offset: 0x08 (R/  32) Status */
-       RoReg8                    Reserved1[0x4];
+       ro_reg8                    Reserved1[0x4];
   __O  ICM_IER_Type              IER;         /**< \brief Offset: 0x10 ( /W 32) Interrupt Enable */
   __O  ICM_IDR_Type              IDR;         /**< \brief Offset: 0x14 ( /W 32) Interrupt Disable */
   __I  ICM_IMR_Type              IMR;         /**< \brief Offset: 0x18 (R/  32) Interrupt Mask */
   __I  ICM_ISR_Type              ISR;         /**< \brief Offset: 0x1C (R/  32) Interrupt Status */
   __I  ICM_UASR_Type             UASR;        /**< \brief Offset: 0x20 (R/  32) Undefined Access Status */
-       RoReg8                    Reserved2[0xC];
+       ro_reg8                    Reserved2[0xC];
   __IO ICM_DSCR_Type             DSCR;        /**< \brief Offset: 0x30 (R/W 32) Region Descriptor Area Start Address */
   __IO ICM_HASH_Type             HASH;        /**< \brief Offset: 0x34 (R/W 32) Region Hash Area Start Address */
   __O  ICM_UIHVAL_Type           UIHVAL[8];   /**< \brief Offset: 0x38 ( /W 32) User Initial Hash Value n */

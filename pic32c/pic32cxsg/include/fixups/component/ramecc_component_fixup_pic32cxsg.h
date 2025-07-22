@@ -85,7 +85,7 @@ typedef struct {
   __IO RAMECC_INTFLAG_Type       INTFLAG;     /**< \brief Offset: 0x2 (R/W  8) Interrupt Flag */
   __I  RAMECC_STATUS_Type        STATUS;      /**< \brief Offset: 0x3 (R/   8) Status */
   __I  RAMECC_ERRADDR_Type       ERRADDR;     /**< \brief Offset: 0x4 (R/  32) Error Address */
-       RoReg8                    Reserved1[0x7];
+       ro_reg8                    Reserved1[0x7];
   __IO RAMECC_DBGCTRL_Type       DBGCTRL;     /**< \brief Offset: 0xF (R/W  8) Debug Control */
 } Ramecc;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

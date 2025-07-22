@@ -266,11 +266,11 @@ typedef struct {
   __I  AC_STATUSB_Type           STATUSB;     /**< \brief Offset: 0x08 (R/   8) Status B */
   __IO AC_DBGCTRL_Type           DBGCTRL;     /**< \brief Offset: 0x09 (R/W  8) Debug Control */
   __IO AC_WINCTRL_Type           WINCTRL;     /**< \brief Offset: 0x0A (R/W  8) Window Control */
-       RoReg8                    Reserved1[0x1];
+       ro_reg8                    Reserved1[0x1];
   __IO AC_SCALER_Type            SCALER[2];   /**< \brief Offset: 0x0C (R/W  8) Scaler n */
-       RoReg8                    Reserved2[0x2];
+       ro_reg8                    Reserved2[0x2];
   __IO AC_COMPCTRL_Type          COMPCTRL[2]; /**< \brief Offset: 0x10 (R/W 32) Comparator Control n */
-       RoReg8                    Reserved3[0x8];
+       ro_reg8                    Reserved3[0x8];
   __I  AC_SYNCBUSY_Type          SYNCBUSY;    /**< \brief Offset: 0x20 (R/  32) Synchronization Busy */
   __IO AC_CALIB_Type             CALIB;       /**< \brief Offset: 0x24 (R/W 16) Calibration */
 } Ac;

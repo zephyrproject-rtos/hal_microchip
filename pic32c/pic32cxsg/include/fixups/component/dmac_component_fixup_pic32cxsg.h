@@ -538,7 +538,7 @@ typedef struct {
   __IO DMAC_CHCTRLB_Type         CHCTRLB;     /**< \brief Offset: 0x04 (R/W  8) Channel n Control B */
   __IO DMAC_CHPRILVL_Type        CHPRILVL;    /**< \brief Offset: 0x05 (R/W  8) Channel n Priority Level */
   __IO DMAC_CHEVCTRL_Type        CHEVCTRL;    /**< \brief Offset: 0x06 (R/W  8) Channel n Event Control */
-       RoReg8                    Reserved1[0x5];
+       ro_reg8                    Reserved1[0x5];
   __IO DMAC_CHINTENCLR_Type      CHINTENCLR;  /**< \brief Offset: 0x0C (R/W  8) Channel n Interrupt Enable Clear */
   __IO DMAC_CHINTENSET_Type      CHINTENSET;  /**< \brief Offset: 0x0D (R/W  8) Channel n Interrupt Enable Set */
   __IO DMAC_CHINTFLAG_Type       CHINTFLAG;   /**< \brief Offset: 0x0E (R/W  8) Channel n Interrupt Flag Status and Clear */
@@ -555,19 +555,19 @@ typedef struct {
   __IO DMAC_CRCCHKSUM_Type       CRCCHKSUM;   /**< \brief Offset: 0x08 (R/W 32) CRC Checksum */
   __IO DMAC_CRCSTATUS_Type       CRCSTATUS;   /**< \brief Offset: 0x0C (R/W  8) CRC Status */
   __IO DMAC_DBGCTRL_Type         DBGCTRL;     /**< \brief Offset: 0x0D (R/W  8) Debug Control */
-       RoReg8                    Reserved1[0x2];
+       ro_reg8                    Reserved1[0x2];
   __IO DMAC_SWTRIGCTRL_Type      SWTRIGCTRL;  /**< \brief Offset: 0x10 (R/W 32) Software Trigger Control */
   __IO DMAC_PRICTRL0_Type        PRICTRL0;    /**< \brief Offset: 0x14 (R/W 32) Priority Control 0 */
-       RoReg8                    Reserved2[0x8];
+       ro_reg8                    Reserved2[0x8];
   __IO DMAC_INTPEND_Type         INTPEND;     /**< \brief Offset: 0x20 (R/W 16) Interrupt Pending */
-       RoReg8                    Reserved3[0x2];
+       ro_reg8                    Reserved3[0x2];
   __I  DMAC_INTSTATUS_Type       INTSTATUS;   /**< \brief Offset: 0x24 (R/  32) Interrupt Status */
   __I  DMAC_BUSYCH_Type          BUSYCH;      /**< \brief Offset: 0x28 (R/  32) Busy Channels */
   __I  DMAC_PENDCH_Type          PENDCH;      /**< \brief Offset: 0x2C (R/  32) Pending Channels */
   __I  DMAC_ACTIVE_Type          ACTIVE;      /**< \brief Offset: 0x30 (R/  32) Active Channel and Levels */
   __IO DMAC_BASEADDR_Type        BASEADDR;    /**< \brief Offset: 0x34 (R/W 32) Descriptor Memory Section Base Address */
   __IO DMAC_WRBADDR_Type         WRBADDR;     /**< \brief Offset: 0x38 (R/W 32) Write-Back Memory Section Base Address */
-       RoReg8                    Reserved4[0x4];
+       ro_reg8                    Reserved4[0x4];
        DmacChannel               Channel[DMAC_CHANNEL_NUMBER]; /**< \brief Offset: 0x40 DmacChannel groups [CH_NUM] */
 } Dmac;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

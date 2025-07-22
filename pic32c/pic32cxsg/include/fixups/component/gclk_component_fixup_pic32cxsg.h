@@ -90,11 +90,11 @@ typedef union {
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct {
   __IO GCLK_CTRLA_Type           CTRLA;       /**< \brief Offset: 0x00 (R/W  8) Control */
-	   RoReg8                    Reserved1[0x03];
+	   ro_reg8                    Reserved1[0x03];
   __I  GCLK_SYNCBUSY_Type        SYNCBUSY;    /**< \brief Offset: 0x04 (R/  32) Synchronization Busy */
-	   RoReg8                    Reserved2[0x18];
+	   ro_reg8                    Reserved2[0x18];
   __IO GCLK_GENCTRL_Type         GENCTRL[12]; /**< \brief Offset: 0x20 (R/W 32) Generic Clock Generator Control */
-	   RoReg8                    Reserved3[0x30];
+	   ro_reg8                    Reserved3[0x30];
   __IO GCLK_PCHCTRL_Type         PCHCTRL[48]; /**< \brief Offset: 0x80 (R/W 32) Peripheral Clock Control */
 } Gclk;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

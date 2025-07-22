@@ -781,7 +781,7 @@ typedef struct {
   __IO USB_DEVICE_PCKSIZE_Type   PCKSIZE;     /**< \brief Offset: 0x004 (R/W 32) DEVICE_DESC_BANK Endpoint Bank, Packet Size */
   __IO USB_DEVICE_EXTREG_Type    EXTREG;      /**< \brief Offset: 0x008 (R/W 16) DEVICE_DESC_BANK Endpoint Bank, Extended */
   __IO USB_DEVICE_STATUS_BK_Type STATUS_BK;   /**< \brief Offset: 0x00A (R/W  8) DEVICE_DESC_BANK Enpoint Bank, Status of Bank */
-       RoReg8                    Reserved1[0x5];
+       ro_reg8                    Reserved1[0x5];
 } UsbDeviceDescBank;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
@@ -792,7 +792,7 @@ typedef struct {
   __IO USB_HOST_PCKSIZE_Type     PCKSIZE;     /**< \brief Offset: 0x004 (R/W 32) HOST_DESC_BANK Host Bank, Packet Size */
   __IO USB_HOST_EXTREG_Type      EXTREG;      /**< \brief Offset: 0x008 (R/W 16) HOST_DESC_BANK Host Bank, Extended */
   __IO USB_HOST_STATUS_BK_Type   STATUS_BK;   /**< \brief Offset: 0x00A (R/W  8) HOST_DESC_BANK Host Bank, Status of Bank */
-       RoReg8                    Reserved1[0x1];
+       ro_reg8                    Reserved1[0x1];
   __IO USB_HOST_CTRL_PIPE_Type   CTRL_PIPE;   /**< \brief Offset: 0x00C (R/W 16) HOST_DESC_BANK Host Bank, Host Control Pipe */
   __IO USB_HOST_STATUS_PIPE_Type STATUS_PIPE; /**< \brief Offset: 0x00E (R/W 16) HOST_DESC_BANK Host Bank, Host Status Pipe */
 } UsbHostDescBank;
@@ -802,14 +802,14 @@ typedef struct {
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct {
   __IO USB_DEVICE_EPCFG_Type     EPCFG;       /**< \brief Offset: 0x000 (R/W  8) DEVICE_ENDPOINT End Point Configuration */
-       RoReg8                    Reserved1[0x3];
+       ro_reg8                    Reserved1[0x3];
   __O  USB_DEVICE_EPSTATUSCLR_Type EPSTATUSCLR; /**< \brief Offset: 0x004 ( /W  8) DEVICE_ENDPOINT End Point Pipe Status Clear */
   __O  USB_DEVICE_EPSTATUSSET_Type EPSTATUSSET; /**< \brief Offset: 0x005 ( /W  8) DEVICE_ENDPOINT End Point Pipe Status Set */
   __I  USB_DEVICE_EPSTATUS_Type  EPSTATUS;    /**< \brief Offset: 0x006 (R/   8) DEVICE_ENDPOINT End Point Pipe Status */
   __IO USB_DEVICE_EPINTFLAG_Type EPINTFLAG;   /**< \brief Offset: 0x007 (R/W  8) DEVICE_ENDPOINT End Point Interrupt Flag */
   __IO USB_DEVICE_EPINTENCLR_Type EPINTENCLR;  /**< \brief Offset: 0x008 (R/W  8) DEVICE_ENDPOINT End Point Interrupt Clear Flag */
   __IO USB_DEVICE_EPINTENSET_Type EPINTENSET;  /**< \brief Offset: 0x009 (R/W  8) DEVICE_ENDPOINT End Point Interrupt Set Flag */
-       RoReg8                    Reserved2[0x16];
+       ro_reg8                    Reserved2[0x16];
 } UsbDeviceEndpoint;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
@@ -817,7 +817,7 @@ typedef struct {
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct {
   __IO USB_HOST_PCFG_Type        PCFG;        /**< \brief Offset: 0x000 (R/W  8) HOST_PIPE End Point Configuration */
-       RoReg8                    Reserved1[0x2];
+       ro_reg8                    Reserved1[0x2];
   __IO USB_HOST_BINTERVAL_Type   BINTERVAL;   /**< \brief Offset: 0x003 (R/W  8) HOST_PIPE Bus Access Period of Pipe */
   __O  USB_HOST_PSTATUSCLR_Type  PSTATUSCLR;  /**< \brief Offset: 0x004 ( /W  8) HOST_PIPE End Point Pipe Status Clear */
   __O  USB_HOST_PSTATUSSET_Type  PSTATUSSET;  /**< \brief Offset: 0x005 ( /W  8) HOST_PIPE End Point Pipe Status Set */
@@ -825,7 +825,7 @@ typedef struct {
   __IO USB_HOST_PINTFLAG_Type    PINTFLAG;    /**< \brief Offset: 0x007 (R/W  8) HOST_PIPE Pipe Interrupt Flag */
   __IO USB_HOST_PINTENCLR_Type   PINTENCLR;   /**< \brief Offset: 0x008 (R/W  8) HOST_PIPE Pipe Interrupt Flag Clear */
   __IO USB_HOST_PINTENSET_Type   PINTENSET;   /**< \brief Offset: 0x009 (R/W  8) HOST_PIPE Pipe Interrupt Flag Set */
-       RoReg8                    Reserved2[0x16];
+       ro_reg8                    Reserved2[0x16];
 } UsbHostPipe;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
 
@@ -833,29 +833,29 @@ typedef struct {
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct { /* USB is Device */
   __IO USB_CTRLA_Type            CTRLA;       /**< \brief Offset: 0x000 (R/W  8) Control A */
-       RoReg8                    Reserved1[0x1];
+       ro_reg8                    Reserved1[0x1];
   __I  USB_SYNCBUSY_Type         SYNCBUSY;    /**< \brief Offset: 0x002 (R/   8) Synchronization Busy */
   __IO USB_QOSCTRL_Type          QOSCTRL;     /**< \brief Offset: 0x003 (R/W  8) USB Quality Of Service */
-       RoReg8                    Reserved2[0x4];
+       ro_reg8                    Reserved2[0x4];
   __IO USB_DEVICE_CTRLB_Type     CTRLB;       /**< \brief Offset: 0x008 (R/W 16) DEVICE Control B */
   __IO USB_DEVICE_DADD_Type      DADD;        /**< \brief Offset: 0x00A (R/W  8) DEVICE Device Address */
-       RoReg8                    Reserved3[0x1];
+       ro_reg8                    Reserved3[0x1];
   __I  USB_DEVICE_STATUS_Type    STATUS;      /**< \brief Offset: 0x00C (R/   8) DEVICE Status */
   __I  USB_FSMSTATUS_Type        FSMSTATUS;   /**< \brief Offset: 0x00D (R/   8) Finite State Machine Status */
-       RoReg8                    Reserved4[0x2];
+       ro_reg8                    Reserved4[0x2];
   __I  USB_DEVICE_FNUM_Type      FNUM;        /**< \brief Offset: 0x010 (R/  16) DEVICE Device Frame Number */
-       RoReg8                    Reserved5[0x2];
+       ro_reg8                    Reserved5[0x2];
   __IO USB_DEVICE_INTENCLR_Type  INTENCLR;    /**< \brief Offset: 0x014 (R/W 16) DEVICE Device Interrupt Enable Clear */
-       RoReg8                    Reserved6[0x2];
+       ro_reg8                    Reserved6[0x2];
   __IO USB_DEVICE_INTENSET_Type  INTENSET;    /**< \brief Offset: 0x018 (R/W 16) DEVICE Device Interrupt Enable Set */
-       RoReg8                    Reserved7[0x2];
+       ro_reg8                    Reserved7[0x2];
   __IO USB_DEVICE_INTFLAG_Type   INTFLAG;     /**< \brief Offset: 0x01C (R/W 16) DEVICE Device Interrupt Flag */
-       RoReg8                    Reserved8[0x2];
+       ro_reg8                    Reserved8[0x2];
   __I  USB_DEVICE_EPINTSMRY_Type EPINTSMRY;   /**< \brief Offset: 0x020 (R/  16) DEVICE End Point Interrupt Summary */
-       RoReg8                    Reserved9[0x2];
+       ro_reg8                    Reserved9[0x2];
   __IO USB_DESCADD_Type          DESCADD;     /**< \brief Offset: 0x024 (R/W 32) Descriptor Address */
   __IO USB_PADCAL_Type           PADCAL;      /**< \brief Offset: 0x028 (R/W 16) USB PAD Calibration */
-       RoReg8                    Reserved10[0xD6];
+       ro_reg8                    Reserved10[0xD6];
        UsbDeviceEndpoint         DeviceEndpoint[8]; /**< \brief Offset: 0x100 UsbDeviceEndpoint groups [EPT_NUM] */
 } UsbDevice;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */
@@ -864,30 +864,30 @@ typedef struct { /* USB is Device */
 #if !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__))
 typedef struct { /* USB is Host */
   __IO USB_CTRLA_Type            CTRLA;       /**< \brief Offset: 0x000 (R/W  8) Control A */
-       RoReg8                    Reserved1[0x1];
+       ro_reg8                    Reserved1[0x1];
   __I  USB_SYNCBUSY_Type         SYNCBUSY;    /**< \brief Offset: 0x002 (R/   8) Synchronization Busy */
   __IO USB_QOSCTRL_Type          QOSCTRL;     /**< \brief Offset: 0x003 (R/W  8) USB Quality Of Service */
-       RoReg8                    Reserved2[0x4];
+       ro_reg8                    Reserved2[0x4];
   __IO USB_HOST_CTRLB_Type       CTRLB;       /**< \brief Offset: 0x008 (R/W 16) HOST Control B */
   __IO USB_HOST_HSOFC_Type       HSOFC;       /**< \brief Offset: 0x00A (R/W  8) HOST Host Start Of Frame Control */
-       RoReg8                    Reserved3[0x1];
+       ro_reg8                    Reserved3[0x1];
   __IO USB_HOST_STATUS_Type      STATUS;      /**< \brief Offset: 0x00C (R/W  8) HOST Status */
   __I  USB_FSMSTATUS_Type        FSMSTATUS;   /**< \brief Offset: 0x00D (R/   8) Finite State Machine Status */
-       RoReg8                    Reserved4[0x2];
+       ro_reg8                    Reserved4[0x2];
   __IO USB_HOST_FNUM_Type        FNUM;        /**< \brief Offset: 0x010 (R/W 16) HOST Host Frame Number */
   __I  USB_HOST_FLENHIGH_Type    FLENHIGH;    /**< \brief Offset: 0x012 (R/   8) HOST Host Frame Length */
-       RoReg8                    Reserved5[0x1];
+       ro_reg8                    Reserved5[0x1];
   __IO USB_HOST_INTENCLR_Type    INTENCLR;    /**< \brief Offset: 0x014 (R/W 16) HOST Host Interrupt Enable Clear */
-       RoReg8                    Reserved6[0x2];
+       ro_reg8                    Reserved6[0x2];
   __IO USB_HOST_INTENSET_Type    INTENSET;    /**< \brief Offset: 0x018 (R/W 16) HOST Host Interrupt Enable Set */
-       RoReg8                    Reserved7[0x2];
+       ro_reg8                    Reserved7[0x2];
   __IO USB_HOST_INTFLAG_Type     INTFLAG;     /**< \brief Offset: 0x01C (R/W 16) HOST Host Interrupt Flag */
-       RoReg8                    Reserved8[0x2];
+       ro_reg8                    Reserved8[0x2];
   __I  USB_HOST_PINTSMRY_Type    PINTSMRY;    /**< \brief Offset: 0x020 (R/  16) HOST Pipe Interrupt Summary */
-       RoReg8                    Reserved9[0x2];
+       ro_reg8                    Reserved9[0x2];
   __IO USB_DESCADD_Type          DESCADD;     /**< \brief Offset: 0x024 (R/W 32) Descriptor Address */
   __IO USB_PADCAL_Type           PADCAL;      /**< \brief Offset: 0x028 (R/W 16) USB PAD Calibration */
-       RoReg8                    Reserved10[0xD6];
+       ro_reg8                    Reserved10[0xD6];
        UsbHostPipe               HostPipe[8]; /**< \brief Offset: 0x100 UsbHostPipe groups [PIPE_NUM*HOST_IMPLEMENTED] */
 } UsbHost;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

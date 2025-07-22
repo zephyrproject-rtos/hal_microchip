@@ -107,11 +107,11 @@ typedef struct {
   __IO WDT_CTRLA_Type            CTRLA;       /**< \brief Offset: 0x0 (R/W  8) Control */
   __IO WDT_CONFIG_Type           CONFIG;      /**< \brief Offset: 0x1 (R/W  8) Configuration */
   __IO WDT_EWCTRL_Type           EWCTRL;      /**< \brief Offset: 0x2 (R/W  8) Early Warning Interrupt Control */
-       RoReg8                    Reserved1[0x1];
+       ro_reg8                    Reserved1[0x1];
   __IO WDT_INTENCLR_Type         INTENCLR;    /**< \brief Offset: 0x4 (R/W  8) Interrupt Enable Clear */
   __IO WDT_INTENSET_Type         INTENSET;    /**< \brief Offset: 0x5 (R/W  8) Interrupt Enable Set */
   __IO WDT_INTFLAG_Type          INTFLAG;     /**< \brief Offset: 0x6 (R/W  8) Interrupt Flag Status and Clear */
-       RoReg8                    Reserved2[0x1];
+       ro_reg8                    Reserved2[0x1];
   __I  WDT_SYNCBUSY_Type         SYNCBUSY;    /**< \brief Offset: 0x8 (R/  32) Synchronization Busy */
   __O  WDT_CLEAR_Type            CLEAR;       /**< \brief Offset: 0xC ( /W  8) Clear */
 } Wdt;

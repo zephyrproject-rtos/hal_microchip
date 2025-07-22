@@ -141,11 +141,11 @@ typedef struct {
   __IO OSC32KCTRL_INTFLAG_Type   INTFLAG;     /**< \brief Offset: 0x08 (R/W 32) Interrupt Flag Status and Clear */
   __I  OSC32KCTRL_STATUS_Type    STATUS;      /**< \brief Offset: 0x0C (R/  32) Power and Clocks Status */
   __IO OSC32KCTRL_RTCCTRL_Type   RTCCTRL;     /**< \brief Offset: 0x10 (R/W  8) RTC Clock Selection */
-       RoReg8                    Reserved1[0x3];
+       ro_reg8                    Reserved1[0x3];
   __IO OSC32KCTRL_XOSC32K_Type   XOSC32K;     /**< \brief Offset: 0x14 (R/W 16) 32kHz External Crystal Oscillator (XOSC32K) Control */
   __IO OSC32KCTRL_CFDCTRL_Type   CFDCTRL;     /**< \brief Offset: 0x16 (R/W  8) Clock Failure Detector Control */
   __IO OSC32KCTRL_EVCTRL_Type    EVCTRL;      /**< \brief Offset: 0x17 (R/W  8) Event Control */
-       RoReg8                    Reserved2[0x4];
+       ro_reg8                    Reserved2[0x4];
   __IO OSC32KCTRL_OSCULP32K_Type OSCULP32K;   /**< \brief Offset: 0x1C (R/W 32) 32kHz Ultra Low Power Internal Oscillator (OSCULP32K) Control */
 } Osc32kctrl;
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

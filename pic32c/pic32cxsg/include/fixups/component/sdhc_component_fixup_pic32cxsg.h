@@ -748,25 +748,25 @@ typedef struct {
   __I  SDHC_CA0R_Type            CA0R;        /**< \brief Offset: 0x040 (R/  32) Capabilities 0 */
   __I  SDHC_CA1R_Type            CA1R;        /**< \brief Offset: 0x044 (R/  32) Capabilities 1 */
   __I  SDHC_MCCAR_Type           MCCAR;       /**< \brief Offset: 0x048 (R/  32) Maximum Current Capabilities */
-       RoReg8                    Reserved1[0x4];
+       ro_reg8                    Reserved1[0x4];
   __O  SDHC_FERACES_Type         FERACES;     /**< \brief Offset: 0x050 ( /W 16) Force Event for Auto CMD Error Status */
   __O  SDHC_FEREIS_Type          FEREIS;      /**< \brief Offset: 0x052 ( /W 16) Force Event for Error Interrupt Status */
   __I  SDHC_AESR_Type            AESR;        /**< \brief Offset: 0x054 (R/   8) ADMA Error Status */
-       RoReg8                    Reserved2[0x3];
+       ro_reg8                    Reserved2[0x3];
   __IO SDHC_ASAR_Type            ASAR[1];     /**< \brief Offset: 0x058 (R/W 32) ADMA System Address n */
-       RoReg8                    Reserved3[0x4];
+       ro_reg8                    Reserved3[0x4];
   __IO SDHC_PVR_Type             PVR[8];      /**< \brief Offset: 0x060 (R/W 16) Preset Value n */
-       RoReg8                    Reserved4[0x8C];
+       ro_reg8                    Reserved4[0x8C];
   __I  SDHC_SISR_Type            SISR;        /**< \brief Offset: 0x0FC (R/  16) Slot Interrupt Status */
   __I  SDHC_HCVR_Type            HCVR;        /**< \brief Offset: 0x0FE (R/  16) Host Controller Version */
-       RoReg8                    Reserved5[0x100];
+       ro_reg8                    Reserved5[0x100];
   __I  SDHC_APSR_Type            APSR;        /**< Offset: 0x200 (R/   32) Additional Present State Register */
   __IO SDHC_MC1R_Type            MC1R;        /**< \brief Offset: 0x204 (R/W  8) MMC Control 1 */
   __O  SDHC_MC2R_Type            MC2R;        /**< \brief Offset: 0x205 ( /W  8) MMC Control 2 */
-       RoReg8                    Reserved6[0x2];
+       ro_reg8                    Reserved6[0x2];
   __IO SDHC_ACR_Type             ACR;         /**< \brief Offset: 0x208 (R/W 32) AHB Control */
   __IO SDHC_CC2R_Type            CC2R;        /**< \brief Offset: 0x20C (R/W 32) Clock Control 2 */
-       RoReg8                    Reserved7[0x20];
+       ro_reg8                    Reserved7[0x20];
   __IO SDHC_CACR_Type            CACR;        /**< \brief Offset: 0x230 (R/W 32) Capabilities Control */
   __IO SDHC_DBGR_Type            DBGR;        /**< \brief Offset: 0x234 (R/W  8) Debug */
 } Sdhc;

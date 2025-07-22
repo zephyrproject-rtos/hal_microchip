@@ -162,15 +162,15 @@ typedef struct {
   __IO AES_INTFLAG_Type          INTFLAG;     /**< \brief Offset: 0x07 (R/W  8) Interrupt Flag Status */
   __IO AES_DATABUFPTR_Type       DATABUFPTR;  /**< \brief Offset: 0x08 (R/W  8) Data buffer pointer */
   __IO AES_DBGCTRL_Type          DBGCTRL;     /**< \brief Offset: 0x09 (R/W  8) Debug control */
-       RoReg8                    Reserved1[0x2];
+       ro_reg8                    Reserved1[0x2];
   __O  AES_KEYWORD_Type          KEYWORD[8];  /**< \brief Offset: 0x0C ( /W 32) Keyword n */
-       RoReg8                    Reserved2[0xC];
+       ro_reg8                    Reserved2[0xC];
   __IO AES_INDATA_Type           INDATA;      /**< \brief Offset: 0x38 (R/W 32) Indata */
   __O  AES_INTVECTV_Type         INTVECTV[4]; /**< \brief Offset: 0x3C ( /W 32) Initialisation Vector n */
-       RoReg8                    Reserved3[0x10];
+       ro_reg8                    Reserved3[0x10];
   __IO AES_HASHKEY_Type          HASHKEY[4];  /**< \brief Offset: 0x5C (R/W 32) Hash key n */
   __IO AES_GHASH_Type            GHASH[4];    /**< \brief Offset: 0x6C (R/W 32) Galois Hash n */
-       RoReg8                    Reserved4[0x4];
+       ro_reg8                    Reserved4[0x4];
   __IO AES_CIPLEN_Type           CIPLEN;      /**< \brief Offset: 0x80 (R/W 32) Cipher Length */
   __IO AES_RANDSEED_Type         RANDSEED;    /**< \brief Offset: 0x84 (R/W 32) Random Seed */
 } Aes;
