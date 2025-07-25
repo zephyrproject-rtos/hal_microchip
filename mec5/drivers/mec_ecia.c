@@ -335,7 +335,7 @@ static void enable_girq_direct_bitmap(uint32_t bitmap)
 static void set_all_pri(uint8_t dflt_priority)
 {
     uint32_t pri32 = ((uint32_t)(dflt_priority & 0x7U) << (8U - __NVIC_PRIO_BITS)) & 0xffu;
-    uintptr_t nvic_ip_addr = (uintptr_t)&NVIC->IP[0];
+    uintptr_t nvic_ip_addr = (uintptr_t)&NVIC->IPR[0];
 
     pri32 |= (pri32 << 8);
     pri32 |= (pri32 << 16);
