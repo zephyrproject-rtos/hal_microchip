@@ -19,8 +19,11 @@ The HAL directory structure detailed below.
 |       ├── pic32c
 |       |  └── pic32cm_gc_sg - dt-binding header files for PIC32CM GC family devices
 │       ├── sam
-│          └── sam_d5x_e5x — dt-binding header files for the SAM_D5X_E5X family devices
-│
+|       |   └── sam_d5x_e5x — dt-binding header files for the SAM_D5X_E5X family devices
+|       ├── pic32c
+|       |  ├── pic32cm_gc_sg - dt-binding header files for PIC32CM GC family devices
+│       └── pinctrl
+│           └── PIC32CX PINCTRL C header files
 ├── mec
 │   ├── Legacy MEC150x/2x C chip and peripheral header files
 │
@@ -34,17 +37,16 @@ The HAL directory structure detailed below.
 ├── mpfs
 │   ├── PolarFire board and HAL files
 │
-├── packs
-│   ├── CMakeLists.txt
-│   ├── pic32c
-│   │   ├── CMakeLists.txt
-│   │   ├── pic32cm_jh — DFP header files for PIC32CM JH family devices
-│   │   ├── pic32cx_sg — DFP header files for PIC32CX SG family devices
-│   │   ├── pic32cz_ca — DFP header files for PIC32CZ CA family devices
-│   │
-│   └── sam
-│       ├── CMakeLists.txt
-│       ├── sam_d5x_e5x — DFP header files for SAM_D5X_E5X family devices
+├── pic32c
+│   ├── CMakeLists.txt
+│   ├── pic32cm_gc_sg — DFP header files for PIC32CM_GC and PIC32CM_SG family devices
+|   ├── pic32cm_jh — DFP header files for PIC32CM JH family devices
+│   ├── pic32cz_sg — DFP header files for PIC32CX SG family devices
+│   ├── pic32cz_ca — DFP header files for PIC32CZ CA family devices
+│
+├── sam
+│   ├── CMakeLists.txt
+│   ├── sam_d5x_e5x — DFP header files for SAM_D5X_E5X family devices
 │
 ├── README.md
 │
