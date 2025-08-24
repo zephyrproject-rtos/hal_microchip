@@ -14,32 +14,45 @@ The directory is composed of:
 │   └── microchip
 │       └── mec5
 │           ├── MEC5 PINCTRL DTSI files
+│
 ├── include
 │   └── dt-bindings
 │       ├── sam
 |       |   └── sam_d5x_e5x — dt-binding header files for the SAM_D5X_E5X family devices
 │       └── pinctrl
 │           ├── PIC32CX PINCTRL C header files
+│
 ├── mec
 │   ├── Legacy MEC150x/2x C chip and peripheral header files
+│
 ├── mec5
 │   ├── CMakeLists.txt
 │   ├── devices
 │   │   ├── MEC5 HAL chip and peripheral header files
 │   └── drivers
 │       ├── MEC5 HAL peripheral C source files
+│
 ├── mpfs
 │   ├── PolarFire board and HAL files
+│
 ├── pic32c
+│   ├── CMakeLists.txt
+│   ├── pic32cm_jh — DFP header files for PIC32CM JH family devices
 │   ├── PIC32CX chip and peripheral HAL files
+│   ├── pic32cz_ca — DFP header files for PIC32CZ CA family devices
+│
 ├── pinconfigs
 │   ├── PIC32CX pin config definition XML
+│
 ├── sam
 │   ├── CMakeLists.txt
 │   ├── sam_d5x_e5x — DFP header files for SAM_D5X_E5X family devices
+│
 ├── README.md
+│
 ├── scripts
 │   ├── PIC32C Python pin config generation scripts
+│
 └── zephyr
     └── module.yml
 
@@ -51,6 +64,7 @@ The directory is composed of:
    - devicetree bindings
  - Legacy MEC152x header files
  - MEC5 HAL chip and peripheral header and C source files
+ - Device family DFP header files of PIC32C devices
  - [PIC32C Pin definitions](pinconfigs/README.md)
  - sam device family dfp header files
  - This README file
