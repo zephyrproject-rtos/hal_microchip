@@ -19,9 +19,11 @@ The directory is composed of:
 │   └── dt-bindings
 │       ├── sam
 |       |   └── sam_d5x_e5x — dt-binding header files for the SAM_D5X_E5X family devices
+|       ├── pic32c
+|       |  ├── pic32cmgc - dt-binding header files for PIC32CM GC family devices
+|       |  └── common - common headers for PIC32C devices
 │       └── pinctrl
-│           ├── PIC32CX PINCTRL C header files
-│
+│           └── PIC32CX PINCTRL C header files
 ├── mec
 │   ├── Legacy MEC150x/2x C chip and peripheral header files
 │
@@ -40,7 +42,8 @@ The directory is composed of:
 │   ├── pic32cm_jh — DFP header files for PIC32CM JH family devices
 │   ├── PIC32CX chip and peripheral HAL files
 │   ├── pic32cz_ca — DFP header files for PIC32CZ CA family devices
-│
+│   └── pic32cm_gc_sg DFP header files for PIC32CM_GC and PIC32CM_SG family devices
+|
 ├── pinconfigs
 │   ├── PIC32CX pin config definition XML
 │
