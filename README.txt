@@ -8,7 +8,7 @@ to MCHP_MEC1701.h
 
 Field EOF was renamed to PEOF as it was collapsing with EOF defined in stdio.h
 
-Microchip HAL contianing the above MEC1701 single header and the 
+Microchip HAL contianing the above MEC1701 single header and the
 MEC1501 component style is located at:
 
 https://github.com/MicrochipTech/hal_microchip
@@ -23,7 +23,7 @@ Rename the SPISLV to SPIP
 Version: 1.2.1
 Update eSPI definitions
 Changed all hex upper case 'ABCDEF' to lower case
-Changed all 'ul/UL' unsigned numeric suffix to 'u' 
+Changed all 'ul/UL' unsigned numeric suffix to 'u'
 
 
 The Microchip Polarfire SOC HAL was downloaded from:
@@ -40,5 +40,23 @@ The following changes were made:
  - platform-2021.08 top folder renamed to mpfs and located at modules/hal/microchip
  - The applications/mpfs-pmp-demo/mpfs-pmp-app-u54-1/src/boards folder is copied to modules/hal/microchip/mpfs
 
+========================================================================
+Microchip MEC5 HAL for MEC1723, MEC1743 and MEC1753 CMSIS based headers
+using common peripheral headers.
+NOTE: Due to a legacy version of MEC172x with register files is in the
+zephyr tree, MEC172x is named MECH172x in  the HAL.
+
+Location:
+https://github.com/MicrochipTech/hal_microchip
+
+Refer to the mec5 subdirectory.
+
+Initial version 0.1
+
+------------------------------------------------
+2024-10-01: Microchip MEC5 HAL version 0.3.0 release
+Refer to the mec5 subdirectory.
+
 -----------------------------------------------------
-2024-04-04 change default branch from master to main.
+2025-08-19 change default branch from master to main.
+

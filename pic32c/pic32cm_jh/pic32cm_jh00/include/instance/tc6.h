@@ -1,0 +1,38 @@
+/*
+ * Instance header file for PIC32CM5164JH00100
+ *
+ * Copyright (c) 2025 Microchip Technology Inc. and its subsidiaries.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+/* file generated from device description file (ATDF) version 2025-02-18T10:54:23Z */
+#ifndef _PIC32CMJH00_TC6_INSTANCE_
+#define _PIC32CMJH00_TC6_INSTANCE_
+
+
+/* ========== Instance Parameter definitions for TC6 peripheral ========== */
+#define TC6_CC_NUM                               (2)        
+#define TC6_DMAC_ID_MC_0                         (57)       /* Indexes of DMA Match/Compare triggers 0 */
+#define TC6_DMAC_ID_MC_1                         (58)       /* Indexes of DMA Match/Compare triggers 1 */
+#define TC6_DMAC_ID_OVF                          (56)       /* Indexes of DMA Overflow trigger */
+#define TC6_EXT                                  (0)        /* Coding of implemented extended features (keep 0 value) */
+#define TC6_GCLK_ID                              (34)       /* Index of Generic Clock */
+#define TC6_INSTANCE_ID                          (99)       /* Instance index for TC6 */
+#define TC6_MASTER_SLAVE_MODE                    (0)        /* TC type 0 : NA, 1 : Master, 2 : Slave */
+#define TC6_OW_NUM                               (2)        /* Number of Output Waveforms */
+
+#endif /* _PIC32CMJH00_TC6_INSTANCE_ */
