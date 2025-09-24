@@ -16,8 +16,10 @@ The HAL directory structure detailed below.
 │
 ├── include
 │   └── dt-bindings
+|       ├── pic32c
+|       |  └── pic32cm_gc_sg - dt-binding header files for PIC32CM GC family devices
 │       ├── sam
-|       |   └── sam_d5x_e5x — dt-binding header files for the SAM_D5X_E5X family devices
+│          └── sam_d5x_e5x — dt-binding header files for the SAM_D5X_E5X family devices
 │
 ├── mec
 │   ├── Legacy MEC150x/2x C chip and peripheral header files
