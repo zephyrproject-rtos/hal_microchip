@@ -43,7 +43,7 @@ blobs:
     url: https://github.com/Zephyr4Microchip/touch/raw/refs/heads/main/ptc/common/arm/cortex_m0p/qtm_scroller_cm0p_0x000b.X.a
     description: "Binary libraries supporting the PIC32CM JH series touch subsystems"
     doc-url: https://ww1.microchip.com/downloads/aemDocuments/documents/TXFG/ProductDocuments/UserGuides/QTouch-Modular-Library-PTC-UG-DS40001986.pdf
-  
+
   # PTC - Key Module for Cortex-M0+
   - path: ptc/common/cortex_m0p/qtm_touch_key_cm0p_0x0002.X.a
     sha256: ffa2f4c39c786edd62ed89e458a1a1bd65e083947c42c1abe48432f589497045
@@ -53,3 +53,59 @@ blobs:
     url: https://github.com/Zephyr4Microchip/touch/raw/refs/heads/main/ptc/common/arm/cortex_m0p/qtm_touch_key_cm0p_0x0002.X.a
     description: "Binary libraries supporting the PIC32CM JH series touch subsystems"
     doc-url: https://ww1.microchip.com/downloads/aemDocuments/documents/TXFG/ProductDocuments/UserGuides/QTouch-Modular-Library-PTC-UG-DS40001986.pdf
+
+  # bluetooth_controller
+  - path: pic32c/pic32cx_bz/bz2x/wireless-ble/ble_stack_bz2_lib.a
+    sha256: d68bcb4952e15714c0398d32cd28418ca61cbc6ea9632f5bc67ad94a5922f792
+    type: lib
+    version: 'v2.0.0.6'
+    license-path: ./LICENSE.txt
+    url: https://github.com/Zephyr4Microchip/wireless-ble/raw/refs/heads/main/ble_stack_bz2_lib.a
+    description: "Microchip pic32cx_bz2 Bluetooth controller library"
+    doc-url: https://www.microchip.com/products
+
+  - path: pic32c/pic32cx_bz/bz3x/wireless-ble/ble_stack_bz3_lib.a
+    sha256: db556e61b76cb4a284396bf350999fa4486b4964502cb797bd9391b1db535bfc
+    type: lib
+    version: 'v2.0.0.5'
+    license-path: ./LICENSE.txt
+    url: https://github.com/Zephyr4Microchip/wireless-ble/raw/refs/heads/main/ble_stack_bz3_lib.a
+    description: "Microchip pic32cx_bz3 Bluetooth controller library"
+    doc-url: https://www.microchip.com/products
+
+  - path: pic32c/pic32cx_bz/bz6x/wireless-ble/ble_stack_bz6_lib.a
+    sha256: 9f835cae20220c22d5179acc28c67557af04e92083df5817737ee7dbfeb60495
+    type: lib
+    version: 'v1.1.0.0'
+    license-path: ./LICENSE.txt
+    url: https://github.com/Zephyr4Microchip/wireless-ble/raw/refs/heads/main/ble_stack_bz6_lib.a
+    description: "Microchip pic32cx_bz6 Bluetooth controller library"
+    doc-url: https://www.microchip.com/products
+
+  # device support library
+  - path: pic32c/pic32cx_bz/bz2x/wireless-dev/pic32cx_bz2_device_support.a
+    sha256: 67d236b6092ff7c0dbf5fdf31e152ee36c24c851d3a7dd3b4e86998ddd7fd349
+    type: lib
+    version: 'v2.0_rc3'
+    license-path: ./LICENSE.txt
+    url: https://github.com/Zephyr4Microchip/wireless-dev/raw/refs/heads/main/pic32cx_bz2_device_support.a
+    description: "Microchip pic32cx_bz2 device support library"
+    doc-url: https://www.microchip.com/products
+
+  - path: pic32c/pic32cx_bz/bz3x/wireless-dev/pic32cx_bz3_device_support.a
+    sha256: 9ffdf8fd75e1613db21aafee7bedfc80b3f4e53892612d3c4c3c71cb877206cd
+    type: lib
+    version: 'v2.0_rc5'
+    license-path: ./LICENSE.txt
+    url: https://github.com/Zephyr4Microchip/wireless-dev/raw/refs/heads/main/pic32cx_bz3_device_support.a
+    description: "Microchip pic32cx_bz3 device support library"
+    doc-url: https://www.microchip.com/products
+
+  - path: pic32c/pic32cx_bz/bz6x/wireless-dev/pic32cx_bz6_device_support.a
+    sha256: 78d19c423733ccf182e018645e4cf3c71ec2e076bd7eb2c11b795d14e07c265c
+    type: lib
+    version: 'v1.0_rc6'
+    license-path: ./LICENSE.txt
+    url: https://github.com/Zephyr4Microchip/wireless-dev/raw/refs/heads/main/pic32cx_bz6_device_support.a
+    description: "Microchip pic32cx_bz6 device support library"
+    doc-url: https://www.microchip.com/products
