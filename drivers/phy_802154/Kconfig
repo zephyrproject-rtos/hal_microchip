@@ -1,0 +1,54 @@
+# Copyright (c) 2021 Nordic Semiconductor ASA
+# SPDX-License-Identifier: Apache-2.0
+
+ # mainmenu "IEEE802154: PHY Driver"
+
+menuconfig MCHP_IEEE802154_PHY_DRIVER
+	bool "Microchip PIC32CX_BZ Driver support"
+	default y if IEEE802154
+	depends on DT_HAS_MICROCHIP_PIC32CX_BZ_IEEE802154_ENABLED
+
+if MCHP_IEEE802154_PHY_DRIVER
+
+config ENABLE_QUEUE_CAPACITY
+	bool "Enable Queue Capacity"
+	default y
+	help
+	  Enable the Queue implementation available in Standalone PHY Driver.
+
+config ENABLE_LARGE_BUFFER
+	bool "Enable Large Buffer"
+	default y
+	help
+	  Enable the buffer implementation available in Standalone PHY Driver.
+
+config NUMBER_OF_SUPP_CHILD
+	int "Number of supported child"
+	default OPENTHREAD_MAX_CHILDREN if (NET_L2_OPENTHREAD && OPENTHREAD_FTD)
+	default 10	
+	help
+	  This defines the number of entries in the Source Match Entry Table 
+	  for FramePending bit handling.
+
+config DEFAULT_ANT_GAIN
+	int "Default Antenna Gain"
+	default 3
+	help
+	  Set the default antenna gain used by the 802.15.4 PHY layer.
+	  This value is in dBi. Change this if your hardware uses a different antenna gain.
+
+config CUSTOM_ANT_GAIN
+	bool "Custom Antenna Gain"
+	default n
+	help
+	  Enable the custom antenna gain used by the 802.15.4 PHY layer.
+
+config PHY_PTA_FEATURE_ENABLE
+	bool "Enable PHY PTA (Packet Traffic Arbitration) feature"
+	default n
+	help
+	  Enable this option to activate the PHY-level Packet Traffic Arbitration feature.
+
+endif
+
+
