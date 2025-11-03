@@ -1,6 +1,7 @@
 name: hal_microchip
 build:
   cmake: .
+  kconfig: drivers/phy_802154/Kconfig
   settings:
     dts_root: .
 blobs:
@@ -108,4 +109,23 @@ blobs:
     license-path: ./LICENSE.txt
     url: https://github.com/Zephyr4Microchip/wireless-dev/raw/refs/heads/main/pic32cx_bz6_device_support.a
     description: "Microchip pic32cx_bz6 device support library"
+    doc-url: https://www.microchip.com/products
+
+  # IEEE802.15.4 Standalone PHY Library
+  - path: pic32c/pic32cx_bz/bz2x/wireless-154/lib-ieee802154_phy_pic32cxbz2.a
+    sha256: 69d58c3794de6a408aa8b2b4ec7958f804f4437020693c3f2e72b327687dd872
+    type: lib
+    version: 'v1.4.0'
+    license-path: ./LICENSE.txt
+    url: https://github.com/Zephyr4Microchip/wireless-154/raw/refs/heads/main/lib-ieee802154_phy_pic32cxbz2.a
+    description: "Microchip pic32cx_bz2 802.15.4 Standalone PHY library"
+    doc-url: https://www.microchip.com/products
+
+  - path: pic32c/pic32cx_bz/bz6x/wireless-154/lib-ieee802154_phy_pic32cxbz6.a
+    sha256: 154a6c2a0f964d79509d5d67c353abe140822aca15fdfa3a6b2439180044b20b
+    type: lib
+    version: 'v1.4.0'
+    license-path: ./LICENSE.txt
+    url: https://github.com/Zephyr4Microchip/wireless-154/raw/refs/heads/main/lib-ieee802154_phy_pic32cxbz6.a
+    description: "Microchip pic32cx_bz6 802.15.4 Standalone PHY library"
     doc-url: https://www.microchip.com/products
