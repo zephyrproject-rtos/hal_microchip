@@ -694,6 +694,145 @@
 #define RTC_TSDR1_REG_OFST             _UINT32_(0xC0)      /* (RTC_TSDR1) Timestamp Date Register 1 Offset */
 #define RTC_TSSR1_REG_OFST             _UINT32_(0xC4)      /* (RTC_TSSR1) Timestamp Source Register 1 Offset */
 
+/* The definitions used in Zephyr source for register fields which have 1-bit width have
+ * different format with the ones in headers from SAMA7D6_DFP.
+ * Redefine them so that the current source code could be re-used with minimum changes.
+ */
+#undef RTC_CR_UPDTIM
+#define RTC_CR_UPDTIM RTC_CR_UPDTIM_Msk
+#undef RTC_CR_UPDCAL
+#define RTC_CR_UPDCAL RTC_CR_UPDCAL_Msk
+#undef RTC_MR_HRMOD
+#define RTC_MR_HRMOD RTC_MR_HRMOD_Msk
+#undef RTC_MR_UTC
+#define RTC_MR_UTC RTC_MR_UTC_Msk
+#undef RTC_MR_NEGPPM
+#define RTC_MR_NEGPPM RTC_MR_NEGPPM_Msk
+#undef RTC_MR_HIGHPPM
+#define RTC_MR_HIGHPPM RTC_MR_HIGHPPM_Msk
+#undef RTC_TIMR_AMPM
+#define RTC_TIMR_AMPM RTC_TIMR_AMPM_Msk
+#undef RTC_TIMALR_SECEN
+#define RTC_TIMALR_SECEN RTC_TIMALR_SECEN_Msk
+#undef RTC_TIMALR_MINEN
+#define RTC_TIMALR_MINEN RTC_TIMALR_MINEN_Msk
+#undef RTC_TIMALR_AMPM
+#define RTC_TIMALR_AMPM RTC_TIMALR_AMPM_Msk
+#undef RTC_TIMALR_HOUREN
+#define RTC_TIMALR_HOUREN RTC_TIMALR_HOUREN_Msk
+#undef RTC_CALALR_MTHEN
+#define RTC_CALALR_MTHEN RTC_CALALR_MTHEN_Msk
+#undef RTC_CALALR_DATEEN
+#define RTC_CALALR_DATEEN RTC_CALALR_DATEEN_Msk
+#undef RTC_CALALR_UTC_UTCEN
+#define RTC_CALALR_UTC_UTCEN RTC_CALALR_UTC_UTCEN_Msk
+#undef RTC_SR_ACKUPD
+#define RTC_SR_ACKUPD RTC_SR_ACKUPD_Msk
+#undef RTC_SR_ALARM
+#define RTC_SR_ALARM RTC_SR_ALARM_Msk
+#undef RTC_SR_SEC
+#define RTC_SR_SEC RTC_SR_SEC_Msk
+#undef RTC_SR_TIMEV
+#define RTC_SR_TIMEV RTC_SR_TIMEV_Msk
+#undef RTC_SR_CALEV
+#define RTC_SR_CALEV RTC_SR_CALEV_Msk
+#undef RTC_SR_TDERR
+#define RTC_SR_TDERR RTC_SR_TDERR_Msk
+#undef RTC_SCCR_ACKCLR
+#define RTC_SCCR_ACKCLR RTC_SCCR_ACKCLR_Msk
+#undef RTC_SCCR_ALRCLR
+#define RTC_SCCR_ALRCLR RTC_SCCR_ALRCLR_Msk
+#undef RTC_SCCR_SECCLR
+#define RTC_SCCR_SECCLR RTC_SCCR_SECCLR_Msk
+#undef RTC_SCCR_TIMCLR
+#define RTC_SCCR_TIMCLR RTC_SCCR_TIMCLR_Msk
+#undef RTC_SCCR_CALCLR
+#define RTC_SCCR_CALCLR RTC_SCCR_CALCLR_Msk
+#undef RTC_SCCR_TDERRCLR
+#define RTC_SCCR_TDERRCLR RTC_SCCR_TDERRCLR_Msk
+#undef RTC_IER_ACKEN
+#define RTC_IER_ACKEN RTC_IER_ACKEN_Msk
+#undef RTC_IER_ALREN
+#define RTC_IER_ALREN RTC_IER_ALREN_Msk
+#undef RTC_IER_SECEN
+#define RTC_IER_SECEN RTC_IER_SECEN_Msk
+#undef RTC_IER_TIMEN
+#define RTC_IER_TIMEN RTC_IER_TIMEN_Msk
+#undef RTC_IER_CALEN
+#define RTC_IER_CALEN RTC_IER_CALEN_Msk
+#undef RTC_IER_TDERREN
+#define RTC_IER_TDERREN RTC_IER_TDERREN_Msk
+#undef RTC_IDR_ACKDIS
+#define RTC_IDR_ACKDIS RTC_IDR_ACKDIS_Msk
+#undef RTC_IDR_ALRDIS
+#define RTC_IDR_ALRDIS RTC_IDR_ALRDIS_Msk
+#undef RTC_IDR_SECDIS
+#define RTC_IDR_SECDIS RTC_IDR_SECDIS_Msk
+#undef RTC_IDR_TIMDIS
+#define RTC_IDR_TIMDIS RTC_IDR_TIMDIS_Msk
+#undef RTC_IDR_CALDIS
+#define RTC_IDR_CALDIS RTC_IDR_CALDIS_Msk
+#undef RTC_IDR_TDERRDIS
+#define RTC_IDR_TDERRDIS RTC_IDR_TDERRDIS_Msk
+#undef RTC_IMR_ACK
+#define RTC_IMR_ACK RTC_IMR_ACK_Msk
+#undef RTC_IMR_ALR
+#define RTC_IMR_ALR RTC_IMR_ALR_Msk
+#undef RTC_IMR_SEC
+#define RTC_IMR_SEC RTC_IMR_SEC_Msk
+#undef RTC_IMR_TIM
+#define RTC_IMR_TIM RTC_IMR_TIM_Msk
+#undef RTC_IMR_CAL
+#define RTC_IMR_CAL RTC_IMR_CAL_Msk
+#undef RTC_IMR_TDERR
+#define RTC_IMR_TDERR RTC_IMR_TDERR_Msk
+#undef RTC_VER_NVTIM
+#define RTC_VER_NVTIM RTC_VER_NVTIM_Msk
+#undef RTC_VER_NVCAL
+#define RTC_VER_NVCAL RTC_VER_NVCAL_Msk
+#undef RTC_VER_NVTIMALR
+#define RTC_VER_NVTIMALR RTC_VER_NVTIMALR_Msk
+#undef RTC_VER_NVCALALR
+#define RTC_VER_NVCALALR RTC_VER_NVCALALR_Msk
+#undef RTC_TSTR0_AMPM
+#define RTC_TSTR0_AMPM RTC_TSTR0_AMPM_Msk
+#undef RTC_TSTR0_BACKUP
+#define RTC_TSTR0_BACKUP RTC_TSTR0_BACKUP_Msk
+#undef RTC_TSTR0_UTC_BACKUP
+#define RTC_TSTR0_UTC_BACKUP RTC_TSTR0_UTC_BACKUP_Msk
+#undef RTC_TSSR0_DWDTSW
+#define RTC_TSSR0_DWDTSW RTC_TSSR0_DWDTSW_Msk
+#undef RTC_TSSR0_TST
+#define RTC_TSSR0_TST RTC_TSSR0_TST_Msk
+#undef RTC_TSSR0_JTAG
+#define RTC_TSSR0_JTAG RTC_TSSR0_JTAG_Msk
+#undef RTC_TSSR0_DET0
+#define RTC_TSSR0_DET0 RTC_TSSR0_DET0_Msk
+#undef RTC_TSSR0_DET1
+#define RTC_TSSR0_DET1 RTC_TSSR0_DET1_Msk
+#undef RTC_TSSR0_DET2
+#define RTC_TSSR0_DET2 RTC_TSSR0_DET2_Msk
+#undef RTC_TSSR0_DET3
+#define RTC_TSSR0_DET3 RTC_TSSR0_DET3_Msk
+#undef RTC_TSTR1_AMPM
+#define RTC_TSTR1_AMPM RTC_TSTR1_AMPM_Msk
+#undef RTC_TSTR1_BACKUP
+#define RTC_TSTR1_BACKUP RTC_TSTR1_BACKUP_Msk
+#undef RTC_TSSR1_DWDTSW
+#define RTC_TSSR1_DWDTSW RTC_TSSR1_DWDTSW_Msk
+#undef RTC_TSSR1_TST
+#define RTC_TSSR1_TST RTC_TSSR1_TST_Msk
+#undef RTC_TSSR1_JTAG
+#define RTC_TSSR1_JTAG RTC_TSSR1_JTAG_Msk
+#undef RTC_TSSR1_DET0
+#define RTC_TSSR1_DET0 RTC_TSSR1_DET0_Msk
+#undef RTC_TSSR1_DET1
+#define RTC_TSSR1_DET1 RTC_TSSR1_DET1_Msk
+#undef RTC_TSSR1_DET2
+#define RTC_TSSR1_DET2 RTC_TSSR1_DET2_Msk
+#undef RTC_TSSR1_DET3
+#define RTC_TSSR1_DET3 RTC_TSSR1_DET3_Msk
+
 #if !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__))
 /* RTC register API structure */
 typedef struct
@@ -719,6 +858,7 @@ typedef struct
   __I   uint32_t                       RTC_TSSR1;          /* Offset: 0xC4 (R/   32) Timestamp Source Register 1 */
 } rtc_registers_t;
 
+typedef rtc_registers_t Rtc;
 
 #endif /* !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__)) */
 #endif /* _SAMA7D_RTC_COMPONENT_H_ */
