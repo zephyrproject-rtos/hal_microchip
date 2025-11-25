@@ -5365,6 +5365,36 @@ typedef struct
 
 #define XDMAC_CHID_NUMBER 32
 
+/* The definitions used in Zephyr source for register fields which have 1-bit width have
+ * different format with the ones in headers from SAMA7D6_DFP.
+ * Redefine them so that the current source code could be re-used with minimum changes.
+ */
+#define XDMACCHID_NUMBER XDMAC_CHID_NUMBER
+#undef XDMAC_CIE_BIE
+#define XDMAC_CIE_BIE XDMAC_CIE_BIE_Msk
+#undef XDMAC_CIE_RBIE
+#define XDMAC_CIE_RBIE XDMAC_CIE_RBIE_Msk
+#undef XDMAC_CIE_WBIE
+#define XDMAC_CIE_WBIE XDMAC_CIE_WBIE_Msk
+#undef XDMAC_CIE_LIE
+#define XDMAC_CIE_LIE XDMAC_CIE_LIE_Msk
+#undef XDMAC_GS_ST0
+#define XDMAC_GS_ST0 XDMAC_GS_ST0_Msk
+#undef XDMAC_CIE_ROIE
+#define XDMAC_CIE_ROIE XDMAC_CIE_ROIE_Msk
+#undef XDMAC_CNDC_NDE
+#define XDMAC_CNDC_NDE XDMAC_CNDC_NDE_Msk
+#undef XDMAC_GE_ID0
+#define XDMAC_GE_ID0 XDMAC_GE_ID0_Msk
+#undef XDMAC_GIE_IE0
+#define XDMAC_GIE_IE0 XDMAC_GIE_IE0_Msk
+#undef XDMAC_GE_EN0
+#define XDMAC_GE_EN0 XDMAC_GE_EN0_Msk
+#undef XDMAC_GD_DI0
+#define XDMAC_GD_DI0 XDMAC_GD_DI0_Msk
+#undef XDMAC_GID_ID0
+#define XDMAC_GID_ID0 XDMAC_GID_ID0_Msk
+
 /* XDMAC register API structure */
 typedef struct
 {  /* Extensible DMA Controller */
@@ -5395,6 +5425,7 @@ typedef struct
         xdmac_chid_registers_t         XDMAC_CHID[XDMAC_CHID_NUMBER]; /* Offset: 0x60  */
 } xdmac_registers_t;
 
+typedef xdmac_registers_t Xdmac;
 
 #endif /* !(defined(__ASSEMBLER__) || defined(__IAR_SYSTEMS_ASM__)) */
 #endif /* _SAMA7D_XDMAC_COMPONENT_H_ */
