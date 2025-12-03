@@ -4,3 +4,4 @@
 #
 
 zephyr_include_directories(${CONFIG_SOC_SERIES}/include)
+zephyr_include_directories(common)
