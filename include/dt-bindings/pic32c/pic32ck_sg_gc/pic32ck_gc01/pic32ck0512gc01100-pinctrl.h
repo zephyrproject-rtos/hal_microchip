@@ -9,7 +9,7 @@
 #ifndef MICROCHIP_PIC32CK0512GC01100_PINCTRL_H_
 #define MICROCHIP_PIC32CK0512GC01100_PINCTRL_H_
 
-#include <dt-bindings/pic32c/pic32ck_gc/common/mchp_pinctrl_pinmux_pic32c.h>
+#include <dt-bindings/pic32c/pic32ck_sg_gc/common/mchp_pinctrl_pinmux_pic32c.h>
 
 #define PA0_GPIO MCHP_PINMUX(a, 0, gpio, gpio)
 
