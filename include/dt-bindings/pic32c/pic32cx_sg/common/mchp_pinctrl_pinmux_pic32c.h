@@ -11,6 +11,7 @@
 #define MCHP_PINMUX_PORT_a 0U
 #define MCHP_PINMUX_PORT_b 1U
 #define MCHP_PINMUX_PORT_c 2U
+#define MCHP_PINMUX_PORT_d 3U
 
 /** GPIO */
 #define MCHP_PINMUX_PERIPH_gpio 0U
