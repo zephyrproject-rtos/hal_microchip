@@ -57,3 +57,6 @@ Initial version 0.1
 2024-10-01: Microchip MEC5 HAL version 0.3.0 release
 Refer to the mec5 subdirectory.
 
+-----------------------------------------------------
+2025-08-19 change default branch from master to main.
+
