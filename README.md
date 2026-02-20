@@ -36,6 +36,7 @@ The HAL directory structure detailed below.
 │   ├── CMakeLists.txt
 │   ├── pic32c
 │   │   ├── CMakeLists.txt
+|   |   ├── pic32ck_gc - DFP header files for PIC32CK GC family devices
 │   │   ├── pic32cm_jh — DFP header files for PIC32CM JH family devices
 │   │   ├── pic32cm_pl — DFP header files for PIC32CM PL family devices
 │   │   ├── pic32cx_sg — DFP header files for PIC32CX SG family devices
