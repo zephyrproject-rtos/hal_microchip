@@ -32,4 +32,21 @@
  */
 #define UART_GET_BASE_ADDR(regs, is_clock_external) (&((regs)->USART))
 
+/*
+ * The PIC32CM PL pack omits the standard 11-bit ADDR_ADDR macros used by the
+ * SERCOM I2C G1 driver. It only defines SEVENBIT_ADDR_Msk (0x7F), which is
+ * insufficient: the driver writes (addr << 1 | R/W) into the ADDR field, so
+ * any address >= 0x40 sets bit 7 of the shifted value and a 0x7F mask would
+ * strip it. The hardware ADDR field is 11 bits wide on all SERCOM-G1 variants
+ * per the PIC32CM PL family datasheet (section 34.11.10).
+ */
+#define SERCOM_I2CM_ADDR_ADDR_Pos    0
+#define SERCOM_I2CM_ADDR_ADDR_Msk    (0x7FFul << SERCOM_I2CM_ADDR_ADDR_Pos)
+#define SERCOM_I2CM_ADDR_ADDR(value) \
+	(SERCOM_I2CM_ADDR_ADDR_Msk & ((value) << SERCOM_I2CM_ADDR_ADDR_Pos))
+#define SERCOM_I2CS_ADDR_ADDR_Pos    0
+#define SERCOM_I2CS_ADDR_ADDR_Msk    (0x7FFul << SERCOM_I2CS_ADDR_ADDR_Pos)
+#define SERCOM_I2CS_ADDR_ADDR(value) \
+	(SERCOM_I2CS_ADDR_ADDR_Msk & ((value) << SERCOM_I2CS_ADDR_ADDR_Pos))
+
 #endif /* MICROCHIP_COMMON_SERCOM_PIC32CM_PL10_H_ */
