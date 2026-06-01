@@ -59,6 +59,11 @@ The HAL directory structure detailed below.
 │       ├── sama7d6     — DFP header files for SAMA7D6 family devices
 │       ├── sama7g5     — DFP header files for SAMA7G5 family devices
 │
+├── touch
+│   ├── ptc
+│       ├── common — common header files for PTC peripheral
+│       ├── pic32c — PTC peripheral header files for PIC32C family devices
+│
 ├── README.md
 │
 └── zephyr
