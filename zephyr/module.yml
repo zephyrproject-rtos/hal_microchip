@@ -129,3 +129,31 @@ blobs:
     url: https://github.com/Zephyr4Microchip/wireless-154/raw/refs/heads/main/lib-ieee802154_phy_pic32cxbz6.a
     description: "Microchip pic32cx_bz6 802.15.4 Standalone PHY library"
     doc-url: https://www.microchip.com/products
+
+  - path: pic32c/pic32cx_bz/bz3x/wireless-154/lib-ieee802154_phy_pic32cxbz3.a
+    sha256: bd2c340496abaab28ac138a5076984ce918e178ccf378d9a14ba9990ad71f75d
+    type: lib
+    version: 'v1.4.0'
+    license-path: ./LICENSE.txt
+    url: https://github.com/Zephyr4Microchip/wireless-154/raw/refs/heads/main/lib-ieee802154_phy_pic32cxbz3.a
+    description: "Microchip pic32cx_bz3 802.15.4 Standalone PHY library"
+    doc-url: https://www.microchip.com/products
+
+  # Crypto Library
+  - path: pic32c/pic32cx_bz/bz6x/wireless-dev/pic32cx_bz6_crypto_lib.a
+    sha256: 0f618745a05ff1df0a3281ac584095c0ec6ea0d015dc928e7686af1879fe28b9
+    type: lib
+    version: 'v1.4.0'
+    license-path: ./LICENSE.txt
+    url: https://github.com/Zephyr4Microchip/wireless-dev/raw/refs/heads/main/pic32cx_bz6_crypto_lib.a
+    description: "Microchip pic32cx_bz6 Crypto library"
+    doc-url: https://www.microchip.com/products
+
+  - path: pic32c/pic32cx_bz/bz3x/wireless-dev/pic32cx_bz3_crypto_lib.a
+    sha256: 8446334c127659c3b3c70a8a1cd0fef89d96e967ba717c3720e1041c9a4bb6be
+    type: lib
+    version: 'v1.4.0'
+    license-path: ./LICENSE.txt
+    url: https://github.com/Zephyr4Microchip/wireless-dev/raw/refs/heads/main/pic32cx_bz3_crypto_lib.a
+    description: "Microchip pic32cx_bz3 Crypto library"
+    doc-url: https://www.microchip.com/products
