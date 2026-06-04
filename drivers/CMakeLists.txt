@@ -8,4 +8,7 @@ find_package(Zephyr REQUIRED)
 # zephyr_library()
 
 #Include subdirectories for the different modules
-add_subdirectory(phy_802154)
+add_subdirectory_ifdef(CONFIG_IEEE802154 phy_802154)
+if(CONFIG_ENTROPY_GENERATOR OR CONFIG_CRYPTO)
+    add_subdirectory(crypto)
+endif()
