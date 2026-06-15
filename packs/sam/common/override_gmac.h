@@ -1,0 +1,83 @@
+/*
+ * Copyright (C) 2026 Microchip Technology Inc. and its subsidiaries
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#ifndef __DFP_OVERRIDE_GMAC_H__
+#define __DFP_OVERRIDE_GMAC_H__
+
+/* The definitions used in Zephyr source for register fields have different format
+ * with the ones in headers from SAMA7D6_DFP.
+ * Redefine them so that the current source code could be re-used with minimum changes.
+ */
+
+/* redefine the macros for GMAC */
+#undef GMAC_NCR_RXEN
+#define GMAC_NCR_RXEN GMAC_NCR_RXEN_Msk
+#undef GMAC_NCR_TXEN
+#define GMAC_NCR_TXEN GMAC_NCR_TXEN_Msk
+#undef GMAC_NCR_MPE
+#define GMAC_NCR_MPE GMAC_NCR_MPE_Msk
+#undef GMAC_NCR_CLRSTAT
+#define GMAC_NCR_CLRSTAT GMAC_NCR_CLRSTAT_Msk
+#undef GMAC_NCR_TSTART
+#define GMAC_NCR_TSTART GMAC_NCR_TSTART_Msk
+#undef GMAC_NCFGR_SPD
+#define GMAC_NCFGR_SPD GMAC_NCFGR_SPD_Msk
+#undef GMAC_NCFGR_FD
+#define GMAC_NCFGR_FD GMAC_NCFGR_FD_Msk
+#undef GMAC_NCFGR_MTIHEN
+#define GMAC_NCFGR_MTIHEN GMAC_NCFGR_MTIHEN_Msk
+#undef GMAC_NCFGR_GBE
+#define GMAC_NCFGR_GBE GMAC_NCFGR_GBE_Msk
+#undef GMAC_NCFGR_LFERD
+#define GMAC_NCFGR_LFERD GMAC_NCFGR_LFERD_Msk
+#undef GMAC_NCFGR_RFCS
+#define GMAC_NCFGR_RFCS GMAC_NCFGR_RFCS_Msk
+#undef GMAC_NCFGR_RXCOEN
+#define GMAC_NCFGR_RXCOEN GMAC_NCFGR_RXCOEN_Msk
+#undef GMAC_NSR_IDLE
+#define GMAC_NSR_IDLE GMAC_NSR_IDLE_Msk
+#undef GMAC_DCFGR_TXPBMS
+#define GMAC_DCFGR_TXPBMS GMAC_DCFGR_TXPBMS_Msk
+#undef GMAC_DCFGR_TXCOEN
+#define GMAC_DCFGR_TXCOEN GMAC_DCFGR_TXCOEN_Msk
+#undef GMAC_ISR_RCOMP
+#define GMAC_ISR_RCOMP GMAC_ISR_RCOMP_Msk
+#undef GMAC_ISR_TCOMP
+#define GMAC_ISR_TCOMP GMAC_ISR_TCOMP_Msk
+#undef GMAC_IER_RCOMP
+#define GMAC_IER_RCOMP GMAC_IER_RCOMP_Msk
+#undef GMAC_IER_RXUBR
+#define GMAC_IER_RXUBR GMAC_IER_RXUBR_Msk
+#undef GMAC_IER_TUR
+#define GMAC_IER_TUR GMAC_IER_TUR_Msk
+#undef GMAC_IER_RLEX
+#define GMAC_IER_RLEX GMAC_IER_RLEX_Msk
+#undef GMAC_IER_TFC
+#define GMAC_IER_TFC GMAC_IER_TFC_Msk
+#undef GMAC_IER_TCOMP
+#define GMAC_IER_TCOMP GMAC_IER_TCOMP_Msk
+#undef GMAC_IER_ROVR
+#define GMAC_IER_ROVR GMAC_IER_ROVR_Msk
+#undef GMAC_IER_HRESP
+#define GMAC_IER_HRESP GMAC_IER_HRESP_Msk
+#undef GMAC_MAN_CLTTO
+#define GMAC_MAN_CLTTO GMAC_MAN_CLTTO_Msk
+#undef GMAC_IERPQ_RCOMP
+#define GMAC_IERPQ_RCOMP GMAC_IERPQ_RCOMP_Msk
+#undef GMAC_IERPQ_RXUBR
+#define GMAC_IERPQ_RXUBR GMAC_IERPQ_RXUBR_Msk
+#undef GMAC_IERPQ_RLEX
+#define GMAC_IERPQ_RLEX GMAC_IERPQ_RLEX_Msk
+#undef GMAC_IERPQ_TFC
+#define GMAC_IERPQ_TFC GMAC_IERPQ_TFC_Msk
+#undef GMAC_IERPQ_TCOMP
+#define GMAC_IERPQ_TCOMP GMAC_IERPQ_TCOMP_Msk
+#undef GMAC_IERPQ_HRESP
+#define GMAC_IERPQ_HRESP GMAC_IERPQ_HRESP_Msk
+
+typedef gmac_registers_t Gmac;
+
+#endif /* __DFP_OVERRIDE_GMAC_H__ */
