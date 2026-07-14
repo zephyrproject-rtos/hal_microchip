@@ -28,6 +28,7 @@
 #define MCHP_PINMUX_PERIPH_i 8U
 #define MCHP_PINMUX_PERIPH_j 9U
 #define MCHP_PINMUX_PERIPH_k 10U
+#define MCHP_PINMUX_PERIPH_l 11U
 
 /** Extra */
 #define MCHP_PINMUX_PERIPH_x 0U
