@@ -21,7 +21,6 @@
 extern "C" {
 #endif // __cplusplus
 
-
 /* Include files */
 #include "qtm_common_components_api.h"
 #include "qtm_touch_key_0x0002_api.h"
@@ -34,7 +33,14 @@ extern "C" {
 #define qtm_ptc_handler_eoc   qtm_pic32cmjh_ptc_handler_eoc
 #define qtm_ptc_clear_int()   qtm_ptc_clear_interrupt()
 #define touch_acq_signal_t    uint16_t
-#endif /* CONFIG_SOC_FAMILY_MICROCHIP_PIC32CM_JH */
+#elif defined(CONFIG_SOC_FAMILY_MICROCHIP_PIC32CM_PL)
+#include "qtm_acq_pic32cm_pl10_0x005b_api.h"
+#define qtm_acq_node_config_t   qtm_acq_pic32cm_pl_node_config_t
+#define qtm_ptc_handler_eoc     qtm_pic32cm_pl_ptc_handler_eoc
+#define qtm_ptc_clear_int()
+#define touch_acq_signal_t      uint32_t
+#define qtm_acq_device_config_t qtm_acq_pic32cm_pl_device_config_t
+#endif
 
 #ifdef __cplusplus
 }

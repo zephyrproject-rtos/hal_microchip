@@ -14,6 +14,16 @@ blobs:
     description: "Binary libraries supporting the PIC32CM JH series touch subsystems"
     doc-url: https://ww1.microchip.com/downloads/aemDocuments/documents/TXFG/ProductDocuments/UserGuides/QTouch-Modular-Library-PTC-UG-DS40001986.pdf
 
+  # PTC - Acquisition Module for PIC32CM-PL device
+  - path: ptc/pic32c/pic32cm_pl/pic32cm_pl10/qtm_acq_pic32cm_pl10_0x005b.X.a
+    sha256: ce8d8b1ba7edbd8181ad78168967e3f86083aa43323ef1977a7fd276453b0d01
+    type: lib
+    version: '1.3'
+    license-path: zephyr/blobs/License.txt
+    url: https://github.com/Zephyr4Microchip/touch/raw/refs/heads/main/ptc/device/pic32c/pic32cm_pl/pic32cm_pl10/qtm_acq_pic32cm_pl10_0x005b.X.a
+    description: "Binary libraries supporting the PIC32CM PL series touch subsystems"
+    doc-url: https://ww1.microchip.com/downloads/aemDocuments/documents/TXFG/ProductDocuments/UserGuides/QTouch-Modular-Library-PTC-UG-DS40001986.pdf
+
   # PTC - Frequency-hop auto-tune Module for Cortex-M0+
   - path: ptc/common/cortex_m0p/qtm_freq_hop_auto_cm0p_0x0004.X.a
     sha256: 0cc61b670ccb0ebd7693034a5745421fee4bdf43b6d3e6a708a40e9140ad4551
