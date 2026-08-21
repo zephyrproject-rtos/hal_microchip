@@ -28,6 +28,7 @@ The HAL directory structure detailed below.
 |       |   ├── pic32cm_sg_gc — dt-binding header files for PIC32CM SG/GC family devices
 │       │   ├── pic32cx_sg    — dt-binding header files for PIC32CX SG family devices
 │       │   ├── pic32cz_ca    — dt-binding header files for PIC32CZ CA family devices
+│       │   ├── pic32cx_bz    — dt-binding header files for PIC32CZ BZ family devices
 │
 ├── mec
 │   ├── Legacy MEC150x/2x C chip and peripheral header files
@@ -52,6 +53,7 @@ The HAL directory structure detailed below.
 |   |   ├── pic32cm_sg_gc — DFP header files for PIC32CM SG/GC family devices
 │   │   ├── pic32cx_sg    — DFP header files for PIC32CX SG family devices
 │   │   ├── pic32cz_ca    — DFP header files for PIC32CZ CA family devices
+│   │   ├── pic32cx_bz    — DFP header files for PIC32CX BZ family devices
 │   │
 │   └── sam
 │       ├── CMakeLists.txt
