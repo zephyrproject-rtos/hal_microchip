@@ -21,20 +21,19 @@
  */
 
 /* file generated from device description version 2022-09-09T06:09:06Z */
-#ifndef _PIC32CMLS00_PORT_INSTANCE_
-#define _PIC32CMLS00_PORT_INSTANCE_
+#ifndef _PIC32CMLS00_TC2_INSTANCE_
+#define _PIC32CMLS00_TC2_INSTANCE_
 
 
-/* ========== Instance Parameter definitions for PORT peripheral ========== */
-#define PORT_BITS                                (93)       
-#define PORT_DRVSTR                              (1)        /* DRVSTR supported? */
-#define PORT_EV_NUM                              (4)        
-#define PORT_GROUPS                              (3)        
-#define PORT_INSTANCE_ID                         (12)       /* Instance index for PORT */
-#define PORT_MSB                                 (92)       
-#define PORT_ODRAIN                              (0)        /* ODRAIN supported? */
-#define PORT_PPP_IMPLEMENTED                     (0)        /* IOBUS2 implemented? */
-#define PORT_SECURE_IMPLEMENTED                  (1)        /* Secure I/Os supported? */
-#define PORT_SLEWLIM                             (0)        /* SLEWLIM supported? */
+/* ========== Instance Parameter definitions for TC2 peripheral ========== */
+#define TC2_CC_NUM                               (2)        
+#define TC2_DMAC_ID_MC0                          (23)       /* Indexes of DMA Match/Compare0 trigger */
+#define TC2_DMAC_ID_MC1                          (24)       /* Indexes of DMA Match/Compare1 trigger */
+#define TC2_DMAC_ID_OVF                          (22)       /* Indexes of DMA Overflow trigger */
+#define TC2_EXT                                  (1)        /* Coding of implemented extended features (keep 0 value) */
+#define TC2_GCLK_ID                              (24)       /* Index of Generic Clock */
+#define TC2_INSTANCE_ID                          (73)       /* Instance index for TC2 */
+#define TC2_MASTER_SLAVE_MODE                    (0)        /* TC type 0 : NA, 1 : Master, 2 : Slave */
+#define TC2_OW_NUM                               (2)        /* Number of Output Waveforms */
 
-#endif /* _PIC32CMLS00_PORT_INSTANCE_ */
+#endif /* _PIC32CMLS00_TC2_INSTANCE_ */

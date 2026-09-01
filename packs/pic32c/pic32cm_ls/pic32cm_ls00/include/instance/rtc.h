@@ -21,20 +21,19 @@
  */
 
 /* file generated from device description version 2022-09-09T06:09:06Z */
-#ifndef _PIC32CMLS00_PORT_INSTANCE_
-#define _PIC32CMLS00_PORT_INSTANCE_
+#ifndef _PIC32CMLS00_RTC_INSTANCE_
+#define _PIC32CMLS00_RTC_INSTANCE_
 
 
-/* ========== Instance Parameter definitions for PORT peripheral ========== */
-#define PORT_BITS                                (93)       
-#define PORT_DRVSTR                              (1)        /* DRVSTR supported? */
-#define PORT_EV_NUM                              (4)        
-#define PORT_GROUPS                              (3)        
-#define PORT_INSTANCE_ID                         (12)       /* Instance index for PORT */
-#define PORT_MSB                                 (92)       
-#define PORT_ODRAIN                              (0)        /* ODRAIN supported? */
-#define PORT_PPP_IMPLEMENTED                     (0)        /* IOBUS2 implemented? */
-#define PORT_SECURE_IMPLEMENTED                  (1)        /* Secure I/Os supported? */
-#define PORT_SLEWLIM                             (0)        /* SLEWLIM supported? */
+/* ========== Instance Parameter definitions for RTC peripheral ========== */
+#define RTC_DMAC_ID_TIMESTAMP                    (1)        /* DMA RTC timestamp trigger */
+#define RTC_GPR_NUM                              (2)        /* Number of General-Purpose Registers */
+#define RTC_INSTANCE_ID                          (9)        /* Instance index for RTC */
+#define RTC_NUM_OF_ALARMS                        (1)        /* Number of Alarms */
+#define RTC_NUM_OF_BKREGS                        (0)        /* Number of Backup Registers */
+#define RTC_NUM_OF_COMP16                        (2)        /* Number of 16-bit Comparators */
+#define RTC_NUM_OF_COMP32                        (1)        /* Number of 32-bit Comparators */
+#define RTC_NUM_OF_TAMPERS                       (8)        /* Number of Tamper Inputs */
+#define RTC_PER_NUM                              (8)        /* Number of Periodic Intervals */
 
-#endif /* _PIC32CMLS00_PORT_INSTANCE_ */
+#endif /* _PIC32CMLS00_RTC_INSTANCE_ */

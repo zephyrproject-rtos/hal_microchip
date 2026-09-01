@@ -21,20 +21,18 @@
  */
 
 /* file generated from device description version 2022-09-09T06:09:06Z */
-#ifndef _PIC32CMLS00_PORT_INSTANCE_
-#define _PIC32CMLS00_PORT_INSTANCE_
+#ifndef _PIC32CMLS00_SUPC_INSTANCE_
+#define _PIC32CMLS00_SUPC_INSTANCE_
 
 
-/* ========== Instance Parameter definitions for PORT peripheral ========== */
-#define PORT_BITS                                (93)       
-#define PORT_DRVSTR                              (1)        /* DRVSTR supported? */
-#define PORT_EV_NUM                              (4)        
-#define PORT_GROUPS                              (3)        
-#define PORT_INSTANCE_ID                         (12)       /* Instance index for PORT */
-#define PORT_MSB                                 (92)       
-#define PORT_ODRAIN                              (0)        /* ODRAIN supported? */
-#define PORT_PPP_IMPLEMENTED                     (0)        /* IOBUS2 implemented? */
-#define PORT_SECURE_IMPLEMENTED                  (1)        /* Secure I/Os supported? */
-#define PORT_SLEWLIM                             (0)        /* SLEWLIM supported? */
+/* ========== Instance Parameter definitions for SUPC peripheral ========== */
+#define SUPC_BOD12_CALIB_MSB                     (5)        
+#define SUPC_BOD33_CALIB_MSB                     (5)        
+#define SUPC_HAS_BOD33_REG_NAME                  (1)        /* Name of BOD register is BOD33 */
+#define SUPC_HAS_LPEFF_BIT                       (1)        /* LPEFF bit is present */
+#define SUPC_HAS_SEL_BIT                         (1)        /* SEL bit is present */
+#define SUPC_HAS_STDBYPL0_BIT                    (1)        /* STDBYPL0 bit is present */
+#define SUPC_HAS_VREFSEL_BIT                     (1)        /* VREFSEL bit is present */
+#define SUPC_INSTANCE_ID                         (6)        /* Instance index for SUPC */
 
-#endif /* _PIC32CMLS00_PORT_INSTANCE_ */
+#endif /* _PIC32CMLS00_SUPC_INSTANCE_ */

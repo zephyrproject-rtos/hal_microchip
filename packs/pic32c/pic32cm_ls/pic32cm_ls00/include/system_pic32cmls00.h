@@ -1,5 +1,5 @@
 /*
- * Instance header file for PIC32CM5164LS00100
+ * Low-level initialization functions called upon device startup
  *
  * Copyright (c) 2023 Microchip Technology Inc. and its subsidiaries.
  *
@@ -20,21 +20,22 @@
  *
  */
 
-/* file generated from device description version 2022-09-09T06:09:06Z */
-#ifndef _PIC32CMLS00_PORT_INSTANCE_
-#define _PIC32CMLS00_PORT_INSTANCE_
+#ifndef _SYSTEM_PIC32CMLS00_H_INCLUDED_
+#define _SYSTEM_PIC32CMLS00_H_INCLUDED_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-/* ========== Instance Parameter definitions for PORT peripheral ========== */
-#define PORT_BITS                                (93)       
-#define PORT_DRVSTR                              (1)        /* DRVSTR supported? */
-#define PORT_EV_NUM                              (4)        
-#define PORT_GROUPS                              (3)        
-#define PORT_INSTANCE_ID                         (12)       /* Instance index for PORT */
-#define PORT_MSB                                 (92)       
-#define PORT_ODRAIN                              (0)        /* ODRAIN supported? */
-#define PORT_PPP_IMPLEMENTED                     (0)        /* IOBUS2 implemented? */
-#define PORT_SECURE_IMPLEMENTED                  (1)        /* Secure I/Os supported? */
-#define PORT_SLEWLIM                             (0)        /* SLEWLIM supported? */
+#include <stdint.h>
 
-#endif /* _PIC32CMLS00_PORT_INSTANCE_ */
+extern uint32_t SystemCoreClock;   /*!< System Clock Frequency (Core Clock)  */
+
+void SystemInit(void);
+void SystemCoreClockUpdate(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* _SYSTEM_PIC32CMLS00_H_INCLUDED */

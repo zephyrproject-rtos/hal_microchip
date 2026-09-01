@@ -21,20 +21,21 @@
  */
 
 /* file generated from device description version 2022-09-09T06:09:06Z */
-#ifndef _PIC32CMLS00_PORT_INSTANCE_
-#define _PIC32CMLS00_PORT_INSTANCE_
+#ifndef _PIC32CMLS00_I2S_INSTANCE_
+#define _PIC32CMLS00_I2S_INSTANCE_
 
 
-/* ========== Instance Parameter definitions for PORT peripheral ========== */
-#define PORT_BITS                                (93)       
-#define PORT_DRVSTR                              (1)        /* DRVSTR supported? */
-#define PORT_EV_NUM                              (4)        
-#define PORT_GROUPS                              (3)        
-#define PORT_INSTANCE_ID                         (12)       /* Instance index for PORT */
-#define PORT_MSB                                 (92)       
-#define PORT_ODRAIN                              (0)        /* ODRAIN supported? */
-#define PORT_PPP_IMPLEMENTED                     (0)        /* IOBUS2 implemented? */
-#define PORT_SECURE_IMPLEMENTED                  (1)        /* Secure I/Os supported? */
-#define PORT_SLEWLIM                             (0)        /* SLEWLIM supported? */
+/* ========== Instance Parameter definitions for I2S peripheral ========== */
+#define I2S_CLK_NUM                              (2)        /* Number of clock units */
+#define I2S_DMAC_ID_RX_0                         (47)       /* Index of DMA RX Trigger 0 */
+#define I2S_DMAC_ID_RX_1                         (48)       /* Index of DMA RX Trigger 1 */
+#define I2S_DMAC_ID_TX_0                         (49)       /* Index of DMA TX Trigger 0 */
+#define I2S_DMAC_ID_TX_1                         (50)       /* Index of DMA TX Trigger 1 */
+#define I2S_GCLK_ID_0                            (33)       /* Index of Generic Clock 0 */
+#define I2S_GCLK_ID_1                            (34)       /* Index of Generic Clock 1 */
+#define I2S_INSTANCE_ID                          (83)       /* Instance index for I2S */
+#define I2S_MAX_SLOTS                            (8)        /* Max number of data slots in frame */
+#define I2S_MAX_WL_BITS                          (32)       /* Max number of bits in data samples */
+#define I2S_SER_NUM                              (2)        /* Number of serializers */
 
-#endif /* _PIC32CMLS00_PORT_INSTANCE_ */
+#endif /* _PIC32CMLS00_I2S_INSTANCE_ */

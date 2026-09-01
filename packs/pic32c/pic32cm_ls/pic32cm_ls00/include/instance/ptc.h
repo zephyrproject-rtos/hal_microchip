@@ -21,20 +21,17 @@
  */
 
 /* file generated from device description version 2022-09-09T06:09:06Z */
-#ifndef _PIC32CMLS00_PORT_INSTANCE_
-#define _PIC32CMLS00_PORT_INSTANCE_
+#ifndef _PIC32CMLS00_PTC_INSTANCE_
+#define _PIC32CMLS00_PTC_INSTANCE_
 
 
-/* ========== Instance Parameter definitions for PORT peripheral ========== */
-#define PORT_BITS                                (93)       
-#define PORT_DRVSTR                              (1)        /* DRVSTR supported? */
-#define PORT_EV_NUM                              (4)        
-#define PORT_GROUPS                              (3)        
-#define PORT_INSTANCE_ID                         (12)       /* Instance index for PORT */
-#define PORT_MSB                                 (92)       
-#define PORT_ODRAIN                              (0)        /* ODRAIN supported? */
-#define PORT_PPP_IMPLEMENTED                     (0)        /* IOBUS2 implemented? */
-#define PORT_SECURE_IMPLEMENTED                  (1)        /* Secure I/Os supported? */
-#define PORT_SLEWLIM                             (0)        /* SLEWLIM supported? */
+/* ========== Instance Parameter definitions for PTC peripheral ========== */
+#define PTC_DMAC_ID_EOC                          (44)       /* Index of DMA EOC trigger */
+#define PTC_DMAC_ID_SEQ                          (45)       /* Index of DMA SEQ trigger */
+#define PTC_DMAC_ID_WCOMP                        (46)       /* Index of DMA WCOMP trigger */
+#define PTC_GCLK_ID                              (31)       /* Index of Generic Clock */
+#define PTC_INSTANCE_ID                          (80)       /* Instance index for PTC */
+#define PTC_LINES_MSB                            (31)       
+#define PTC_LINES_NUM                            (32)       /* Number of PTC lines */
 
-#endif /* _PIC32CMLS00_PORT_INSTANCE_ */
+#endif /* _PIC32CMLS00_PTC_INSTANCE_ */

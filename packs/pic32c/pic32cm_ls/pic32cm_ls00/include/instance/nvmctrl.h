@@ -21,20 +21,20 @@
  */
 
 /* file generated from device description version 2022-09-09T06:09:06Z */
-#ifndef _PIC32CMLS00_PORT_INSTANCE_
-#define _PIC32CMLS00_PORT_INSTANCE_
+#ifndef _PIC32CMLS00_NVMCTRL_INSTANCE_
+#define _PIC32CMLS00_NVMCTRL_INSTANCE_
 
 
-/* ========== Instance Parameter definitions for PORT peripheral ========== */
-#define PORT_BITS                                (93)       
-#define PORT_DRVSTR                              (1)        /* DRVSTR supported? */
-#define PORT_EV_NUM                              (4)        
-#define PORT_GROUPS                              (3)        
-#define PORT_INSTANCE_ID                         (12)       /* Instance index for PORT */
-#define PORT_MSB                                 (92)       
-#define PORT_ODRAIN                              (0)        /* ODRAIN supported? */
-#define PORT_PPP_IMPLEMENTED                     (0)        /* IOBUS2 implemented? */
-#define PORT_SECURE_IMPLEMENTED                  (1)        /* Secure I/Os supported? */
-#define PORT_SLEWLIM                             (0)        /* SLEWLIM supported? */
+/* ========== Instance Parameter definitions for NVMCTRL peripheral ========== */
+#define NVMCTRL_DATAFLASH_PAGES                  (256)      
+#define NVMCTRL_FLASH_SIZE                       (524288)   
+#define NVMCTRL_INSTANCE_ID                      (34)       /* Instance index for NVMCTRL */
+#define NVMCTRL_PAGES                            (8192)     
+#define NVMCTRL_PAGES_PR_REGION                  (512)      
+#define NVMCTRL_PAGE_SIZE                        (64)       
+#define NVMCTRL_PMSB                             (3)        
+#define NVMCTRL_PSZ_BITS                         (6)        
+#define NVMCTRL_ROW_PAGES                        (4)        
+#define NVMCTRL_SECURE_IMPLEMENTED               (1)        /* Security Configuration implemented? */
 
-#endif /* _PIC32CMLS00_PORT_INSTANCE_ */
+#endif /* _PIC32CMLS00_NVMCTRL_INSTANCE_ */

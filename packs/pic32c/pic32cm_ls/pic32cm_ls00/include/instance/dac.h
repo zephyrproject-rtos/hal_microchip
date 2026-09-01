@@ -21,20 +21,17 @@
  */
 
 /* file generated from device description version 2022-09-09T06:09:06Z */
-#ifndef _PIC32CMLS00_PORT_INSTANCE_
-#define _PIC32CMLS00_PORT_INSTANCE_
+#ifndef _PIC32CMLS00_DAC_INSTANCE_
+#define _PIC32CMLS00_DAC_INSTANCE_
 
 
-/* ========== Instance Parameter definitions for PORT peripheral ========== */
-#define PORT_BITS                                (93)       
-#define PORT_DRVSTR                              (1)        /* DRVSTR supported? */
-#define PORT_EV_NUM                              (4)        
-#define PORT_GROUPS                              (3)        
-#define PORT_INSTANCE_ID                         (12)       /* Instance index for PORT */
-#define PORT_MSB                                 (92)       
-#define PORT_ODRAIN                              (0)        /* ODRAIN supported? */
-#define PORT_PPP_IMPLEMENTED                     (0)        /* IOBUS2 implemented? */
-#define PORT_SECURE_IMPLEMENTED                  (1)        /* Secure I/Os supported? */
-#define PORT_SLEWLIM                             (0)        /* SLEWLIM supported? */
+/* ========== Instance Parameter definitions for DAC peripheral ========== */
+#define DAC_CHANNEL_SIZE                         (2)        /* Number of DACs */
+#define DAC_DATA_SIZE                            (12)       /* Number of bits in data */
+#define DAC_DMAC_ID_EMPTY0                       (42)       /* DMAC ID for DAC0 Empty */
+#define DAC_DMAC_ID_EMPTY1                       (43)       /* DMAC ID for DAC1 Empty */
+#define DAC_GCLK_ID                              (30)       /* Index of Generic Clock */
+#define DAC_INSTANCE_ID                          (79)       /* Instance index for DAC */
+#define DAC_STEP                                 (7)        /* Number of steps to reach full scale */
 
-#endif /* _PIC32CMLS00_PORT_INSTANCE_ */
+#endif /* _PIC32CMLS00_DAC_INSTANCE_ */

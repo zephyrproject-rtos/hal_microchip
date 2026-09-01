@@ -21,20 +21,19 @@
  */
 
 /* file generated from device description version 2022-09-09T06:09:06Z */
-#ifndef _PIC32CMLS00_PORT_INSTANCE_
-#define _PIC32CMLS00_PORT_INSTANCE_
+#ifndef _PIC32CMLS00_GCLK_INSTANCE_
+#define _PIC32CMLS00_GCLK_INSTANCE_
 
 
-/* ========== Instance Parameter definitions for PORT peripheral ========== */
-#define PORT_BITS                                (93)       
-#define PORT_DRVSTR                              (1)        /* DRVSTR supported? */
-#define PORT_EV_NUM                              (4)        
-#define PORT_GROUPS                              (3)        
-#define PORT_INSTANCE_ID                         (12)       /* Instance index for PORT */
-#define PORT_MSB                                 (92)       
-#define PORT_ODRAIN                              (0)        /* ODRAIN supported? */
-#define PORT_PPP_IMPLEMENTED                     (0)        /* IOBUS2 implemented? */
-#define PORT_SECURE_IMPLEMENTED                  (1)        /* Secure I/Os supported? */
-#define PORT_SLEWLIM                             (0)        /* SLEWLIM supported? */
+/* ========== Instance Parameter definitions for GCLK peripheral ========== */
+#define GCLK_GENDIV_BITS                         (16)       
+#define GCLK_GEN_BITS                            (3)        
+#define GCLK_GEN_NUM                             (8)        /* Number of Generic Clock Generators */
+#define GCLK_GEN_NUM_MSB                         (7)        /* Number of Generic Clock Generators - 1 */
+#define GCLK_GEN_SOURCE_NUM_MSB                  (8)        /* Number of Generic Clock Sources - 1 */
+#define GCLK_INSTANCE_ID                         (7)        /* Instance index for GCLK */
+#define GCLK_NUM                                 (35)       /* Number of Generic Clock Users */
+#define GCLK_SOURCE_BITS                         (4)        
+#define GCLK_SOURCE_NUM                          (9)        /* Number of Generic Clock Sources */
 
-#endif /* _PIC32CMLS00_PORT_INSTANCE_ */
+#endif /* _PIC32CMLS00_GCLK_INSTANCE_ */
