@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright The Zephyr Project Contributors
+# SPDX-License-Identifier: Apache-2.0
+#
+# REUSE.toml — REUSE Specification 3.3 bulk annotations for binary blobs
+# https://reuse.software/spec-3.3/
+#
+# This file provides SPDX license and copyright metadata for west-fetched
+# binary blobs (zephyr/blobs/), which cannot carry in-file SPDX tags.
+# License text is taken from the blob license-path in zephyr/module.yml.
+# In-file tags always take precedence over entries below (REUSE spec §3.3).
+#
+# Licenses referenced here must have their full text under LICENSES/.
+
+version = 1
+
+# ---------------------------------------------------------------------------
+# Binary blobs — Microchip Software License Agreement (zephyr/blobs/License.txt)
+# ---------------------------------------------------------------------------
+[[annotations]]
+path = "zephyr/blobs/**"
+SPDX-FileCopyrightText = "Copyright (c) Microchip Technology Inc., and its subsidiaries"
+SPDX-License-Identifier = "LicenseRef-Microchip-SLA"
