@@ -8,5 +8,6 @@
 #define MICROCHIP_PIC32CZ_CA_H_
 
 #include "sercom_pic32cz_ca.h"
+#include "rtc_pic32cz_ca.h"
 
 #endif /* MICROCHIP_PIC32CZ_CA_H_ */
