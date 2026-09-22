@@ -1181,7 +1181,7 @@
 
 
 /* -------- USBHS_EPINFO : (USBHS Offset: 0x1078) ( R/ 8) Allows Read-Back Of The Number Of TX And RX Endpoints -------- */
-#define USBHS_EPINFO_RESETVALUE               _UINT8_(0xFF)                                        /*  (USBHS_EPINFO) Allows Read-Back Of The Number Of TX And RX Endpoints  Reset Value */
+#define USBHS_EPINFO_RESETVALUE               _UINT8_(0x77)                                        /*  (USBHS_EPINFO) Allows Read-Back Of The Number Of TX And RX Endpoints  Reset Value */
 
 #define USBHS_EPINFO_TXENDPOINTS_Pos          _UINT8_(0)                                           /* (USBHS_EPINFO) number of tx endpoints Position */
 #define USBHS_EPINFO_TXENDPOINTS_Msk          (_UINT8_(0xF) << USBHS_EPINFO_TXENDPOINTS_Pos)       /* (USBHS_EPINFO) number of tx endpoints Mask */
@@ -1633,6 +1633,9 @@
 #define USBHS_PHY24_HSSLEW2_Pos               _UINT32_(0)                                          /* (USBHS_PHY24) MSB of HS slew rate adjust Position */
 #define USBHS_PHY24_HSSLEW2_Msk               (_UINT32_(0x1) << USBHS_PHY24_HSSLEW2_Pos)           /* (USBHS_PHY24) MSB of HS slew rate adjust Mask */
 #define USBHS_PHY24_HSSLEW2(value)            (USBHS_PHY24_HSSLEW2_Msk & (_UINT32_(value) << USBHS_PHY24_HSSLEW2_Pos)) /* Assignment of value for HSSLEW2 in the USBHS_PHY24 register */
+#define USBHS_PHY24_OTGPDN_Pos                _UINT32_(1)                                          /* (USBHS_PHY24) ODT Power Down Position */
+#define USBHS_PHY24_OTGPDN_Msk                (_UINT32_(0x1) << USBHS_PHY24_OTGPDN_Pos)            /* (USBHS_PHY24) ODT Power Down Mask */
+#define USBHS_PHY24_OTGPDN(value)             (USBHS_PHY24_OTGPDN_Msk & (_UINT32_(value) << USBHS_PHY24_OTGPDN_Pos)) /* Assignment of value for OTGPDN in the USBHS_PHY24 register */
 #define USBHS_PHY24_RSVD0_Pos                 _UINT32_(2)                                          /* (USBHS_PHY24) Reserved Position */
 #define USBHS_PHY24_RSVD0_Msk                 (_UINT32_(0x1) << USBHS_PHY24_RSVD0_Pos)             /* (USBHS_PHY24) Reserved Mask */
 #define USBHS_PHY24_RSVD0(value)              (USBHS_PHY24_RSVD0_Msk & (_UINT32_(value) << USBHS_PHY24_RSVD0_Pos)) /* Assignment of value for RSVD0 in the USBHS_PHY24 register */
@@ -1642,7 +1645,7 @@
 #define USBHS_PHY24_HSDRIVST10_Pos            _UINT32_(6)                                          /* (USBHS_PHY24) HS transmit drive strength Position */
 #define USBHS_PHY24_HSDRIVST10_Msk            (_UINT32_(0x3) << USBHS_PHY24_HSDRIVST10_Pos)        /* (USBHS_PHY24) HS transmit drive strength Mask */
 #define USBHS_PHY24_HSDRIVST10(value)         (USBHS_PHY24_HSDRIVST10_Msk & (_UINT32_(value) << USBHS_PHY24_HSDRIVST10_Pos)) /* Assignment of value for HSDRIVST10 in the USBHS_PHY24 register */
-#define USBHS_PHY24_Msk                       _UINT32_(0x000000FD)                                 /* (USBHS_PHY24) Register Mask  */
+#define USBHS_PHY24_Msk                       _UINT32_(0x000000FF)                                 /* (USBHS_PHY24) Register Mask  */
 
 #define USBHS_PHY24_HSSLEW_Pos                _UINT32_(0)                                          /* (USBHS_PHY24 Position) MSB of HS slew rate adjust */
 #define USBHS_PHY24_HSSLEW_Msk                (_UINT32_(0x1) << USBHS_PHY24_HSSLEW_Pos)            /* (USBHS_PHY24 Mask) HSSLEW */
