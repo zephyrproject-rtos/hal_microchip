@@ -19,5 +19,6 @@
 #define MICROCHIP_PIC32CM_SG_GC_H_
 
 #include "sercom_pic32cm_sg_gc.h"
+#include "rtc_pic32cm_sg_gc.h"
 
 #endif /* MICROCHIP_PIC32CM_SG_GC_H_ */
