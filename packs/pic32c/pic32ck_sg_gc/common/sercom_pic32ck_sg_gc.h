@@ -92,4 +92,7 @@ typedef sercom_usart_int_registers_t sercom_usart_registers_t;
 #define SERCOM_USART_INTFLAG_CTSIC_Msk SERCOM_USART_INT_INTFLAG_CTSIC_Msk
 #define SERCOM_USART_INTFLAG_RXS_Msk SERCOM_USART_INT_INTFLAG_RXS_Msk
 
+/* The Bus state is waiting for a transaction to be initialized  */
+#define SERCOM_I2CM_STATUS_BUSSTATE_IDLE_Val    _UINT16_(0x1)
+
 #endif /* MICROCHIP_COMMON_SERCOM_PIC32CK_SG_GC_H_ */
