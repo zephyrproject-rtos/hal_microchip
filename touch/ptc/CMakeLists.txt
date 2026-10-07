@@ -14,6 +14,11 @@ add_subdirectory_ifdef(CONFIG_MICROCHIP_PIC32C  pic32c)
 
 # touch libraries for CORTEX-M0+
 if (CONFIG_CPU_CORTEX_M0PLUS)
+    # button library
+    add_library(lib_touch_key STATIC IMPORTED GLOBAL)
+    set_target_properties(lib_touch_key PROPERTIES IMPORTED_LOCATION ${PTC_LIB_PATH}/common/cortex_m0p/qtm_touch_key_cm0p_0x0002.X.a)
+    target_link_libraries(app PUBLIC lib_touch_key)
+
     # frequency hop library
     if (CONFIG_INPUT_MCHP_TOUCH_EN_FREQ_HOP)
         add_library(lib_freq_hop STATIC IMPORTED GLOBAL)
@@ -26,13 +31,6 @@ if (CONFIG_CPU_CORTEX_M0PLUS)
         add_library(lib_freq_hop_auto STATIC IMPORTED GLOBAL)
         set_target_properties(lib_freq_hop_auto PROPERTIES IMPORTED_LOCATION ${PTC_LIB_PATH}/common/cortex_m0p/qtm_freq_hop_auto_cm0p_0x0004.X.a)
         target_link_libraries(app PUBLIC lib_freq_hop_auto)
-    endif()
-
-    # button library
-    if (CONFIG_INPUT_MCHP_TOUCH_EN_BTTN_MODULE)
-        add_library(lib_touch_key STATIC IMPORTED GLOBAL)
-        set_target_properties(lib_touch_key PROPERTIES IMPORTED_LOCATION ${PTC_LIB_PATH}/common/cortex_m0p/qtm_touch_key_cm0p_0x0002.X.a)
-        target_link_libraries(app PUBLIC lib_touch_key)
     endif()
 
     # scroller library
