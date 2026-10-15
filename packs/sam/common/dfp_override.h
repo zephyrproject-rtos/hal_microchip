@@ -21,4 +21,6 @@
 #include "override_gmac.h"
 #endif /* CONFIG_ETH_SAM_GMAC */
 
+#include "override_pmc.h"
+
 #endif /* MICROCHIP_SAM_DFP_OVERRIDE_H_ */
