@@ -1,0 +1,10 @@
+# Copyright (c) 2026 Microchip Technology Inc.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+zephyr_include_directories(include)
+zephyr_include_directories(include/pio)
+zephyr_include_directories(include/component)
+zephyr_include_directories(include/instance)
+zephyr_include_directories(../common)
