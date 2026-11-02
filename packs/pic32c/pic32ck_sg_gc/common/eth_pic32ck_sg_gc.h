@@ -1,0 +1,153 @@
+/*
+ * Copyright (c) 2026 Microchip Technology Inc.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/**
+ * @file eth_pic32ck_sg_gc.h
+ * @brief GMAC-to-ETH register mapping for PIC32CK_SG_GC family.
+ *
+ * This file maps the generic GMAC register names used by the shared Ethernet
+ * driver to the device-specific ETH register names of the PIC32CK_SG_GC 
+ * family.
+ */
+
+#ifndef MICROCHIP_COMMON_ETH_PIC32CK_SG_GC_H_
+#define MICROCHIP_COMMON_ETH_PIC32CK_SG_GC_H_
+
+typedef eth_registers_t gmac_registers_t;
+
+/*ETH_NCFGR*/
+#define GMAC_NCFGR  ETH_NCFGR
+#define GMAC_NCFGR_DBW  ETH_NCFGR_DBW
+#define GMAC_NCFGR_SPD_Msk ETH_NCFGR_SPD_Msk
+#define GMAC_NCFGR_FD_Msk ETH_NCFGR_FD_Msk
+#define GMAC_NCFGR_MAXFS_Msk ETH_NCFGR_MAXFS_Msk
+#define GMAC_NCFGR_MTIHEN_Msk ETH_NCFGR_MTIHEN_Msk
+#define GMAC_NCFGR_LFERD_Msk ETH_NCFGR_LFERD_Msk
+#define GMAC_NCFGR_RFCS_Msk ETH_NCFGR_RFCS_Msk
+#define GMAC_NCFGR_RXCOEN_Msk ETH_NCFGR_RXCOEN_Msk
+#define GMAC_NCFGR_PEN_Msk ETH_NCFGR_PEN_Msk
+
+/*ETH_NCR*/
+#define GMAC_NCR ETH_NCR
+#define GMAC_NCR_RXEN_Msk ETH_NCR_RXEN_Msk
+#define GMAC_NCR_TXEN_Msk ETH_NCR_TXEN_Msk
+#define GMAC_NCR_MPE_Msk ETH_NCR_MPE_Msk
+#define GMAC_NCR_CLRSTAT_Msk ETH_NCR_CLRSTAT_Msk
+#define GMAC_NCR_TSTART_Msk ETH_NCR_TSTART_Msk
+
+/*ETH_DCFGR*/
+#define GMAC_DCFGR  ETH_DCFGR
+#define GMAC_DCFGR_TXPBMS  ETH_DCFGR_TXPBMS
+#define GMAC_DCFGR_DDRP  ETH_DCFGR_DDRP
+#define GMAC_DCFGR_DRBS(x) ETH_DCFGR_DRBS(x)
+#define GMAC_DCFGR_RXBMS(x) ETH_DCFGR_RXBMS(x)
+#define GMAC_DCFGR_TXCOEN_Msk ETH_DCFGR_TXCOEN_Msk
+#define GMAC_DCFGR_FBLDO_INCR4 4
+
+/*ETH_ISR*/
+#define GMAC_ISR ETH_ISR
+#define GMAC_ISR_Msk ETH_ISR_Msk
+#define GMAC_ISR_RCOMP_Msk ETH_ISR_RCOMP_Msk
+#define GMAC_ISR_TCOMP_Msk ETH_ISR_TCOMP_Msk
+
+/*ETH_IER*/
+#define GMAC_IER ETH_IER
+#define GMAC_IER_RCOMP_Msk ETH_IER_RCOMP_Msk
+#define GMAC_IER_RXUBR_Msk ETH_IER_RXUBR_Msk
+#define GMAC_IER_TUR_Msk ETH_IER_TUR_Msk
+#define GMAC_IER_RLEX_Msk ETH_IER_RLEX_Msk
+#define GMAC_IER_TFC_Msk ETH_IER_TFC_Msk
+#define GMAC_IER_TCOMP_Msk ETH_IER_TCOMP_Msk
+#define GMAC_IER_ROVR_Msk ETH_IER_ROVR_Msk
+#define GMAC_IER_HRESP_Msk ETH_IER_HRESP_Msk
+
+/*ETH_RBQB*/
+#define GMAC_RBQB ETH_RBQB
+#define GMAC_RBQB_ADDR_Msk ETH_RBQB_ADDR_Msk
+
+/*ETH_TBQB*/
+#define GMAC_TBQB ETH_TBQB
+#define GMAC_TBQB_ADDR_Msk ETH_TBQB_ADDR_Msk
+
+/*ETH_RSR*/
+#define GMAC_RSR ETH_RSR
+#define GMAC_RSR_BNA_Msk ETH_RSR_BNA_Msk
+#define GMAC_RSR_RESETVALUE ETH_RSR_RESETVALUE
+
+/*ETH_SAB*/
+#define GMAC_SAB ETH_SAB
+#define GMAC_SAB_ADDR(x) ETH_SAB_ADDR(x)
+
+/*ETH_SAT*/
+#define GMAC_SAT ETH_SAT
+#define GMAC_SAT_ADDR(x) ETH_SAT_ADDR(x)
+
+/*ETH Error Registers*/
+#define GMAC_FCSE ETH_FCSE
+#define GMAC_LFFE ETH_LFFE
+#define GMAC_RSE ETH_RSE
+#define GMAC_AE ETH_AE
+#define GMAC_RRE ETH_RRE
+#define GMAC_IHCE ETH_IHCE
+#define GMAC_TCE ETH_TCE
+#define GMAC_UCE ETH_UCE
+
+/*ETH_MAN*/
+#define GMAC_MAN ETH_MAN
+#define GMAC_MAN_OP ETH_MAN_OP
+#define GMAC_MAN_WTN ETH_MAN_WTN
+#define GMAC_MAN_PHYA ETH_MAN_PHYA
+#define GMAC_MAN_REGA ETH_MAN_REGA
+#define GMAC_MAN_DATA ETH_MAN_DATA
+#define GMAC_MAN_DATA_Msk ETH_MAN_DATA_Msk
+#define GMAC_MAN_CLTTO_Msk ETH_MAN_CLTTO_Msk
+
+/*ETH_NSR*/
+#define GMAC_NSR ETH_NSR
+#define GMAC_NSR_IDLE_Msk ETH_NSR_IDLE_Msk
+
+/*ETH_NCFGR*/
+#define GMAC_NCFGR_GIGE_Msk ETH_NCFGR_GIGE_Msk
+#define GMAC_NCFGR_CLK_MCK8 (0 << 18)
+#define GMAC_NCFGR_CLK_MCK16 (1 << 18)
+#define GMAC_NCFGR_CLK_MCK32 (2 << 18)
+#define GMAC_NCFGR_CLK_MCK48 (3 << 18)
+#define GMAC_NCFGR_CLK_MCK64 (4 << 18)
+#define GMAC_NCFGR_CLK_MCK96 (5 << 18)
+
+/*ETH_CTRL*/
+#define GMAC_CTRLA ETH_CTRLA
+#define GMAC_CTRLB ETH_CTRLB
+#define GMAC_CTRLB_GMIIEN ETH_CTRLB_GMIIEN
+#define GMAC_CTRLA_ENABLE(x) ETH_CTRLA_ENABLE(x)
+#define GMAC_CTRLB_GBITCLKREQ ETH_CTRLB_GBITCLKREQ
+#define GMAC_CTRLB_GMIIEN_Msk ETH_CTRLB_GMIIEN_Msk
+#define GMAC_CTRLB_GBITCLKREQ_Msk ETH_CTRLB_GBITCLKREQ_Msk
+
+/*ETH_SYNC*/
+#define GMAC_SYNCB ETH_SYNCB
+
+/*Statistics*/
+#define GMAC_MFR ETH_MFR
+#define GMAC_UFR ETH_UFR
+#define GMAC_OFR ETH_OFR
+#define GMAC_JR ETH_JR
+
+/*Others*/
+#define GMAC_TUR ETH_TUR
+#define GMAC_ROE ETH_ROE
+#define GMAC_SCF ETH_SCF
+#define GMAC_MCF ETH_MCF
+#define GMAC_EC ETH_EC
+#define GMAC_CSE ETH_CSE
+#define GMAC_UR ETH_UR
+#define GMAC_IDR ETH_IDR
+#define GMAC_HRB ETH_HRB
+#define GMAC_HRT ETH_HRT
+#define GMAC_MFT ETH_MFT
+#define GMAC_TSR ETH_TSR
+
+#endif /* MICROCHIP_COMMON_ETH_PIC32CK_SG_GC_H_ */
