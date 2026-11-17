@@ -22,6 +22,7 @@
 /** Peripherals */
 #define MCHP_PINMUX_PERIPH_a 0U
 #define MCHP_PINMUX_PERIPH_b 1U
+#define MCHP_PINMUX_PERIPH_c 2U
 #define MCHP_PINMUX_PERIPH_d 3U
 #define MCHP_PINMUX_PERIPH_e 4U
 #define MCHP_PINMUX_PERIPH_f 5U
