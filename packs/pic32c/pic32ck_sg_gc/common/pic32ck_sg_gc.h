@@ -7,5 +7,6 @@
 #define MICROCHIP_PIC32CK_SG_GC_H_
 
 #include "sercom_pic32ck_sg_gc.h"
+#include "eth_pic32ck_sg_gc.h"
 
 #endif /* MICROCHIP_PIC32CK_SG_GC_H_ */
