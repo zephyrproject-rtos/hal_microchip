@@ -1,10 +1,11 @@
-# Copyright (C) 2025 Microchip Technology Inc. and its subsidiaries
+# SPDX-FileCopyrightText: Copyright (c) 2025-2026 Microchip Technology Inc.
 #
 # SPDX-License-Identifier: Apache-2.0
 #
 
 add_subdirectory_ifdef(CONFIG_SOC_FAMILY_MICROCHIP_SAM_D5X_E5X	sam_d5x_e5x)
 
+add_subdirectory_ifdef(CONFIG_SOC_SERIES_SAM9X6 sam9x6)
 add_subdirectory_ifdef(CONFIG_SOC_SERIES_SAM9X7 sam9x7)
 add_subdirectory_ifdef(CONFIG_SOC_SERIES_SAMA5D2 sama5d2)
 add_subdirectory_ifdef(CONFIG_SOC_SERIES_SAMA7D6 sama7d6)
