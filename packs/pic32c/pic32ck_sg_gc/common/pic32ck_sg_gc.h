@@ -6,6 +6,7 @@
 #ifndef MICROCHIP_PIC32CK_SG_GC_H_
 #define MICROCHIP_PIC32CK_SG_GC_H_
 
+#include "sdhc_pic32ck_sg_gc.h"
 #include "sercom_pic32ck_sg_gc.h"
 
 #endif /* MICROCHIP_PIC32CK_SG_GC_H_ */

@@ -7,6 +7,7 @@
 #ifndef MICROCHIP_PIC32CZ_CA_H_
 #define MICROCHIP_PIC32CZ_CA_H_
 
+#include "sdhc_pic32cz_ca.h"
 #include "sercom_pic32cz_ca.h"
 #include "rtc_pic32cz_ca.h"
 
